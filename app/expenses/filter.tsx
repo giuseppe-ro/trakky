@@ -26,7 +26,13 @@ export function DebouncedInput({
     }, [value])
   
     return (
-      <input className="min-w-full outline-none" {...props} value={value} onChange={e => setValue(e.target.value)} />
+      <input className="outline-none" {...props} value={value} onChange={e => setValue(e.target.value)} 
+      {...{
+        style: {
+          minWidth: "100%",
+          maxWidth: "100%",
+        },
+      }}/>
     )
   }
   
@@ -74,7 +80,7 @@ export function Filter({
             value={(columnFilterValue ?? '') as string}
             onChange={value => column.setFilterValue(value)}
             placeholder=""
-            className={`min-w-full px-2 focus-visible:outline-none focus-visible:ring-none`}
+            className={"px-2 focus-visible:outline-none focus-visible:ring-none"}
             list={column.id + 'list'}
           />
         </>

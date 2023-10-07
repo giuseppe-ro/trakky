@@ -74,6 +74,7 @@ const TableHead = React.forwardRef<
       className
     )}
     {...props}
+    
   />
 ))
 TableHead.displayName = "TableHead"

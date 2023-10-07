@@ -2,7 +2,6 @@
 
 import { ColumnDef } from "@tanstack/react-table"
 import { MoreHorizontal } from "lucide-react"
-import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -55,7 +54,11 @@ export const columns: ColumnDef<Payment>[] = [
         )
       },
     cell: ({ row }) => {
-        return <div className=" font-medium">{row.getValue("type")}</div>
+        return <div className="font-medium" {...{
+          style: {
+            maxWidth: "40px",
+          },
+        }}>{row.getValue("type")}</div>
     },
   },
   {
@@ -66,7 +69,11 @@ export const columns: ColumnDef<Payment>[] = [
         )
       },
     cell: ({ row }) => {
-        return <div className="font-medium">{row.getValue("owner")}</div>
+        return <div className="font-medium"  {...{
+          style: {
+            maxWidth: "40px",
+          },
+        }}>{row.getValue("owner")}</div>
     },
   },
   {
@@ -94,7 +101,11 @@ export const columns: ColumnDef<Payment>[] = [
         )
       },
     cell: ({ row }) => {
-      return <div className="font-medium">{row.getValue("description")}</div>
+      return <div className="font-medium" {...{
+        style: {
+          // maxWidth: "10000px",
+        },
+      }}>{row.getValue("description")}</div>
     },
   },
 ]

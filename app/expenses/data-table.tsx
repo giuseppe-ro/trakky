@@ -11,7 +11,6 @@ import {
   useReactTable,
   getPaginationRowModel,
   getSortedRowModel,
-  ColumnResizeMode,
 } from "@tanstack/react-table"
 
 import {
@@ -55,9 +54,9 @@ export function DataTable<TData, TValue>({
 
   const colSize = (id: string): number => {
       if(id == "description") {
-        return 500
+        return 1000
       } else {
-        return 50
+        return 100
       }
   }
 
@@ -125,11 +124,12 @@ export function DataTable<TData, TValue>({
                     colSpan: header.colSpan,
                     style: {
                       width: colSize(header.id),
+                      maxWidth: colSize(header.id),
                     },
                   }}>
                     {!header.isPlaceholder && header.column.getCanFilter()
                       ? (
-                        <div className="min-w-full inline-flex items-center justify-center flex-col">
+                        <div className="items-center justify-center flex-col">
                             {flexRender(
                           header.column.columnDef.header,
                           header.getContext()

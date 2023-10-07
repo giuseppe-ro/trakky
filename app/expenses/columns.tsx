@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { DataTableColumnHeader } from "./columns-header"
+import { formatCurrency } from "../utils/stringFormatter"
 
 export type Payment = {
   id: string
@@ -85,10 +86,7 @@ export const columns: ColumnDef<Payment>[] = [
       },
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("amount"))
-      const formatted = new Intl.NumberFormat("en-GB", {
-        style: "currency",
-        currency: "GBP",
-      }).format(amount)
+      const formatted = formatCurrency(amount)
  
       return <div className="text-right font-medium">{formatted}</div>
     },

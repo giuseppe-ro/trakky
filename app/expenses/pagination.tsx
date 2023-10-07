@@ -9,6 +9,7 @@ import {
   import { Button } from "@/components/ui/button"
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { formatCurrency } from "../utils/stringFormatter"
   
   interface DataTablePaginationProps<TData> {
     table: Table<TData>
@@ -17,10 +18,21 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
   export function DataTablePagination<TData>({
     table,
   }: DataTablePaginationProps<TData>) {
+
+    const partialTotal = (): string => { 
+      const amounts: number[] = table.getFilteredRowModel().rows.map((r) => parseFloat(r.getValue("amount")) );
+      const total: number = amounts.reduce((total, currentAmount) => total + currentAmount, 0);
+  
+      return formatCurrency(total)
+     }
+
     return (
       <div className="flex items-center justify-between px-2 p-2">
         <div className="flex-1 text-sm text-muted-foreground">
           {table.getFilteredRowModel().rows.length + " of " + table.getPreFilteredRowModel().rows.length + " rows"}
+        </div>
+        <div className="flex-1 text-sm text-muted-foreground">
+          {`Total Amount: ${partialTotal()}`}
         </div>
         <div className="flex items-center space-x-6 lg:space-x-8">
           <div className="flex items-center space-x-2">
@@ -36,7 +48,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
                 
               </SelectTrigger>
               <SelectContent side="top">
-                {[1, 10, 20, 30, 40, 50].map((pageSize) => (
+                {[10, 20, 30, 40, 50].map((pageSize) => (
                   <SelectItem key={pageSize} value={`${pageSize}`}>
                     {pageSize}
                   </SelectItem>

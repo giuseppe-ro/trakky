@@ -7,8 +7,8 @@ export function DebouncedInput({
     debounce = 500,
     ...props
   }: {
-    value: string | number
-    onChange: (value: string | number) => void
+    value: string | number | Date
+    onChange: (value: string | number | Date) => void
     debounce?: number
   } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'>) {
     const [value, setValue] = React.useState(initialValue)
@@ -26,17 +26,36 @@ export function DebouncedInput({
     }, [value])
   
     return (
-      <input className="outline-none" {...props} value={value} onChange={e => setValue(e.target.value)} 
-      {...{
-        style: {
-          minWidth: "100%",
-          maxWidth: "100%",
-        },
-      }}/>
+        <FilterInput
+            value={value}
+            onChange={onChange}
+            {...props}
+        ></FilterInput>
     )
   }
-  
-  
+
+function FilterInput({
+        value,
+        onChange,
+        disabled=false,
+        ...props
+    }: {
+    value?: undefined | string | number | (string & readonly string[]) | (number & readonly string[]) | (Date & string) | (Date & number) | (Date & readonly string[])
+    onChange?: (value: string | number) => void
+    disabled?: boolean
+} & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'>) {
+    return disabled === false && onChange !== undefined ? (
+        <input className="outline-none" {...props} value={value} onChange={e => onChange(e.target.value)}
+               {...{
+                   style: {
+                       minWidth: "100%",
+                       maxWidth: "100%",
+                   },
+               }}/>
+    ) :
+        <input className="outline-none" {...props} disabled></input>
+}
+
 export function Filter({
       column,
       table,
@@ -57,6 +76,10 @@ export function Filter({
             : Array.from(column.getFacetedUniqueValues().keys()).sort(),
               [column, firstValue]
       )
+
+    function isValidDate(date: unknown) {
+        return Object.prototype.toString.call(date) === "[object Date]";
+    }
     
       return typeof firstValue === 'number' ? (
             <DebouncedInput
@@ -68,21 +91,25 @@ export function Filter({
               placeholder={""}
               className="border shadow rounded px-2 mx-2 mb-2"
             />
-      ) : (
+      ) : isValidDate(firstValue) ? (
         <>
-          <datalist id={column.id + 'list'}>
-            {sortedUniqueValues.slice(0, 5000).map((value: any) => (
-              <option value={value} key={value} />
-            ))}
-          </datalist>
-          <DebouncedInput
-            type="text"
-            value={(columnFilterValue ?? '') as string}
-            onChange={value => column.setFilterValue(value)}
-            placeholder=""
-            className={"px-2 focus-visible:outline-none focus-visible:ring-none"}
-            list={column.id + 'list'}
-          />
+            <FilterInput disabled={true}/>
         </>
+      ) : (
+          <>
+              <datalist id={column.id + 'list'}>
+                  {sortedUniqueValues.slice(0, 5000).map((value: any) => (
+                      <option value={value} key={value} />
+                  ))}
+              </datalist>
+              <DebouncedInput
+                  type="text"
+                  value={(columnFilterValue ?? '') as string}
+                  onChange={value => column.setFilterValue(value)}
+                  placeholder=""
+                  className={"px-2 focus-visible:outline-none focus-visible:ring-none"}
+                  list={column.id + 'list'}
+              />
+          </>
       )
     }

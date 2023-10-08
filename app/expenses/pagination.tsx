@@ -19,24 +19,15 @@ import { formatCurrency } from "../utils/stringFormatter"
     table,
   }: DataTablePaginationProps<TData>) {
 
-    const partialTotal = (): string => { 
-      const amounts: number[] = table.getFilteredRowModel().rows.map((r) => parseFloat(r.getValue("amount")) );
-      const total: number = amounts.reduce((total, currentAmount) => total + currentAmount, 0);
-  
-      return formatCurrency(total)
-     }
-
     return (
       <div className="flex items-center justify-between px-2 p-2">
-        <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredRowModel().rows.length + " of " + table.getPreFilteredRowModel().rows.length + " rows"}
-        </div>
-        <div className="flex-1 text-sm text-muted-foreground">
-          {`Total Amount: ${partialTotal()}`}
-        </div>
-        <div className="flex items-center space-x-6 lg:space-x-8">
+
+        <div className="flex items-center w-full space-x-6 lg:space-x-8">
+          <div className="flex-1 text-sm text-muted-foreground invisible md:visible">
+            {table.getFilteredRowModel().rows.length + " of " + table.getPreFilteredRowModel().rows.length + " rows"}
+          </div>
           <div className="flex items-center space-x-2">
-            <p className="text-sm font-medium">Rows per page</p>
+            <p className="text-sm font-medium invisible md:visible">Rows per page</p>
             <Select
               value={`${table.getState().pagination.pageSize}`}
               onValueChange={(value) => {
@@ -56,7 +47,7 @@ import { formatCurrency } from "../utils/stringFormatter"
               </SelectContent>
             </Select>
           </div>
-          <div className="flex w-[100px] items-center justify-center text-sm font-medium">
+          <div className="flex w-[100px] items-center justify-center text-sm font-medium invisible md:visible">
             Page {table.getState().pagination.pageIndex + 1} of{" "}
             {table.getPageCount()}
           </div>

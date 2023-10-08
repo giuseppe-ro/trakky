@@ -34,6 +34,7 @@ import { Button } from "@/components/ui/button"
 import * as React from "react"
 import { DataTablePagination } from "./pagination"
 import { Filter } from "./filter"
+import {Summary} from "@/app/expenses/summary";
 
 
 interface DataTableProps<TData, TValue> {
@@ -80,6 +81,9 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
+        <div>
+            <Summary table={table} />
+        </div>
         <div className="flex items-center py-4">
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -112,19 +116,19 @@ export function DataTable<TData, TValue>({
         </div>
         <DataTablePagination table={table} />
 
-      <div className="rounded-md border">
 
-      <Table className="" >
+      <Table className="rounded-b-md bg-slate-950 " >
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
                 return (
-                  <TableHead className="rounded-md border" key={header.id} {...{
+                  <TableHead className="rounded-md border border-slate-800" key={header.id} {...{
                     colSpan: header.colSpan,
                     style: {
                       width: colSize(header.id),
                       maxWidth: colSize(header.id),
+                        backgroundColor: "bg-slate-950",
                     },
                   }}>
                     {!header.isPlaceholder && header.column.getCanFilter()
@@ -150,12 +154,12 @@ export function DataTable<TData, TValue>({
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
-              className=""
+              className="hover:bg-slate-800/50"
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id} className="border border-slate-600">
+                  <TableCell key={cell.id} className="border border-slate-800">
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
@@ -170,7 +174,6 @@ export function DataTable<TData, TValue>({
           )}
         </TableBody>
       </Table>
-      </div>
 
     </div>
 

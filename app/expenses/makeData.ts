@@ -13,10 +13,13 @@ const range = (len: number) => {
 const newPerson = (): Payment => {
   return {
     id: faker.number.int().toString(),
-    amount: faker.finance.amount(),
+    amount: faker.finance.amount({min: 1, max: 100}),
     owner: faker.helpers.shuffle<Payment['owner']>([
-      'Ray',
-      'Micia',
+      'Jessie',
+      'Mark',
+      'Ettore',
+      'Carl',
+      'Tiffany',
     ])[0]!,
     description: faker.lorem.sentence(),
     type: faker.helpers.shuffle<Payment['type']>([
@@ -24,6 +27,21 @@ const newPerson = (): Payment => {
       'personal',
       'house',
       'transport',
+    ])[0]!,
+    date: faker.helpers.shuffle<Date>([
+      new Date('2023-01-01'),
+      new Date('2023-02-01'),
+      new Date('2023-03-01'),
+      new Date('2023-03-01'),
+      new Date('2023-04-01'),
+      new Date('2023-05-01'),
+      new Date('2023-06-01'),
+      new Date('2023-07-01'),
+      new Date('2023-08-01'),
+      new Date('2023-09-01'),
+      new Date('2023-10-07'),
+      new Date('2023-11-07'),
+      new Date('2023-12-07'),
     ])[0]!,
   }
 }
@@ -37,6 +55,5 @@ export function makeData(...lens: number[]) {
       }
     })
   }
-
   return makeDataLevel()
 }

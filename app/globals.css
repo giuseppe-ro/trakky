@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.min-w-500 {
+  min-width: 500px;
+}
+
+.min-w-460 {
+    min-width: 460px;
+}

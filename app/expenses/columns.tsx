@@ -10,43 +10,18 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { DataTableColumnHeader } from "./columns-header"
-import { formatCurrency } from "../utils/stringFormatter"
+import {formatCurrency, formatDate} from "../utils/stringFormatter"
 
 export type Payment = {
   id: string
   amount: string
   type: "general" | "personal" | "house" | "transport"
-  owner: "Ray" | "Micia"
+  owner: string
   description: string,
+  date: Date
 }
 
 export const columns: ColumnDef<Payment>[] = [
-    {
-    id: "actions",
-    cell: ({ row }) => {
-      const payment = row.original
- 
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button className="h-8 w-8 p-0 focus-visible:outline-none focus-visible:ring-none">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
-            >
-              Copy payment Id
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Edit</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )
-    },
-  },
   {
     accessorKey: "type",
     header: ({ column }) => {
@@ -55,11 +30,7 @@ export const columns: ColumnDef<Payment>[] = [
         )
       },
     cell: ({ row }) => {
-        return <div className="font-medium" {...{
-          style: {
-            maxWidth: "40px",
-          },
-        }}>{row.getValue("type")}</div>
+        return <div className="font-medium">{row.getValue("type")}</div>
     },
   },
   {
@@ -70,11 +41,7 @@ export const columns: ColumnDef<Payment>[] = [
         )
       },
     cell: ({ row }) => {
-        return <div className="font-medium"  {...{
-          style: {
-            maxWidth: "40px",
-          },
-        }}>{row.getValue("owner")}</div>
+        return <div className="font-medium">{row.getValue("owner")}</div>
     },
   },
   {
@@ -99,11 +66,7 @@ export const columns: ColumnDef<Payment>[] = [
         )
       },
     cell: ({ row }) => {
-      return <div className="font-medium" {...{
-        style: {
-          // maxWidth: "10000px",
-        },
-      }}>{row.getValue("description")}</div>
+      return <div className="font-medium">{row.getValue("description")}</div>
     },
   },
 ]

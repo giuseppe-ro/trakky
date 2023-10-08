@@ -1,4 +1,4 @@
-import {  columns } from "./columns"
+import { columns } from "./columns"
 import { DataTable } from "./data-table"
 import { makeData } from "./makeData"
 

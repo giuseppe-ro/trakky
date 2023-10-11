@@ -8,7 +8,7 @@ export function SummaryCard({title, contentText, contentSubText}: {  title: stri
 
     return (
             <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 p-2">
                     <CardTitle className="text-sm font-medium">
                         {title}
                     </CardTitle>
@@ -24,7 +24,7 @@ export function SummaryCard({title, contentText, contentSubText}: {  title: stri
     )
 }
 
-export function Summary<TData>({table}: {  table: Table<TData>  }) {
+export function Summary<TData>({table, previousYearTotals}: {  table: Table<TData>, previousYearTotals: number  }) {
     const totalAmounts: number[] = table.getPreFilteredRowModel().rows.map((r) => parseFloat(r.getValue("amount")) );
     const total: number = totalAmounts.reduce((total, currentAmount) => total + currentAmount, 0);
 
@@ -35,14 +35,20 @@ export function Summary<TData>({table}: {  table: Table<TData>  }) {
 
     const formattedPartialTotal = formatCurrency(partialTotal)
 
+    const change = (Math.round((total - previousYearTotals) / previousYearTotals * 100 * 100) / 100)
+    const changePercentage = isFinite(change) && !isNaN(change)
+        ? change > 0
+        ? "+" + change + "% compared to last year"
+        : change + "% compared to last year"
+        : ""
 
     return (
 
         <Tabs defaultValue="overview" className="space-y-4">
 
             <TabsContent value="overview" className="space-y-4">
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-2">
-                    <SummaryCard title={"Total"} contentText={formattedTotal} contentSubText={"+180.1% from last year"} />
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-2">
+                    <SummaryCard title={"Total"} contentText={formattedTotal} contentSubText={changePercentage} />
                     <SummaryCard title={"Partial Total"} contentText={formattedPartialTotal} />
                 </div>
             </TabsContent>

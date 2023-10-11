@@ -8,35 +8,63 @@ import {
   
   import { Button } from "@/components/ui/button"
 
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { formatCurrency } from "../utils/stringFormatter"
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue
+} from "@/components/ui/select"
+import { formatCurrency } from "../../utils/stringFormatter"
+import * as React from "react";
   
   interface DataTablePaginationProps<TData> {
     table: Table<TData>
+    selectedYear: string;
+    setSelectedYear: (year: string) => void;
+    availableYears: string[];
   }
   
   export function DataTablePagination<TData>({
     table,
+    selectedYear,
+    setSelectedYear,
+    availableYears
   }: DataTablePaginationProps<TData>) {
 
     return (
       <div className="flex items-center justify-between px-2 p-2">
 
-        <div className="flex items-center w-full space-x-6 lg:space-x-8">
-          <div className="flex-1 text-sm text-muted-foreground invisible md:visible">
-            {table.getFilteredRowModel().rows.length + " of " + table.getPreFilteredRowModel().rows.length + " rows"}
+        <div className="flex items-center w-full md:space-x-6">
+          <div className="flex-1 text-sm text-muted-foreground w-[100px]">
+            <Select defaultValue={selectedYear.toString()} onValueChange={(e) => setSelectedYear(e)}>
+              <SelectTrigger className="h-8">
+                <SelectValue placeholder="" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {availableYears.map(year => (
+                      <SelectItem key={year} value={year.toString()}>{year}</SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </div>
+
           <div className="flex items-center space-x-2">
-            <p className="text-sm font-medium invisible md:visible">Rows per page</p>
+            <p className="text-xs font-thin pl-4 pr-0 invisible md:visible">
+              Rows
+            </p>
             <Select
               value={`${table.getState().pagination.pageSize}`}
               onValueChange={(value) => {
                 table.setPageSize(Number(value))
               }}
             >
-              <SelectTrigger className="h-8 w-[70px]">
+              <SelectTrigger className="h-8 w-[60px] m-0">
                 <SelectValue placeholder={table.getState().pagination.pageSize} />
-                
               </SelectTrigger>
               <SelectContent side="top">
                 {[10, 20, 30, 40, 50].map((pageSize) => (
@@ -47,14 +75,16 @@ import { formatCurrency } from "../utils/stringFormatter"
               </SelectContent>
             </Select>
           </div>
-          <div className="flex w-[100px] items-center justify-center text-sm font-medium invisible md:visible">
-            Page {table.getState().pagination.pageIndex + 1} of{" "}
-            {table.getPageCount()}
-          </div>
+
           <div className="flex items-center space-x-2">
+            <span className="text-xs font-thin ml-2 invisible md:visible">
+              {table.getState().pagination.pageIndex + 1} {" of "}
+              {table.getPageCount()}
+            </span>
+
             <Button
               variant="outline"
-              className="hidden h-8 w-8 p-0 lg:flex"
+              className="hidden h-8 w-8 p-0 lg:flex ml-0"
               onClick={() => table.setPageIndex(0)}
               disabled={!table.getCanPreviousPage()}
             >

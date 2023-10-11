@@ -21,9 +21,9 @@ interface DataTableColumnHeaderProps<TData, TValue>
     return (
       <div className={cn("flex justify-center w-full space-x-2", className)} >
         <Button
-            tabIndex="-1"
+            tabIndex={-1}
             variant="link"
-            className="focus-visible:outline-none w-full rounded-none focus-visible:ring-none"
+            className="w-full rounded-none focus-visible:outline-none focus-visible:ring-none"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             {title}

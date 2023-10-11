@@ -132,3 +132,6 @@ dist
 # misc
 .DS_Store
 .idea/
+app/expenses/data.json
+app/expenses/budgets.csv
+app/expenses/budgets.json

@@ -8,6 +8,6 @@ export function formatCurrency(total: number) {
 export function formatDate(date: Date): string  {
     const formatter = new Intl.DateTimeFormat('en', { year: 'numeric', month: '2-digit', day: '2-digit' });
     const parts = formatter.formatToParts(date);
-    const formattedDate = `${parts[4].value}-${parts[0].value}-${parts[2].value}`;
-    return formattedDate
+    // return `${parts[4].value}-${parts[0].value}-${parts[2].value}`;
+    return `${parts[2].value}/${parts[0].value}/${parts[4].value}`;
 }

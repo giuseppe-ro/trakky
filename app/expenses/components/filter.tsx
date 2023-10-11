@@ -53,7 +53,7 @@ function FilterInput({
                    },
                }}/>
     ) :
-        <input className="outline-none" {...props} disabled></input>
+        <input className="w-full outline-none" {...props} disabled></input>
 }
 
 export function Filter({

@@ -1,27 +1,33 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { MoreHorizontal } from "lucide-react"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { DataTableColumnHeader } from "./columns-header"
-import {formatCurrency, formatDate} from "../utils/stringFormatter"
+import {formatCurrency, formatDate} from "../../utils/stringFormatter"
 
 export type Payment = {
   id: string
   amount: string
-  type: "general" | "personal" | "house" | "transport"
+  type: string
   owner: string
   description: string,
   date: Date
 }
 
 export const columns: ColumnDef<Payment>[] = [
+  {
+    accessorKey: "date",
+    header: ({ column }) => {
+      return (
+          <DataTableColumnHeader column={column} title="Date" />
+      )
+    },
+    cell: ({ row }) => {
+      const date: Date = row.getValue("date")
+      const formatted = formatDate(date)
+
+      return <div className="text-right font-medium">{formatted}</div>
+    },
+  },
   {
     accessorKey: "type",
     header: ({ column }) => {

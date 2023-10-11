@@ -1,5 +1,3 @@
-"use client"
-
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -34,30 +32,42 @@ import { Button } from "@/components/ui/button"
 import * as React from "react"
 import { DataTablePagination } from "./pagination"
 import { Filter } from "./filter"
-import {Summary} from "@/app/expenses/summary";
+import {Summary} from "@/app/expenses/components/summary";
+import {Payment} from "@/app/expenses/components/columns";
 
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
-  data: TData[]
+interface DataTableProps<TValue> {
+    columns: ColumnDef<Payment, TValue>[]
+    data: Payment[]
+    availableYears: string[],
+    selectedYear: string,
+    setSelectedYear: (year: string) => void,
+    previousYearTotals: number
 }
 
-export function DataTable<TData, TValue>({
-  columns,
-  data,
-}: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  )
+export function DataTable<TValue>({
+    columns,
+    data,
+    availableYears,
+    selectedYear,
+    setSelectedYear,
+    previousYearTotals
+}: DataTableProps<TValue>) {
+    const [sorting, setSorting] = React.useState<SortingState>([])
+    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
+    const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
 
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
 
-  const colSize = (id: string): number => {
-      if(id == "description") {
-        return 1000
-      } else {
-        return 100
+  const colSize = (id: string): number | string => {
+      switch (id) {
+          case "description":
+              return "auto"
+            case "type":
+                return 80
+            case "owner":
+                return 70
+            default:
+                return 90
       }
   }
 
@@ -82,15 +92,17 @@ export function DataTable<TData, TValue>({
   return (
     <div>
         <div>
-            <Summary table={table} />
+            <Summary table={table} previousYearTotals={previousYearTotals} />
         </div>
-        <div className="flex items-center py-4">
+
+        <div className="flex items-center pt-4">
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button variant="outline" className="ml-auto">
-                    Columns
+                        Columns
                     </Button>
                 </DropdownMenuTrigger>
+
                 <DropdownMenuContent align="center">
                     {table
                     .getAllColumns()
@@ -104,7 +116,7 @@ export function DataTable<TData, TValue>({
                             className="capitalize"
                             checked={column.getIsVisible()}
                             onCheckedChange={(value) =>
-                            column.toggleVisibility(!!value)
+                            column.toggleVisibility(value)
                             }
                         >
                           {column.id}
@@ -114,10 +126,16 @@ export function DataTable<TData, TValue>({
                 </DropdownMenuContent>
             </DropdownMenu>
         </div>
-        <DataTablePagination table={table} />
+        <div className="row">
+            <DataTablePagination
+                table={table}
+                selectedYear={selectedYear}
+                setSelectedYear={setSelectedYear}
+                availableYears={availableYears}
+            />
+        </div>
 
-
-      <Table className="rounded-b-md bg-slate-950 " >
+      <Table className="rounded-b-md bg-slate-950" >
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
@@ -137,11 +155,11 @@ export function DataTable<TData, TValue>({
                             {flexRender(
                           header.column.columnDef.header,
                           header.getContext()
-                        )} 
+                        )}
                           <Filter column={header.column} table={table} />
                         </div>
-                      ) 
-                      : 
+                      )
+                      :
                       null
                     }
                   </TableHead>

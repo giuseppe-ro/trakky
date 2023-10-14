@@ -1,57 +1,113 @@
-import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
-import {Table} from "@tanstack/react-table";
-import {formatCurrency} from "@/app/utils/stringFormatter";
-import {Tabs, TabsContent } from "@/components/ui/tabs";
+"use client";
 
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table } from "@tanstack/react-table";
+// import {formatCurrency} from "@/app/utils/stringFormatter";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 
-export function SummaryCard({title, contentText, contentSubText}: {  title: string, contentText: string, contentSubText?: string }) {
-
-    return (
-            <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 p-2">
-                    <CardTitle className="text-sm font-medium">
-                        {title}
-                    </CardTitle>
-
-                </CardHeader>
-                <CardContent>
-                    <div className="text-2xl font-bold">{contentText}</div>
-                    <p className="text-xs text-muted-foreground">
-                        {contentSubText}
-                    </p>
-                </CardContent>
-            </Card>
-    )
+export function SummaryCard({
+  title,
+  contentText,
+  contentSubText,
+}: {
+  title: string;
+  contentText: string;
+  contentSubText?: string;
+}) {
+  return (
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 p-2">
+        <CardTitle className="text-sm font-medium text-muted-foreground">
+          {title}
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="text-2xl font-bold">{contentText}</div>
+        <p className="text-xs text-muted-foreground">{contentSubText}</p>
+      </CardContent>
+    </Card>
+  );
 }
 
-export function Summary<TData>({table, previousYearTotals}: {  table: Table<TData>, previousYearTotals: number  }) {
-    const totalAmounts: number[] = table.getPreFilteredRowModel().rows.map((r) => parseFloat(r.getValue("amount")) );
-    const total: number = totalAmounts.reduce((total, currentAmount) => total + currentAmount, 0);
+function formatCurrency(total: number) {
+  return new Intl.NumberFormat("en-GB", {
+    style: "currency",
+    currency: "GBP",
+  }).format(total);
+}
 
-    const formattedTotal = formatCurrency(total)
+export type Total = {
+  amount: number;
+  date: number;
+};
 
-    const partialTotalAmounts: number[] = table.getFilteredRowModel().rows.map((r) => parseFloat(r.getValue("amount")) );
-    const partialTotal: number = partialTotalAmounts.reduce((total, currentAmount) => total + currentAmount, 0);
+export function Summary<TData>({
+  table,
+  totalsPerYear,
+  selectedYear,
+}: {
+  table: Table<TData>;
+  totalsPerYear: Total[];
+  selectedYear: string;
+}) {
+  const totalAmounts: number[] = table
+    .getPreFilteredRowModel()
+    .rows.map((r) => parseFloat(r.getValue("amount")));
+  const total: number = totalAmounts.reduce(
+    (total, currentAmount) => total + currentAmount,
+    0,
+  );
 
-    const formattedPartialTotal = formatCurrency(partialTotal)
+  const formattedTotal = formatCurrency(total);
 
-    const change = (Math.round((total - previousYearTotals) / previousYearTotals * 100 * 100) / 100)
-    const changePercentage = isFinite(change) && !isNaN(change)
-        ? change > 0
+  const partialTotalAmounts: number[] = table
+    .getFilteredRowModel()
+    .rows.map((r) => parseFloat(r.getValue("amount")));
+  const partialTotal: number = partialTotalAmounts.reduce(
+    (total, currentAmount) => total + currentAmount,
+    0,
+  );
+
+  const formattedPartialTotal = formatCurrency(partialTotal);
+
+  const previousYearTotal = totalsPerYear.find(
+    (t) => t.date === parseInt(selectedYear) - 1,
+  );
+
+  if (previousYearTotal === undefined) {
+  }
+
+  const change =
+    previousYearTotal === undefined || previousYearTotal.amount === 0
+      ? 0
+      : Math.round(
+          ((total - previousYearTotal.amount) / previousYearTotal.amount) *
+            100 *
+            100,
+        ) / 100;
+
+  const changePercentage =
+    isFinite(change) && change !== 0
+      ? change > 0
         ? "+" + change + "% compared to last year"
         : change + "% compared to last year"
-        : ""
+      : "";
 
-    return (
-
-        <Tabs defaultValue="overview" className="space-y-4">
-
-            <TabsContent value="overview" className="space-y-4">
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-2">
-                    <SummaryCard title={"Total"} contentText={formattedTotal} contentSubText={changePercentage} />
-                    <SummaryCard title={"Partial Total"} contentText={formattedPartialTotal} />
-                </div>
-            </TabsContent>
-        </Tabs>
-    )
+  return (
+    <Tabs defaultValue="overview" className="space-y-4">
+      <TabsContent value="overview" className="space-y-4" tabIndex={-1}>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-2">
+          <SummaryCard
+            title={"Total"}
+            contentText={formattedTotal}
+            contentSubText={changePercentage}
+          />
+          <SummaryCard
+            title={"Partial Total"}
+            contentText={formattedPartialTotal}
+          />
+        </div>
+      </TabsContent>
+    </Tabs>
+  );
 }

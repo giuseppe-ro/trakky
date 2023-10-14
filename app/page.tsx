@@ -10,7 +10,6 @@ import React, { useState } from "react";
 import { getAvailableYears } from "@/lib/utils";
 import { Selection } from "@/components/ui/select";
 import { PageContainer } from "@/components/ui/page-container";
-import { Separator } from "@/components/ui/separator";
 
 export default function Home() {
   const availableYears = getAvailableYears(payments);
@@ -33,16 +32,14 @@ export default function Home() {
 
       <Tabs defaultValue="overview" className="space-y-4">
         {availableYears.length > 0 && (
-          <div className="sticky top-0">
-            <Selection
-              value={selectedYear}
-              onChange={setSelectedYear}
-              options={availableYears}
-              {...{
-                className: "rounded-md w-full overscroll-contain sticky top-0",
-              }}
-            />
-          </div>
+          <Selection
+            value={selectedYear}
+            onChange={setSelectedYear}
+            options={availableYears}
+            {...{
+              className: "rounded-md w-full overscroll-contain",
+            }}
+          />
         )}
         <TabsContent value="overview" className="space-y-4" tabIndex={-1}>
           <div className="lg:grid gap-4 lg:grid-cols-7">

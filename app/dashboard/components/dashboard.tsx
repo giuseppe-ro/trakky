@@ -58,20 +58,20 @@ export function Dashboard({
     <div {...props}>
       <Tabs defaultValue="overview" className="space-y-4">
         <TabsContent value="overview" className="space-y-4" tabIndex={-1}>
+          {selection === undefined && (
+            <Selection
+              value={selectedYear}
+              onChange={setSelectedYear}
+              options={availableYears}
+              {...{ className: "rounded-md w-full overscroll-contain mb-2" }}
+            />
+          )}
           <Card className="p-0">
             <CardHeader>
               <CardTitle
                 title={"Overview"}
-                className="flex flex-col items-center w-full justify-center"
+                className="flex flex-col items-center w-full justify-cente mb-6r"
               >
-                {selection === undefined && (
-                  <Selection
-                    value={selectedYear}
-                    onChange={setSelectedYear}
-                    options={availableYears}
-                    {...{ className: "rounded-t-md w-full" }}
-                  />
-                )}
                 <p className="m-6 text-2xl">{selectedYear} Overview</p>
               </CardTitle>
             </CardHeader>
@@ -79,18 +79,6 @@ export function Dashboard({
               <Overview data={summary} />
             </CardContent>
           </Card>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-2">
-            {/*<Card>*/}
-            {/*  <CardHeader>*/}
-            {/*    <CardTitle className="flex flex-col items-center w-full justify-center">*/}
-            {/*      <p className="m-6 text-2xl">Full Overview</p>*/}
-            {/*    </CardTitle>*/}
-            {/*  </CardHeader>*/}
-            {/*  <CardContent className="pl-2">*/}
-            {/*    <Overview data={summaries} />*/}
-            {/*  </CardContent>*/}
-            {/*</Card>*/}
-          </div>
         </TabsContent>
       </Tabs>
     </div>

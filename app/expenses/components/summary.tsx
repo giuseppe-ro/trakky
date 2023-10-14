@@ -2,7 +2,6 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table } from "@tanstack/react-table";
-// import {formatCurrency} from "@/app/utils/stringFormatter";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 
 export function SummaryCard({
@@ -96,7 +95,7 @@ export function Summary<TData>({
   return (
     <Tabs defaultValue="overview" className="space-y-4">
       <TabsContent value="overview" className="space-y-4" tabIndex={-1}>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-2">
+        <div className="grid gap-4 grid-cols-2">
           <SummaryCard
             title={"Total"}
             contentText={formattedTotal}

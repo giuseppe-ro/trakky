@@ -200,98 +200,87 @@ export function DataTable({
         <Loading />
       ) : (
         <>
+          {selectedYear && selection === undefined && (
+            <Selection
+              value={selectedYear}
+              onChange={setSelectedYear}
+              options={availableYears}
+              {...{ className: "rounded-md w-full overscroll-contain mb-4" }}
+            />
+          )}
           <Summary
             table={table}
             totalsPerYear={totalsPerYear}
             selectedYear={selectedYear}
           />
-          <div className="flex justify-between mt-6 mb-2 px-2">
-            <div>
-              {selectedYear && selection === undefined && (
-                <Selection
-                  value={selectedYear}
-                  onChange={setSelectedYear}
-                  options={availableYears}
-                  {...{ className: "rounded-md py-2" }}
-                />
-              )}
-            </div>
-            <div
-              className={
-                selection === undefined
-                  ? "flex justify-between gap-x-3 pl-2"
-                  : "flex justify-between gap-x-3 pl-2 w-full"
-              }
+
+          <div className="flex justify-end gap-x-3 mt-6 mb-2 ">
+            <Select
+              value={table.getState().pagination.pageSize.toString()}
+              onValueChange={(value) => {
+                table.setPageSize(Number(value));
+              }}
             >
-              <div className="flex gap-x-3">
-                <Select
-                  value={table.getState().pagination.pageSize.toString()}
-                  onValueChange={(value) => {
-                    table.setPageSize(Number(value));
-                  }}
+              <SelectTrigger className="h-8 w-[60px] m-0 rounded-md ">
+                <SelectValue
+                  placeholder={table.getState().pagination.pageSize}
+                />
+              </SelectTrigger>
+              <SelectContent
+                side="top"
+                className="bg-slate-900 focus:bg-slate-600 active:bg-slate-600"
+              >
+                {[10, 20, 30, 40, 50].map((pageSize) => (
+                  <SelectItem key={pageSize} value={`${pageSize}`}>
+                    {pageSize}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <div className="flex items-center text-sm font-thin whitespace-nowrap">
+              {table.getState().pagination.pageIndex + 1} of{" "}
+              {table.getPageCount()}
+            </div>
+            <div className={"flex justify-between gap-x-2"}>
+              <div className="flex gap-x-1">
+                <Button
+                  variant="outline"
+                  className="h-8 w-8 p-0 flex ml-0"
+                  onClick={() => table.setPageIndex(0)}
+                  disabled={!table.getCanPreviousPage()}
                 >
-                  <SelectTrigger className="h-8 w-[60px] m-0 rounded-md ">
-                    <SelectValue
-                      placeholder={table.getState().pagination.pageSize}
-                    />
-                  </SelectTrigger>
-                  <SelectContent
-                    side="top"
-                    className="bg-slate-900 focus:bg-slate-600 active:bg-slate-600"
-                  >
-                    {[10, 20, 30, 40, 50].map((pageSize) => (
-                      <SelectItem key={pageSize} value={`${pageSize}`}>
-                        {pageSize}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <div className="flex items-center text-sm font-thin whitespace-nowrap">
-                  {table.getState().pagination.pageIndex + 1} of{" "}
-                  {table.getPageCount()}
-                </div>
+                  <span className="sr-only">Go to first page</span>
+                  <DoubleArrowLeftIcon className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  className="h-8 w-8 p-0"
+                  onClick={() => table.previousPage()}
+                  disabled={!table.getCanPreviousPage()}
+                >
+                  <span className="sr-only">Go to previous page</span>
+                  <ChevronLeftIcon className="h-4 w-4" />
+                </Button>
               </div>
-              <div className={"flex gap-x-2"}>
-                <div className="flex gap-x-1">
-                  <Button
-                    variant="outline"
-                    className="hidden h-8 w-8 p-0 lg:flex ml-0"
-                    onClick={() => table.setPageIndex(0)}
-                    disabled={!table.getCanPreviousPage()}
-                  >
-                    <span className="sr-only">Go to first page</span>
-                    <DoubleArrowLeftIcon className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="h-8 w-8 p-0"
-                    onClick={() => table.previousPage()}
-                    disabled={!table.getCanPreviousPage()}
-                  >
-                    <span className="sr-only">Go to previous page</span>
-                    <ChevronLeftIcon className="h-4 w-4" />
-                  </Button>
-                </div>
-                <div className="flex gap-x-1">
-                  <Button
-                    variant="outline"
-                    className="h-8 w-8 p-0"
-                    onClick={() => table.nextPage()}
-                    disabled={!table.getCanNextPage()}
-                  >
-                    <span className="sr-only">Go to next page</span>
-                    <ChevronRightIcon className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="hidden h-8 w-8 p-0 lg:flex"
-                    onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                    disabled={!table.getCanNextPage()}
-                  >
-                    <span className="sr-only">Go to last page</span>
-                    <DoubleArrowRightIcon className="h-4 w-4" />
-                  </Button>
-                </div>
+              <div className="flex gap-x-1">
+                <Button
+                  variant="outline"
+                  className="h-8 w-8 p-0"
+                  onClick={() => table.nextPage()}
+                  disabled={!table.getCanNextPage()}
+                >
+                  <span className="sr-only">Go to next page</span>
+                  <ChevronRightIcon className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  className="h-8 w-8 p-0 flex"
+                  onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+                  disabled={!table.getCanNextPage()}
+                >
+                  <span className="sr-only">Go to last page</span>
+                  <DoubleArrowRightIcon className="h-4 w-4" />
+                </Button>
               </div>
             </div>
           </div>

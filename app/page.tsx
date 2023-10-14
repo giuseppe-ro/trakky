@@ -29,7 +29,6 @@ export default function Home() {
           </CardTitle>
         </CardHeader>
       </Card>
-
       <Tabs defaultValue="overview" className="space-y-4">
         {availableYears.length > 0 && (
           <Selection

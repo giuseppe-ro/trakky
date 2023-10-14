@@ -19,14 +19,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div className="sticky top-0 bg-gray-950">
+        <div className="sticky top-0 bg-gray-950" style={{ zIndex: 999 }}>
           <div className="flex-col md:flex">
             <div className="border-b">
               <div className="flex h-16 items-center px-4 mx-6">
-                <MainNav
-                  className="h-8 sticky top-0 shadow-amber-700"
-                  style={{ zIndex: 999 }}
-                />
+                <MainNav className="h-8 shadow-amber-700" />
               </div>
             </div>
           </div>

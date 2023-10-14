@@ -4,24 +4,19 @@ import React, { useEffect, useMemo, useState } from "react";
 
 import {
   Column,
-  useReactTable,
+  ColumnDef,
   ColumnFiltersState,
+  flexRender,
   getCoreRowModel,
-  getFilteredRowModel,
+  getFacetedMinMaxValues,
   getFacetedRowModel,
   getFacetedUniqueValues,
-  getFacetedMinMaxValues,
+  getFilteredRowModel,
   getPaginationRowModel,
-  sortingFns,
   getSortedRowModel,
-  FilterFn,
-  SortingFn,
-  ColumnDef,
-  flexRender,
+  useReactTable,
 } from "@tanstack/react-table";
 
-import { rankItem, compareItems } from "@tanstack/match-sorter-utils";
-import { formatCurrency, formatDate } from "@/lib/utils";
 import {
   Table,
   TableBody,
@@ -32,7 +27,7 @@ import {
 import {
   Select,
   SelectContent,
-  SelectGroup,
+  Selection,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -47,8 +42,10 @@ import {
 import { Summary, Total } from "@/app/expenses/components/summary";
 import { Payment } from "@/infrastructure/payment";
 import Loading from "@/app/loading";
+import { fuzzyFilter, fuzzySort } from "@/lib/filters";
+import { formatCurrency, formatDate } from "@/lib/utils";
 
-const colSize = (id: string): number | string => {
+export const colSize = (id: string): number | string => {
   switch (id) {
     case "description":
       return "auto";
@@ -63,33 +60,61 @@ const colSize = (id: string): number | string => {
   }
 };
 
-const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
-
-  const itemRank = rankItem(row.getValue(columnId), value);
-
-  addMeta({
-    itemRank,
-  });
-
-  return itemRank.passed;
-};
-
-const fuzzySort: SortingFn<any> = (rowA, rowB, columnId) => {
-  let dir = 0;
-
-  if (rowA.columnFiltersMeta[columnId]) {
-    dir = compareItems(
-      rowA.columnFiltersMeta[columnId]?.itemRank!,
-      rowB.columnFiltersMeta[columnId]?.itemRank!,
-    );
-  }
-
-  return dir === 0 ? sortingFns.alphanumeric(rowA, rowB, columnId) : dir;
-};
-
-export function DataTable({ data }: { data: Payment[] }) {
+export function DataTable({
+  data,
+  selection,
+  ...props
+}: {
+  data: Payment[];
+  selection?: string;
+}) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
+
+  const [filteredData, setFilteredData] = useState<Payment[]>([]);
+
+  const availableYears = data
+    .reduce((acc: number[], payment) => {
+      const year = payment.date.getFullYear();
+      if (!acc.includes(year)) {
+        acc.push(year);
+      }
+      return acc;
+    }, [])
+    .sort((a, b) => b - a)
+    .map((year) => year.toString());
+
+  availableYears.push("All");
+
+  const [selectedYear, setSelectedYear] = useState(
+    selection ? selection : availableYears[0],
+  );
+
+  useEffect(() => {
+    if (selection) setSelectedYear(selection);
+  }, [selection]);
+
+  useEffect(() => {
+    if (selectedYear === "All") setFilteredData(data);
+    else {
+      setFilteredData(
+        data.filter(
+          (payment) => payment.date.getFullYear() === parseInt(selectedYear),
+        ),
+      );
+    }
+  }, [data, selectedYear]);
+
+  const totalsPerYear = data.reduce((acc: Total[], payment) => {
+    const year = payment.date.getFullYear();
+    const existing = acc.find((t) => t.date === year);
+    if (existing) {
+      existing.amount += payment.amount;
+    } else {
+      acc.push({ amount: payment.amount, date: year });
+    }
+    return acc;
+  }, []);
 
   const columns = useMemo<ColumnDef<Payment, any>[]>(
     () => [
@@ -144,45 +169,6 @@ export function DataTable({ data }: { data: Payment[] }) {
     [],
   );
 
-  const [filteredData, setFilteredData] = useState<Payment[]>([]);
-
-  const availableYears = data
-    .reduce((acc: number[], payment) => {
-      const year = payment.date.getFullYear();
-      if (!acc.includes(year)) {
-        acc.push(year);
-      }
-      return acc;
-    }, [])
-    .sort((a, b) => b - a)
-    .map((year) => year.toString());
-
-  availableYears.push("All");
-
-  const [selectedYear, setSelectedYear] = useState(availableYears[0]);
-
-  useEffect(() => {
-    if (selectedYear === "All") setFilteredData(data);
-    else {
-      setFilteredData(
-        data.filter(
-          (payment) => payment.date.getFullYear() === parseInt(selectedYear),
-        ),
-      );
-    }
-  }, [data, selectedYear]);
-
-  const totalsPerYear = data.reduce((acc: Total[], payment) => {
-    const year = payment.date.getFullYear();
-    const existing = acc.find((t) => t.date === year);
-    if (existing) {
-      existing.amount += payment.amount;
-    } else {
-      acc.push({ amount: payment.amount, date: year });
-    }
-    return acc;
-  }, []);
-
   const table = useReactTable({
     data: filteredData,
     columns,
@@ -209,185 +195,183 @@ export function DataTable({ data }: { data: Payment[] }) {
   });
 
   return (
-    <div className="container">
-      {
-        filteredData.length === 0
-            ? <Loading />
-            : (
-                <>
-                  <Summary table={table} totalsPerYear={totalsPerYear} selectedYear={selectedYear}/>
-                  <div className="flex justify-between mt-6 mb-2 px-2">
-                <div>
-                  {selectedYear && (
-                      <Select
-                          defaultValue={selectedYear.toString()}
-                          onValueChange={(e) => setSelectedYear(e)}
-                      >
-                        <SelectTrigger className="h-8 rounded-md ">
-                          <SelectValue placeholder="" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-slate-900 focus:bg-slate-600 active:bg-slate-600">
-                          <SelectGroup>
-                            {availableYears.map((year) => (
-                                <SelectItem key={year} value={year.toString()}>
-                                  {year}
-                                </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                  )}
-                </div>
-                <div className="flex justify-end gap-x-3 pl-2">
-                  <div className="flex gap-x-3">
-                    <Select
-                        value={table.getState().pagination.pageSize.toString()}
-                        onValueChange={(value) => {
-                          table.setPageSize(Number(value));
-                        }}
-                    >
-                      <SelectTrigger className="h-8 w-[60px] m-0 rounded-md ">
-                        <SelectValue
-                            placeholder={table.getState().pagination.pageSize}
-                        />
-                      </SelectTrigger>
-                      <SelectContent
-                          side="top"
-                          className="bg-slate-900 focus:bg-slate-600 active:bg-slate-600"
-                      >
-                        {[10, 20, 30, 40, 50].map((pageSize) => (
-                            <SelectItem key={pageSize} value={`${pageSize}`}>
-                              {pageSize}
-                            </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <div className="flex items-center text-sm font-thin whitespace-nowrap">
-                      {table.getState().pagination.pageIndex + 1} of{" "}
-                      {table.getPageCount()}
-                    </div>
-                  </div>
-                  <div className="flex gap-x-3">
-                    <div className="flex gap-x-1">
-                      <Button
-                          variant="outline"
-                          className="hidden h-8 w-8 p-0 lg:flex ml-0"
-                          onClick={() => table.setPageIndex(0)}
-                          disabled={!table.getCanPreviousPage()}
-                      >
-                        <span className="sr-only">Go to first page</span>
-                        <DoubleArrowLeftIcon className="h-4 w-4" />
-                      </Button>
-                      <Button
-                          variant="outline"
-                          className="h-8 w-8 p-0"
-                          onClick={() => table.previousPage()}
-                          disabled={!table.getCanPreviousPage()}
-                      >
-                        <span className="sr-only">Go to previous page</span>
-                        <ChevronLeftIcon className="h-4 w-4" />
-                      </Button>
-                    </div>
-                    <div className="flex gap-x-1">
-                      <Button
-                          variant="outline"
-                          className="h-8 w-8 p-0"
-                          onClick={() => table.nextPage()}
-                          disabled={!table.getCanNextPage()}
-                      >
-                        <span className="sr-only">Go to next page</span>
-                        <ChevronRightIcon className="h-4 w-4" />
-                      </Button>
-                      <Button
-                          variant="outline"
-                          className="hidden h-8 w-8 p-0 lg:flex"
-                          onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                          disabled={!table.getCanNextPage()}
-                      >
-                        <span className="sr-only">Go to last page</span>
-                        <DoubleArrowRightIcon className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
+    <div {...props}>
+      {filteredData.length === 0 ? (
+        <Loading />
+      ) : (
+        <>
+          <Summary
+            table={table}
+            totalsPerYear={totalsPerYear}
+            selectedYear={selectedYear}
+          />
+          <div className="flex justify-between mt-6 mb-2 px-2">
+            <div>
+              {selectedYear && selection === undefined && (
+                <Selection
+                  value={selectedYear}
+                  onChange={setSelectedYear}
+                  options={availableYears}
+                  {...{ className: "rounded-md py-2" }}
+                />
+              )}
+            </div>
+            <div
+              className={
+                selection === undefined
+                  ? "flex justify-between gap-x-3 pl-2"
+                  : "flex justify-between gap-x-3 pl-2 w-full"
+              }
+            >
+              <div className="flex gap-x-3">
+                <Select
+                  value={table.getState().pagination.pageSize.toString()}
+                  onValueChange={(value) => {
+                    table.setPageSize(Number(value));
+                  }}
+                >
+                  <SelectTrigger className="h-8 w-[60px] m-0 rounded-md ">
+                    <SelectValue
+                      placeholder={table.getState().pagination.pageSize}
+                    />
+                  </SelectTrigger>
+                  <SelectContent
+                    side="top"
+                    className="bg-slate-900 focus:bg-slate-600 active:bg-slate-600"
+                  >
+                    {[10, 20, 30, 40, 50].map((pageSize) => (
+                      <SelectItem key={pageSize} value={`${pageSize}`}>
+                        {pageSize}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <div className="flex items-center text-sm font-thin whitespace-nowrap">
+                  {table.getState().pagination.pageIndex + 1} of{" "}
+                  {table.getPageCount()}
                 </div>
               </div>
-                  <Table className="rounded-b-md bg-slate-950 min-w-[300px] border border-slate-800 overflow-x-scroll">
-                <TableHeader>
-                  {table.getHeaderGroups().map((headerGroup) => (
-                      <TableRow key={headerGroup.id}>
-                        {headerGroup.headers.map((header) => {
-                          return (
-                              <TableHead
-                                  className="rounded-md border border-slate-800"
-                                  key={header.id}
-                                  {...{
-                                    colSpan: header.colSpan,
-                                    style: {
-                                      backgroundColor: "bg-slate-950",
-                                      width: colSize(header.id),
-                                      maxWidth: colSize(header.id),
-                                    },
-                                  }}
-                              >
-                                {header.isPlaceholder ? null : (
-                                    <>
-                                      <div
-                                          {...{
-                                            className:
-                                                header.column.getCanSort() +
-                                                "items-center border justify-center flex-col"
-                                                    ? "cursor-pointer select-none"
-                                                    : "",
-                                            onClick: header.column.getToggleSortingHandler(),
-                                          }}
-                                      >
-                                        {flexRender(
-                                            header.column.columnDef.header,
-                                            header.getContext(),
-                                        )}
-                                        {{
-                                          asc: "↑",
-                                          desc: "↓",
-                                        }[header.column.getIsSorted() as string] ?? null}
-                                      </div>
-                                      {header.column.getCanFilter() ? (
-                                          <div>
-                                            <Filter column={header.column} table={table} />
-                                          </div>
-                                      ) : null}
-                                    </>
-                                )}
-                              </TableHead>
-                          );
-                        })}
-                      </TableRow>
-                  ))}
-                </TableHeader>
-                <TableBody>
-                  {table.getRowModel().rows.map((row) => {
+              <div className={"flex gap-x-2"}>
+                <div className="flex gap-x-1">
+                  <Button
+                    variant="outline"
+                    className="hidden h-8 w-8 p-0 lg:flex ml-0"
+                    onClick={() => table.setPageIndex(0)}
+                    disabled={!table.getCanPreviousPage()}
+                  >
+                    <span className="sr-only">Go to first page</span>
+                    <DoubleArrowLeftIcon className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="h-8 w-8 p-0"
+                    onClick={() => table.previousPage()}
+                    disabled={!table.getCanPreviousPage()}
+                  >
+                    <span className="sr-only">Go to previous page</span>
+                    <ChevronLeftIcon className="h-4 w-4" />
+                  </Button>
+                </div>
+                <div className="flex gap-x-1">
+                  <Button
+                    variant="outline"
+                    className="h-8 w-8 p-0"
+                    onClick={() => table.nextPage()}
+                    disabled={!table.getCanNextPage()}
+                  >
+                    <span className="sr-only">Go to next page</span>
+                    <ChevronRightIcon className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="hidden h-8 w-8 p-0 lg:flex"
+                    onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+                    disabled={!table.getCanNextPage()}
+                  >
+                    <span className="sr-only">Go to last page</span>
+                    <DoubleArrowRightIcon className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <Table className="rounded-b-md bg-slate-950  border border-slate-800 overflow-x-scroll">
+            <TableHeader>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => {
                     return (
-                        <TableRow
-                            key={row.id}
-                            className="hover:bg-slate-800/50 border border-slate-800"
-                        >
-                          {row.getVisibleCells().map((cell) => {
-                            return (
-                                <td key={cell.id} className="px-2">
-                                  {flexRender(
-                                      cell.column.columnDef.cell,
-                                      cell.getContext(),
-                                  )}
-                                </td>
-                            );
-                          })}
-                        </TableRow>
+                      <TableHead
+                        className="rounded-md border border-slate-800"
+                        key={header.id}
+                        {...{
+                          colSpan: header.colSpan,
+                          style: {
+                            backgroundColor: "bg-slate-950",
+                            width: colSize(header.id),
+                            maxWidth: colSize(header.id),
+                          },
+                        }}
+                      >
+                        {header.isPlaceholder ? null : (
+                          <>
+                            <div
+                              {...{
+                                className:
+                                  header.column.getCanSort() +
+                                  "items-center border justify-center flex-col"
+                                    ? "cursor-pointer select-none"
+                                    : "",
+                                onClick:
+                                  header.column.getToggleSortingHandler(),
+                              }}
+                            >
+                              {flexRender(
+                                header.column.columnDef.header,
+                                header.getContext(),
+                              )}
+                              {{
+                                asc: "↑",
+                                desc: "↓",
+                              }[header.column.getIsSorted() as string] ?? null}
+                            </div>
+                            {header.column.getCanFilter() ? (
+                              <div>
+                                <Filter column={header.column} table={table} />
+                              </div>
+                            ) : null}
+                          </>
+                        )}
+                      </TableHead>
                     );
                   })}
-                </TableBody>
-              </Table>
-                </>
-            )
-      }
+                </TableRow>
+              ))}
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows.map((row) => {
+                return (
+                  <TableRow
+                    key={row.id}
+                    className="hover:bg-slate-800/50 border border-slate-800"
+                  >
+                    {row.getVisibleCells().map((cell) => {
+                      return (
+                        <td key={cell.id} className="px-2">
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext(),
+                          )}
+                        </td>
+                      );
+                    })}
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </>
+      )}
     </div>
   );
 }
@@ -446,7 +430,7 @@ function Filter({ column, table }: { column: Column<any>; table: any }) {
         value={(columnFilterValue ?? "") as string}
         onChange={(value) => column.setFilterValue(value)}
         placeholder={""}
-        className="w-full shadow bg-slate-900 pl-2 focus:outline-none"
+        className="w-full shadow bg-slate-900 text-slate-400 selection:bg-slate-700 pl-2 focus:outline-none"
         list={column.id + "list"}
       />
     </>

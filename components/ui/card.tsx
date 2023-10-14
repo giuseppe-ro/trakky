@@ -10,7 +10,7 @@ const Card = React.forwardRef<
     tabIndex={-1}
     ref={ref}
     className={cn(
-      "rounded-lg border text-slate-950 shadow-sm border-slate-800 bg-slate-950 text-slate-50",
+      "rounded-lg border shadow-sm border-slate-800 bg-slate-950 text-slate-50 p-2",
       className,
     )}
     {...props}

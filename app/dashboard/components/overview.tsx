@@ -21,11 +21,11 @@ export interface Summary {
   maxBudget: number;
 }
 
-export function Overview({ data }: { data: Summary[] }) {
+export function Overview({ data, ...props }: { data: Summary[] }) {
   data.sort((a, b) => a.index - b.index);
 
   return (
-    <ResponsiveContainer width="100%" height={300}>
+    <ResponsiveContainer width="100%" height={343}>
       <ComposedChart data={data}>
         <XAxis
           dataKey="name"

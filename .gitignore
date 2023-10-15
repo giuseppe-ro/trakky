@@ -138,3 +138,6 @@ app/expenses/components/budgets.json
 lib/budget-data.ts
 lib/budgets.json
 lib/data.ts
+src/lib/budget-data.ts
+src/lib/budgets.json
+src/lib/data.ts

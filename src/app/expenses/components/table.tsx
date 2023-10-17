@@ -44,6 +44,7 @@ import { Payment } from "@/infrastructure/payment";
 import { fuzzyFilter, fuzzySort } from "@/lib/filters";
 import { formatCurrency, formatDate } from "@/lib/formatter";
 import Spinner from "@/components/ui/spinner";
+import { NewPaymentDialog } from "@/app/expenses/components/new-payment.tsx";
 
 export const colSize = (id: string): number | string => {
   switch (id) {
@@ -116,13 +117,14 @@ export function DataTable({
     return acc;
   }, []);
 
-  const columns = useMemo<ColumnDef<Payment, any>[]>(
+  const columns = useMemo<ColumnDef<Payment, number | string>[]>(
     () => [
       {
         accessorKey: "date",
         header: "Date",
         enableColumnFilter: false,
         enableGlobalFilter: false,
+        sortAscFirst: true,
         cell: ({ row }) => {
           const date: Date = row.getValue("date");
           const formatted = formatDate(date);
@@ -205,7 +207,10 @@ export function DataTable({
               value={selectedYear}
               onChange={setSelectedYear}
               options={availableYears}
-              {...{ className: "rounded-md w-full overscroll-contain mb-4" }}
+              {...{
+                className:
+                  "rounded-md w-full overscroll-contain mb-4 sticky top-20 bg-gray-950 z-50",
+              }}
             />
           )}
           <Summary
@@ -213,77 +218,82 @@ export function DataTable({
             totalsPerYear={totalsPerYear}
             selectedYear={selectedYear}
           />
-
-          <div className="flex justify-end gap-x-3 mt-6 mb-2 ">
-            <Select
-              value={table.getState().pagination.pageSize.toString()}
-              onValueChange={(value) => {
-                table.setPageSize(Number(value));
-              }}
-            >
-              <SelectTrigger className="h-8 w-[60px] m-0 rounded-md ">
-                <SelectValue
-                  placeholder={table.getState().pagination.pageSize}
-                />
-              </SelectTrigger>
-              <SelectContent
-                side="top"
-                className="bg-slate-900 focus:bg-slate-600 active:bg-slate-600"
-              >
-                {[10, 20, 30, 40, 50].map((pageSize) => (
-                  <SelectItem key={pageSize} value={`${pageSize}`}>
-                    {pageSize}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <div className="flex items-center text-sm font-thin whitespace-nowrap">
-              {table.getState().pagination.pageIndex + 1} of{" "}
-              {table.getPageCount()}
+          <div className="flex justify-between items-center">
+            <div className="flex justify-end gap-x-3 mt-6 mb-2">
+              <NewPaymentDialog />
             </div>
-            <div className={"flex justify-between gap-x-2"}>
-              <div className="flex gap-x-1">
-                <Button
-                  variant="outline"
-                  className="h-8 w-8 p-0 flex ml-0"
-                  onClick={() => table.setPageIndex(0)}
-                  disabled={!table.getCanPreviousPage()}
+            <div className="flex justify-end gap-x-3 mt-6 mb-2 ">
+              <Select
+                value={table.getState().pagination.pageSize.toString()}
+                onValueChange={(value) => {
+                  table.setPageSize(Number(value));
+                }}
+              >
+                <SelectTrigger className="h-8 w-[60px] m-0 rounded-md text-xs md:text-sm font-thin md:font-light">
+                  <SelectValue
+                    placeholder={table.getState().pagination.pageSize}
+                  />
+                </SelectTrigger>
+                <SelectContent
+                  side="top"
+                  className="bg-slate-900 focus:bg-slate-600 active:bg-slate-600"
                 >
-                  <span className="sr-only">Go to first page</span>
-                  <DoubleArrowLeftIcon className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="outline"
-                  className="h-8 w-8 p-0"
-                  onClick={() => table.previousPage()}
-                  disabled={!table.getCanPreviousPage()}
-                >
-                  <span className="sr-only">Go to previous page</span>
-                  <ChevronLeftIcon className="h-4 w-4" />
-                </Button>
+                  {[10, 20, 30, 40, 50].map((pageSize) => (
+                    <SelectItem key={pageSize} value={`${pageSize}`}>
+                      {pageSize}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <div className="flex items-center text-sm font-thin whitespace-nowrap">
+                {table.getState().pagination.pageIndex + 1} of{" "}
+                {table.getPageCount()}
               </div>
-              <div className="flex gap-x-1">
-                <Button
-                  variant="outline"
-                  className="h-8 w-8 p-0"
-                  onClick={() => table.nextPage()}
-                  disabled={!table.getCanNextPage()}
-                >
-                  <span className="sr-only">Go to next page</span>
-                  <ChevronRightIcon className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="outline"
-                  className="h-8 w-8 p-0 flex"
-                  onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                  disabled={!table.getCanNextPage()}
-                >
-                  <span className="sr-only">Go to last page</span>
-                  <DoubleArrowRightIcon className="h-4 w-4" />
-                </Button>
+              <div className={"flex justify-between gap-x-2"}>
+                <div className="flex gap-x-1">
+                  <Button
+                    variant="outline"
+                    className="h-8 w-8 p-0 flex ml-0"
+                    onClick={() => table.setPageIndex(0)}
+                    disabled={!table.getCanPreviousPage()}
+                  >
+                    <span className="sr-only">Go to first page</span>
+                    <DoubleArrowLeftIcon className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="h-8 w-8 p-0 hidden md:flex"
+                    onClick={() => table.previousPage()}
+                    disabled={!table.getCanPreviousPage()}
+                  >
+                    <span className="sr-only">Go to previous page</span>
+                    <ChevronLeftIcon className="h-4 w-4" />
+                  </Button>
+                </div>
+                <div className="flex gap-x-1">
+                  <Button
+                    variant="outline"
+                    className="h-8 w-8 p-0"
+                    onClick={() => table.nextPage()}
+                    disabled={!table.getCanNextPage()}
+                  >
+                    <span className="sr-only">Go to next page</span>
+                    <ChevronRightIcon className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="h-8 w-8 p-0 hidden md:flex"
+                    onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+                    disabled={!table.getCanNextPage()}
+                  >
+                    <span className="sr-only">Go to last page</span>
+                    <DoubleArrowRightIcon className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
+
           <Table className="rounded-b-md bg-slate-950  border border-slate-800 overflow-x-scroll">
             <TableHeader className="hover:bg-transparent">
               {table.getHeaderGroups().map((headerGroup) => (
@@ -365,7 +375,7 @@ export function DataTable({
   );
 }
 
-function Filter({ column, table }: { column: Column<any>; table: any }) {
+function Filter({ column, table }: { column: Column<Payment>; table: any }) {
   const firstValue = table
     .getPreFilteredRowModel()
     .flatRows[0]?.getValue(column.id);

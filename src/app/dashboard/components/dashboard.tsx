@@ -9,7 +9,11 @@ import { useEffect, useState } from "react";
 
 import { budgets } from "@/lib/data";
 import { Payment } from "@/infrastructure/payment";
-import { getAvailableYears, getMonthlySummaries, getYearlySummaries } from "@/lib/summaries";
+import {
+  getAvailableYears,
+  getMonthlySummaries,
+  getYearlySummaries,
+} from "@/lib/summaries";
 import Spinner from "@/components/ui/spinner";
 
 export function Dashboard({
@@ -59,7 +63,10 @@ export function Dashboard({
               value={selectedYear}
               onChange={setSelectedYear}
               options={availableYears}
-              {...{ className: "rounded-md w-full overscroll-contain mb-2" }}
+              {...{
+                className:
+                  "rounded-md w-full overscroll-contain mb-2 sticky top-20 bg-gray-950 z-50",
+              }}
             />
           )}
           <Card className="p-0">

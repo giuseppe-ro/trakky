@@ -24,7 +24,7 @@ const newPayment = (): Payment => {
 export function makePayments(...lens: number[]) {
   const makeDataLevel = (depth = 0): Payment[] => {
     const len = lens[depth]!;
-    return range(len).map((d): Payment => {
+    return range(len).map((): Payment => {
       return {
         ...newPayment(),
       };

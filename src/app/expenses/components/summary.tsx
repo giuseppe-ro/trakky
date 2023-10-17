@@ -14,8 +14,8 @@ export function SummaryCard({
   contentSubText?: string;
 }) {
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 p-2">
+    <Card className="border rounded-xl p-1 md:p-4">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0">
         <CardTitle className="text-sm font-medium text-muted-foreground">
           {title}
         </CardTitle>
@@ -85,14 +85,14 @@ export function Summary<TData>({
   const changePercentage =
     isFinite(change) && change !== 0
       ? change > 0
-        ? "+" + change + "% compared to last year"
-        : change + "% compared to last year"
+        ? "+" + change + "% from previous year"
+        : change + "% from previous year"
       : "";
 
   return (
     <Tabs defaultValue="overview" className="space-y-4">
       <TabsContent value="overview" className="space-y-4" tabIndex={-1}>
-        <div className="grid gap-4 grid-cols-2">
+        <div className="grid gap-2 md:gap-4 grid-cols-2">
           <SummaryCard
             title={"Total"}
             contentText={formattedTotal}

@@ -10,7 +10,7 @@ export default function DashboardPage() {
         <CardHeader className="bg-transparent">
           <CardTitle
             title={"Overview"}
-            className="flex flex-col items-center w-full justify-center bg-transparent"
+            className="flex flex-col items-center w-full justify-center bg-transparent p-0 md:p-6"
           >
             <p className="m-6 text-2xl bg-transparent">Dashboard</p>
           </CardTitle>

@@ -132,12 +132,10 @@ dist
 # misc
 .DS_Store
 .idea/
-app/expenses/components/data.json
-app/expenses/budgets.csv
-app/expenses/components/budgets.json
-lib/budget-data.ts
-lib/budgets.json
-lib/data.ts
-src/lib/budget-data.ts
-src/lib/budgets.json
-src/lib/data.ts
+
+budget-data.ts
+budgets.json
+data.json
+
+.vite
+.vscode

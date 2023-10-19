@@ -9,9 +9,9 @@ import {
 import { getBudgets } from "./budgets";
 import { Payment } from "@prisma/client";
 
-var cors = require("cors");
+const cors = require("cors");
 
-var corsOptions = {
+const corsOptions = {
   origin: "*",
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   preflightContinue: false,

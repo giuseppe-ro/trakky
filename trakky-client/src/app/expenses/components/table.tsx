@@ -220,7 +220,7 @@ export function DataTable({
                 trigger={
                   <Button
                     variant="outline"
-                    className="border-green-800 hover:bg-green-800"
+                    className="border-green-800 h-8 hover:bg-green-800"
                   >
                     Add
                   </Button>
@@ -443,7 +443,7 @@ export function DataTable({
                       trigger={
                         <Button
                           variant="outline"
-                          className="bg-transparent hover:bg-transparent p-0 m-0 h-5 border-none hover:text-green-500"
+                          className="bg-transparent hover:bg-transparent p-0 m-1 h-5 border-none hover:text-green-500"
                         >
                           <PenBoxIcon
                             width={14}

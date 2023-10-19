@@ -8,7 +8,7 @@ export interface Payment {
 }
 
 export async function fetchPayments(): Promise<Payment[]> {
-  let response = await fetch('http://0.0.0.0:8999/payments');
+  let response = await fetch(`${serverUrl}/payments`);
   let json: any = await response.json();
   return json as Payment[];
 }

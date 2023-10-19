@@ -162,7 +162,7 @@ export function DataTable({
     console.log(ids);
 
     try {
-      const res = await axios.delete("http://0.0.0.0:8999/payments", {
+      const res = await axios.delete(`${serverUrl}/payments`, {
         data: ids,
       });
 

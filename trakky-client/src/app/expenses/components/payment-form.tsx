@@ -86,8 +86,8 @@ export function PaymentForm({
     try {
       const res =
         editValues === undefined
-          ? await axios.post("http://0.0.0.0:8999/payments", [values])
-          : await axios.put("http://0.0.0.0:8999/payments", values);
+          ? await axios.post(`${serverUrl}/payments`, [values])
+          : await axios.put(`${serverUrl}/payments`, values);
 
       if (res.status === 200) {
         setIsSuccess(true);

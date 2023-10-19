@@ -1,3 +1,5 @@
+import { serverUrl } from "@/constants.ts";
+
 export interface Budget {
   date: string;
   budget: string;

@@ -60,6 +60,7 @@ import {
   ColumnDefinition,
 } from "@/app/expenses/components/columns.tsx";
 import { PenBoxIcon } from "lucide-react";
+import { serverUrl } from "@/constants.ts";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";

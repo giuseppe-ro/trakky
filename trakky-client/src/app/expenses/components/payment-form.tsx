@@ -34,6 +34,7 @@ import React from "react";
 import axios from "axios";
 import { Textarea } from "@/components/ui/textarea.tsx";
 import { Payment } from "@/infrastructure/payment.tsx";
+import { serverUrl } from "@/constants.ts";
 
 const types = ["Bills", "Transport", "Personal", "General", "House"];
 const owners = ["Ray", "Micia"];

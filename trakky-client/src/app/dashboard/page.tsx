@@ -1,20 +1,19 @@
 import { Dashboard } from "@/app/dashboard/components/dashboard";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { PageContainer } from "@/components/ui/page-container";
-import {useEffect, useState} from "react";
-import {fetchPayments, Payment} from "@/infrastructure/payment.tsx";
+import { useEffect, useState } from "react";
+import { fetchPayments, Payment } from "@/infrastructure/payment.tsx";
 
 export default function DashboardPage() {
-    const [payments, setPayments] = useState<Payment[]>([]);
+  const [payments, setPayments] = useState<Payment[]>([]);
 
-    useEffect( ()  => {
-        fetchPayments().then((data) => {
-            setPayments(data);
-        });
-    }, [])
+  useEffect(() => {
+    fetchPayments().then((data) => {
+      setPayments(data);
+    });
+  }, []);
 
-    return (
-        payments.length > 0 &&
+  return (
     <PageContainer>
       <Card className="bg-transparent border-none">
         <CardHeader className="bg-transparent">

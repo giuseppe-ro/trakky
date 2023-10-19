@@ -49,7 +49,10 @@ export async function addPayments(payment: Payment[]) {
   return response;
 }
 
-export async function update(payment: Payment) {
+export async function updatePayment(payment: Payment) {
+
+  console.log("Updating:", payment)
+
   const response = await prisma.payment.update({
     where: { id: payment.id },
     data: payment,
@@ -60,7 +63,7 @@ export async function update(payment: Payment) {
   return response;
 }
 
-export async function del(paymentIds: number[]) {
+export async function deletePayments(paymentIds: number[]) {
   const response = await prisma.payment.deleteMany({
     where: {
       id: { in: paymentIds },

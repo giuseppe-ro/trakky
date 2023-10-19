@@ -1,9 +1,7 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
-
+import { useEffect, useMemo, useState } from "react";
 import {
-  Column,
   ColumnDef,
   ColumnFiltersState,
   flexRender,
@@ -37,40 +35,44 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   DoubleArrowLeftIcon,
-  DoubleArrowRightIcon, ReloadIcon, TrashIcon,
+  DoubleArrowRightIcon,
+  ReloadIcon,
 } from "@radix-ui/react-icons";
 import { Summary, Total } from "@/app/expenses/components/summary";
 import { Payment } from "@/infrastructure/payment";
-import { fuzzyFilter, fuzzySort } from "@/lib/filters";
-import { formatCurrency, formatDate } from "@/lib/formatter";
+import { fuzzyFilter } from "@/lib/filters";
 import Spinner from "@/components/ui/spinner";
-import { NewPaymentDialog } from "@/app/expenses/components/new-payment.tsx";
-import {cn} from "@/lib/utils.ts";
+import { PopupDialog } from "@/app/expenses/components/popup-dialog.tsx";
+import { cn } from "@/lib/utils.ts";
+import { SelectIcon } from "@radix-ui/react-select";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip.tsx";
+import axios from "axios";
+import { PaymentForm } from "@/app/expenses/components/payment-form.tsx";
+import { DeletePayments } from "@/app/expenses/components/delete-popup.tsx";
+import { Filter } from "@/app/expenses/components/column-filter.tsx";
+import {
+  colSize,
+  ColumnDefinition,
+} from "@/app/expenses/components/columns.tsx";
+import { PenBoxIcon } from "lucide-react";
 
-export const colSize = (id: string): number | string => {
-  switch (id) {
-    case "description":
-      return "auto";
-    case "date":
-      return 100;
-    case "type" || "owner":
-      return 110;
-    case "amount":
-      return 115;
-    default:
-      return 100;
-  }
-};
+axios.defaults.headers.post["Content-Type"] = "application/json";
+axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
 
 export function DataTable({
   data,
   selection,
-                            refreshData,
+  refreshData,
   ...props
 }: {
   data: Payment[];
   selection?: string;
-  refreshData?: () => void;
+  refreshData: () => void;
 }) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
@@ -103,7 +105,8 @@ export function DataTable({
     else {
       setFilteredData(
         data.filter(
-          (payment) => new Date(payment.date).getFullYear() === parseInt(selectedYear),
+          (payment) =>
+            new Date(payment.date).getFullYear() === parseInt(selectedYear),
         ),
       );
     }
@@ -121,56 +124,7 @@ export function DataTable({
   }, []);
 
   const columns = useMemo<ColumnDef<Payment, number | string>[]>(
-    () => [
-      {
-        accessorKey: "date",
-        header: "Date",
-        enableColumnFilter: false,
-        enableGlobalFilter: false,
-        sortAscFirst: true,
-        cell: ({ row }) => {
-          const date: Date = row.getValue("date");
-          const formatted = formatDate(date);
-
-          return <div className="text-right font-sm">{formatted}</div>;
-        },
-      },
-      {
-        accessorKey: "type",
-        header: "Type",
-        filterFn: "fuzzy",
-        sortingFn: fuzzySort,
-        cell: ({ row }) => {
-          return <div className="font-sm">{row.getValue("type")}</div>;
-        },
-      },
-      {
-        accessorKey: "owner",
-        header: "Owner",
-        filterFn: "fuzzy",
-        sortingFn: fuzzySort,
-        cell: ({ row }) => {
-          return <div className="font-sm">{row.getValue("owner")}</div>;
-        },
-      },
-      {
-        accessorKey: "amount",
-        header: "Amount",
-        cell: ({ row }) => {
-          const amount = parseFloat(row.getValue("amount"));
-          const formatted = formatCurrency(amount);
-
-          return <div className="text-right font-sm">{formatted}</div>;
-        },
-      },
-      {
-        accessorKey: "description",
-        header: "Description",
-        cell: ({ row }) => {
-          return <div className="font-sm">{row.getValue("description")}</div>;
-        },
-      },
-    ],
+    () => ColumnDefinition,
     [],
   );
 
@@ -199,10 +153,44 @@ export function DataTable({
     debugColumns: false,
   });
 
+  async function onDeleteConfirmed() {
+    console.log("Delete clicked!");
+    const ids = table
+      .getSelectedRowModel()
+      .rows.map((row: any) => row.original.id);
+
+    console.log(ids);
+
+    try {
+      const res = await axios.delete("http://0.0.0.0:8999/payments", {
+        data: ids,
+      });
+
+      if (res.status === 200) {
+        table.resetRowSelection();
+        refreshData();
+        alert("Transactions deleted!");
+      } else {
+        alert("Error! Could not delete transactions");
+      }
+    } catch (e) {
+      alert("Error! Could not delete transactions");
+    }
+  }
+
+  function onPaymentEdited() {
+    table.resetRowSelection();
+    onRefresh();
+  }
+
+  function onRefresh() {
+    table.resetColumnFilters();
+    refreshData();
+  }
+
   return (
     <div {...props}>
       {
-          (
         <>
           {selectedYear && selection === undefined && (
             <Selection
@@ -215,46 +203,83 @@ export function DataTable({
               }}
             />
           )}
-          {
-              filteredData.length === 0 ? (
-                  <div className="container h-full mt-16">
-                    <Spinner  />
-                  </div>
-              ) :(
-                  <Summary
-                      table={table}
-                      totalsPerYear={totalsPerYear}
-                      selectedYear={selectedYear}
-                  />
-              )
-          }
+          {filteredData.length === 0 ? (
+            <div className="container h-full mt-16">
+              <Spinner />
+            </div>
+          ) : (
+            <Summary
+              table={table}
+              totalsPerYear={totalsPerYear}
+              selectedYear={selectedYear}
+            />
+          )}
           <div className="flex justify-between items-center">
             <div className="flex justify-end gap-x-1 md:gap-x-3 mt-6 mb-2">
-              <NewPaymentDialog />
+              <PopupDialog
+                trigger={
+                  <Button
+                    variant="outline"
+                    className="border-green-800 hover:bg-green-800"
+                  >
+                    Add
+                  </Button>
+                }
+              >
+                <PaymentForm
+                  refresh={onRefresh}
+                  title={"Add New Transaction"}
+                ></PaymentForm>
+              </PopupDialog>
               {refreshData !== undefined && (
                 <div className="flex justify-center">
-                  <Button
-                      variant="outline"
-                      className="h-9 w-9 p-0 border-none flex ml-0"
-                      onClick={refreshData}
-                  >
-                    <span className="sr-only">Reload</span>
-                    <ReloadIcon />
-                  </Button>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Button
+                          variant="outline"
+                          className="h-8 w-9 p-0 border-none flex ml-0"
+                          onClick={onRefresh}
+                        >
+                          <ReloadIcon />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent className="bg-slate-800 text-white">
+                        <p>Refresh</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </div>
               )}
               <div className="flex justify-center">
-                {
-                  table.getIsSomePageRowsSelected() && (
-                        <Button
-                            variant="outline"
-                            className="h-9 w-9 p-0 border-none hover:bg-red-500/50 flex ml-0"
-                            onClick={() => { console.log("Delete clicked!")}}
-                        >
-                          <TrashIcon className="text-red-500" />
-                        </Button>
-                    )
-                }
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <Button
+                        variant="outline"
+                        className="h-8 w-9 p-0 border-none flex ml-0"
+                        onClick={table.getToggleAllPageRowsSelectedHandler()}
+                      >
+                        <span className="sr-only">Reload</span>
+                        <SelectIcon />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-slate-800 text-white">
+                      <p>Select/Unselect visible rows</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+              <div className="flex justify-center">
+                {table.getIsSomeRowsSelected() && (
+                  <DeletePayments
+                    tooltipText={"Delete selected rows"}
+                    onDeleteConfirmed={onDeleteConfirmed}
+                    payments={table
+                      .getSelectedRowModel()
+                      .rows.map((row: any) => row.original as Payment)}
+                  ></DeletePayments>
+                )}
               </div>
             </div>
             <div className="flex justify-end gap-x-1 md:gap-x-3 mt-6 mb-2 ">
@@ -336,7 +361,7 @@ export function DataTable({
                   {headerGroup.headers.map((header) => {
                     return (
                       <TableHead
-                        className="rounded-md border border-slate-800 text-center"
+                        className="rounded-md border border-slate-800 text-center text-xs md:text-sm"
                         key={header.id}
                         {...{
                           colSpan: header.colSpan,
@@ -344,6 +369,7 @@ export function DataTable({
                             backgroundColor: "bg-slate-950",
                             width: colSize(header.id),
                             maxWidth: colSize(header.id),
+                            overflow: "auto",
                           },
                         }}
                       >
@@ -389,14 +415,22 @@ export function DataTable({
                     key={row.id}
                     onClick={row.getToggleSelectedHandler()}
                     className={cn(
-                        "hover:bg-slate-800/50 border border-slate-800",
-                        row.getIsSelected() && "bg-slate-400/50 hover:bg-slate-400",
+                      "hover:bg-slate-800/50 border border-slate-800",
+                      row.getIsSelected() &&
+                        "bg-slate-400/50 hover:bg-slate-400",
                     )}
-                    // className="hover:bg-slate-800/50 border border-slate-800"
+                    {...{
+                      style: {
+                        overflow: "auto",
+                      },
+                    }}
                   >
                     {row.getVisibleCells().map((cell) => {
                       return (
-                        <td key={cell.id} className="px-2">
+                        <td
+                          key={cell.id}
+                          className="px-2 truncate text-xs font-thin md:font-normal md:text-sm"
+                        >
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext(),
@@ -404,107 +438,34 @@ export function DataTable({
                         </td>
                       );
                     })}
+
+                    <PopupDialog
+                      trigger={
+                        <Button
+                          variant="outline"
+                          className="bg-transparent hover:bg-transparent p-0 m-0 h-5 border-none hover:text-green-500"
+                        >
+                          <PenBoxIcon
+                            width={14}
+                            height={14}
+                            className="hover:text-green-500 text-green-700"
+                          ></PenBoxIcon>
+                        </Button>
+                      }
+                    >
+                      <PaymentForm
+                        editValues={row.original as Payment}
+                        refresh={onPaymentEdited}
+                        title={"Edit Transaction"}
+                      ></PaymentForm>
+                    </PopupDialog>
                   </TableRow>
                 );
               })}
             </TableBody>
           </Table>
         </>
-      )}
+      }
     </div>
-  );
-}
-
-function Filter({ column, table }: { column: Column<Payment>; table: any }) {
-  const firstValue = table
-    .getPreFilteredRowModel()
-    .flatRows[0]?.getValue(column.id);
-
-  const columnFilterValue = column.getFilterValue();
-
-  const sortedUniqueValues = useMemo(
-    () =>
-      typeof firstValue === "number"
-        ? []
-        : Array.from(column.getFacetedUniqueValues().keys()).sort(),
-    [column.getFacetedUniqueValues()],
-  );
-
-  return typeof firstValue === "number" ? (
-    <div>
-      <div className="flex space-x-1">
-        <DebouncedInput
-          type="number"
-          min={Number(column.getFacetedMinMaxValues()?.[0] ?? "")}
-          max={Number(column.getFacetedMinMaxValues()?.[1] ?? "")}
-          value={(columnFilterValue as [number, number])?.[0] ?? ""}
-          onChange={(value) =>
-            column.setFilterValue((old: [number, number]) => [value, old?.[1]])
-          }
-          placeholder="Min"
-          className="w-1/2 placeholder-slate-700 selection:bg-slate-700 shadow bg-slate-900 pl-2 focus:outline-none"
-        />
-        <DebouncedInput
-          type="number"
-          min={Number(column.getFacetedMinMaxValues()?.[0] ?? "")}
-          max={Number(column.getFacetedMinMaxValues()?.[1] ?? "")}
-          value={(columnFilterValue as [number, number])?.[1] ?? ""}
-          onChange={(value) =>
-            column.setFilterValue((old: [number, number]) => [old?.[0], value])
-          }
-          placeholder="Max"
-          className="w-1/2 placeholder-slate-700 selection:bg-slate-700 shadow bg-slate-900 pl-2 focus:outline-none"
-        />
-      </div>
-    </div>
-  ) : (
-    <>
-      <datalist className="bg-slate-900" id={column.id + "list"}>
-        {sortedUniqueValues.slice(0, 5000).map((value: any) => (
-          <option className="border-slate-900 red" value={value} key={value} />
-        ))}
-      </datalist>
-      <DebouncedInput
-        type="text"
-        value={(columnFilterValue ?? "") as string}
-        onChange={(value) => column.setFilterValue(value)}
-        placeholder={""}
-        className="w-full shadow bg-slate-900 text-slate-400 selection:bg-slate-700 pl-2 focus:outline-none"
-        list={column.id + "list"}
-      />
-    </>
-  );
-}
-
-function DebouncedInput({
-  value: initialValue,
-  onChange,
-  debounce = 500,
-  ...props
-}: {
-  value: string | number;
-  onChange: (value: string | number) => void;
-  debounce?: number;
-} & Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange">) {
-  const [value, setValue] = useState(initialValue);
-
-  useEffect(() => {
-    setValue(initialValue);
-  }, [initialValue]);
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      onChange(value);
-    }, debounce);
-
-    return () => clearTimeout(timeout);
-  }, [value]);
-
-  return (
-    <input
-      {...props}
-      value={value}
-      onChange={(e) => setValue(e.target.value)}
-    />
   );
 }

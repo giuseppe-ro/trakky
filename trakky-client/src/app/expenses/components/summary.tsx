@@ -21,7 +21,7 @@ export function SummaryCard({
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold">{contentText}</div>
+        <div className="text-xl md:text-2xl font-bold">{contentText}</div>
         <p className="text-xs text-muted-foreground">{contentSubText}</p>
       </CardContent>
     </Card>

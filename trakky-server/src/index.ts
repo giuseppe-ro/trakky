@@ -1,33 +1,41 @@
 import express, { Express, Request, Response } from "express";
-import { addPayments, getAllPayments, getPayment } from "./payments";
+import {
+  addPayments,
+  deletePayments,
+  getAllPayments,
+  getPayment,
+  updatePayment,
+} from "./payments";
 import { getBudgets } from "./budgets";
 import { Payment } from "@prisma/client";
 
-
-var cors = require('cors')
+var cors = require("cors");
 
 var corsOptions = {
-  "origin": "*",
-  "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
-  "preflightContinue": false,
-  "optionsSuccessStatus": 204
-}
-
+  origin: "*",
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+};
 
 const app: Express = express();
-app.use(cors())
-app.use(express.json()) 
+app.use(cors());
+app.use(express.json());
 
-const host = "0.0.0.0"
+const host = "0.0.0.0";
 const port = 8999;
 
-app.get("/payment/:id", cors(corsOptions), (req: Request<{ id: string }>, res: Response) => {
-  getPayment(parseInt(req.params.id))
-    .then((payments) => {
-      res.send(payments);
-    })
-    .catch((e) => {});
-});
+app.get(
+  "/payment/:id",
+  cors(corsOptions),
+  (req: Request<{ id: string }>, res: Response) => {
+    getPayment(parseInt(req.params.id))
+      .then((payments) => {
+        res.send(payments);
+      })
+      .catch((e) => {});
+  },
+);
 
 app.get("/payments", cors(corsOptions), (req: Request, res: Response) => {
   getAllPayments()
@@ -37,22 +45,45 @@ app.get("/payments", cors(corsOptions), (req: Request, res: Response) => {
     .catch((e) => {});
 });
 
-// app.post('/payments', cors(corsOptions), (req, res) => {
-//   console.log("all good :D")
-//   res.json({requestBody: req.body})  // <==== req.body will be a parsed JSON object
-// })
+app.delete("/payments", cors(corsOptions), (req: Request, res: Response) => {
+  const paymentIds = req.body as number[];
+
+  deletePayments(paymentIds)
+    .then((deletedPayments) => {
+      res.send(deletedPayments);
+    })
+    .catch((e) => {
+      console.log(e);
+      res.status(400);
+      res.send(e);
+    });
+});
 
 app.post("/payments", cors(corsOptions), (req: Request, res: Response) => {
-  const newPayments = req.body as Payment[]
+  const newPayments = req.body as Payment[];
 
   addPayments(newPayments)
     .then((addedPayments) => {
       res.send(addedPayments);
     })
     .catch((e) => {
-      console.log(e)
+      console.log(e);
       res.status(400);
-      res.send(e)
+      res.send(e);
+    });
+});
+
+app.put("/payments", cors(corsOptions), (req: Request, res: Response) => {
+  const editPayments = req.body as Payment;
+
+  updatePayment(editPayments)
+    .then((payment) => {
+      res.send(payment);
+    })
+    .catch((e) => {
+      console.log(e);
+      res.status(400);
+      res.send(e);
     });
 });
 

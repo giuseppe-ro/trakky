@@ -1,24 +1,23 @@
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { PageContainer } from "@/components/ui/page-container";
 import { DataTable } from "./components/table";
-import {fetchPayments, Payment} from "@/infrastructure/payment.tsx";
-import {useEffect, useState} from "react";
+import { fetchPayments, Payment } from "@/infrastructure/payment.tsx";
+import { useEffect, useState } from "react";
 
 export default function ExpensesPage() {
-    const [payments, setPayments] = useState<Payment[]>([]);
+  const [payments, setPayments] = useState<Payment[]>([]);
 
-    async function refreshData() {
-        setPayments([]);
-        const data = await fetchPayments();
-        setPayments(data);
-    }
+  async function refreshData() {
+    setPayments([]);
+    const data = await fetchPayments();
+    setPayments(data);
+  }
 
-    useEffect( ()  => {
-        refreshData()
-    }, [])
+  useEffect(() => {
+    refreshData();
+  }, []);
 
-    return (
-        // payments.length > 0 &&
+  return (
     <PageContainer>
       <Card className="bg-transparent border-none">
         <CardHeader className="bg-transparent">

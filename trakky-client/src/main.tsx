@@ -1,13 +1,13 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.tsx'
-import './index.css'
-import { ThemeProvider } from './components/ui/theme-provider.tsx'
-import { RouterProvider } from 'react-router'
-import { createBrowserRouter } from 'react-router-dom'
-import DashboardPage from './app/dashboard/page.tsx'
-import { MainNav } from './components/ui/main-nav.tsx'
-import ErrorPage from './app/error/page.tsx'
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App.tsx";
+import "./index.css";
+import { ThemeProvider } from "./components/ui/theme-provider.tsx";
+import { RouterProvider } from "react-router";
+import { createBrowserRouter } from "react-router-dom";
+import DashboardPage from "./app/dashboard/page.tsx";
+import { MainNav } from "./components/ui/main-nav.tsx";
+import ErrorPage from "./app/error/page.tsx";
 import ExpensesPage from "@/app/expenses/page.tsx";
 
 const router = createBrowserRouter([
@@ -18,20 +18,19 @@ const router = createBrowserRouter([
   },
   {
     path: "/dashboard",
-    element: <DashboardPage></DashboardPage>
+    element: <DashboardPage></DashboardPage>,
   },
-    {
+  {
     path: "/expenses",
-    element: <ExpensesPage></ExpensesPage>
-    }
-])
+    element: <ExpensesPage></ExpensesPage>,
+  },
+]);
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-
     <ThemeProvider>
-        <MainNav className="h-8 shadow-amber-700 flex items-center space-x-4 lg:space-x-6" />
-        <RouterProvider router={router} />
+      <MainNav className="h-8 shadow-amber-700 flex items-center space-x-4 lg:space-x-6" />
+      <RouterProvider router={router} />
     </ThemeProvider>
   </React.StrictMode>,
-)
+);

@@ -6,5 +6,13 @@ export function formatCurrency(total: number) {
 }
 
 export function formatDate(date: Date): string {
-  return date.toString().split("T")[0];
+  return new Date(date).toLocaleString("en-GB", {
+    dateStyle: "short",
+  });
+}
+
+export function formatStringDate(date: string): string {
+  return new Date(date).toLocaleString("en-GB", {
+    dateStyle: "short",
+  });
 }

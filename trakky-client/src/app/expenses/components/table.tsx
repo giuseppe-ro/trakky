@@ -358,11 +358,14 @@ export function DataTable({
           <Table className="rounded-b-md bg-slate-950  border border-slate-800 overflow-x-scroll">
             <TableHeader className="hover:bg-transparent">
               {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
+                <TableRow
+                  key={headerGroup.id}
+                  className="border border-slate-800"
+                >
                   {headerGroup.headers.map((header) => {
                     return (
                       <TableHead
-                        className="rounded-md border border-slate-800 text-center text-xs md:text-sm"
+                        className="h-full border border-slate-800 text-center text-xs md:text-sm"
                         key={header.id}
                         {...{
                           colSpan: header.colSpan,

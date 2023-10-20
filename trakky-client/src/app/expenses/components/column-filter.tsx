@@ -36,7 +36,7 @@ export function Filter({
             column.setFilterValue((old: [number, number]) => [value, old?.[1]])
           }
           placeholder="Min"
-          className="w-1/2 placeholder-slate-700 placeholder:text-xs selection:bg-slate-700 focus:bg-slate-700  shadow bg-slate-800 pl-1 focus:outline-none"
+          className="rounded-none w-1/2 placeholder-slate-700 placeholder:text-xs selection:bg-slate-700 focus:bg-slate-700  shadow bg-slate-800 pl-1 focus:outline-none"
         />
         <DebouncedInput
           type="number"
@@ -47,7 +47,7 @@ export function Filter({
             column.setFilterValue((old: [number, number]) => [old?.[0], value])
           }
           placeholder="Max"
-          className="w-1/2 placeholder-slate-700 placeholder:text-xs selection:bg-slate-700 focus:bg-slate-700  shadow bg-slate-800 pl-1 focus:outline-none"
+          className="rounded-none w-1/2 placeholder-slate-700 placeholder:text-xs selection:bg-slate-700 focus:bg-slate-700  shadow bg-slate-800 pl-1 focus:outline-none"
         />
       </div>
     </div>
@@ -63,7 +63,7 @@ export function Filter({
         value={(columnFilterValue ?? "") as string}
         onChange={(value) => column.setFilterValue(value)}
         placeholder={""}
-        className="w-full shadow bg-slate-800 text-slate-400 selection:bg-slate-700 pl-2 focus:bg-slate-700 focus:outline-none"
+        className="rounded-none w-full shadow bg-slate-800 text-slate-400 selection:bg-slate-700 pl-2 focus:bg-slate-700 focus:outline-none"
         list={column.id + "list"}
       />
     </>

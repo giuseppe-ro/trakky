@@ -39,12 +39,26 @@ import { serverUrl } from "@/constants.ts";
 const types = ["Bills", "Transport", "Personal", "General", "House"];
 const owners = ["Ray", "Micia"];
 
+const customErrorMap: z.ZodErrorMap = (issue, ctx) => {
+  if (issue.code === z.ZodIssueCode.invalid_type) {
+    return { message: "" };
+  }
+  if (issue.code === z.ZodIssueCode.custom) {
+    return { message: "" };
+  }
+  return { message: ctx.defaultError };
+};
+
+z.setErrorMap(customErrorMap);
+
 const formSchema = z.object({
   id: z.number().optional(),
   owner: z.string().refine((val) => owners.includes(val)),
   type: z.string().refine((val) => types.includes(val)),
   date: z.date(),
-  amount: z.number().refine((val) => val !== 0),
+  amount: z.number().refine((val) => val !== 0, {
+    message: "cannot be 0",
+  }),
   description: z.string().refine((val) => val.length <= 50 && val.length > 0),
 });
 
@@ -168,6 +182,10 @@ export function PaymentForm({
                         inputMode="decimal"
                         type="number"
                         step="any"
+                        className={cn(
+                          "focus:border-none",
+                          form.formState.errors.amount && `shake-animation`,
+                        )}
                         {...field}
                         onChange={(n) => {
                           field.onChange(n.target.valueAsNumber);
@@ -216,9 +234,13 @@ export function PaymentForm({
                   render={({ field }) => (
                     <Field name={"Description"}>
                       <Textarea
-                        className="pb-0 mb-0"
                         onChange={field.onChange}
                         value={field.value}
+                        className={cn(
+                          "pb-0 mb-0",
+                          form.formState.errors.description &&
+                            `shake-animation`,
+                        )}
                       ></Textarea>
                     </Field>
                   )}

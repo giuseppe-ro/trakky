@@ -1,1 +1,1 @@
-export const serverUrl = "http://localhost:8999";
+export const serverUrl = "http://trakky-api.localdomain";

@@ -165,6 +165,7 @@ export function PaymentForm({
                   render={({ field }) => (
                     <Field name={"Amount"}>
                       <Input
+                        inputMode="decimal"
                         type="number"
                         step="any"
                         {...field}

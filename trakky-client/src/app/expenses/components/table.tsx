@@ -314,7 +314,7 @@ export function DataTable({
                 <div className="flex gap-x-1">
                   <Button
                     variant="outline"
-                    className="h-8 w-8 p-0 flex ml-0"
+                    className="h-8 w-8 p-0 hidden md:flex ml-0"
                     onClick={() => table.setPageIndex(0)}
                     disabled={!table.getCanPreviousPage()}
                   >
@@ -323,7 +323,7 @@ export function DataTable({
                   </Button>
                   <Button
                     variant="outline"
-                    className="h-8 w-8 p-0 hidden md:flex"
+                    className="h-8 w-8 p-0"
                     onClick={() => table.previousPage()}
                     disabled={!table.getCanPreviousPage()}
                   >
@@ -439,27 +439,28 @@ export function DataTable({
                         </td>
                       );
                     })}
-
-                    <PopupDialog
-                      trigger={
-                        <Button
-                          variant="outline"
-                          className="bg-transparent hover:bg-transparent p-0 m-1 h-5 border-none hover:text-green-500"
-                        >
-                          <PenBoxIcon
-                            width={14}
-                            height={14}
-                            className="hover:text-green-500 text-green-700"
-                          ></PenBoxIcon>
-                        </Button>
-                      }
-                    >
-                      <PaymentForm
-                        editValues={row.original as Payment}
-                        refresh={onPaymentEdited}
-                        title={"Edit Transaction"}
-                      ></PaymentForm>
-                    </PopupDialog>
+                    <td>
+                      <PopupDialog
+                        trigger={
+                          <Button
+                            variant="outline"
+                            className="bg-transparent hover:bg-transparent p-0 m-1 h-5 border-none hover:text-green-500"
+                          >
+                            <PenBoxIcon
+                              width={14}
+                              height={14}
+                              className="hover:text-green-500 text-green-700"
+                            ></PenBoxIcon>
+                          </Button>
+                        }
+                      >
+                        <PaymentForm
+                          editValues={row.original as Payment}
+                          refresh={onPaymentEdited}
+                          title={"Edit Transaction"}
+                        ></PaymentForm>
+                      </PopupDialog>
+                    </td>
                   </TableRow>
                 );
               })}

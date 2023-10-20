@@ -38,9 +38,9 @@ export function DeletePayments({
             <AlertDialogTrigger asChild>
               <Button
                 variant="outline"
-                className="h-8 w-4 p-0 border-none text-white  hover:bg-transparent hover:text-red-500 flex ml-0"
+                className="h-8 w-4 p-0 border-none text-red-600  hover:bg-transparent hover:text-red-500/50 flex ml-0"
               >
-                <TrashIcon className="hover:text-red-500" />
+                <TrashIcon className="hover:text-red-500/50" />
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent className="max-h-[450px] overflow-auto ">

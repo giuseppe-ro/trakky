@@ -397,7 +397,7 @@ export function DataTable({
                               }[header.column.getIsSorted() as string] ?? null}
                             </div>
                             {header.column.getCanFilter() ? (
-                              <div>
+                              <div className="m-0 p-0">
                                 <Filter column={header.column} table={table} />
                               </div>
                             ) : null}
@@ -444,11 +444,11 @@ export function DataTable({
                         trigger={
                           <Button
                             variant="outline"
-                            className="bg-transparent hover:bg-transparent p-0 m-1 h-5 border-none hover:text-green-500"
+                            className="bg-transparent hover:bg-transparent p-0 mx-1 my-0 h-5 border-none hover:text-green-500"
                           >
                             <PenBoxIcon
-                              width={14}
-                              height={14}
+                              width={16}
+                              height={16}
                               className="hover:text-green-500 text-green-700"
                             ></PenBoxIcon>
                           </Button>

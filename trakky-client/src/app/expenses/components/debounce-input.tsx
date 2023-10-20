@@ -28,6 +28,7 @@ export function DebouncedInput({
     <input
       {...props}
       value={value}
+      inputMode={typeof value === "number" ? "decimal" : "text"}
       onChange={(e) => setValue(e.target.value)}
     />
   );

@@ -418,7 +418,7 @@ export function DataTable({
                     className={cn(
                       "hover:bg-slate-800/50 border border-slate-800",
                       row.getIsSelected() &&
-                        "bg-slate-400/50 hover:bg-slate-400",
+                        "bg-slate-600/50 hover:bg-slate-600",
                     )}
                     {...{
                       style: {

@@ -1,5 +1,7 @@
 import React from "react";
 
 export function PageContainer({ children }: { children: React.ReactNode }) {
-  return <div className="p-2 md:container mx-auto m-6 w-full">{children}</div>;
+  return (
+    <div className="md:container px-2 md:px-6 mx-auto w-full">{children}</div>
+  );
 }

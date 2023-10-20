@@ -1,31 +1,30 @@
 import "./App.css";
 import { getAvailableYears } from "@/lib/summaries.ts";
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card.tsx";
 import { PageContainer } from "@/components/ui/page-container.tsx";
 import { Tabs, TabsContent } from "@/components/ui/tabs.tsx";
 import { DataTable } from "@/app/expenses/components/table.tsx";
 import { Dashboard } from "@/app/dashboard/components/dashboard.tsx";
 import { Selection } from "@/components/ui/select.tsx";
-import {fetchPayments, Payment} from "@/infrastructure/payment.tsx";
+import { fetchPayments, Payment } from "@/infrastructure/payment.tsx";
 
 function App() {
   const [payments, setPayments] = useState<Payment[]>([]);
   const [availableYears, setAvailableYears] = useState<string[]>([]);
 
-    async function refreshData() {
-      setPayments([]);
-      const data = await fetchPayments();
-      setPayments(data);
-      const years = getAvailableYears(data);
-      years.push("All")
-      setAvailableYears(years);
-    }
+  async function refreshData() {
+    setPayments([]);
+    const data = await fetchPayments();
+    setPayments(data);
+    const years = getAvailableYears(data);
+    years.push("All");
+    setAvailableYears(years);
+  }
 
-    useEffect( ()  => {
-      refreshData()
-    }, [])
-
+  useEffect(() => {
+    refreshData();
+  }, []);
 
   const [selectedYear, setSelectedYear] = useState("All");
 
@@ -42,9 +41,7 @@ function App() {
         </CardHeader>
       </Card>
       <Tabs defaultValue="overview" className="space-y-4">
-        {
-          availableYears.length > 0 &&
-            (
+        {availableYears.length > 0 && (
           <Selection
             value={selectedYear}
             onChange={setSelectedYear}

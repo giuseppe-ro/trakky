@@ -26,7 +26,7 @@ export function Filter({
 
   return typeof firstValue === "number" ? (
     <div>
-      <div className="flex space-x-1">
+      <div className="flex space-x-0.5">
         <DebouncedInput
           type="number"
           min={Number(column.getFacetedMinMaxValues()?.[0] ?? "")}

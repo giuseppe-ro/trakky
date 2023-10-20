@@ -243,7 +243,7 @@ export function DataTable({
                       <TooltipTrigger tabIndex={-1}>
                         <Button
                           variant="outline"
-                          className="h-8 w-9 p-0 border-none flex ml-0"
+                          className="h-8 w-9 p-0 border-none bg-transparent hover:bg-transparent hover:text-gray-700 flex ml-0"
                           onClick={onRefresh}
                         >
                           <ReloadIcon />
@@ -262,7 +262,7 @@ export function DataTable({
                     <TooltipTrigger tabIndex={-1}>
                       <Button
                         variant="outline"
-                        className="h-8 w-9 p-0 border-none flex ml-0"
+                        className="h-8 w-9 p-0 border-none hover:bg-transparent hover:text-gray-700 flex ml-0"
                         onClick={table.getToggleAllPageRowsSelectedHandler()}
                       >
                         <span className="sr-only">Reload</span>

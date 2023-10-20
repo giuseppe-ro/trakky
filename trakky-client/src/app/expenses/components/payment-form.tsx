@@ -183,7 +183,6 @@ export function PaymentForm({
                         type="number"
                         step="any"
                         className={cn(
-                          "focus:border-none",
                           form.formState.errors.amount && `shake-animation`,
                         )}
                         {...field}

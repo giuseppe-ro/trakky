@@ -31,7 +31,7 @@ export function DeletePayments({
   payments: Payment[];
   tooltipText?: string;
 }) {
-  const tdStyle = "px-2 text-left border overflow-auto scroll-smooth";
+  const tdStyle = "px-2 text-left border overflow-x-scroll scroll-smooth";
 
   return (
     <TooltipProvider>
@@ -62,36 +62,26 @@ export function DeletePayments({
                     {payments.map((payment: Payment) => (
                       <div>
                         <TableRow key={payment.id} className="flex">
-                          <td
-                            className={cn(
-                              `${tdStyle} min-w-[75px] max-w-[75px] text-left`,
-                            )}
-                          >
+                          <td className={cn(`${tdStyle} w-[75px] text-left`)}>
                             {new Date(payment.date).toLocaleString("en-GB", {
                               month: "numeric",
                               year: "numeric",
                             })}
                           </td>
-                          <td
-                            className={cn(
-                              `${tdStyle} min-w-[75px] max-w-[75px]`,
-                            )}
-                          >
+                          <td className={cn(`${tdStyle} w-[80px]`)}>
                             {payment.type}
                           </td>
-                          <td className={cn(`${tdStyle} w-16 max-w-[100px]`)}>
+                          <td className={cn(`${tdStyle} w-[55px]`)}>
                             {payment.owner}
                           </td>
                           <td
                             className={cn(
-                              `${tdStyle} min-w-[70px] md:min-w-[100px] max-w-[80px] md:max-w-[100px] text-right overflow-auto`,
+                              `${tdStyle} w-[70px] text-right overflow-auto`,
                             )}
                           >
                             {formatCurrency(payment.amount)}
                           </td>
-                          <td
-                            className={cn(`${tdStyle} flex-grow overflow-auto`)}
-                          >
+                          <td className={cn(`${tdStyle} flex-grow truncate`)}>
                             {payment.description}
                           </td>
                         </TableRow>

@@ -28,7 +28,7 @@ export function Filter({
     <div>
       <div className="flex space-x-1">
         <DebouncedInput
-          type="decimal"
+          type="number"
           min={Number(column.getFacetedMinMaxValues()?.[0] ?? "")}
           max={Number(column.getFacetedMinMaxValues()?.[1] ?? "")}
           value={(columnFilterValue as [number, number])?.[0] ?? ""}
@@ -39,7 +39,7 @@ export function Filter({
           className="w-1/2 placeholder-slate-700 placeholder:text-xs selection:bg-slate-700 shadow bg-slate-900 pl-1 focus:outline-none"
         />
         <DebouncedInput
-          type="decimal"
+          type="number"
           min={Number(column.getFacetedMinMaxValues()?.[0] ?? "")}
           max={Number(column.getFacetedMinMaxValues()?.[1] ?? "")}
           value={(columnFilterValue as [number, number])?.[1] ?? ""}

@@ -19,7 +19,8 @@ import { Button } from "@/components/ui/button.tsx";
 import { TrashIcon } from "@radix-ui/react-icons";
 import { Payment } from "@/infrastructure/payment.tsx";
 import { TableRow } from "@/components/ui/table.tsx";
-import { formatCurrency, formatStringDate } from "@/lib/formatter.ts";
+import { formatCurrency } from "@/lib/formatter.ts";
+import { cn } from "@/lib/utils.ts";
 
 export function DeletePayments({
   onDeleteConfirmed,
@@ -30,10 +31,12 @@ export function DeletePayments({
   payments: Payment[];
   tooltipText?: string;
 }) {
+  const tdStyle = "px-2 text-left border overflow-auto scroll-smooth";
+
   return (
     <TooltipProvider>
       <Tooltip>
-        <TooltipTrigger>
+        <TooltipTrigger tabIndex={-1}>
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button
@@ -43,7 +46,7 @@ export function DeletePayments({
                 <TrashIcon className="hover:text-red-500/50" />
               </Button>
             </AlertDialogTrigger>
-            <AlertDialogContent className="max-h-[450px] overflow-auto ">
+            <AlertDialogContent className="max-h-[450px]  p-2 md:p-6 overflow-auto ">
               <AlertDialogHeader>
                 <div className="sticky top-0 z-50 bg-gray-950">
                   <AlertDialogTitle>
@@ -58,19 +61,39 @@ export function DeletePayments({
                   <div className="mt-2">
                     {payments.map((payment: Payment) => (
                       <div>
-                        <TableRow
-                          key={payment.id}
-                          className="border border-slate-808"
-                        >
-                          <td className="px-2 border w-16">
-                            {formatStringDate(payment.date)}
+                        <TableRow key={payment.id}>
+                          <td
+                            className={cn(
+                              `${tdStyle} min-w-[75px] max-w-[75px] text-left`,
+                            )}
+                          >
+                            {new Date(payment.date).toLocaleString("en-GB", {
+                              month: "numeric",
+                              year: "numeric",
+                            })}
                           </td>
-                          <td className="px-2 border w-16">{payment.type}</td>
-                          <td className="px-2 border w-16">{payment.owner}</td>
-                          <td className="px-2 border w-24">
+                          <td
+                            className={cn(
+                              `${tdStyle} min-w-[75px] max-w-[75px]`,
+                            )}
+                          >
+                            {payment.type}
+                          </td>
+                          <td className={cn(`${tdStyle} w-16 max-w-[100px]`)}>
+                            {payment.owner}
+                          </td>
+                          <td
+                            className={cn(
+                              `${tdStyle} min-w-[70px] md:min-w-[100px] max-w-[80px] md:max-w-[100px] text-right`,
+                            )}
+                          >
                             {formatCurrency(payment.amount)}
                           </td>
-                          <td className="px-2 border w-36">
+                          <td
+                            className={cn(
+                              `${tdStyle} min-w-[70px] w-screen max-w-[80px] md:max-w-[150px]`,
+                            )}
+                          >
                             {payment.description}
                           </td>
                         </TableRow>
@@ -79,10 +102,10 @@ export function DeletePayments({
                   </div>
                 </AlertDialogDescription>
               </AlertDialogHeader>
-              <AlertDialogFooter>
+              <AlertDialogFooter className="pt-8">
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                 <AlertDialogAction
-                  className="bg-red-500 hover:bg-red-600 text-white"
+                  className="bg-red-500 hover:bg-red-600 text-white "
                   onClick={() => {
                     onDeleteConfirmed();
                   }}

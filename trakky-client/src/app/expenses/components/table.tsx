@@ -80,6 +80,8 @@ export function DataTable({
 
   const [filteredData, setFilteredData] = useState<Payment[]>([]);
 
+  const [columnVisibility, setColumnVisibility] = useState({});
+
   const availableYears = data
     .reduce((acc: number[], payment) => {
       const year = new Date(payment.date).getFullYear();
@@ -138,7 +140,9 @@ export function DataTable({
     state: {
       columnFilters,
       globalFilter,
+      columnVisibility,
     },
+    onColumnVisibilityChange: setColumnVisibility,
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
     globalFilterFn: fuzzyFilter,
@@ -236,7 +240,7 @@ export function DataTable({
                 <div className="flex justify-center">
                   <TooltipProvider>
                     <Tooltip>
-                      <TooltipTrigger>
+                      <TooltipTrigger tabIndex={-1}>
                         <Button
                           variant="outline"
                           className="h-8 w-9 p-0 border-none flex ml-0"
@@ -255,7 +259,7 @@ export function DataTable({
               <div className="flex justify-center">
                 <TooltipProvider>
                   <Tooltip>
-                    <TooltipTrigger>
+                    <TooltipTrigger tabIndex={-1}>
                       <Button
                         variant="outline"
                         className="h-8 w-9 p-0 border-none flex ml-0"
@@ -265,7 +269,10 @@ export function DataTable({
                         <SelectIcon />
                       </Button>
                     </TooltipTrigger>
-                    <TooltipContent className="bg-slate-800 text-white">
+                    <TooltipContent
+                      tabIndex={-1}
+                      className="bg-slate-800 text-white"
+                    >
                       <p>Select/Unselect visible rows</p>
                     </TooltipContent>
                   </Tooltip>

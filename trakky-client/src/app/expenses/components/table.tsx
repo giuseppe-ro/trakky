@@ -355,7 +355,7 @@ export function DataTable({
             </div>
           </div>
 
-          <Table className="rounded-b-md bg-slate-950  border border-slate-800 overflow-x-scroll">
+          <Table className="bg-slate-950 border border-slate-800 overflow-x-scroll">
             <TableHeader className="hover:bg-transparent">
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow

@@ -12,7 +12,7 @@ import { Payment } from "@prisma/client";
 const cors = require("cors");
 
 const corsOptions = {
-  origin: "*",
+  origin: ["http://trakky.localhost", "http://trakky.localhost/*"],
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   preflightContinue: false,
   optionsSuccessStatus: 204,

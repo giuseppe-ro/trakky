@@ -53,12 +53,12 @@ function App() {
           />
         )}
         <TabsContent value="overview" className="space-y-4" tabIndex={-1}>
-          <div className="lg:grid gap-4 lg:grid-cols-7">
+          <div className="lg:grid gap-4 lg:grid-cols-9">
             <DataTable
               data={payments}
               selection={selectedYear}
               refreshData={refreshData}
-              {...{ className: "lg:col-span-3" }}
+              {...{ className: "lg:col-span-5" }}
             />
             <Dashboard
               data={payments}

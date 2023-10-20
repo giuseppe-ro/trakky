@@ -46,22 +46,22 @@ export function DeletePayments({
                 <TrashIcon className="hover:text-red-500/50" />
               </Button>
             </AlertDialogTrigger>
-            <AlertDialogContent className="max-h-[450px]  p-2 md:p-6 overflow-auto ">
+            <AlertDialogContent className="max-h-[450px] overflow-auto ">
               <AlertDialogHeader>
                 <div className="sticky top-0 z-50 bg-gray-950">
                   <AlertDialogTitle>
                     Are you sure? This action cannot be undone.
-                    <p className="text-sm text-muted-foreground pb-2">
+                    <p className="text-sm mb-2 text-muted-foreground pb-2">
                       This will permanently delete the below transactions:
                     </p>
                   </AlertDialogTitle>
                 </div>
 
                 <AlertDialogDescription>
-                  <div className="mt-2">
+                  <div className="m-1 md:m-6">
                     {payments.map((payment: Payment) => (
                       <div>
-                        <TableRow key={payment.id}>
+                        <TableRow key={payment.id} className="flex">
                           <td
                             className={cn(
                               `${tdStyle} min-w-[75px] max-w-[75px] text-left`,
@@ -84,15 +84,13 @@ export function DeletePayments({
                           </td>
                           <td
                             className={cn(
-                              `${tdStyle} min-w-[70px] md:min-w-[100px] max-w-[80px] md:max-w-[100px] text-right`,
+                              `${tdStyle} min-w-[70px] md:min-w-[100px] max-w-[80px] md:max-w-[100px] text-right overflow-auto`,
                             )}
                           >
                             {formatCurrency(payment.amount)}
                           </td>
                           <td
-                            className={cn(
-                              `${tdStyle} min-w-[70px] w-screen max-w-[80px] md:max-w-[150px]`,
-                            )}
+                            className={cn(`${tdStyle} flex-grow overflow-auto`)}
                           >
                             {payment.description}
                           </td>
@@ -102,10 +100,12 @@ export function DeletePayments({
                   </div>
                 </AlertDialogDescription>
               </AlertDialogHeader>
-              <AlertDialogFooter className="pt-8">
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogFooter>
+                <AlertDialogCancel className="mx-6 mb-6">
+                  Cancel
+                </AlertDialogCancel>
                 <AlertDialogAction
-                  className="bg-red-500 hover:bg-red-600 text-white "
+                  className="bg-red-500 mx-6 mt-6 hover:bg-red-600 text-white "
                   onClick={() => {
                     onDeleteConfirmed();
                   }}

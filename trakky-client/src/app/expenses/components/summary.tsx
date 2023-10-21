@@ -3,8 +3,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table } from "@tanstack/react-table";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
+import { FadeLeft } from "@/components/animations/fade.tsx";
 
-export function SummaryCard({
+function SummaryCard({
   title,
   contentText,
   contentSubText,
@@ -58,18 +59,10 @@ export function Summary<TData>({
     0,
   );
 
-  const formattedTotal = formatCurrency(totalAmount);
-
-  const partialTotalAmounts: number[] = table
+  const partialTotal: number = table
     .getFilteredRowModel()
-    .rows.map((r) => parseFloat(r.getValue("amount")));
-
-  const partialTotal: number = partialTotalAmounts.reduce(
-    (total, currentAmount) => total + currentAmount,
-    0,
-  );
-
-  const formattedPartialTotal = formatCurrency(partialTotal);
+    .rows.map((r) => parseFloat(r.getValue("amount")))
+    .reduce((total, currentAmount) => total + currentAmount, 0);
 
   const previousYearTotal = totalsPerYear.find(
     (t) => t.date === parseInt(selectedYear) - 1,
@@ -96,23 +89,17 @@ export function Summary<TData>({
     totalAmount > 0 && (
       <Tabs defaultValue="overview" className="space-y-4 animate-fade">
         <TabsContent value="overview" className="space-y-4" tabIndex={-1}>
-          <div
-            className="grid gap-2 md:gap-4 grid-cols-2"
-            data-aos="fade-left"
-            data-aos-easing="ease-out-cubic"
-            data-aos-duration="500"
-            data-aos-mirror="true"
-          >
+          <FadeLeft className="grid gap-2 md:gap-4 grid-cols-2">
             <SummaryCard
               title={"Total"}
-              contentText={formattedTotal}
+              contentText={formatCurrency(totalAmount)}
               contentSubText={changePercentage}
             />
             <SummaryCard
               title={"Partial Total"}
-              contentText={formattedPartialTotal}
+              contentText={formatCurrency(partialTotal)}
             />
-          </div>
+          </FadeLeft>
         </TabsContent>
       </Tabs>
     )

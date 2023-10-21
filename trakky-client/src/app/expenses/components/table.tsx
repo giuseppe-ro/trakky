@@ -22,101 +22,54 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Select,
-  SelectContent,
-  Selection,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  DoubleArrowLeftIcon,
-  DoubleArrowRightIcon,
-  ReloadIcon,
-} from "@radix-ui/react-icons";
 import { Summary, Total } from "@/app/expenses/components/summary";
 import { DeletePayments, Payment } from "@/infrastructure/payment";
 import { fuzzyFilter } from "@/lib/filters";
-import Spinner from "@/components/ui/spinner";
-import { PopupDialog } from "@/app/expenses/components/popup-dialog.tsx";
 import { cn } from "@/lib/utils.ts";
-import { SelectIcon } from "@radix-ui/react-select";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip.tsx";
-import { PaymentForm } from "@/app/expenses/components/payment-form.tsx";
-import { DeletePaymentsDialog } from "@/app/expenses/components/delete-popup.tsx";
 import { Filter } from "@/app/expenses/components/column-filter.tsx";
 import {
   colSize,
   ColumnDefinition,
 } from "@/app/expenses/components/columns.tsx";
-import { PenBoxIcon } from "lucide-react";
+import { TableActionMenu } from "@/app/expenses/components/table-action-menu.tsx";
+import { EditCell } from "@/app/expenses/components/edit-cell.tsx";
+import { Fade } from "@/components/animations/fade.tsx";
 
-export function DataTable({
-  data,
-  selection,
-  refreshData,
+export interface DataTableProps {
+  data: Payment[] | null;
+  selectedYear: string | null;
+  refreshData: () => void;
+}
+
+export function ExpensesTable({
+  dataTableProps,
   ...props
 }: {
-  data: Payment[] | null;
-  selection?: string;
-  refreshData: () => void;
+  dataTableProps: DataTableProps;
 }) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
-
   const [filteredData, setFilteredData] = useState<Payment[]>([]);
-
   const [columnVisibility, setColumnVisibility] = useState({});
 
-  const availableYears =
-    data === null
-      ? []
-      : data
-          .reduce((acc: number[], payment) => {
-            const year = new Date(payment.date).getFullYear();
-            if (!acc.includes(year)) {
-              acc.push(year);
-            }
-            return acc;
-          }, [])
-          .sort((a, b) => b - a)
-          .map((year) => year.toString());
-
-  availableYears.push("All");
-
-  const [selectedYear, setSelectedYear] = useState(
-    selection ? selection : availableYears[0],
-  );
-
   useEffect(() => {
-    if (selection) setSelectedYear(selection);
-  }, [selection]);
-
-  useEffect(() => {
-    if (selectedYear === "All" && data) setFilteredData(data);
-    else if (data) {
+    if (dataTableProps.selectedYear === "All" && dataTableProps.data)
+      setFilteredData(dataTableProps.data);
+    else if (dataTableProps.data && dataTableProps.selectedYear !== null) {
       setFilteredData(
-        data.filter(
+        dataTableProps.data.filter(
           (payment) =>
-            new Date(payment.date).getFullYear() === parseInt(selectedYear),
+            new Date(payment.date).getFullYear() ===
+            parseInt(dataTableProps.selectedYear ?? ""),
         ),
       );
     }
-  }, [data, selectedYear]);
+  }, [dataTableProps.data, dataTableProps.selectedYear]);
 
   const totalsPerYear =
-    data === null
+    dataTableProps.data === null
       ? []
-      : data.reduce((acc: Total[], payment) => {
+      : dataTableProps.data.reduce((acc: Total[], payment) => {
           const year = new Date(payment.date).getFullYear();
           const existing = acc.find((t) => t.date === year);
           if (existing) {
@@ -171,7 +124,7 @@ export function DataTable({
 
     if (deleted) {
       table.resetRowSelection();
-      refreshData();
+      dataTableProps.refreshData();
       alert("Transactions deleted!");
     } else {
       alert("Error! Could not delete transactions");
@@ -180,307 +133,134 @@ export function DataTable({
 
   function onPaymentEdited() {
     table.resetRowSelection();
-    onRefresh();
+    onRefresh().then(() => {});
   }
 
   async function onRefresh() {
     table.resetColumnFilters();
-    refreshData();
+    dataTableProps.refreshData();
   }
 
   return (
     <div {...props}>
       {
         <>
-          {selectedYear && selection === undefined && (
-            <Selection
-              value={selectedYear}
-              onChange={setSelectedYear}
-              options={availableYears}
-              {...{
-                className:
-                  "rounded-md w-full overscroll-contain mb-4 sticky top-20 bg-gray-950 z-50",
-              }}
-            />
-          )}
-          {filteredData === undefined ? (
-            <div className="container h-full mt-16">
-              <Spinner />
-            </div>
-          ) : (
-            <Summary
+          <Summary
+            table={table}
+            totalsPerYear={totalsPerYear}
+            selectedYear={dataTableProps.selectedYear ?? ""}
+          />
+          <Fade>
+            <TableActionMenu
               table={table}
-              totalsPerYear={totalsPerYear}
-              selectedYear={selectedYear}
+              onDeleteConfirmed={onDeleteConfirmed}
+              onRefresh={onRefresh}
             />
-          )}
-          <div
-            className="flex justify-between items-center"
-            data-aos="fade-right"
-            data-aos-easing="ease-out-cubic"
-            data-aos-duration="500"
-            data-aos-delay="500"
-          >
-            <div className="flex justify-end gap-x-1 md:gap-x-3 mt-6 mb-2">
-              <PopupDialog
-                trigger={
-                  <Button
-                    variant="outline"
-                    className="border-green-800 h-8 hover:bg-green-800"
-                  >
-                    Add
-                  </Button>
-                }
-              >
-                <PaymentForm
-                  refresh={onRefresh}
-                  title={"Add New Transaction"}
-                ></PaymentForm>
-              </PopupDialog>
-              {refreshData !== undefined && (
-                <div className="flex justify-center">
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger
-                        onClick={onRefresh}
-                        className="rounded w-8 flex justify-center items-center hover:text-gray-700 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring "
-                      >
-                        <ReloadIcon />
-                      </TooltipTrigger>
-                      <TooltipContent className="bg-slate-800 text-white">
-                        <p>Refresh</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </div>
-              )}
-              <div className="flex justify-center">
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger
-                      className="rounded w-8 hover:text-gray-700 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring "
-                      onClick={table.getToggleAllPageRowsSelectedHandler()}
-                    >
-                      <SelectIcon />
-                    </TooltipTrigger>
-                    <TooltipContent
-                      tabIndex={-1}
-                      className="bg-slate-800 text-white"
-                    >
-                      <p>Select/Unselect visible rows</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
-              <div className="flex justify-center">
-                {table.getIsSomeRowsSelected() && (
-                  <DeletePaymentsDialog
-                    tooltipText={"Delete selected rows"}
-                    onDeleteConfirmed={onDeleteConfirmed}
-                    payments={table
-                      .getSelectedRowModel()
-                      .rows.map((row: any) => row.original as Payment)}
-                  ></DeletePaymentsDialog>
-                )}
-              </div>
-            </div>
-            <div className="flex justify-end gap-x-1 md:gap-x-3 mt-6 mb-2 ">
-              <Select
-                value={table.getState().pagination.pageSize.toString()}
-                onValueChange={(value) => {
-                  table.setPageSize(Number(value));
-                }}
-              >
-                <SelectTrigger className="h-8 w-[60px] m-0 rounded-md text-xs md:text-sm font-thin md:font-light">
-                  <SelectValue
-                    placeholder={table.getState().pagination.pageSize}
-                  />
-                </SelectTrigger>
-                <SelectContent
-                  side="top"
-                  className="bg-slate-900 focus:bg-slate-600 active:bg-slate-600"
-                >
-                  {[10, 20, 30, 40, 50].map((pageSize) => (
-                    <SelectItem key={pageSize} value={`${pageSize}`}>
-                      {pageSize}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <div className="flex items-center text-sm font-thin whitespace-nowrap">
-                {table.getState().pagination.pageIndex + 1} of{" "}
-                {table.getPageCount()}
-              </div>
-              <div className={"flex justify-between gap-x-2"}>
-                <div className="flex gap-x-1">
-                  <Button
-                    variant="outline"
-                    className="h-8 w-8 p-0 hidden md:flex ml-0"
-                    onClick={() => table.setPageIndex(0)}
-                    disabled={!table.getCanPreviousPage()}
-                  >
-                    <span className="sr-only">Go to first page</span>
-                    <DoubleArrowLeftIcon className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="h-8 w-8 p-0"
-                    onClick={() => table.previousPage()}
-                    disabled={!table.getCanPreviousPage()}
-                  >
-                    <span className="sr-only">Go to previous page</span>
-                    <ChevronLeftIcon className="h-4 w-4" />
-                  </Button>
-                </div>
-                <div className="flex gap-x-1">
-                  <Button
-                    variant="outline"
-                    className="h-8 w-8 p-0"
-                    onClick={() => table.nextPage()}
-                    disabled={!table.getCanNextPage()}
-                  >
-                    <span className="sr-only">Go to next page</span>
-                    <ChevronRightIcon className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="h-8 w-8 p-0 hidden md:flex"
-                    onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                    disabled={!table.getCanNextPage()}
-                  >
-                    <span className="sr-only">Go to last page</span>
-                    <DoubleArrowRightIcon className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div
-            data-aos="fade-up"
-            data-aos-easing="ease-out-cubic"
-            data-aos-duration="500"
-            data-aos-delay="500"
-          >
-            <Table className="bg-slate-950 border border-slate-800 overflow-x-scroll">
-              <TableHeader className="hover:bg-transparent">
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow
-                    key={headerGroup.id}
-                    className="border border-slate-800"
-                  >
-                    {headerGroup.headers.map((header) => {
-                      return (
-                        <TableHead
-                          className="h-full border border-slate-800 text-center text-xs md:text-sm"
-                          key={header.id}
-                          {...{
-                            colSpan: header.colSpan,
-                            style: {
-                              backgroundColor: "bg-slate-950",
-                              width: colSize(header.id),
-                              maxWidth: colSize(header.id),
-                              overflow: "auto",
-                            },
-                          }}
-                        >
-                          {header.isPlaceholder ? null : (
-                            <>
-                              <div
-                                {...{
-                                  className:
-                                    header.column.getCanSort() +
-                                    "items-center border justify-center flex-col"
-                                      ? "cursor-pointer select-none"
-                                      : "",
-                                  onClick:
-                                    header.column.getToggleSortingHandler(),
-                                }}
-                              >
-                                {flexRender(
-                                  header.column.columnDef.header,
-                                  header.getContext(),
-                                )}
-                                {{
-                                  asc: "↑",
-                                  desc: "↓",
-                                }[header.column.getIsSorted() as string] ??
-                                  null}
-                              </div>
-                              {header.column.getCanFilter() ? (
-                                <div className="m-0 p-0">
-                                  <Filter
-                                    column={header.column}
-                                    table={table}
-                                  />
-                                </div>
-                              ) : null}
-                            </>
-                          )}
-                        </TableHead>
-                      );
-                    })}
-                  </TableRow>
-                ))}
-              </TableHeader>
-              <TableBody>
-                {table.getRowModel().rows.map((row) => {
-                  return (
+            <div>
+              <Table className="bg-slate-950 border border-slate-800 overflow-x-scroll">
+                <TableHeader className="hover:bg-transparent">
+                  {table.getHeaderGroups().map((headerGroup) => (
                     <TableRow
-                      key={row.id}
-                      onClick={row.getToggleSelectedHandler()}
-                      className={cn(
-                        "hover:bg-slate-800/50 border border-slate-800",
-                        row.getIsSelected() &&
-                          "bg-slate-600/50 hover:bg-slate-600",
-                      )}
-                      {...{
-                        style: {
-                          overflow: "auto",
-                        },
-                      }}
+                      key={headerGroup.id}
+                      className="border border-slate-800"
                     >
-                      {row.getVisibleCells().map((cell) => {
+                      {headerGroup.headers.map((header) => {
                         return (
-                          <td
-                            key={cell.id}
-                            className="px-2 truncate text-xs font-thin md:font-normal md:text-sm"
+                          <TableHead
+                            className="h-full border border-slate-800 text-center text-xs md:text-sm"
+                            key={header.id}
+                            {...{
+                              colSpan: header.colSpan,
+                              style: {
+                                backgroundColor: "bg-slate-950",
+                                width: colSize(header.id),
+                                maxWidth: colSize(header.id),
+                                overflow: "auto",
+                              },
+                            }}
                           >
-                            {flexRender(
-                              cell.column.columnDef.cell,
-                              cell.getContext(),
+                            {header.isPlaceholder ? null : (
+                              <>
+                                <div
+                                  {...{
+                                    className:
+                                      header.column.getCanSort() +
+                                      "items-center border justify-center flex-col"
+                                        ? "cursor-pointer select-none"
+                                        : "",
+                                    onClick:
+                                      header.column.getToggleSortingHandler(),
+                                  }}
+                                >
+                                  {flexRender(
+                                    header.column.columnDef.header,
+                                    header.getContext(),
+                                  )}
+                                  {{
+                                    asc: "↑",
+                                    desc: "↓",
+                                  }[header.column.getIsSorted() as string] ??
+                                    null}
+                                </div>
+                                {header.column.getCanFilter() ? (
+                                  <div className="m-0 p-0">
+                                    <Filter
+                                      column={header.column}
+                                      table={table}
+                                    />
+                                  </div>
+                                ) : null}
+                              </>
                             )}
-                          </td>
+                          </TableHead>
                         );
                       })}
-                      <td>
-                        <PopupDialog
-                          trigger={
-                            <Button
-                              variant="outline"
-                              className="bg-transparent hover:bg-transparent p-0 mx-1 my-0 h-5 border-none hover:text-green-500"
-                            >
-                              <PenBoxIcon
-                                width={16}
-                                height={16}
-                                className="hover:text-green-500 text-green-700"
-                              ></PenBoxIcon>
-                            </Button>
-                          }
-                        >
-                          <PaymentForm
-                            editValues={row.original as Payment}
-                            refresh={onPaymentEdited}
-                            title={"Edit Transaction"}
-                          ></PaymentForm>
-                        </PopupDialog>
-                      </td>
                     </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </div>
+                  ))}
+                </TableHeader>
+                <TableBody>
+                  {table.getRowModel().rows.map((row) => {
+                    return (
+                      <TableRow
+                        key={row.id}
+                        onClick={row.getToggleSelectedHandler()}
+                        className={cn(
+                          "hover:bg-slate-800/50 border border-slate-800",
+                          row.getIsSelected() &&
+                            "bg-slate-600/50 hover:bg-slate-600",
+                        )}
+                        {...{
+                          style: {
+                            overflow: "auto",
+                          },
+                        }}
+                      >
+                        {row.getVisibleCells().map((cell) => {
+                          return (
+                            <td
+                              key={cell.id}
+                              className="px-2 truncate text-xs font-thin md:font-normal md:text-sm"
+                            >
+                              {flexRender(
+                                cell.column.columnDef.cell,
+                                cell.getContext(),
+                              )}
+                            </td>
+                          );
+                        })}
+                        <td>
+                          <EditCell
+                            onPaymentEdited={onPaymentEdited}
+                            payment={row.original as Payment}
+                          />
+                        </td>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </div>
+          </Fade>
         </>
       }
     </div>

@@ -15,7 +15,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog.tsx";
-import { Button } from "@/components/ui/button.tsx";
 import { TrashIcon } from "@radix-ui/react-icons";
 import { Payment } from "@/infrastructure/payment.tsx";
 import { TableRow } from "@/components/ui/table.tsx";
@@ -39,12 +38,7 @@ export function DeletePaymentsDialog({
         <TooltipTrigger tabIndex={-1}>
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button
-                variant="outline"
-                className="h-8 w-8 p-0 border-none text-red-600  hover:bg-transparent hover:text-red-500/50 flex ml-0"
-              >
-                <TrashIcon className="hover:text-red-500/50" />
-              </Button>
+              <TrashIcon className="hover:text-red-500/50 w-8" />
             </AlertDialogTrigger>
             <AlertDialogContent className="max-h-[450px] overflow-auto ">
               <AlertDialogHeader>
@@ -60,7 +54,7 @@ export function DeletePaymentsDialog({
                 <AlertDialogDescription>
                   <div className="m-1 md:m-6">
                     {payments.map((payment: Payment) => (
-                      <div>
+                      <>
                         <TableRow key={payment.id} className="flex">
                           <td className={cn(`${tdStyle} w-[75px] text-left`)}>
                             {new Date(payment.date).toLocaleString("en-GB", {
@@ -85,7 +79,7 @@ export function DeletePaymentsDialog({
                             {payment.description}
                           </td>
                         </TableRow>
-                      </div>
+                      </>
                     ))}
                   </div>
                 </AlertDialogDescription>
@@ -97,7 +91,9 @@ export function DeletePaymentsDialog({
                 <AlertDialogAction
                   className="bg-red-500 mx-6 mt-6 hover:bg-red-600 text-white "
                   onClick={() => {
-                    onDeleteConfirmed();
+                    onDeleteConfirmed().then(() => {
+                      console.log("payment deleted");
+                    });
                   }}
                 >
                   Continue

@@ -7,3 +7,11 @@ export async function getBudgets() {
 
   return response;
 }
+
+export async function addBudgets(budgets: any) {
+  const response = await prisma.budget.createMany({
+    data: budgets
+  });
+
+  return response;
+}

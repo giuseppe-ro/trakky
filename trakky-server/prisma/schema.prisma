@@ -26,3 +26,13 @@ model Budget {
   budget    Float
   maxBudget Float
 }
+
+model Type {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+}
+
+model Owner {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+}

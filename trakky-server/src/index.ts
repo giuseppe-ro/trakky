@@ -8,8 +8,6 @@ import {
 } from "./payments";
 import { getBudgets } from "./budgets";
 import { Payment } from "@prisma/client";
-// import data from "./data.json"
-// import budgets from "./budgets.json"
 import { getTypes } from "./types";
 import { getOwners } from "./owners";
 
@@ -130,56 +128,3 @@ app.get("/types", cors(corsOptions), (req: Request, res: Response) => {
 app.listen(port, () => {
   console.log(`⚡️[server]: Server is running at http://${host}:${port}`);
 });
-
-
-// app.get("/uploadall", cors(corsOptions), async (req: Request, res: Response) => {
-  // const newPayments = data.map(p =>
-  // {
-  //   return     {
-  //     amount: Number(p.amount),
-  //     description: p.description,
-  //     date: new Date(p.date),
-  //     id: p.id,
-  //     owner: p.owner,
-  //     type: p.type
-  //   }
-  // });
-
-  // const newBudgets = budgets.map(b => {
-  //   return {
-  //     date: new Date(b.date),
-  //     budget: Number(b.budget),
-  //     maxBudget: Number(b.maxBudget)
-  //   }
-  // })
-
-  // addBudgets(newBudgets).then(r => console.log(r))
-
-  // const types: Type[] = [
-  //   { id: 1, name: "Food" },
-  //   { id: 2, name: "Bills" },
-  //   { id: 3, name: "Transport" },
-  //   { id: 4, name: "Personal" },
-  //   { id: 5, name: "General" },
-  //   { id: 6, name: "House" },
-  // ]
-
-  // const owners: Owner[] = [
-  //   { id: 1, name: "Ray" },
-  //   { id: 2, name: "Micia" },
-  // ]
-
-  // addPayments(newPayments)
-  //   .then((addedPayments) => {
-      
-  //     addTypes(types).then(r => console.log(r))
-  //     addOwners(owners).then(r => console.log(r))
-
-  //     res.send(addedPayments);
-  //   })
-  //   .catch((e) => {
-  //     console.log(e);
-  //     res.status(400);
-  //     res.send(e);
-  //   });
-// });

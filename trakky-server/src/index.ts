@@ -6,12 +6,12 @@ import {
   getPayment,
   updatePayment,
 } from "./payments";
-import { addBudgets, getBudgets } from "./budgets";
-import { Budget, Owner, Payment, Type } from "@prisma/client";
-import data from "./data.json"
-import budgets from "./budgets.json"
-import { addTypes, getTypes } from "./types";
-import { addOwners, getOwners } from "./owners";
+import { getBudgets } from "./budgets";
+import { Payment } from "@prisma/client";
+// import data from "./data.json"
+// import budgets from "./budgets.json"
+import { getTypes } from "./types";
+import { getOwners } from "./owners";
 
 const cors = require("cors");
 

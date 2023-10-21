@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { Budget, PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -8,7 +8,7 @@ export async function getBudgets() {
   return response;
 }
 
-export async function addBudgets(budgets: any) {
+export async function addBudgets(budgets: Budget[]) {
   const response = await prisma.budget.createMany({
     data: budgets
   });

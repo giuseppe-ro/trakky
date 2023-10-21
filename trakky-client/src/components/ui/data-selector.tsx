@@ -1,4 +1,5 @@
 import { Selection } from "@/components/ui/select.tsx";
+import { FadeRight } from "@/components/animations/fade.tsx";
 
 export function YearSelection({
   availableYears,
@@ -11,13 +12,7 @@ export function YearSelection({
 }) {
   return (
     availableYears.length > 0 && (
-      <div
-        data-aos="fade-right"
-        data-aos-easing="ease-out-cubic"
-        data-aos-duration="500"
-        data-aos-delay="100"
-        className="sticky top-20 z-50"
-      >
+      <FadeRight className="sticky top-20 z-50">
         <Selection
           value={selectedYear}
           onChange={onYearChange}
@@ -26,7 +21,7 @@ export function YearSelection({
             className: "rounded-md w-full overscroll-contain bg-gray-950",
           }}
         />
-      </div>
+      </FadeRight>
     )
   );
 }

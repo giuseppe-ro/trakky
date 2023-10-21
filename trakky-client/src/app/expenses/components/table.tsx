@@ -33,7 +33,7 @@ import {
 } from "@/app/expenses/components/columns.tsx";
 import { TableActionMenu } from "@/app/expenses/components/table-action-menu.tsx";
 import { EditCell } from "@/app/expenses/components/edit-cell.tsx";
-import { Fade } from "@/components/animations/fade.tsx";
+import { FadeUp } from "@/components/animations/fade.tsx";
 
 export interface DataTableProps {
   data: Payment[] | null;
@@ -150,7 +150,7 @@ export function ExpensesTable({
             totalsPerYear={totalsPerYear}
             selectedYear={dataTableProps.selectedYear ?? ""}
           />
-          <Fade>
+          <FadeUp>
             <TableActionMenu
               table={table}
               onDeleteConfirmed={onDeleteConfirmed}
@@ -260,7 +260,7 @@ export function ExpensesTable({
                 </TableBody>
               </Table>
             </div>
-          </Fade>
+          </FadeUp>
         </>
       }
     </div>

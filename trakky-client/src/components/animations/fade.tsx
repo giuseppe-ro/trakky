@@ -9,7 +9,7 @@ export function FadeUp({
       data-aos="fade-up"
       data-aos-easing="ease-out-cubic"
       data-aos-duration="500"
-      data-aos-delay="1000"
+      data-aos-delay="800"
       {...props}
     >
       {children}

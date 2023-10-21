@@ -25,6 +25,7 @@ import {
   SelectValue,
 } from "@/components/ui/select.tsx";
 import { Table } from "@tanstack/react-table";
+import { ExportDropdownMenu } from "@/app/expenses/components/download-dropdown.tsx";
 
 export function TableActionMenu({
   table,
@@ -79,6 +80,16 @@ export function TableActionMenu({
               </TooltipTrigger>
               <TooltipContent tabIndex={-1} className="bg-slate-800 text-white">
                 <p>Select/Unselect visible rows</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger className="rounded w-8 hover:text-green-700 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring ">
+                <ExportDropdownMenu table={table} />
+              </TooltipTrigger>
+              <TooltipContent className="bg-slate-800 text-white">
+                <p>Export</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>

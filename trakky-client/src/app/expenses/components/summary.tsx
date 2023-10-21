@@ -52,16 +52,18 @@ export function Summary<TData>({
   const totalAmounts: number[] = table
     .getPreFilteredRowModel()
     .rows.map((r) => parseFloat(r.getValue("amount")));
-  const total: number = totalAmounts.reduce(
+
+  const totalAmount = totalAmounts.reduce(
     (total, currentAmount) => total + currentAmount,
     0,
   );
 
-  const formattedTotal = formatCurrency(total);
+  const formattedTotal = formatCurrency(totalAmount);
 
   const partialTotalAmounts: number[] = table
     .getFilteredRowModel()
     .rows.map((r) => parseFloat(r.getValue("amount")));
+
   const partialTotal: number = partialTotalAmounts.reduce(
     (total, currentAmount) => total + currentAmount,
     0,
@@ -77,7 +79,8 @@ export function Summary<TData>({
     previousYearTotal === undefined || previousYearTotal.amount === 0
       ? 0
       : Math.round(
-          ((total - previousYearTotal.amount) / previousYearTotal.amount) *
+          ((totalAmount - previousYearTotal.amount) /
+            previousYearTotal.amount) *
             100 *
             100,
         ) / 100;
@@ -90,20 +93,28 @@ export function Summary<TData>({
       : "";
 
   return (
-    <Tabs defaultValue="overview" className="space-y-4">
-      <TabsContent value="overview" className="space-y-4" tabIndex={-1}>
-        <div className="grid gap-2 md:gap-4 grid-cols-2">
-          <SummaryCard
-            title={"Total"}
-            contentText={formattedTotal}
-            contentSubText={changePercentage}
-          />
-          <SummaryCard
-            title={"Partial Total"}
-            contentText={formattedPartialTotal}
-          />
-        </div>
-      </TabsContent>
-    </Tabs>
+    totalAmount > 0 && (
+      <Tabs defaultValue="overview" className="space-y-4 animate-fade">
+        <TabsContent value="overview" className="space-y-4" tabIndex={-1}>
+          <div
+            className="grid gap-2 md:gap-4 grid-cols-2"
+            data-aos="fade-left"
+            data-aos-easing="ease-out-cubic"
+            data-aos-duration="500"
+            data-aos-mirror="true"
+          >
+            <SummaryCard
+              title={"Total"}
+              contentText={formattedTotal}
+              contentSubText={changePercentage}
+            />
+            <SummaryCard
+              title={"Partial Total"}
+              contentText={formattedPartialTotal}
+            />
+          </div>
+        </TabsContent>
+      </Tabs>
+    )
   );
 }

@@ -33,11 +33,24 @@ import { Calendar } from "@/components/ui/calendar.tsx";
 import React from "react";
 import axios from "axios";
 import { Textarea } from "@/components/ui/textarea.tsx";
-import { Payment } from "@/infrastructure/payment.tsx";
-import { serverUrl } from "@/constants.ts";
+import {
+  AddPayments,
+  EditPayment,
+  Payment,
+} from "@/infrastructure/payment.tsx";
+import { fetchOwners } from "@/infrastructure/owner.tsx";
+import { fetchTypes } from "@/infrastructure/transaction-type.tsx";
 
-const types = ["Bills", "Transport", "Personal", "General", "House"];
-const owners = ["Ray", "Micia"];
+let types: string[] = [];
+let owners: string[] = [];
+
+fetchOwners()
+  .then((o) => o.map((owner) => owner.name))
+  .then((o) => (owners = o));
+
+fetchTypes()
+  .then((t) => t.map((type) => type.name))
+  .then((t) => (types = t));
 
 const customErrorMap: z.ZodErrorMap = (issue, ctx) => {
   if (issue.code === z.ZodIssueCode.invalid_type) {
@@ -98,31 +111,24 @@ export function PaymentForm({
     setIsError(false);
     console.log(values);
 
-    try {
-      const res =
-        editValues === undefined
-          ? await axios.post(`${serverUrl}/payments`, [values])
-          : await axios.put(`${serverUrl}/payments`, values);
+    const success =
+      editValues === undefined
+        ? await AddPayments(values as unknown as Payment[])
+        : await EditPayment(values as unknown as Payment);
 
-      if (res.status === 200) {
-        setIsSuccess(true);
-        if (editValues === undefined) {
-          form.resetField("amount");
-          form.resetField("description");
-          form.setFocus("amount");
-        }
-
-        setTimeout(() => {
-          refresh();
-          setIsSuccess(false);
-        }, 1000);
-      } else {
-        setIsError(true);
-        console.log(res);
+    if (success) {
+      setIsSuccess(true);
+      if (editValues === undefined) {
+        form.resetField("amount");
+        form.resetField("description");
+        form.setFocus("amount");
       }
-    } catch (e) {
+      setTimeout(() => {
+        refresh();
+        setIsSuccess(false);
+      }, 1000);
+    } else {
       setIsError(true);
-      console.log(e);
     }
   }
 

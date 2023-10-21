@@ -1,4 +1,8 @@
-import { serverUrl } from "@/constants.ts";
+import { serverUrl, demoMode } from "@/constants.ts";
+import { makeBudgets } from "@/lib/makeData.ts";
+import axios from "axios";
+
+axios.defaults.headers.post["Content-Type"] = "application/json";
 
 export interface Budget {
   date: string;
@@ -7,7 +11,8 @@ export interface Budget {
 }
 
 export async function fetchBudgets(): Promise<Budget[]> {
-  let response = await fetch(`${serverUrl}/budgets`);
-  let json: any = await response.json();
-  return json as Budget[];
+  if (demoMode) return makeBudgets();
+
+  let response = await axios.get(`${serverUrl}/budgets`);
+  return (await response.data) as Budget[];
 }

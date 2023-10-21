@@ -22,7 +22,7 @@ import { TableRow } from "@/components/ui/table.tsx";
 import { formatCurrency } from "@/lib/formatter.ts";
 import { cn } from "@/lib/utils.ts";
 
-export function DeletePayments({
+export function DeletePaymentsDialog({
   onDeleteConfirmed,
   payments,
   tooltipText,

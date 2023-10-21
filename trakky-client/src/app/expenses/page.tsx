@@ -5,7 +5,7 @@ import { fetchPayments, Payment } from "@/infrastructure/payment.tsx";
 import { useEffect, useState } from "react";
 
 export default function ExpensesPage() {
-  const [payments, setPayments] = useState<Payment[]>([]);
+  const [payments, setPayments] = useState<Payment[] | null>(null);
 
   async function refreshData() {
     setPayments([]);

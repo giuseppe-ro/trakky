@@ -24,7 +24,7 @@ export function Dashboard({
   data: Payment[];
   selection?: string;
 }) {
-  const [budgets, setBudgets] = useState<Budget[]>([]);
+  const [budgets, setBudgets] = useState<Budget[] | null>(null);
 
   useEffect(() => {
     fetchBudgets().then((data) => {
@@ -34,7 +34,7 @@ export function Dashboard({
 
   const availableYears = getAvailableYears(data);
   availableYears.push("All");
-  const [filteredData, setFilteredData] = useState<Payment[]>([]);
+  const [filteredData, setFilteredData] = useState<Payment[] | null>(null);
 
   const [selectedYear, setSelectedYear] = useState<string>(
     selection ? selection : availableYears[0],
@@ -47,10 +47,10 @@ export function Dashboard({
   }, [selection]);
 
   useEffect(() => {
-    if (selectedYear === "All") {
+    if (selectedYear === "All" && budgets) {
       setFilteredData(data);
       setSummary(getYearlySummaries(data, budgets));
-    } else {
+    } else if (budgets) {
       const newData = data.filter(
         (payment) =>
           new Date(payment.date).getFullYear() === parseInt(selectedYear),
@@ -63,17 +63,24 @@ export function Dashboard({
       if (budget) {
         setSummary(getMonthlySummariesForYear(newData, budget));
       }
+    } else {
+      setFilteredData([]);
     }
   }, [selectedYear, data]);
 
-  return filteredData.length === 0 ? (
+  return filteredData === null ? (
     selection === undefined ? (
       <Spinner></Spinner>
     ) : (
       <></>
     )
   ) : (
-    <div {...props}>
+    <div
+      {...props}
+      data-aos="fade-left"
+      data-aos-easing="ease-out-cubic"
+      data-aos-mirror="true"
+    >
       <Tabs defaultValue="overview" className="space-y-4">
         <TabsContent value="overview" className="space-y-4" tabIndex={-1}>
           {selectedYear && selection === undefined && (
@@ -86,11 +93,6 @@ export function Dashboard({
                   "rounded-md w-full overscroll-contain mb-4 sticky top-20 bg-gray-950 z-50",
               }}
             />
-          )}
-          {filteredData.length === 0 && (
-            <div className="container h-full mt-16">
-              <Spinner />
-            </div>
           )}
           <Card className="p-0">
             <CardHeader>

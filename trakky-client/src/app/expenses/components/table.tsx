@@ -39,7 +39,7 @@ import {
   ReloadIcon,
 } from "@radix-ui/react-icons";
 import { Summary, Total } from "@/app/expenses/components/summary";
-import { Payment } from "@/infrastructure/payment";
+import { DeletePayments, Payment } from "@/infrastructure/payment";
 import { fuzzyFilter } from "@/lib/filters";
 import Spinner from "@/components/ui/spinner";
 import { PopupDialog } from "@/app/expenses/components/popup-dialog.tsx";
@@ -51,19 +51,14 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip.tsx";
-import axios from "axios";
 import { PaymentForm } from "@/app/expenses/components/payment-form.tsx";
-import { DeletePayments } from "@/app/expenses/components/delete-popup.tsx";
+import { DeletePaymentsDialog } from "@/app/expenses/components/delete-popup.tsx";
 import { Filter } from "@/app/expenses/components/column-filter.tsx";
 import {
   colSize,
   ColumnDefinition,
 } from "@/app/expenses/components/columns.tsx";
 import { PenBoxIcon } from "lucide-react";
-import { serverUrl } from "@/constants.ts";
-
-axios.defaults.headers.post["Content-Type"] = "application/json";
-axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
 
 export function DataTable({
   data,
@@ -71,7 +66,7 @@ export function DataTable({
   refreshData,
   ...props
 }: {
-  data: Payment[];
+  data: Payment[] | null;
   selection?: string;
   refreshData: () => void;
 }) {
@@ -82,16 +77,19 @@ export function DataTable({
 
   const [columnVisibility, setColumnVisibility] = useState({});
 
-  const availableYears = data
-    .reduce((acc: number[], payment) => {
-      const year = new Date(payment.date).getFullYear();
-      if (!acc.includes(year)) {
-        acc.push(year);
-      }
-      return acc;
-    }, [])
-    .sort((a, b) => b - a)
-    .map((year) => year.toString());
+  const availableYears =
+    data === null
+      ? []
+      : data
+          .reduce((acc: number[], payment) => {
+            const year = new Date(payment.date).getFullYear();
+            if (!acc.includes(year)) {
+              acc.push(year);
+            }
+            return acc;
+          }, [])
+          .sort((a, b) => b - a)
+          .map((year) => year.toString());
 
   availableYears.push("All");
 
@@ -104,8 +102,8 @@ export function DataTable({
   }, [selection]);
 
   useEffect(() => {
-    if (selectedYear === "All") setFilteredData(data);
-    else {
+    if (selectedYear === "All" && data) setFilteredData(data);
+    else if (data) {
       setFilteredData(
         data.filter(
           (payment) =>
@@ -115,16 +113,19 @@ export function DataTable({
     }
   }, [data, selectedYear]);
 
-  const totalsPerYear = data.reduce((acc: Total[], payment) => {
-    const year = new Date(payment.date).getFullYear();
-    const existing = acc.find((t) => t.date === year);
-    if (existing) {
-      existing.amount += payment.amount;
-    } else {
-      acc.push({ amount: payment.amount, date: year });
-    }
-    return acc;
-  }, []);
+  const totalsPerYear =
+    data === null
+      ? []
+      : data.reduce((acc: Total[], payment) => {
+          const year = new Date(payment.date).getFullYear();
+          const existing = acc.find((t) => t.date === year);
+          if (existing) {
+            existing.amount += payment.amount;
+          } else {
+            acc.push({ amount: payment.amount, date: year });
+          }
+          return acc;
+        }, []);
 
   const columns = useMemo<ColumnDef<Payment, number | string>[]>(
     () => ColumnDefinition,
@@ -162,23 +163,17 @@ export function DataTable({
     console.log("Delete clicked!");
     const ids = table
       .getSelectedRowModel()
-      .rows.map((row: any) => row.original.id);
+      .rows.map((row: any) => row.original.id) as number[];
 
     console.log(ids);
 
-    try {
-      const res = await axios.delete(`${serverUrl}/payments`, {
-        data: ids,
-      });
+    const deleted = await DeletePayments(ids);
 
-      if (res.status === 200) {
-        table.resetRowSelection();
-        refreshData();
-        alert("Transactions deleted!");
-      } else {
-        alert("Error! Could not delete transactions");
-      }
-    } catch (e) {
+    if (deleted) {
+      table.resetRowSelection();
+      refreshData();
+      alert("Transactions deleted!");
+    } else {
       alert("Error! Could not delete transactions");
     }
   }
@@ -188,7 +183,7 @@ export function DataTable({
     onRefresh();
   }
 
-  function onRefresh() {
+  async function onRefresh() {
     table.resetColumnFilters();
     refreshData();
   }
@@ -208,7 +203,7 @@ export function DataTable({
               }}
             />
           )}
-          {filteredData.length === 0 ? (
+          {filteredData === undefined ? (
             <div className="container h-full mt-16">
               <Spinner />
             </div>
@@ -219,7 +214,13 @@ export function DataTable({
               selectedYear={selectedYear}
             />
           )}
-          <div className="flex justify-between items-center">
+          <div
+            className="flex justify-between items-center"
+            data-aos="fade-right"
+            data-aos-easing="ease-out-cubic"
+            data-aos-duration="500"
+            data-aos-delay="500"
+          >
             <div className="flex justify-end gap-x-1 md:gap-x-3 mt-6 mb-2">
               <PopupDialog
                 trigger={
@@ -240,14 +241,11 @@ export function DataTable({
                 <div className="flex justify-center">
                   <TooltipProvider>
                     <Tooltip>
-                      <TooltipTrigger tabIndex={-1}>
-                        <Button
-                          variant="outline"
-                          className="h-8 w-9 p-0 border-none bg-transparent hover:bg-transparent hover:text-gray-700 flex ml-0"
-                          onClick={onRefresh}
-                        >
-                          <ReloadIcon />
-                        </Button>
+                      <TooltipTrigger
+                        onClick={onRefresh}
+                        className="rounded w-8 flex justify-center items-center hover:text-gray-700 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring "
+                      >
+                        <ReloadIcon />
                       </TooltipTrigger>
                       <TooltipContent className="bg-slate-800 text-white">
                         <p>Refresh</p>
@@ -259,15 +257,11 @@ export function DataTable({
               <div className="flex justify-center">
                 <TooltipProvider>
                   <Tooltip>
-                    <TooltipTrigger tabIndex={-1}>
-                      <Button
-                        variant="outline"
-                        className="h-8 w-9 p-0 border-none hover:bg-transparent hover:text-gray-700 flex ml-0"
-                        onClick={table.getToggleAllPageRowsSelectedHandler()}
-                      >
-                        <span className="sr-only">Reload</span>
-                        <SelectIcon />
-                      </Button>
+                    <TooltipTrigger
+                      className="rounded w-8 hover:text-gray-700 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring "
+                      onClick={table.getToggleAllPageRowsSelectedHandler()}
+                    >
+                      <SelectIcon />
                     </TooltipTrigger>
                     <TooltipContent
                       tabIndex={-1}
@@ -280,13 +274,13 @@ export function DataTable({
               </div>
               <div className="flex justify-center">
                 {table.getIsSomeRowsSelected() && (
-                  <DeletePayments
+                  <DeletePaymentsDialog
                     tooltipText={"Delete selected rows"}
                     onDeleteConfirmed={onDeleteConfirmed}
                     payments={table
                       .getSelectedRowModel()
                       .rows.map((row: any) => row.original as Payment)}
-                  ></DeletePayments>
+                  ></DeletePaymentsDialog>
                 )}
               </div>
             </div>
@@ -362,120 +356,131 @@ export function DataTable({
             </div>
           </div>
 
-          <Table className="bg-slate-950 border border-slate-800 overflow-x-scroll">
-            <TableHeader className="hover:bg-transparent">
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow
-                  key={headerGroup.id}
-                  className="border border-slate-800"
-                >
-                  {headerGroup.headers.map((header) => {
-                    return (
-                      <TableHead
-                        className="h-full border border-slate-800 text-center text-xs md:text-sm"
-                        key={header.id}
-                        {...{
-                          colSpan: header.colSpan,
-                          style: {
-                            backgroundColor: "bg-slate-950",
-                            width: colSize(header.id),
-                            maxWidth: colSize(header.id),
-                            overflow: "auto",
-                          },
-                        }}
-                      >
-                        {header.isPlaceholder ? null : (
-                          <>
-                            <div
-                              {...{
-                                className:
-                                  header.column.getCanSort() +
-                                  "items-center border justify-center flex-col"
-                                    ? "cursor-pointer select-none"
-                                    : "",
-                                onClick:
-                                  header.column.getToggleSortingHandler(),
-                              }}
-                            >
-                              {flexRender(
-                                header.column.columnDef.header,
-                                header.getContext(),
-                              )}
-                              {{
-                                asc: "↑",
-                                desc: "↓",
-                              }[header.column.getIsSorted() as string] ?? null}
-                            </div>
-                            {header.column.getCanFilter() ? (
-                              <div className="m-0 p-0">
-                                <Filter column={header.column} table={table} />
-                              </div>
-                            ) : null}
-                          </>
-                        )}
-                      </TableHead>
-                    );
-                  })}
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody>
-              {table.getRowModel().rows.map((row) => {
-                return (
+          <div
+            data-aos="fade-up"
+            data-aos-easing="ease-out-cubic"
+            data-aos-duration="500"
+            data-aos-delay="500"
+          >
+            <Table className="bg-slate-950 border border-slate-800 overflow-x-scroll">
+              <TableHeader className="hover:bg-transparent">
+                {table.getHeaderGroups().map((headerGroup) => (
                   <TableRow
-                    key={row.id}
-                    onClick={row.getToggleSelectedHandler()}
-                    className={cn(
-                      "hover:bg-slate-800/50 border border-slate-800",
-                      row.getIsSelected() &&
-                        "bg-slate-600/50 hover:bg-slate-600",
-                    )}
-                    {...{
-                      style: {
-                        overflow: "auto",
-                      },
-                    }}
+                    key={headerGroup.id}
+                    className="border border-slate-800"
                   >
-                    {row.getVisibleCells().map((cell) => {
+                    {headerGroup.headers.map((header) => {
                       return (
-                        <td
-                          key={cell.id}
-                          className="px-2 truncate text-xs font-thin md:font-normal md:text-sm"
+                        <TableHead
+                          className="h-full border border-slate-800 text-center text-xs md:text-sm"
+                          key={header.id}
+                          {...{
+                            colSpan: header.colSpan,
+                            style: {
+                              backgroundColor: "bg-slate-950",
+                              width: colSize(header.id),
+                              maxWidth: colSize(header.id),
+                              overflow: "auto",
+                            },
+                          }}
                         >
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext(),
+                          {header.isPlaceholder ? null : (
+                            <>
+                              <div
+                                {...{
+                                  className:
+                                    header.column.getCanSort() +
+                                    "items-center border justify-center flex-col"
+                                      ? "cursor-pointer select-none"
+                                      : "",
+                                  onClick:
+                                    header.column.getToggleSortingHandler(),
+                                }}
+                              >
+                                {flexRender(
+                                  header.column.columnDef.header,
+                                  header.getContext(),
+                                )}
+                                {{
+                                  asc: "↑",
+                                  desc: "↓",
+                                }[header.column.getIsSorted() as string] ??
+                                  null}
+                              </div>
+                              {header.column.getCanFilter() ? (
+                                <div className="m-0 p-0">
+                                  <Filter
+                                    column={header.column}
+                                    table={table}
+                                  />
+                                </div>
+                              ) : null}
+                            </>
                           )}
-                        </td>
+                        </TableHead>
                       );
                     })}
-                    <td>
-                      <PopupDialog
-                        trigger={
-                          <Button
-                            variant="outline"
-                            className="bg-transparent hover:bg-transparent p-0 mx-1 my-0 h-5 border-none hover:text-green-500"
-                          >
-                            <PenBoxIcon
-                              width={16}
-                              height={16}
-                              className="hover:text-green-500 text-green-700"
-                            ></PenBoxIcon>
-                          </Button>
-                        }
-                      >
-                        <PaymentForm
-                          editValues={row.original as Payment}
-                          refresh={onPaymentEdited}
-                          title={"Edit Transaction"}
-                        ></PaymentForm>
-                      </PopupDialog>
-                    </td>
                   </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
+                ))}
+              </TableHeader>
+              <TableBody>
+                {table.getRowModel().rows.map((row) => {
+                  return (
+                    <TableRow
+                      key={row.id}
+                      onClick={row.getToggleSelectedHandler()}
+                      className={cn(
+                        "hover:bg-slate-800/50 border border-slate-800",
+                        row.getIsSelected() &&
+                          "bg-slate-600/50 hover:bg-slate-600",
+                      )}
+                      {...{
+                        style: {
+                          overflow: "auto",
+                        },
+                      }}
+                    >
+                      {row.getVisibleCells().map((cell) => {
+                        return (
+                          <td
+                            key={cell.id}
+                            className="px-2 truncate text-xs font-thin md:font-normal md:text-sm"
+                          >
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext(),
+                            )}
+                          </td>
+                        );
+                      })}
+                      <td>
+                        <PopupDialog
+                          trigger={
+                            <Button
+                              variant="outline"
+                              className="bg-transparent hover:bg-transparent p-0 mx-1 my-0 h-5 border-none hover:text-green-500"
+                            >
+                              <PenBoxIcon
+                                width={16}
+                                height={16}
+                                className="hover:text-green-500 text-green-700"
+                              ></PenBoxIcon>
+                            </Button>
+                          }
+                        >
+                          <PaymentForm
+                            editValues={row.original as Payment}
+                            refresh={onPaymentEdited}
+                            title={"Edit Transaction"}
+                          ></PaymentForm>
+                        </PopupDialog>
+                      </td>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </div>
         </>
       }
     </div>

@@ -9,6 +9,10 @@ import DashboardPage from "./app/dashboard/page.tsx";
 import { MainNav } from "./components/ui/main-nav.tsx";
 import ErrorPage from "./app/error/page.tsx";
 import ExpensesPage from "@/app/expenses/page.tsx";
+import AOS from "aos";
+import "aos/dist/aos.css";
+
+AOS.init();
 
 const router = createBrowserRouter([
   {

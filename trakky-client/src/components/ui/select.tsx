@@ -117,24 +117,32 @@ function Selection({
   options: string[];
 }) {
   return (
-    <Select
-      defaultValue={value?.toString()}
-      onValueChange={(e) => onChange(e)}
-      {...props}
+    <div
+      data-aos="fade-right"
+      data-aos-easing="ease-out-cubic"
+      data-aos-duration="500"
+      data-aos-delay="100"
+      className="sticky top-20 z-50"
     >
-      <SelectTrigger className="w-full" {...props}>
-        <SelectValue placeholder="" />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectGroup>
-          {options.map((option) => (
-            <SelectItem key={option} value={option.toString()}>
-              {option}
-            </SelectItem>
-          ))}
-        </SelectGroup>
-      </SelectContent>
-    </Select>
+      <Select
+        defaultValue={value?.toString()}
+        onValueChange={(e) => onChange(e)}
+        {...props}
+      >
+        <SelectTrigger className="w-full" {...props}>
+          <SelectValue placeholder="" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            {options.map((option) => (
+              <SelectItem key={option} value={option.toString()}>
+                {option}
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+    </div>
   );
 }
 

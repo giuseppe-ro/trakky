@@ -83,16 +83,9 @@ export function TableActionMenu({
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger className="rounded w-8 hover:text-green-700 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring ">
-                <ExportDropdownMenu table={table} />
-              </TooltipTrigger>
-              <TooltipContent className="bg-slate-800 text-white">
-                <p>Export</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+        </div>
+        <div className="flex justify-center" >
+          <ExportDropdownMenu table={table} />
         </div>
         <div className="flex justify-center">
           {table.getIsSomeRowsSelected() && (

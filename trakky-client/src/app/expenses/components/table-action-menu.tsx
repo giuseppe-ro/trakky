@@ -43,7 +43,7 @@ export function TableActionMenu({
           trigger={
             <Button
               variant="outline"
-              className="border-green-800 h-8 hover:bg-green-800"
+              className="border-green-500/50 h-8 hover:bg-green-500/50"
             >
               Add
             </Button>

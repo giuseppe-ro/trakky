@@ -47,10 +47,10 @@ export function ExportDropdownMenu({ table }: { table: Table<any> }) {
   return (
     <TooltipProvider>
       <Tooltip>
-        <TooltipTrigger tabIndex={-1} className="rounded w-8 hover:text-green-700 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring ">
+        <TooltipTrigger tabIndex={-1} className="rounded w-8 text-green-500 hover:text-green-500/50 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring ">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <DownloadIcon className="rounded w-8 h-8 p-1.5 cursor-pointer hover:text-green-700 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring " />
+              <DownloadIcon className="rounded w-8 h-8 p-1.5 cursor-pointer text-green-500 hover:text-green-500/50 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring " />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-36">
               <DropdownMenuLabel>

@@ -22,7 +22,7 @@ export function EditCell({
           <PenBoxIcon
             width={16}
             height={16}
-            className="hover:text-green-500 text-green-700"
+            className="hover:text-green-500 text-green-500/50"
           ></PenBoxIcon>
         </Button>
       }

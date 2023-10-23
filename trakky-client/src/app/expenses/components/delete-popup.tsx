@@ -38,7 +38,7 @@ export function DeletePaymentsDialog({
         <TooltipTrigger tabIndex={-1}>
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <TrashIcon className="hover:text-red-500/50 w-8" />
+              <TrashIcon className="hover:text-red-500/50 text-red-500 w-8" />
             </AlertDialogTrigger>
             <AlertDialogContent className="max-h-[450px] overflow-auto ">
               <AlertDialogHeader>

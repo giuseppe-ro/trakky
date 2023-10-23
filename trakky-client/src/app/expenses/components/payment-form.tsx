@@ -257,13 +257,13 @@ export function PaymentForm({
                     type="submit"
                     variant="outline"
                     className={cn(
-                      "w-full border transition-none border-green-700 hover:bg-green-700",
+                      "w-full border transition-none border-green-500 hover:bg-green-500",
                       form.formState.isSubmitted &&
                         isError &&
                         "border-red-700 hover:border-red-950 hover:bg-red-700",
                       isSuccess &&
                         !isError &&
-                        "border border-green-700 hover:border-green-950 bg-green-700 hover:bg-green-700",
+                        "border border-green-500 hover:border-green-950 bg-green-500 hover:bg-green-500",
                     )}
                   >
                     {isSuccess && !isError ? "Saved" : "Save"}

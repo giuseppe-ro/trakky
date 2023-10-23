@@ -83,6 +83,15 @@ export function ExportDropdownMenu({ table }: { table: Table<any> }) {
                   }
                 />
               </DropdownMenuItem>
+              <DropdownMenuItem
+                disabled={!table.getIsSomeRowsSelected()}
+              >
+                <DownloadButton
+                  text={"Export Selected"}
+                  onClick={() => download(table.getSelectedRowModel().rows)}
+                  disabled={!table.getIsSomeRowsSelected()}
+                />
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </TooltipTrigger>

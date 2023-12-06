@@ -1,7 +1,7 @@
 import { serverUrl, demoMode } from "@/constants.ts";
 import axios from "axios";
 import { mockPayments } from "@/lib/makeData.ts";
-import { convertDateFormat, formatDate } from "@/lib/formatter";
+import { convertDateFormat } from "@/lib/formatter";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 

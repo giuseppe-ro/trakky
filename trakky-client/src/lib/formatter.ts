@@ -15,12 +15,12 @@ export function formatStringDate(date: string): string {
   });
 }
 
-export function isValidDate(dateString: string) {
-  return !isNaN(Date.parse(dateString));
+export function isValidDate(date: string) {
+  return !isNaN(Date.parse(date));
 }
 
-export function convertDateFormat(dateString: string): string {
-  const dateObj = new Date(dateString);
+export function convertDateFormat(date: string): string {
+  const dateObj = new Date(date);
   const year = dateObj.getFullYear();
   const month = (dateObj.getMonth() + 1).toString().padStart(2, '0');
 

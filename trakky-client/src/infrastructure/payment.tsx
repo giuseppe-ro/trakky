@@ -1,7 +1,7 @@
 import { serverUrl, demoMode } from "@/constants.ts";
 import axios from "axios";
 import { mockPayments } from "@/lib/makeData.ts";
-import { formatDate } from "@/lib/formatter";
+import { convertDateFormat } from "@/lib/formatter";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
@@ -36,7 +36,7 @@ export async function fetchPayments(): Promise<Payment[]> {
         type: p.type,
         owner: p.owner,
         description: p.description,
-        date: formatDate(new Date(p.date))
+        date: convertDateFormat(new Date(p.date))
       }
     }
     );

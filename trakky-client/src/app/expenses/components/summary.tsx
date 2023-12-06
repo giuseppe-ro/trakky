@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table } from "@tanstack/react-table";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { FadeLeft } from "@/components/animations/fade.tsx";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 function SummaryCard({
   title,
@@ -41,6 +42,12 @@ export type Total = {
   date: number;
 };
 
+type OwnerBalance = {
+  owner: string,
+  amount: number,
+  difference?: string
+};
+
 export function Summary<TData>({
   table,
   totalsPerYear,
@@ -50,6 +57,7 @@ export function Summary<TData>({
   totalsPerYear: Total[];
   selectedYear: string;
 }) {
+
   const totalAmounts: number[] = table
     .getPreFilteredRowModel()
     .rows.map((r) => parseFloat(r.getValue("amount")));
@@ -68,15 +76,33 @@ export function Summary<TData>({
     (t) => t.date === parseInt(selectedYear) - 1,
   );
 
+  const ownerBalances: OwnerBalance[] = [];
+
+  table
+    .getFilteredRowModel()
+    .rows.map((r) => ({ amount: parseFloat(r.getValue("amount")), owner: r.getValue("owner") })).forEach(item => {
+      const existingOwnerBalance = ownerBalances.find(balance => balance.owner === item.owner);
+      if (existingOwnerBalance) {
+        existingOwnerBalance.amount += item.amount;
+      } else {
+        ownerBalances.push({ owner: item.owner as string, amount: item.amount });
+      }
+    });
+
+  ownerBalances
+    .forEach(bal => bal.difference = (partialTotal / ownerBalances.length) - bal.amount <= 0.1 ? "" : `(-${formatCurrency((partialTotal / ownerBalances.length) - bal.amount)})`)
+
+  console.log(ownerBalances)
+
   const change =
     previousYearTotal === undefined || previousYearTotal.amount === 0
       ? 0
       : Math.round(
-          ((totalAmount - previousYearTotal.amount) /
-            previousYearTotal.amount) *
-            100 *
-            100,
-        ) / 100;
+        ((totalAmount - previousYearTotal.amount) /
+          previousYearTotal.amount) *
+        100 *
+        100,
+      ) / 100;
 
   const changePercentage =
     isFinite(change) && change !== 0
@@ -99,6 +125,29 @@ export function Summary<TData>({
               title={"Partial Total"}
               contentText={formatCurrency(partialTotal)}
             />
+          </FadeLeft>
+          <FadeLeft className="">
+            <Accordion className="m-2" type="single" collapsible>
+              <AccordionItem value="item-1">
+                <AccordionTrigger>Balances</AccordionTrigger>
+                <AccordionContent>
+                  <div className="text-xl md:text-2xl font-bold mt-4">{""}</div>
+                  {ownerBalances.map(balance =>
+                    <>
+                      <p className="text-sm text-left">
+                        <div className="grid grid-cols-[50px_minmax(50px,_1fr)_50px]">
+                          <div className="mr-2">{balance.owner}:</div>
+                          <div className="flex text-muted-foreground ">{formatCurrency(balance.amount)}
+                            {balance.difference && <div className="ml-2 text-slate-600">{balance.difference}</div>}
+                          </div>
+
+                        </div>
+                      </p>
+                    </>
+                  )}
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
           </FadeLeft>
         </TabsContent>
       </Tabs>

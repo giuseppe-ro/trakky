@@ -14,7 +14,12 @@ import { getOwners } from "./owners";
 const cors = require("cors");
 
 const corsOptions = {
-  origin: ["http://trakky.localhost", "http://trakky.localhost/*"],
+  origin: [
+    "http://trakky.localhost", 
+    "http://trakky.localhost/*",
+    "http://trakky.localdomain",
+    "http://trakky.localdomain/*"
+  ],
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   preflightContinue: false,
   optionsSuccessStatus: 204,

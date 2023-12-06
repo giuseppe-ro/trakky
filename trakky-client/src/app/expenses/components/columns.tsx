@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Payment } from "@/infrastructure/payment.tsx";
-import { convertDateFormat, formatCurrency } from "@/lib/formatter.ts";
+import { formatDate, formatCurrency } from "@/lib/formatter.ts";
 import { fuzzySort } from "@/lib/filters.ts";
 
 export const ColumnDefinition: ColumnDef<Payment, number | string>[] = [
@@ -10,7 +10,7 @@ export const ColumnDefinition: ColumnDef<Payment, number | string>[] = [
     enableColumnFilter: true,
     enableGlobalFilter: false,
     cell: ({ row }) => {
-      const formatted = convertDateFormat(row.getValue("date"));
+      const formatted = formatDate(row.getValue("date"));
 
       return <div className="text-right font-sm">{formatted}</div>;
     },

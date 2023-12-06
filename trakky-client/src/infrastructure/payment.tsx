@@ -14,14 +14,6 @@ export interface Payment {
   date: string;
 }
 
-export async function fetchPayments2(): Promise<Payment[]> {
-  if (demoMode)
-    return mockPayments().sort((a, b) => b.date.localeCompare(a.date));
-
-  let response = await axios.get(`${serverUrl}/payments`);
-  return (await response.data) as Payment[];
-}
-
 export async function fetchPayments(): Promise<Payment[]> {
   if (demoMode)
     return mockPayments().sort((a, b) => b.date.localeCompare(a.date));
@@ -36,7 +28,7 @@ export async function fetchPayments(): Promise<Payment[]> {
         type: p.type,
         owner: p.owner,
         description: p.description,
-        date: convertDateFormat(new Date(p.date))
+        date: convertDateFormat(p.date)
       }
     }
     );

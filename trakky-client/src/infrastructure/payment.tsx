@@ -1,6 +1,7 @@
 import { serverUrl, demoMode } from "@/constants.ts";
 import axios from "axios";
 import { mockPayments } from "@/lib/makeData.ts";
+import { convertDateFormat, formatDate } from "@/lib/formatter";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
@@ -13,12 +14,30 @@ export interface Payment {
   date: string;
 }
 
-export async function fetchPayments(): Promise<Payment[]> {
+export async function fetchPayments2(): Promise<Payment[]> {
   if (demoMode)
     return mockPayments().sort((a, b) => b.date.localeCompare(a.date));
 
   let response = await axios.get(`${serverUrl}/payments`);
   return (await response.data) as Payment[];
+}
+
+export async function fetchPayments(): Promise<Payment[]> {
+  if (demoMode)
+    return mockPayments().sort((a, b) => b.date.localeCompare(a.date));
+
+  let response = await axios.get(`${serverUrl}/payments`);
+  return (await response.data).map((p: Payment) => {
+    return {
+      id: p.id,
+      amount: p.amount,
+      type: p.type,
+      owner: p.owner,
+      description: p.description,
+      date: convertDateFormat(p.date)
+    }
+  }
+  );
 }
 
 export async function AddPayments(payments: Payment[]): Promise<boolean> {

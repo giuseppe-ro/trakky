@@ -2,6 +2,7 @@ import { Column } from "@tanstack/react-table";
 import { Payment } from "@/infrastructure/payment.tsx";
 import { useMemo } from "react";
 import { DebouncedInput } from "@/app/expenses/components/debounce-input.tsx";
+import { convertDateFormat, formatDate, isValidDate } from "@/lib/formatter";
 
 export function Filter({
   column,
@@ -20,9 +21,19 @@ export function Filter({
     () =>
       typeof firstValue === "number"
         ? []
-        : Array.from(column.getFacetedUniqueValues().keys()).sort(),
+        : isValidDate(firstValue) ? Array.from(column.getFacetedUniqueValues().keys())
+          .sort()
+          .map(date => convertDateFormat(date))
+          .filter((value, index, array) => array.indexOf(value) === index)
+          : Array.from(column.getFacetedUniqueValues().keys()).sort(),
     [column.getFacetedUniqueValues()],
   );
+
+  if (isValidDate(firstValue)) {
+    console.log(firstValue)
+    const d = Array.from(column.getFacetedUniqueValues().keys()).sort().map(date => convertDateFormat(date))
+    console.log(convertDateFormat(firstValue))
+  }
 
   return typeof firstValue === "number" ? (
     <div>

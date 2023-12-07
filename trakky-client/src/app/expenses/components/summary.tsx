@@ -126,8 +126,8 @@ export function Summary<TData>({
               contentText={formatCurrency(partialTotal)}
             />
           </FadeLeft>
-          <FadeLeft className="">
-            <Accordion className="m-2" type="single" collapsible>
+          <FadeLeft className="m-0 p-0">
+            <Accordion className="mx-1 md:mb-2 md:mt-1" type="single" collapsible>
               <AccordionItem value="item-1">
                 <AccordionTrigger>Balances</AccordionTrigger>
                 <AccordionContent>

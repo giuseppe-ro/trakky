@@ -38,7 +38,7 @@ export function TableActionMenu({
 }) {
   return (
     <div className="flex justify-between items-center">
-      <div className="flex justify-end gap-x-1 md:gap-x-3 mt-6 mb-2">
+      <div className="flex justify-end gap-x-1 md:gap-x-3 mt-2 md:mt-6 mb-2">
         <PopupDialog
           trigger={
             <Button
@@ -99,7 +99,7 @@ export function TableActionMenu({
           )}
         </div>
       </div>
-      <div className="flex justify-end gap-x-1 md:gap-x-3 mt-6 mb-2 ">
+      <div className="flex justify-end gap-x-1 md:gap-x-3 mt-2 md:mt-6 mb-2 ">
         <Select
           value={table.getState().pagination.pageSize.toString()}
           onValueChange={(value) => {

@@ -70,15 +70,15 @@ export function ExpensesTable({
     dataTableProps.data === null
       ? []
       : dataTableProps.data.reduce((acc: Total[], payment) => {
-          const year = new Date(payment.date).getFullYear();
-          const existing = acc.find((t) => t.date === year);
-          if (existing) {
-            existing.amount += payment.amount;
-          } else {
-            acc.push({ amount: payment.amount, date: year });
-          }
-          return acc;
-        }, []);
+        const year = new Date(payment.date).getFullYear();
+        const existing = acc.find((t) => t.date === year);
+        if (existing) {
+          existing.amount += payment.amount;
+        } else {
+          acc.push({ amount: payment.amount, date: year });
+        }
+        return acc;
+      }, []);
 
   const columns = useMemo<ColumnDef<Payment, number | string>[]>(
     () => ColumnDefinition,
@@ -133,7 +133,7 @@ export function ExpensesTable({
 
   function onPaymentEdited() {
     table.resetRowSelection();
-    onRefresh().then(() => {});
+    onRefresh().then(() => { });
   }
 
   async function onRefresh() {
@@ -185,7 +185,7 @@ export function ExpensesTable({
                                   {...{
                                     className:
                                       header.column.getCanSort() +
-                                      "items-center border justify-center flex-col"
+                                        "items-center border justify-center flex-col"
                                         ? "cursor-pointer select-none"
                                         : "",
                                     onClick:
@@ -227,7 +227,7 @@ export function ExpensesTable({
                         className={cn(
                           "hover:bg-slate-800/50 border border-slate-800",
                           row.getIsSelected() &&
-                            "bg-slate-600/50 hover:bg-slate-600",
+                          "bg-slate-600/50 hover:bg-slate-600",
                         )}
                         {...{
                           style: {

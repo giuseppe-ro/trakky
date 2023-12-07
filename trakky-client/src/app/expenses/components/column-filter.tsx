@@ -1,8 +1,8 @@
 import { Column } from "@tanstack/react-table";
 import { Payment } from "@/infrastructure/payment.tsx";
 import { useMemo } from "react";
-import { DebouncedInput } from "@/app/expenses/components/debounce-input.tsx";
-import { convertDateFormat, isValidDate } from "@/lib/formatter";
+import { DebouncedInput, DebouncedSelect } from "@/app/expenses/components/debounce-input.tsx";
+import { convertDateFormat, formatDate, isValidDate } from "@/lib/formatter";
 
 export function Filter({
   column,
@@ -22,8 +22,7 @@ export function Filter({
       typeof firstValue === "number"
         ? []
         : isValidDate(firstValue) ? Array.from(column.getFacetedUniqueValues().keys())
-          .map(date => convertDateFormat(date))
-          .filter((value, index, array) => array.indexOf(value) === index)
+          .map(date => ({ key: formatDate(date), value: convertDateFormat(date) }))
           : Array.from(column.getFacetedUniqueValues().keys()).sort(),
     [column.getFacetedUniqueValues()],
   );
@@ -55,6 +54,23 @@ export function Filter({
         />
       </div>
     </div>
+  ) : isValidDate(firstValue) ? (
+    <>
+      <datalist className="bg-slate-900" id={column.id + "list"}>
+        {sortedUniqueValues.slice(0, 5000).map((value: any) => (
+          <option className="border-slate-900 red" value={value} key={value} />
+        ))}
+      </datalist>
+      <div className="overflow-auto">
+        <div className="flex space-x-0.5">
+          <DebouncedSelect
+            options={sortedUniqueValues}
+            value={(columnFilterValue ?? "") as string}
+            onChange={(value) => column.setFilterValue(value == "All" ? "" : value)}
+          />
+        </div>
+      </div>
+    </>
   ) : (
     <>
       <datalist className="bg-slate-900" id={column.id + "list"}>

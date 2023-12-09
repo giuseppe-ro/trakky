@@ -129,21 +129,18 @@ export function Summary<TData>({
           <FadeLeft className="m-0 p-0">
             <Accordion className="mx-1 md:mb-2 md:mt-1" type="single" collapsible>
               <AccordionItem value="item-1">
-                <AccordionTrigger>Balances</AccordionTrigger>
+                <AccordionTrigger>Total Breakdown</AccordionTrigger>
                 <AccordionContent>
                   <div className="text-xl md:text-2xl font-bold mt-4">{""}</div>
-                  {ownerBalances.map(balance =>
-                    <>
-                      <p className="text-sm text-left">
-                        <div className="grid grid-cols-[50px_minmax(50px,_1fr)_50px]">
-                          <div className="mr-2">{balance.owner}:</div>
-                          <div className="flex text-muted-foreground ">{formatCurrency(balance.amount)}
-                            {balance.difference && <div className="ml-2 text-slate-600">{balance.difference}</div>}
+                  {ownerBalances.map((balance: OwnerBalance, index: number) =>
+                      <div className="text-sm text-left" key={`${index}-accordion`}>
+                        <div className="grid grid-cols-[50px_minmax(50px,_1fr)_50px]" key={`${index}-wrapper`}>
+                          <div className="mr-2" key={`${index}-owner`}>{balance.owner}:</div>
+                          <div className="flex text-muted-foreground" key={`${index}-amount`}>{formatCurrency(balance.amount)}
+                            {balance.difference && <div className="ml-2 text-slate-600" key={`${index}-difference`}>{balance.difference}</div>}
                           </div>
-
                         </div>
-                      </p>
-                    </>
+                      </div>
                   )}
                 </AccordionContent>
               </AccordionItem>

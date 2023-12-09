@@ -1,4 +1,4 @@
-import { Summary } from "@/app/dashboard/components/overview";
+import { OwnerOverview, PaymentOverview } from "@/app/dashboard/components/overview";
 import { Budget } from "@/infrastructure/budget";
 import { Payment } from "@/infrastructure/payment";
 
@@ -15,11 +15,11 @@ export function getAvailableYears(data: Payment[]): string[] {
     .map((year) => year?.toString());
 }
 
-export function getYearlySummaries(
+export function getYearlyPaymentsSummaries(
   data: Payment[],
   budgets: Budget[],
-): Summary[] {
-  return data.reduce((summaries: Summary[], transaction) => {
+): PaymentOverview[] {
+  return data.reduce((summaries: PaymentOverview[], transaction) => {
     const year = new Date(transaction.date).getFullYear();
     const index = year;
 
@@ -50,11 +50,11 @@ export function getYearlySummaries(
   }, []);
 }
 
-export function getMonthlySummariesForYear(
+export function getMonthlyPaymentsSummariesForYear(
   data: Payment[],
   budget: Budget,
-): Summary[] {
-  return data.reduce((summaries: Summary[], transaction) => {
+): PaymentOverview[] {
+  return data.reduce((summaries: PaymentOverview[], transaction) => {
     const date = new Date(transaction.date);
     const index = date.getMonth();
     const name: string = date.toLocaleString("en-GB", { month: "short" });
@@ -74,6 +74,70 @@ export function getMonthlySummariesForYear(
         maxBudget: parseInt(budget.maxBudget),
       });
     }
+    return summaries;
+  }, []);
+}
+
+
+export function getMonthlyOwnersSummariesForYear(
+  data: Payment[],
+): OwnerOverview[] {
+  return data.reduce((summaries: OwnerOverview[], transaction: Payment) => {
+    const date = new Date(transaction.date);
+    const index = date.getMonth();
+
+    const name: string = date.toLocaleString("en-GB", { month: "short" });
+
+    const existingMonth = summaries.find(
+      (summaryItem) => summaryItem.index === index,
+    );
+
+    const amount = Math.round(transaction.amount);
+
+    if (existingMonth) {
+      if(existingMonth.owners[transaction.owner] !== undefined) {
+        existingMonth.owners[transaction.owner] += amount;
+      } else {
+        existingMonth.owners[transaction.owner] = amount;
+      }
+    } else {
+      summaries.push({
+        index,
+        name,
+        owners: {[transaction.owner]: amount},
+      });
+    }
+    return summaries;
+  }, []);
+}
+
+
+export function getYearlyOwnersSummaries(
+  data: Payment[],
+): OwnerOverview[] {
+  return data.reduce((summaries: OwnerOverview[], transaction) => {
+    const year = new Date(transaction.date).getFullYear();
+
+    const existingYear = summaries.find(
+      (summaryItem) => summaryItem.index === year,
+    );
+
+    const amount = Math.round(transaction.amount);
+
+    if (existingYear) {
+      if(existingYear.owners[transaction.owner] !== undefined) {
+        existingYear.owners[transaction.owner] += amount;
+      } else {
+        existingYear.owners[transaction.owner] = amount;
+      }
+    } else {
+      summaries.push({
+        index: year,
+        name: year.toString(),
+        owners: {[transaction.owner]: amount},
+      });
+    }
+
     return summaries;
   }, []);
 }

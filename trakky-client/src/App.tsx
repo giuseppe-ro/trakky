@@ -2,7 +2,7 @@ import "./App.css";
 import { PageContainer } from "@/components/ui/page-container.tsx";
 import { ExpensesTable } from "@/app/expenses/components/table.tsx";
 import { Dashboard } from "@/app/dashboard/components/dashboard.tsx";
-import { Title } from "@/components/ui/title.tsx";
+import { Text } from "@/components/ui/text.tsx";
 import { usePaymentData } from "@/lib/hooks.ts";
 import { YearSelection } from "@/components/ui/data-selector.tsx";
 
@@ -17,7 +17,7 @@ function App() {
 
   return (
     <PageContainer>
-      <Title title={"Overview"} />
+      <Text title={"Home"} />
       <YearSelection
         availableYears={availableYears}
         selectedYear={selectedYear}
@@ -30,14 +30,14 @@ function App() {
             refreshData: refreshData,
             selectedYear: selectedYear,
           }}
-          {...{ className: "lg:col-span-5" }}
+          {...{ className: "lg:col-span-4" }}
         />
         <Dashboard
           dashboardProps={{
             data: payments,
             selectedYear: selectedYear,
           }}
-          {...{ className: "lg:col-span-4 mt-6 lg:mt-0" }}
+          {...{ className: "lg:col-span-5 mt-6 lg:mt-0" }}
         />
       </div>
     </PageContainer>

@@ -26,7 +26,7 @@ export const ColumnDefinition: ColumnDef<Payment, number | string>[] = [
   },
   {
     accessorKey: "owner",
-    header: "Owner",
+    header: "User",
     filterFn: "fuzzy",
     sortingFn: fuzzySort,
     cell: ({ row }) => {

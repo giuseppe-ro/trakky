@@ -1,6 +1,6 @@
-import { Dashboard } from "@/app/dashboard/components/dashboard";
+import { Dashboards } from "@/app/dashboard/components/dashboards.tsx";
 import { PageContainer } from "@/components/ui/page-container";
-import { Title } from "@/components/ui/title.tsx";
+import { Text } from "@/components/ui/text.tsx";
 import { usePaymentData } from "@/lib/hooks.ts";
 import { YearSelection } from "@/components/ui/data-selector.tsx";
 
@@ -10,18 +10,18 @@ export default function DashboardPage() {
 
   return (
     <PageContainer>
-      <Title title={"Dashboard"} />
+      <Text title={"Dashboards"} />
       <YearSelection
         availableYears={availableYears}
         selectedYear={selectedYear}
         onYearChange={setSelectedYear}
       />
-      <Dashboard
+      <Dashboards
         dashboardProps={{
           data: payments,
           selectedYear: selectedYear,
         }}
-      ></Dashboard>
+      ></Dashboards>
     </PageContainer>
   );
 }

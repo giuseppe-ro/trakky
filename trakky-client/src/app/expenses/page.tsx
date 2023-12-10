@@ -1,8 +1,11 @@
 import { PageContainer } from "@/components/ui/page-container";
 import { ExpensesTable } from "./components/table";
-import { Title } from "@/components/ui/title.tsx";
+import { Text } from "@/components/ui/text.tsx";
 import { usePaymentData } from "@/lib/hooks.ts";
 import { YearSelection } from "@/components/ui/data-selector.tsx";
+import { useTable } from "@/lib/table-hooks.ts";
+import { Summary } from "@/app/expenses/components/summary.tsx";
+
 
 export default function ExpensesPage() {
   const {
@@ -13,19 +16,37 @@ export default function ExpensesPage() {
     setSelectedYear,
   } = usePaymentData();
 
+  const {
+    totalsPerYear,
+    table,
+    onDeleteConfirmed,
+    onPaymentEdited,
+    onRefresh,
+  } = useTable({
+    data: payments,
+    selectedYear,
+    refreshData,
+  })
+
   return (
     <PageContainer>
-      <Title title={"Expenses"} />
+      <Text title={"Expenses"} />
       <YearSelection
         availableYears={availableYears}
         selectedYear={selectedYear}
         onYearChange={setSelectedYear}
       />
+      <Summary
+        table={table}
+        totalsPerYear={totalsPerYear}
+        selectedYear={selectedYear ?? ""}
+      />
       <ExpensesTable
-        dataTableProps={{
-          data: payments,
-          refreshData: refreshData,
-          selectedYear: selectedYear,
+        expensesTableProps={{
+          table,
+          onDeleteConfirmed,
+          onPaymentEdited,
+          onRefresh,
         }}
       />
     </PageContainer>

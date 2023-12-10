@@ -22,7 +22,13 @@ export function Filter({
       typeof firstValue === "number"
         ? []
         : isValidDate(firstValue) ? Array.from(column.getFacetedUniqueValues().keys())
-          .map(date => ({ key: formatDate(date), value: convertDateFormat(date) }))
+            .reduce((acc, date) => {
+              const formattedDate = formatDate(date);
+              if (!acc.some((obj: any) => obj.key === formattedDate)) {
+                acc.push({ key: formattedDate, value: convertDateFormat(date) });
+              }
+              return acc;
+            }, [])
           : Array.from(column.getFacetedUniqueValues().keys()).sort(),
     [column.getFacetedUniqueValues()],
   );
@@ -58,7 +64,7 @@ export function Filter({
     <>
       <datalist className="bg-slate-900" id={column.id + "list"}>
         {sortedUniqueValues.slice(0, 5000).map((value: any) => (
-          <option className="border-slate-900 red" value={value} key={value} />
+          <option className="border-slate-900 red" value={value} key={value.key} />
         ))}
       </datalist>
       <div className="overflow-auto">

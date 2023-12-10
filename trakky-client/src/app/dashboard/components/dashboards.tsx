@@ -1,25 +1,27 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Overview, Summary } from "@/app/dashboard/components/overview";
+import { Card, CardContent } from "@/components/ui/card";
+import { PaymentsOverview, PaymentOverview, OwnersOverview, OwnerOverview } from "@/app/dashboard/components/overviews.tsx";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useEffect, useState } from "react";
 
 import { Payment } from "@/infrastructure/payment";
 import {
-  getMonthlySummariesForYear,
-  getYearlySummaries,
+  getMonthlyOwnersSummariesForYear,
+  getMonthlyPaymentsSummariesForYear, getYearlyOwnersSummaries,
+  getYearlyPaymentsSummaries
 } from "@/lib/summaries";
 import { Budget, fetchBudgets } from "@/infrastructure/budget.tsx";
 import Spinner from "@/components/ui/spinner.tsx";
 import { FadeLeft } from "@/components/animations/fade.tsx";
+import { SubTitle } from "@/components/ui/text.tsx";
 
 export interface DashboardProps {
   data: Payment[] | null;
   selectedYear: string | null;
 }
 
-export function Dashboard({
+export function Dashboards({
   dashboardProps,
   ...props
 }: {
@@ -27,7 +29,8 @@ export function Dashboard({
 }) {
   const [budgets, setBudgets] = useState<Budget[] | null>(null);
   const [filteredData, setFilteredData] = useState<Payment[] | null>(null);
-  const [summary, setSummary] = useState<Summary[]>([]);
+  const [paymentOverviews, setPaymentOverviews] = useState<PaymentOverview[]>([]);
+  const [ownersOverview, setOwnersOverview] = useState<OwnerOverview[]>([]);
 
   useEffect(() => {
     fetchBudgets().then((data) => {
@@ -42,26 +45,29 @@ export function Dashboard({
       dashboardProps.data
     ) {
       setFilteredData(dashboardProps.data);
-      setSummary(getYearlySummaries(dashboardProps.data, budgets));
+      setPaymentOverviews(getYearlyPaymentsSummaries(dashboardProps.data, budgets));
+      setOwnersOverview(getYearlyOwnersSummaries(dashboardProps.data));
     } else if (
       budgets &&
       dashboardProps.selectedYear !== null &&
       dashboardProps.data
     ) {
-      const newData = dashboardProps.data.filter(
+      const filteredPayments = dashboardProps.data.filter(
         (payment) =>
           new Date(payment.date).getFullYear() ===
           parseInt(dashboardProps.selectedYear ?? ""),
       );
-      setFilteredData(newData);
+      setFilteredData(filteredPayments);
       const budget = budgets.find(
         (item) =>
           new Date(item.date).getFullYear().toString() ===
           dashboardProps.selectedYear,
       );
 
+      setOwnersOverview(getMonthlyOwnersSummariesForYear(filteredPayments));
+
       if (budget) {
-        setSummary(getMonthlySummariesForYear(newData, budget));
+        setPaymentOverviews(getMonthlyPaymentsSummariesForYear(filteredPayments, budget));
       }
     } else {
       setFilteredData([]);
@@ -79,18 +85,17 @@ export function Dashboard({
       <TabsContent value="overview" className="space-y-4" tabIndex={-1}>
         <FadeLeft>
           <Card className="p-0">
-            <CardHeader>
-              <CardTitle
-                title={"Overview"}
-                className="flex flex-col items-center w-full justify-cente lg:m-6 invisible lg:visible"
-              >
-                <p className="lg:m-6 text-2xl">
-                  {dashboardProps.selectedYear} Overview
-                </p>
-              </CardTitle>
-            </CardHeader>
             <CardContent className="pl-2">
-              <Overview data={summary} />
+              <div className="md:grid md:grid-cols-2">
+                <div>
+                  <SubTitle title={"Expenses"} />
+                  <PaymentsOverview data={paymentOverviews} />
+                </div>
+                <div className="mt-4 md:mt-0">
+                  <SubTitle title={"Users Comparison"} />
+                  <OwnersOverview data={ownersOverview} />
+                </div>
+              </div>
             </CardContent>
           </Card>
         </FadeLeft>

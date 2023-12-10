@@ -25,7 +25,7 @@ export function PaymentsOverview({ data, ...props }: { data: PaymentOverview[] }
   data.sort((a, b) => a.index - b.index);
 
   return (
-    <ResponsiveContainer width="100%" height={400} {...props}>
+    <ResponsiveContainer aspect={1.5} {...props}>
       <ComposedChart data={data}>
         <XAxis
           dataKey="name"
@@ -55,8 +55,8 @@ export function PaymentsOverview({ data, ...props }: { data: PaymentOverview[] }
                 entry.total < entry.budget
                   ? "#54ff5a"
                   : entry.total < entry.maxBudget
-                  ? "#fffc54"
-                  : "#ff5454"
+                    ? "#fffc54"
+                    : "#ff5454"
               }
               key={`cell-${index}`}
             />
@@ -69,7 +69,7 @@ export function PaymentsOverview({ data, ...props }: { data: PaymentOverview[] }
           stroke="#54ff5a"
         />
         <Line
-          name="Wages"
+          name="Max Budget"
           type={"monotone"}
           dataKey="maxBudget"
           stroke="#ff5454"
@@ -102,7 +102,7 @@ export function OwnersOverview({ data, ...props }: { data: OwnerOverview[] }) {
   ];
 
   const getRandomColor = (index: number) => {
-    if(index < colors.length) {
+    if (index < colors.length) {
       return colors[index];
     }
     const randomIndex = Math.floor(Math.random() * colors.length);
@@ -111,10 +111,10 @@ export function OwnersOverview({ data, ...props }: { data: OwnerOverview[] }) {
 
   return (
     <>
-      <ResponsiveContainer width="100%" height={400} {...props}>
-        <LineChart width={730} height={250} data={data}
-                   margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                   title="Text">
+      <ResponsiveContainer aspect={1.5} {...props}>
+        <LineChart data={data}
+          margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+          title="Text">
           <XAxis
             dataKey="name"
             stroke="#888888"

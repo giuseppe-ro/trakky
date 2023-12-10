@@ -1,7 +1,7 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PaymentsOverview, PaymentOverview, OwnersOverview, OwnerOverview } from "@/app/dashboard/components/overview";
+import { Card, CardContent } from "@/components/ui/card";
+import { PaymentsOverview, PaymentOverview, OwnersOverview, OwnerOverview } from "@/app/dashboard/components/overviews.tsx";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useEffect, useState } from "react";
 
@@ -21,7 +21,7 @@ export interface DashboardProps {
   selectedYear: string | null;
 }
 
-export function Dashboard({
+export function Dashboards({
   dashboardProps,
   ...props
 }: {
@@ -85,23 +85,13 @@ export function Dashboard({
       <TabsContent value="overview" className="space-y-4" tabIndex={-1}>
         <FadeLeft>
           <Card className="p-0">
-            <CardHeader>
-              <CardTitle
-                title={"Overview"}
-                className="flex flex-col items-center w-full justify-cente lg:m-6 invisible lg:visible"
-              >
-                <p className="lg:m-6 text-2xl">
-                  {dashboardProps.selectedYear} Overview
-                </p>
-              </CardTitle>
-            </CardHeader>
             <CardContent className="pl-2">
               <div className="md:grid md:grid-cols-2">
                 <div>
                   <SubTitle title={"Expenses"} />
                   <PaymentsOverview data={paymentOverviews} />
                 </div>
-                <div>
+                <div className="mt-4 md:mt-0">
                   <SubTitle title={"Users Comparison"} />
                   <OwnersOverview data={ownersOverview} />
                 </div>

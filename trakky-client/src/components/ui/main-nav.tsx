@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { demoMode } from "@/constants.ts";
 
 interface Links {
   href: string;
@@ -40,11 +41,20 @@ export function MainNav({
                     </a>
                   );
                 })}
+                {demoMode && (
+                  <div className="text-sm font-medium text-destructive">
+                    Demo mode
+                  </div>
+                )}
               </nav>
+
             </div>
           </div>
+
         </div>
+
       </div>
+
       {children}
     </>
   );

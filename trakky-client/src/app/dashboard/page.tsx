@@ -1,4 +1,4 @@
-import { Dashboard } from "@/app/dashboard/components/dashboard";
+import { Dashboards } from "@/app/dashboard/components/dashboards.tsx";
 import { PageContainer } from "@/components/ui/page-container";
 import { Text } from "@/components/ui/text.tsx";
 import { usePaymentData } from "@/lib/hooks.ts";
@@ -16,12 +16,12 @@ export default function DashboardPage() {
         selectedYear={selectedYear}
         onYearChange={setSelectedYear}
       />
-      <Dashboard
+      <Dashboards
         dashboardProps={{
           data: payments,
           selectedYear: selectedYear,
         }}
-      ></Dashboard>
+      ></Dashboards>
     </PageContainer>
   );
 }

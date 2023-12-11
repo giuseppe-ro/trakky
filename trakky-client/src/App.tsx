@@ -82,7 +82,7 @@ function App() {
           }}
           {...{ className: "lg:col-span-1" }}
         />
-        <div className={"lg:col-span-1 pt-4 md:pt-0"}>
+        <div className={"lg:col-span-1 pt-4 md:pt-0 overflow-x-scroll"}>
           <SubTitle title={"Breakdown"} />
           <ExpensesPieChart data={expensesBreakdown}></ExpensesPieChart>
         </div>

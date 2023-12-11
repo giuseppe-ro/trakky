@@ -94,7 +94,7 @@ function App() {
               <SubTitle title={"Expenses"} />
               <PaymentsOverview data={paymentOverviews} />
             </div>
-            <div className="mt-4 md:mt-0">
+            <div className="mt-4 sm:mt-0">
               <SubTitle title={"Users Comparison"} />
               <OwnersOverview data={ownersOverview} />
             </div>

@@ -127,12 +127,12 @@ export function Summary<TData>({
             >
               {ownerBalances.map((balance: OwnerBalance, index: number) =>
                 <div className="text-sm text-left" key={`${index}-accordion`}>
-                  <div className="grid grid-cols-[50px_minmax(50px,_1fr)_0px]" key={`${index}-wrapper`}>
-                    <div className="mr-2 text-muted-foreground font-bold" key={`${index}-owner`}>{balance.owner}:</div>
+                  <div className="flex" key={`${index}-wrapper`}>
+                    <div className="mr-2 min-w-[60px] text-muted-foreground font-bold" key={`${index}-owner`}>{balance.owner}:</div>
                     <div className="flex text-muted-foreground" key={`${index}-amount`}>{formatCurrency(balance.amount)}
-                      {balance.difference && <div className="ml-2 text-slate-600" key={`${index}-difference`}>
-                        <p className="invisible xs:visible">{balance.difference}</p>
-                      </div>}
+                      {balance.difference && <span className="ml-2 text-slate-600 hidden xs:visible" key={`${index}-difference`}>
+                        {balance.difference}
+                      </span>}
                     </div>
 
                   </div>

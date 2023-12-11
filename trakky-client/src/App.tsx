@@ -8,9 +8,9 @@ import { useTable } from "@/lib/hooks/table-hooks.ts";
 import { Summary } from "@/app/expenses/components/summary.tsx";
 import { Payment } from "@/infrastructure/payment.tsx";
 import { useEffect, useState } from "react";
-import { useDashboards } from "@/lib/hooks/dashboards-hooks.ts";
 import { ExpensesPieChart, OwnersOverview, PaymentsOverview } from "@/app/dashboard/components/overviews.tsx";
 import { Card, CardContent } from "@/components/ui/card.tsx";
+import { useDashboards } from "@/lib/hooks/dashboards-hooks.ts";
 
 function App() {
   const [filteredPayments, setFilteredPayments] = useState<Payment[]>([]);

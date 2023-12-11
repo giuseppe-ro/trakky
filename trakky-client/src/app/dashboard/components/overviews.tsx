@@ -255,19 +255,19 @@ const renderActiveShape = (props: any) => {
         x={ex + (cos >= 0 ? 1 : -1) * 12}
         y={ey}
         textAnchor={textAnchor}
-        fill="#333"
+        fill="#999"
         className="text-sm md:text-base"
-      >{`${formatCurrency(value)}`}</text>
+      >
+        {`${(percent * 100).toFixed(2)}%`}
+      </text>
       <text
         x={ex + (cos >= 0 ? 1 : -1) * 12}
         y={ey}
         dy={18}
         textAnchor={textAnchor}
-        fill="#999"
-        className="text-sm md:text-base"
-      >
-        {`(${(percent * 100).toFixed(2)}%)`}
-      </text>
+        fill="#333"
+        className="text-xs md:text-base"
+      >{`(${formatCurrency(value)})`}</text>
     </g>
   );
 };

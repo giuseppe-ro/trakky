@@ -141,3 +141,26 @@ export function getYearlyOwnersSummaries(
     return summaries;
   }, []);
 }
+
+export function getExpensesBreakdown(
+  data: Payment[] | null,
+): { name: string; value: number }[] {
+
+  if(data === null) return [];
+
+  const types = data
+    .map((item) => item.type)
+    .filter((value, index, self) => self.indexOf(value) === index);
+
+  const result = types
+    .map((type) => {
+      return { name: type, value: data.filter(item => item.type === type)
+          .reduce((sum, current) => sum + current.amount, 0) } }
+    );
+
+  result.forEach((item) => {
+    item.value = Math.round(item.value);
+  } );
+
+  return result;
+}

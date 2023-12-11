@@ -1,9 +1,9 @@
 import { PageContainer } from "@/components/ui/page-container";
 import { ExpensesTable } from "./components/table";
 import { Text } from "@/components/ui/text.tsx";
-import { usePaymentData } from "@/lib/hooks.ts";
+import { usePaymentData } from "@/lib/hooks/page-hooks.ts";
 import { YearSelection } from "@/components/ui/data-selector.tsx";
-import { useTable } from "@/lib/table-hooks.ts";
+import { useTable } from "@/lib/hooks/table-hooks.ts";
 import { Summary } from "@/app/expenses/components/summary.tsx";
 
 

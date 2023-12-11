@@ -71,7 +71,7 @@ export function DebouncedSelect({
       onValueChange={(e) => setValue(e)}
     >
       <SelectTrigger className="w-full justify-between h-[18px] md:h-[19.4px] border-none outline-none bg-slate-800 text-xxs md:text-xs p-0 pl-0.5 md:p-1 rounded-none overflow-hidden">
-        <SelectValue placeholder="All" />
+        <SelectValue placeholder="" />
       </SelectTrigger>
       <SelectContent className="max-h-[200px]">
         <SelectGroup>

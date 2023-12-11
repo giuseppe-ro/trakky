@@ -92,8 +92,6 @@ export function Summary<TData>({
   ownerBalances
     .forEach(bal => bal.difference = (partialTotal / ownerBalances.length) - bal.amount <= 0.1 ? "" : `(-${formatCurrency((partialTotal / ownerBalances.length) - bal.amount)})`)
 
-  console.log(ownerBalances)
-
   const change =
     previousYearTotal === undefined || previousYearTotal.amount === 0
       ? 0
@@ -133,14 +131,14 @@ export function Summary<TData>({
                 <AccordionContent>
                   <div className="text-xl md:text-2xl font-bold mt-4">{""}</div>
                   {ownerBalances.map((balance: OwnerBalance, index: number) =>
-                      <div className="text-sm text-left" key={`${index}-accordion`}>
-                        <div className="grid grid-cols-[50px_minmax(50px,_1fr)_50px]" key={`${index}-wrapper`}>
-                          <div className="mr-2" key={`${index}-owner`}>{balance.owner}:</div>
-                          <div className="flex text-muted-foreground" key={`${index}-amount`}>{formatCurrency(balance.amount)}
-                            {balance.difference && <div className="ml-2 text-slate-600" key={`${index}-difference`}>{balance.difference}</div>}
-                          </div>
+                    <div className="text-sm text-left" key={`${index}-accordion`}>
+                      <div className="grid grid-cols-[50px_minmax(50px,_1fr)_50px]" key={`${index}-wrapper`}>
+                        <div className="mr-2" key={`${index}-owner`}>{balance.owner}:</div>
+                        <div className="flex text-muted-foreground" key={`${index}-amount`}>{formatCurrency(balance.amount)}
+                          {balance.difference && <div className="ml-2 text-slate-600" key={`${index}-difference`}>{balance.difference}</div>}
                         </div>
                       </div>
+                    </div>
                   )}
                 </AccordionContent>
               </AccordionItem>

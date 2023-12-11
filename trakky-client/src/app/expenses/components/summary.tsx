@@ -4,16 +4,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table } from "@tanstack/react-table";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { FadeLeft } from "@/components/animations/fade.tsx";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import React from "react";
 
 function SummaryCard({
   title,
   contentText,
   contentSubText,
+  children,
 }: {
   title: string;
-  contentText: string;
+  contentText?: string;
   contentSubText?: string;
+  children?: React.ReactNode;
 }) {
   return (
     <Card className="border rounded-xl p-1 md:p-4">
@@ -24,7 +26,7 @@ function SummaryCard({
       </CardHeader>
       <CardContent>
         <div className="text-xl md:text-2xl font-bold">{contentText}</div>
-        <p className="text-xs text-muted-foreground">{contentSubText}</p>
+        <div className="text-xs text-muted-foreground">{contentSubText}{children}</div>
       </CardContent>
     </Card>
   );
@@ -122,27 +124,21 @@ export function Summary<TData>({
             <SummaryCard
               title={"Partial Total"}
               contentText={formatCurrency(partialTotal)}
-            />
-          </FadeLeft>
-          <FadeLeft className="m-0 p-0">
-            <Accordion className="mx-1 md:mb-2 md:mt-1" type="single" collapsible>
-              <AccordionItem value="item-1">
-                <AccordionTrigger>Total Breakdown</AccordionTrigger>
-                <AccordionContent>
-                  <div className="text-xl md:text-2xl font-bold mt-4">{""}</div>
-                  {ownerBalances.map((balance: OwnerBalance, index: number) =>
-                    <div className="text-sm text-left" key={`${index}-accordion`}>
-                      <div className="grid grid-cols-[50px_minmax(50px,_1fr)_50px]" key={`${index}-wrapper`}>
-                        <div className="mr-2" key={`${index}-owner`}>{balance.owner}:</div>
-                        <div className="flex text-muted-foreground" key={`${index}-amount`}>{formatCurrency(balance.amount)}
-                          {balance.difference && <div className="ml-2 text-slate-600" key={`${index}-difference`}>{balance.difference}</div>}
-                        </div>
-                      </div>
+            >
+              {ownerBalances.map((balance: OwnerBalance, index: number) =>
+                <div className="text-sm text-left" key={`${index}-accordion`}>
+                  <div className="grid grid-cols-[50px_minmax(50px,_1fr)_0px]" key={`${index}-wrapper`}>
+                    <div className="mr-2 text-muted-foreground font-bold" key={`${index}-owner`}>{balance.owner}:</div>
+                    <div className="flex text-muted-foreground" key={`${index}-amount`}>{formatCurrency(balance.amount)}
+                      {balance.difference && <div className="ml-2 text-slate-600" key={`${index}-difference`}>
+                        <div className="invisible xs:visible">{balance.difference}</div>
+                      </div>}
                     </div>
-                  )}
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
+
+                  </div>
+                </div>
+              )}
+            </SummaryCard>
           </FadeLeft>
         </TabsContent>
       </Tabs>

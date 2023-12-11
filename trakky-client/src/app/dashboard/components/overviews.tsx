@@ -96,7 +96,7 @@ export function PaymentsOverview({ data, ...props }: { data: PaymentOverview[] }
 
   return (
     <ResponsiveContainer aspect={1.5} {...props}>
-      <ComposedChart data={data}>
+      <ComposedChart data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
         <XAxis
           dataKey="name"
           stroke="#888888"

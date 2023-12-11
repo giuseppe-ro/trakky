@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PaymentsOverview, PaymentOverview, OwnersOverview, OwnerOverview } from "@/app/dashboard/components/overview";
+import { PaymentsOverview, PaymentOverview, OwnersOverview, OwnerOverview } from "@/app/dashboard/components/overviews";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useEffect, useState } from "react";
 

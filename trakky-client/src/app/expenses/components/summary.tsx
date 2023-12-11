@@ -131,7 +131,7 @@ export function Summary<TData>({
                     <div className="mr-2 text-muted-foreground font-bold" key={`${index}-owner`}>{balance.owner}:</div>
                     <div className="flex text-muted-foreground" key={`${index}-amount`}>{formatCurrency(balance.amount)}
                       {balance.difference && <div className="ml-2 text-slate-600" key={`${index}-difference`}>
-                        <div className="invisible xs:visible">{balance.difference}</div>
+                        <p className="invisible xs:visible">{balance.difference}</p>
                       </div>}
                     </div>
 

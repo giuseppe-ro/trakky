@@ -256,6 +256,7 @@ const renderActiveShape = (props: any) => {
         y={ey}
         textAnchor={textAnchor}
         fill="#333"
+        className="text-sm md:text-base"
       >{`${formatCurrency(value)}`}</text>
       <text
         x={ex + (cos >= 0 ? 1 : -1) * 12}
@@ -263,6 +264,7 @@ const renderActiveShape = (props: any) => {
         dy={18}
         textAnchor={textAnchor}
         fill="#999"
+        className="text-sm md:text-base"
       >
         {`(${(percent * 100).toFixed(2)}%)`}
       </text>

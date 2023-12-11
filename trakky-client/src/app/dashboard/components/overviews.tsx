@@ -155,7 +155,9 @@ export interface OwnerOverview {
 export function OwnersOverview({ data, ...props }: { data: OwnerOverview[] }) {
   data.sort((a, b) => a.index - b.index);
 
-  const owners = data && data[0] ? Object.keys(data[0].owners) : [];
+  const owners = data && data[0]
+    ? Array.from(new Set(data.map((items) => items.owners).flatMap(obj => Object.keys(obj))))
+    : [];
 
   return (
     <>

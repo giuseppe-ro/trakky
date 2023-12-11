@@ -89,7 +89,7 @@ function App() {
       </div>
       <Card className="pt-0 md:pt-4">
         <CardContent className="pl-2">
-          <div className="md:grid md:grid-cols-2">
+          <div className="sm:grid sm:grid-cols-2">
             <div>
               <SubTitle title={"Expenses"} />
               <PaymentsOverview data={paymentOverviews} />

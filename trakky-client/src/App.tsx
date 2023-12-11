@@ -1,14 +1,16 @@
 import "./App.css";
 import { PageContainer } from "@/components/ui/page-container.tsx";
 import { ExpensesTable } from "@/app/expenses/components/table.tsx";
-import { Dashboards } from "@/app/dashboard/components/dashboards.tsx";
-import { Text } from "@/components/ui/text.tsx";
-import { usePaymentData } from "@/lib/hooks.ts";
+import { SubTitle, Text } from "@/components/ui/text.tsx";
+import { usePaymentData } from "@/lib/hooks/page-hooks.ts";
 import { YearSelection } from "@/components/ui/data-selector.tsx";
-import { useTable } from "@/lib/table-hooks.ts";
+import { useTable } from "@/lib/hooks/table-hooks.ts";
 import { Summary } from "@/app/expenses/components/summary.tsx";
 import { Payment } from "@/infrastructure/payment.tsx";
 import { useEffect, useState } from "react";
+import { useDashboards } from "@/lib/hooks/dashboards-hooks.ts";
+import { ExpensesPieChart, OwnersOverview, PaymentsOverview } from "@/app/dashboard/components/overviews.tsx";
+import { Card, CardContent } from "@/components/ui/card.tsx";
 
 function App() {
   const [filteredPayments, setFilteredPayments] = useState<Payment[]>([]);
@@ -51,6 +53,11 @@ function App() {
   }, [table
     .getFilteredRowModel()]);
 
+  const {
+    paymentOverviews,
+    ownersOverview,
+    expensesBreakdown
+  } = useDashboards({data: filteredPayments, selectedYear});
 
   return (
     <PageContainer>
@@ -65,8 +72,7 @@ function App() {
         totalsPerYear={totalsPerYear}
         selectedYear={selectedYear ?? ""}
       />
-      <div className="lg:grid gap-4 lg:grid-cols-5">
-
+      <div className="lg:grid gap-4 lg:grid-cols-2">
         <ExpensesTable
           expensesTableProps={{
             table,
@@ -74,19 +80,27 @@ function App() {
             onPaymentEdited,
             onRefresh,
           }}
-          {...{ className: "lg:col-span-2" }}
-
+          {...{ className: "lg:col-span-1" }}
         />
-      <div className={"lg:col-span-3 mt-6 lg:mt-0"}>
-        <Dashboards
-          dashboardProps={{
-            data: filteredPayments,
-            selectedYear: selectedYear,
-          }}
-          {...{ className: "" }}
-        />
+        <div className={"lg:col-span-1 pt-4 md:pt-0"}>
+          <SubTitle title={"Breakdown"} />
+          <ExpensesPieChart data={expensesBreakdown}></ExpensesPieChart>
+        </div>
       </div>
-      </div>
+      <Card className="pt-0 md:pt-4">
+        <CardContent className="pl-2">
+          <div className="md:grid md:grid-cols-2">
+            <div>
+              <SubTitle title={"Expenses"} />
+              <PaymentsOverview data={paymentOverviews} />
+            </div>
+            <div className="mt-4 md:mt-0">
+              <SubTitle title={"Users Comparison"} />
+              <OwnersOverview data={ownersOverview} />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </PageContainer>
   );
 }

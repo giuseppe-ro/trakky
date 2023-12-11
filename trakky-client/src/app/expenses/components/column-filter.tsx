@@ -62,11 +62,6 @@ export function Filter({
     </div>
   ) : isValidDate(firstValue) ? (
     <>
-      <datalist className="bg-slate-900" id={column.id + "list"}>
-        {sortedUniqueValues.slice(0, 5000).map((value: any) => (
-          <option className="border-slate-900 red" value={value} key={value.key} />
-        ))}
-      </datalist>
       <div className="overflow-auto">
         <div className="flex space-x-0.5">
           <DebouncedSelect

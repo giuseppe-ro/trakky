@@ -1,8 +1,8 @@
-import { Dashboards } from "@/app/dashboard/components/dashboards.tsx";
 import { PageContainer } from "@/components/ui/page-container";
 import { Text } from "@/components/ui/text.tsx";
-import { usePaymentData } from "@/lib/hooks.ts";
+import { usePaymentData } from "@/lib/hooks/page-hooks.ts";
 import { YearSelection } from "@/components/ui/data-selector.tsx";
+import { Dashboards } from "@/app/dashboard/components/dashboards.tsx";
 
 export default function DashboardPage() {
   const { payments, availableYears, selectedYear, setSelectedYear } =
@@ -21,7 +21,7 @@ export default function DashboardPage() {
           data: payments,
           selectedYear: selectedYear,
         }}
-      ></Dashboards>
+      />
     </PageContainer>
   );
 }

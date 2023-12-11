@@ -20,7 +20,7 @@ export function MainNav({
 
   return (
     <>
-      <div className="sticky top-0 bg-gray-950 z-50">
+      <div className="sticky top-0 bg-gray-950 z-50 min-w-[400px]">
         <div className="flex-col md:flex">
           <div className="border-b">
             <div className="flex h-16 items-center px-4 mx-6">

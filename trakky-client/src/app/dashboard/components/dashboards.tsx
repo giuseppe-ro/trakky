@@ -1,20 +1,18 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { PaymentsOverview, PaymentOverview, OwnersOverview, OwnerOverview } from "@/app/dashboard/components/overviews.tsx";
+import {
+  PaymentsOverview,
+  OwnersOverview,
+  ExpensesPieChart
+} from "@/app/dashboard/components/overviews.tsx";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
-import { useEffect, useState } from "react";
 
 import { Payment } from "@/infrastructure/payment";
-import {
-  getMonthlyOwnersSummariesForYear,
-  getMonthlyPaymentsSummariesForYear, getYearlyOwnersSummaries,
-  getYearlyPaymentsSummaries
-} from "@/lib/summaries";
-import { Budget, fetchBudgets } from "@/infrastructure/budget.tsx";
 import Spinner from "@/components/ui/spinner.tsx";
 import { FadeLeft } from "@/components/animations/fade.tsx";
 import { SubTitle } from "@/components/ui/text.tsx";
+import { useDashboards } from "@/lib/hooks/dashboards-hooks.ts";
 
 export interface DashboardProps {
   data: Payment[] | null;
@@ -27,52 +25,13 @@ export function Dashboards({
 }: {
   dashboardProps: DashboardProps;
 }) {
-  const [budgets, setBudgets] = useState<Budget[] | null>(null);
-  const [filteredData, setFilteredData] = useState<Payment[] | null>(null);
-  const [paymentOverviews, setPaymentOverviews] = useState<PaymentOverview[]>([]);
-  const [ownersOverview, setOwnersOverview] = useState<OwnerOverview[]>([]);
 
-  useEffect(() => {
-    fetchBudgets().then((data) => {
-      setBudgets(data);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (
-      dashboardProps.selectedYear === "All" &&
-      budgets &&
-      dashboardProps.data
-    ) {
-      setFilteredData(dashboardProps.data);
-      setPaymentOverviews(getYearlyPaymentsSummaries(dashboardProps.data, budgets));
-      setOwnersOverview(getYearlyOwnersSummaries(dashboardProps.data));
-    } else if (
-      budgets &&
-      dashboardProps.selectedYear !== null &&
-      dashboardProps.data
-    ) {
-      const filteredPayments = dashboardProps.data.filter(
-        (payment) =>
-          new Date(payment.date).getFullYear() ===
-          parseInt(dashboardProps.selectedYear ?? ""),
-      );
-      setFilteredData(filteredPayments);
-      const budget = budgets.find(
-        (item) =>
-          new Date(item.date).getFullYear().toString() ===
-          dashboardProps.selectedYear,
-      );
-
-      setOwnersOverview(getMonthlyOwnersSummariesForYear(filteredPayments));
-
-      if (budget) {
-        setPaymentOverviews(getMonthlyPaymentsSummariesForYear(filteredPayments, budget));
-      }
-    } else {
-      setFilteredData([]);
-    }
-  }, [dashboardProps.selectedYear, dashboardProps.data]);
+  const {
+    filteredData,
+    paymentOverviews,
+    ownersOverview,
+    expensesBreakdown
+  } = useDashboards(dashboardProps);
 
   return filteredData === null ? (
     dashboardProps.selectedYear === undefined ? (
@@ -96,6 +55,12 @@ export function Dashboards({
                   <OwnersOverview data={ownersOverview} />
                 </div>
               </div>
+            </CardContent>
+          </Card>
+          <Card className="invisible xs:visible">
+            <CardContent>
+              <SubTitle title={"Breakdown"} />
+                <ExpensesPieChart data={expensesBreakdown}></ExpensesPieChart>
             </CardContent>
           </Card>
         </FadeLeft>

@@ -101,8 +101,6 @@ export function useTable({
       .getSelectedRowModel()
       .rows.map((row: any) => row.original.id) as number[];
 
-    console.log(ids);
-
     const deleted = await DeletePayments(ids);
 
     if (deleted) {

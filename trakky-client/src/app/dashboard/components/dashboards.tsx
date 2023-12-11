@@ -45,7 +45,7 @@ export function Dashboards({
         <FadeLeft>
           <Card className="p-0">
             <CardContent className="pl-2">
-              <div className="md:grid md:grid-cols-2">
+              <div className="sm:grid sm:grid-cols-2">
                 <div>
                   <SubTitle title={"Expenses"} />
                   <PaymentsOverview data={paymentOverviews} />
@@ -57,7 +57,7 @@ export function Dashboards({
               </div>
             </CardContent>
           </Card>
-          <Card className="invisible xs:visible">
+          <Card>
             <CardContent>
               <SubTitle title={"Breakdown"} />
                 <ExpensesPieChart data={expensesBreakdown}></ExpensesPieChart>

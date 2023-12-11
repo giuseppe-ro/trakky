@@ -72,7 +72,7 @@ function App() {
         totalsPerYear={totalsPerYear}
         selectedYear={selectedYear ?? ""}
       />
-      <div className="lg:grid gap-4 lg:grid-cols-2">
+      <div className="lg:grid gap-4 lg:grid-cols-2 mt-4">
         <ExpensesTable
           expensesTableProps={{
             table,

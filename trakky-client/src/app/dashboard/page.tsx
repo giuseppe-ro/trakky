@@ -7,7 +7,7 @@ import Spinner from "@/components/ui/spinner.tsx";
 import { Tabs, TabsContent } from "@/components/ui/tabs.tsx";
 import { FadeLeft } from "@/components/animations/fade.tsx";
 import { Card, CardContent } from "@/components/ui/card.tsx";
-import { ExpensesPieChart, OwnersOverview, PaymentsOverview } from "@/app/dashboard/components/dashboards.tsx";
+import { ExpensesPieChart, UsersDashboard, ExpensesDashboard } from "@/app/dashboard/components/dashboards.tsx";
 
 export default function DashboardPage() {
   const { payments, availableYears, selectedYear, setSelectedYear } =
@@ -44,11 +44,11 @@ export default function DashboardPage() {
                     <div className="sm:grid sm:grid-cols-2">
                       <div>
                         <SubTitle title={"Expenses"} />
-                        <PaymentsOverview data={paymentOverviews} />
+                        <ExpensesDashboard data={paymentOverviews} />
                       </div>
                       <div className="mt-4 sm:mt-0">
                         <SubTitle title={"Users Comparison"} />
-                        <OwnersOverview data={ownersOverview} />
+                        <UsersDashboard data={ownersOverview} />
                       </div>
                     </div>
                   </CardContent>

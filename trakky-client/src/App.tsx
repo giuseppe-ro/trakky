@@ -8,7 +8,7 @@ import { useTable } from "@/lib/hooks/table-hooks.ts";
 import { Summary } from "@/app/expenses/components/summary.tsx";
 import { Payment } from "@/infrastructure/payment.tsx";
 import { useEffect, useState } from "react";
-import { ExpensesPieChart, OwnersOverview, PaymentsOverview } from "@/app/dashboard/components/dashboards.tsx";
+import { ExpensesPieChart, UsersDashboard, ExpensesDashboard } from "@/app/dashboard/components/dashboards.tsx";
 import { Card, CardContent } from "@/components/ui/card.tsx";
 import { useDashboards } from "@/lib/hooks/dashboards-hooks.ts";
 
@@ -92,11 +92,11 @@ function App() {
           <div className="sm:grid sm:grid-cols-2">
             <div>
               <SubTitle title={"Expenses"} />
-              <PaymentsOverview data={paymentOverviews} />
+              <ExpensesDashboard data={paymentOverviews} />
             </div>
             <div className="mt-4 sm:mt-0">
               <SubTitle title={"Users Comparison"} />
-              <OwnersOverview data={ownersOverview} />
+              <UsersDashboard data={ownersOverview} />
             </div>
           </div>
         </CardContent>

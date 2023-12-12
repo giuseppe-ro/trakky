@@ -19,14 +19,14 @@ import { formatCurrency } from "@/lib/formatter.ts";
 import { AmountSummary } from "@/components/ui/amount-summary.tsx";
 
 const colors = [
-  '#00C90F',
-  '#0088FE',
-  '#FF8042',
-  '#FFBB28',
-  '#8884d8',
-  '#FF00FF',
-  '#FF1042',
-  '#00C49F'
+  "#0bb4ff",
+  "#50e991",
+  "#e6d800",
+  "#9b19f5",
+  "#ffa300",
+  "#dc0ab4",
+  "#b3d4ff",
+  "#00bfa0"
 ];
 
 const getRandomColor = (index: number) => {
@@ -91,7 +91,7 @@ const OwnersOverviewTooltip = ({ active, payload, label }: any) => {
   return null;
 };
 
-export function PaymentsOverview({ data, ...props }: { data: PaymentOverview[] }) {
+export function ExpensesDashboard({ data, ...props }: { data: PaymentOverview[] }) {
   data.sort((a, b) => a.index - b.index);
 
   return (
@@ -122,7 +122,7 @@ export function PaymentsOverview({ data, ...props }: { data: PaymentOverview[] }
                 entry.total < entry.budget
                   ? "#54ff5a"
                   : entry.total < entry.maxBudget
-                    ? "#fffc54"
+                    ? "#e6d800"
                     : "#ff5454"
               }
               key={`cell-${index}`}
@@ -133,7 +133,7 @@ export function PaymentsOverview({ data, ...props }: { data: PaymentOverview[] }
           name="Budget"
           type={"monotone"}
           dataKey="budget"
-          stroke="#54ff5a"
+          stroke="#50e991"
         />
         <Line
           name="Max Budget"
@@ -152,7 +152,7 @@ export interface OwnerOverview {
   name: string;
   owners: { [key: string]: number };
 }
-export function OwnersOverview({ data, ...props }: { data: OwnerOverview[] }) {
+export function UsersDashboard({ data, ...props }: { data: OwnerOverview[] }) {
   data.sort((a, b) => a.index - b.index);
 
   const owners = data && data[0]

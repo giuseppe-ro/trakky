@@ -53,8 +53,8 @@ export function DeletePaymentsDialog({
 
                 <AlertDialogDescription>
                   <div className="m-1 md:m-6">
-                    {payments.map((payment: Payment, index: number) => (
-                      <TableRow key={`row-${payment.id}`} className="flex">
+                    {payments.map((payment: Payment) => (
+                      <TableRow key={payment.id} className="flex">
                         <td className={cn(`${tdStyle} w-[75px] text-left`)}>
                           {new Date(payment.date).toLocaleString("en-GB", {
                             month: "numeric",

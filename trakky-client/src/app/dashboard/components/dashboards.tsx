@@ -95,7 +95,7 @@ export function ExpensesDashboard({ data, ...props }: { data: PaymentOverview[] 
   data.sort((a, b) => a.index - b.index);
 
   return (
-    <ResponsiveContainer aspect={1.5} {...props}>
+    <ResponsiveContainer maxHeight={280} aspect={1.5} {...props}>
       <ComposedChart data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
         <XAxis
           dataKey="name"
@@ -285,7 +285,7 @@ export function ExpensesPieChart({ data }: { data: any[] | undefined }) {
     <>
       {data &&
         <ResponsiveContainer maxHeight={290} aspect={1}>
-          <PieChart>
+          <PieChart >
             <Pie
               activeIndex={activeIndex}
               activeShape={renderActiveShape}

@@ -13,16 +13,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Payment } from "@/infrastructure/payment";
 import { cn } from "@/lib/utils.ts";
 import { Filter } from "@/app/expenses/components/column-filter.tsx";
 import {
   colSize,
 } from "@/app/expenses/components/columns.tsx";
 import { TableActionMenu } from "@/app/expenses/components/table-action-menu.tsx";
-import { EditCell } from "@/app/expenses/components/edit-cell.tsx";
 import { FadeUp } from "@/components/animations/fade.tsx";
-import { PaymentForm } from "@/app/expenses/components/payment-form.tsx";
 
 export interface ExpensesTableProps {
   table: TableType<any>;
@@ -140,15 +137,6 @@ export function ExpensesTable({
                             </td>
                           );
                         })}
-                        <td>
-                          <EditCell id={(row.original as Payment).id}>
-                            <PaymentForm
-                              editValues={row.original as Payment}
-                              refresh={expensesTableProps.onPaymentEdited}
-                              title={"Edit Transaction"}
-                            ></PaymentForm>
-                          </EditCell>
-                        </td>
                       </TableRow>
                     );
                   })}

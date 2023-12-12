@@ -161,7 +161,7 @@ export function OwnersOverview({ data, ...props }: { data: OwnerOverview[] }) {
 
   return (
     <>
-      <ResponsiveContainer aspect={1.5} {...props}>
+      <ResponsiveContainer maxHeight={280} aspect={1.5} {...props}>
         <LineChart data={data}
           margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
           title="Text">
@@ -218,7 +218,7 @@ const renderActiveShape = (props: any) => {
   const sy = cy + (outerRadius + 10) * sin;
   const mx = cx + (outerRadius + 30) * cos;
   const my = cy + (outerRadius + 30) * sin;
-  const ex = mx + (cos >= 0 ? 1 : -1) * 22;
+  const ex = mx + (cos >= 0 ? 0.5 : -0.5) * 22;
   const ey = my;
   const textAnchor = cos >= 0 ? "start" : "end";
 
@@ -284,15 +284,17 @@ export function ExpensesPieChart({ data }: { data: any[] | undefined }) {
   return (
     <>
       {data &&
-        <ResponsiveContainer maxHeight={270} aspect={1}>
+        <ResponsiveContainer maxHeight={290} aspect={1}>
           <PieChart>
             <Pie
               activeIndex={activeIndex}
               activeShape={renderActiveShape}
               data={data}
               // cy={150}
-              innerRadius={60}
-              outerRadius={80}
+              // innerRadius={50}
+              // outerRadius={70}
+              innerRadius={"40%"}
+              outerRadius={"50%"}
               fill="#8884d8"
               dataKey="value"
               onMouseEnter={onPieEnter}

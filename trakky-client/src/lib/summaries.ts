@@ -1,4 +1,4 @@
-import { OwnerOverview, PaymentOverview } from "@/app/dashboard/components/overviews.tsx";
+import { OwnerOverview, PaymentOverview } from "@/app/dashboard/components/dashboards.tsx";
 import { Budget } from "@/infrastructure/budget";
 import { Payment } from "@/infrastructure/payment";
 

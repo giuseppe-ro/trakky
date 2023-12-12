@@ -23,3 +23,14 @@ export const fuzzySort: SortingFn<any> = (rowA, rowB, columnId) => {
 
   return dir === 0 ? sortingFns.alphanumeric(rowA, rowB, columnId) : dir;
 };
+
+
+declare global {
+  interface Array<T> {
+    filterBy(str: string): string[];
+  }
+}
+
+Array.prototype.filterBy = function(str: string): string[] {
+  return this.filter(item => new RegExp('^' + str.replace(/\*/g, '.*') + '$').test(item));
+};

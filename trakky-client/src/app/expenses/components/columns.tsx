@@ -54,10 +54,11 @@ export const ColumnDefinition: ColumnDef<Payment, number | string>[] = [
   },
   {
     id: 'edit',
+    enableHiding: false,
     header: () => null,
     cell: ({ row }) => {
       return (
-        <td>
+        <>
           <EditCell id={(row.original as Payment).id}>
             <PaymentForm
               editValues={row.original as Payment}
@@ -65,7 +66,7 @@ export const ColumnDefinition: ColumnDef<Payment, number | string>[] = [
               title={"Edit Transaction"}
             ></PaymentForm>
           </EditCell>
-        </td>
+        </>
       )
     },
   },
@@ -80,7 +81,7 @@ export const colSize = (id: string): number | string => {
     case "date":
       return 90;
     case "type" || "owner":
-      return 110;
+      return 80;
     case "amount":
       return 115;
     default:

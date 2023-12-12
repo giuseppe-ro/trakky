@@ -11,7 +11,7 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel, Table,
-  useReactTable
+  useReactTable, VisibilityState
 } from "@tanstack/react-table";
 
 import { Total } from "@/app/expenses/components/summary.tsx";
@@ -33,7 +33,6 @@ export function useTable({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
   const [filteredData, setFilteredData] = useState<Payment[]>([]);
-  const [columnVisibility, setColumnVisibility] = useState({});
 
   useEffect(() => {
     if (selectedYear === "All" && data)
@@ -67,6 +66,10 @@ export function useTable({
     () => ColumnDefinition,
     [],
   );
+
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
+    'date': false,
+  })
 
   const table: Table<any> = useReactTable({
     data: filteredData,

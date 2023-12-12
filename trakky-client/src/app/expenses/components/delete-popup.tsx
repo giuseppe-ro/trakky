@@ -53,33 +53,31 @@ export function DeletePaymentsDialog({
 
                 <AlertDialogDescription>
                   <div className="m-1 md:m-6">
-                    {payments.map((payment: Payment) => (
-                      <>
-                        <TableRow key={payment.id} className="flex">
-                          <td className={cn(`${tdStyle} w-[75px] text-left`)}>
-                            {new Date(payment.date).toLocaleString("en-GB", {
-                              month: "numeric",
-                              year: "numeric",
-                            })}
-                          </td>
-                          <td className={cn(`${tdStyle} w-[80px]`)}>
-                            {payment.type}
-                          </td>
-                          <td className={cn(`${tdStyle} w-[55px]`)}>
-                            {payment.owner}
-                          </td>
-                          <td
-                            className={cn(
-                              `${tdStyle} w-[70px] text-right overflow-auto`,
-                            )}
-                          >
-                            {formatCurrency(payment.amount)}
-                          </td>
-                          <td className={cn(`${tdStyle} flex-grow truncate`)}>
-                            {payment.description}
-                          </td>
-                        </TableRow>
-                      </>
+                    {payments.map((payment: Payment, index: number) => (
+                      <TableRow key={`row-${payment.id}`} className="flex">
+                        <td className={cn(`${tdStyle} w-[75px] text-left`)}>
+                          {new Date(payment.date).toLocaleString("en-GB", {
+                            month: "numeric",
+                            year: "numeric",
+                          })}
+                        </td>
+                        <td className={cn(`${tdStyle} w-[80px]`)}>
+                          {payment.type}
+                        </td>
+                        <td className={cn(`${tdStyle} w-[55px]`)}>
+                          {payment.owner}
+                        </td>
+                        <td
+                          className={cn(
+                            `${tdStyle} w-[70px] text-right overflow-auto`,
+                          )}
+                        >
+                          {formatCurrency(payment.amount)}
+                        </td>
+                        <td className={cn(`${tdStyle} flex-grow truncate`)}>
+                          {payment.description}
+                        </td>
+                      </TableRow>
                     ))}
                   </div>
                 </AlertDialogDescription>

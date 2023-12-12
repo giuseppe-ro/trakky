@@ -1,10 +1,11 @@
-import { PageContainer } from "@/components/ui/page-container";
+import { SectionContainer } from "@/components/ui/section-container.tsx";
 import { ExpensesTable } from "./components/table";
 import { Text } from "@/components/ui/text.tsx";
 import { usePaymentData } from "@/lib/hooks/page-hooks.ts";
 import { YearSelection } from "@/components/ui/data-selector.tsx";
 import { useTable } from "@/lib/hooks/table-hooks.ts";
 import { Summary } from "@/app/expenses/components/summary.tsx";
+import { useEffect } from "react";
 
 
 export default function ExpensesPage() {
@@ -28,8 +29,22 @@ export default function ExpensesPage() {
     refreshData,
   })
 
+  useEffect(() => {
+    const activeColumns = localStorage.getItem("expenses_active_columns");
+
+    if(activeColumns) {
+      try {
+        table.setColumnVisibility(JSON.parse(activeColumns));
+      } catch (e) {
+        localStorage.removeItem("expenses_active_columns")
+        console.log(e);
+      }
+    }
+  }, []);
+
   return (
-    <PageContainer>
+  <>
+    <SectionContainer>
       <Text title={"Expenses"} />
       <YearSelection
         availableYears={availableYears}
@@ -41,14 +56,16 @@ export default function ExpensesPage() {
         totalsPerYear={totalsPerYear}
         selectedYear={selectedYear ?? ""}
       />
+    </SectionContainer>
       <ExpensesTable
         expensesTableProps={{
           table,
           onDeleteConfirmed,
           onPaymentEdited,
           onRefresh,
+          page: "expenses",
         }}
       />
-    </PageContainer>
+  </>
   );
 }

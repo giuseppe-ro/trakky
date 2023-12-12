@@ -96,7 +96,9 @@ export function ExpensesDashboard({ data, ...props }: { data: PaymentOverview[] 
 
   return (
     <ResponsiveContainer maxHeight={280} aspect={1.5} {...props}>
-      <ComposedChart data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+      <ComposedChart data={data}
+                     // margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+      >
         <XAxis
           dataKey="name"
           stroke="#888888"
@@ -163,7 +165,7 @@ export function UsersDashboard({ data, ...props }: { data: OwnerOverview[] }) {
     <>
       <ResponsiveContainer maxHeight={280} aspect={1.5} {...props}>
         <LineChart data={data}
-          margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+          // margin={{ top: 5, right: 0, left: 0, bottom: 5 }}
           title="Text">
           <XAxis
             dataKey="name"

@@ -35,7 +35,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ThemeProvider>
       <MainNav className="h-8 shadow-amber-700 flex items-center space-x-4 lg:space-x-6" />
-      <SectionContainer>
+      <SectionContainer className="m-0 px-0">
         <RouterProvider router={router} />
       </SectionContainer>
     </ThemeProvider>

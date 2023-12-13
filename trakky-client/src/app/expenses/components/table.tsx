@@ -96,7 +96,6 @@ export function ExpensesTable({
                 onRefresh={expensesTableProps.onRefresh}
               />
             </Containers>
-            <div>
               <Table className="bg-slate-950 border border-slate-800 overflow-x-scroll">
                 <TableHeader className="hover:bg-transparent">
                   {expensesTableProps.table.getHeaderGroups().map((headerGroup) => (
@@ -220,7 +219,6 @@ export function ExpensesTable({
                   })}
                 </TableBody>
               </Table>
-            </div>
           </FadeUp>
         </>
       }

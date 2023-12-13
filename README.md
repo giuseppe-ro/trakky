@@ -1,27 +1,35 @@
-# React + TypeScript + Vite
+> [!IMPORTANT]  
+> Still under development.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Trakky
 
-Currently, two official plugins are available:
+A personal, self-hosted, simple expenses tracker.
+Demo [here](https://trakky.pages.dev).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## How to run with docker
 
-## Expanding the ESLint configuration
+> [!NOTE]  
+> At the moment, this requires mariadb to be configured. See [docs](https://mariadb.org/documentation/) to see how to install it.
+> As the backend of this app is set with Prisma, you can use any prisma supported database. See prisma [docs](https://www.prisma.io/docs/getting-started/quickstart) for more info.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
+Set the db:
+Create a db named "expenses", and a user with full permission to that database.
+```bash
+cd trakky-server
+npm install
+npx prisma migrate dev --name init
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+Set and run the backend:
+```bash
+cd trakky-server
+docker build -t trakky-server .
+docker run -p 8999:8999 -e DATABASE_URL="mysql://USERNAME:PASSWORD@URL:PORT/expenses?schema=public" --name trakky-server -d trakky-server
+```
+
+Set and run the frontent:
+```bash
+cd trakky-client
+docker build -t trakky-client .
+docker run -p 8998:8998 --name trakky -d trakky-client
+```

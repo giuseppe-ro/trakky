@@ -1,4 +1,3 @@
-import { SectionContainer } from "@/components/ui/section-container.tsx";
 import { ExpensesTable } from "./components/table";
 import { Text } from "@/components/ui/text.tsx";
 import { usePaymentData } from "@/lib/hooks/page-hooks.ts";
@@ -6,6 +5,7 @@ import { YearSelection } from "@/components/ui/data-selector.tsx";
 import { useTable } from "@/lib/hooks/table-hooks.ts";
 import { Summary } from "@/app/expenses/components/summary.tsx";
 import { useEffect } from "react";
+import { SectionContainer } from "@/components/ui/section-container.tsx";
 
 
 export default function ExpensesPage() {
@@ -44,13 +44,13 @@ export default function ExpensesPage() {
 
   return (
   <>
-    <SectionContainer>
       <Text title={"Expenses"} />
       <YearSelection
         availableYears={availableYears}
         selectedYear={selectedYear}
         onYearChange={setSelectedYear}
       />
+    <SectionContainer>
       <Summary
         table={table}
         totalsPerYear={totalsPerYear}

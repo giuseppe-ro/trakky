@@ -42,13 +42,13 @@ export function YearSelection({
 
   return (
     availableYears.length > 0 && (
-      <FadeRight className="sticky top-20 z-50">
+      <FadeRight className="sticky top-20 z-50 mx-2 md:mx-6">
         <Selection
           value={year()}
           onChange={changeYear}
           options={availableYears}
           {...{
-            className: "rounded-md w-full overscroll-contain bg-gray-950",
+            className: "rounded-md w-full overscroll-contain bg-gray-950 ",
           }}
         />
       </FadeRight>

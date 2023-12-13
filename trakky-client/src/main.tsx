@@ -11,6 +11,7 @@ import ErrorPage from "./app/error/page.tsx";
 import ExpensesPage from "@/app/expenses/page.tsx";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import { SectionContainer } from "@/components/ui/section-container.tsx";
 
 AOS.init({ once: true });
 
@@ -34,7 +35,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ThemeProvider>
       <MainNav className="h-8 shadow-amber-700 flex items-center space-x-4 lg:space-x-6" />
-      <RouterProvider router={router} />
+      <SectionContainer>
+        <RouterProvider router={router} />
+      </SectionContainer>
     </ThemeProvider>
   </React.StrictMode>,
 );

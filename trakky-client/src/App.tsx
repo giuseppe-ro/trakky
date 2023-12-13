@@ -62,17 +62,18 @@ function App() {
   return (
     <>
       <Text title={"Home"} />
-      <SectionContainer>
         <YearSelection
           availableYears={availableYears}
           selectedYear={selectedYear}
           onYearChange={setSelectedYear}
         />
+      <SectionContainer>
         <Summary
           table={table}
           totalsPerYear={totalsPerYear}
           selectedYear={selectedYear ?? ""}
         />
+
       </SectionContainer>
       <div className="lg:grid gap-4 lg:grid-cols-2 mt-4">
           <ExpensesTable
@@ -92,8 +93,8 @@ function App() {
         </div>
       </div>
       <Card className="mt-0">
-        <CardContent className="pl-2">
-          <div className="sm:grid sm:grid-cols-2">
+        <CardContent className="pl-4">
+          <div className="sm:grid gap-4 sm:grid-cols-2">
             <div>
               <SubTitle title={"Expenses"} />
               <ExpensesDashboard data={paymentOverviews} />

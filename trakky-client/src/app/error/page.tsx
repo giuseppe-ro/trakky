@@ -1,5 +1,4 @@
 import { useRouteError, isRouteErrorResponse } from "react-router-dom";
-import {SectionContainer} from "@/components/ui/section-container.tsx";
 
 export default function ErrorPage() {
   const error = useRouteError();
@@ -20,13 +19,11 @@ export default function ErrorPage() {
 
   return (
     <div id="error-page">
-        <SectionContainer>
-            <h1 className="m-6">Oops!</h1>
-            <p>Sorry, an unexpected error has occurred.</p>
-            <p>
-                <i>{errorMessage}</i>
-            </p>
-        </SectionContainer>
+      <h1 className="m-6">Oops!</h1>
+      <p>Sorry, an unexpected error has occurred.</p>
+      <p>
+          <i>{errorMessage}</i>
+      </p>
     </div>
   );
 }

@@ -5,7 +5,7 @@ import { YearSelection } from "@/components/ui/data-selector.tsx";
 import { useTable } from "@/lib/hooks/table-hooks.ts";
 import { Summary } from "@/app/expenses/components/summary.tsx";
 import { useEffect } from "react";
-import { SectionContainer } from "@/components/ui/section-container.tsx";
+import { Containers } from "@/components/ui/containers.tsx";
 
 
 export default function ExpensesPage() {
@@ -50,13 +50,13 @@ export default function ExpensesPage() {
         selectedYear={selectedYear}
         onYearChange={setSelectedYear}
       />
-    <SectionContainer>
+    <Containers>
       <Summary
         table={table}
         totalsPerYear={totalsPerYear}
         selectedYear={selectedYear ?? ""}
       />
-    </SectionContainer>
+    </Containers>
       <ExpensesTable
         expensesTableProps={{
           table,

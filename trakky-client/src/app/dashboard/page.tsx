@@ -1,4 +1,3 @@
-import { SectionContainer } from "@/components/ui/section-container.tsx";
 import { SubTitle, Text } from "@/components/ui/text.tsx";
 import { usePaymentData } from "@/lib/hooks/page-hooks.ts";
 import { YearSelection } from "@/components/ui/data-selector.tsx";
@@ -21,7 +20,7 @@ export default function DashboardPage() {
   } = useDashboards({data: payments, selectedYear: selectedYear});
 
   return (
-    <SectionContainer>
+    <div>
       <Text title={"Dashboards"} />
       <YearSelection
         availableYears={availableYears}
@@ -63,6 +62,6 @@ export default function DashboardPage() {
             </TabsContent>
           </Tabs> )
       }
-    </SectionContainer>
+    </div>
   );
 }

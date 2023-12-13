@@ -42,7 +42,7 @@ export function YearSelection({
 
   return (
     availableYears.length > 0 && (
-      <FadeRight className="sticky top-20 z-50 mx-2 md:mx-6">
+      <FadeRight className="sticky top-20 z-50 px-2 md:px-0">
         <Selection
           value={year()}
           onChange={changeYear}

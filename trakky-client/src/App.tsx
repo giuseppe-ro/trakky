@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { ExpensesPieChart, UsersDashboard, ExpensesDashboard } from "@/app/dashboard/components/dashboards.tsx";
 import { Card, CardContent } from "@/components/ui/card.tsx";
 import { useDashboards } from "@/lib/hooks/dashboards-hooks.ts";
-import { SectionContainer } from "@/components/ui/section-container.tsx";
+import { Containers } from "@/components/ui/containers.tsx";
 
 function App() {
   const [filteredPayments, setFilteredPayments] = useState<Payment[]>([]);
@@ -62,19 +62,19 @@ function App() {
   return (
     <>
       <Text title={"Home"} />
-        <YearSelection
-          availableYears={availableYears}
-          selectedYear={selectedYear}
-          onYearChange={setSelectedYear}
-        />
-      <SectionContainer>
+         <YearSelection
+           availableYears={availableYears}
+           selectedYear={selectedYear}
+           onYearChange={setSelectedYear}
+         />
+      <Containers>
         <Summary
           table={table}
           totalsPerYear={totalsPerYear}
           selectedYear={selectedYear ?? ""}
         />
 
-      </SectionContainer>
+      </Containers>
       <div className="lg:grid gap-4 lg:grid-cols-2 mt-4">
           <ExpensesTable
             expensesTableProps={{

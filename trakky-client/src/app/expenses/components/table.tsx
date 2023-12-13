@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/dropdown-menu.tsx";
 import { ChevronDown } from "lucide-react";
 import { useEffect } from "react";
-import { SectionContainer } from "@/components/ui/section-container.tsx";
+import { Containers } from "@/components/ui/containers.tsx";
 
 export interface ExpensesTableProps {
   table: TableType<any>;
@@ -89,14 +89,14 @@ export function ExpensesTable({
       {
         <>
           <FadeUp>
-            <div className="px-2 md:px-6 mx-auto w-full">
+            <Containers>
               <TableActionMenu
                 table={expensesTableProps.table}
                 onDeleteConfirmed={expensesTableProps.onDeleteConfirmed}
                 onRefresh={expensesTableProps.onRefresh}
               />
-            </div>
-            <SectionContainer className="px-0 md:px-6">
+            </Containers>
+            <div>
               <Table className="bg-slate-950 border border-slate-800 overflow-x-scroll">
                 <TableHeader className="hover:bg-transparent">
                   {expensesTableProps.table.getHeaderGroups().map((headerGroup) => (
@@ -220,7 +220,7 @@ export function ExpensesTable({
                   })}
                 </TableBody>
               </Table>
-            </SectionContainer>
+            </div>
           </FadeUp>
         </>
       }

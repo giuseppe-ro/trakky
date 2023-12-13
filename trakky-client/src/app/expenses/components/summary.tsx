@@ -24,7 +24,7 @@ function SummaryCard({
           {title}
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-4">
         <div className="text-xl md:text-2xl font-bold">{contentText}</div>
         <div className="text-xs text-muted-foreground">{contentSubText}{children}</div>
       </CardContent>

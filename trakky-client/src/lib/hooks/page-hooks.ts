@@ -7,8 +7,9 @@ export function usePaymentData() {
   const [availableYears, setAvailableYears] = useState<string[]>([]);
   const [selectedYear, setSelectedYear] = useState<string | null>("");
 
-  async function refreshData() {
-    setPayments([]);
+  async function refreshData(flushPaymentsBeforeRefresh: boolean = true) {
+    if(flushPaymentsBeforeRefresh) setPayments([]);
+
     const data = await fetchPayments();
     setPayments(data);
     const years = getAvailableYears(data);

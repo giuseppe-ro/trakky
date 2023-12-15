@@ -41,6 +41,7 @@ import {
 import { fetchOwners } from "@/infrastructure/owner.tsx";
 import { fetchTypes } from "@/infrastructure/transaction-type.tsx";
 import { toast } from "@/components/ui/use-toast.ts";
+import { demoMode } from "@/constants";
 
 let types: string[] = [];
 let owners: string[] = [];
@@ -117,7 +118,12 @@ export function PaymentForm({
         ? await AddPayments(values as unknown as Payment[])
         : await EditPayment(values as unknown as Payment);
 
-    if (success) {
+    if (demoMode) {
+      toast({
+        title: "Data cannot be modified in demo mode!",
+        variant: "warning"
+      })
+    } else if (success) {
       setIsSuccess(true);
       if (editValues === undefined) {
         form.resetField("amount");
@@ -254,7 +260,7 @@ export function PaymentForm({
                         className={cn(
                           "pb-0 mb-0",
                           form.formState.errors.description &&
-                            `shake-animation`,
+                          `shake-animation`,
                         )}
                       ></Textarea>
                     </Field>
@@ -270,11 +276,11 @@ export function PaymentForm({
                     className={cn(
                       "w-full border transition-none border-green-500 hover:bg-green-500",
                       form.formState.isSubmitted &&
-                        isError &&
-                        "border-red-700 hover:border-red-950 hover:bg-red-700",
+                      isError &&
+                      "border-red-700 hover:border-red-950 hover:bg-red-700",
                       isSuccess &&
-                        !isError &&
-                        "border border-green-500 hover:border-green-950 bg-green-500 hover:bg-green-500",
+                      !isError &&
+                      "border border-green-500 hover:border-green-950 bg-green-500 hover:bg-green-500",
                     )}
                   >
                     {isSuccess && !isError ? "Saved" : "Save"}

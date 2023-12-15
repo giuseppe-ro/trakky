@@ -92,8 +92,6 @@ export function PaymentForm({
   const [isError, setIsError] = React.useState(false);
   const [isSuccess, setIsSuccess] = React.useState(false);
 
-  console.log("editValues", editValues);
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -270,7 +268,7 @@ export function PaymentForm({
               <CardFooter className="flex flex-col justify-between">
                 {!form.formState.isSubmitting && (
                   <Button
-                    disabled={!isError && isSuccess}
+                    disabled={!isError && isSuccess || demoMode}
                     type="submit"
                     variant="outline"
                     className={cn(
@@ -280,11 +278,21 @@ export function PaymentForm({
                       "border-red-700 hover:border-red-950 hover:bg-red-700",
                       isSuccess &&
                       !isError &&
+                      !demoMode &&
                       "border border-green-500 hover:border-green-950 bg-green-500 hover:bg-green-500",
+                      isSuccess &&
+                      // !isError &&
+                      demoMode &&
+                      "border border-yellow-500 bg-yellow-500",
                     )}
                   >
                     {isSuccess && !isError ? "Saved" : "Save"}
                   </Button>
+                )}
+                {demoMode && (
+                  <p className="text-sm font-medium text-destructive m-2">
+                    Demo mode. Data cannot be modified.
+                  </p>
                 )}
               </CardFooter>
             </form>

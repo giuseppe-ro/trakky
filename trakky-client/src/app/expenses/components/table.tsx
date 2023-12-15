@@ -34,7 +34,7 @@ export interface ExpensesTableProps {
   table: TableType<any>;
   onDeleteConfirmed: () => Promise<void>;
   onPaymentEdited: () => void;
-  onRefresh: () => Promise<void>;
+  onRefresh: (flushPaymentsBeforeRefresh?: boolean) => void;
   page: string;
 }
 
@@ -81,7 +81,6 @@ export function ExpensesTable({
       activeColumns[col] = state;
       localStorage.setItem(activeColumnsKey, JSON.stringify(activeColumns));
     }
-
   }
 
   return (

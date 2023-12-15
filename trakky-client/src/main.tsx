@@ -12,6 +12,7 @@ import ExpensesPage from "@/app/expenses/page.tsx";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { PageContainer } from "@/components/ui/containers.tsx";
+import { Toaster } from "@/components/ui/toaster.tsx";
 
 AOS.init({ once: true });
 
@@ -37,7 +38,8 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <MainNav className="h-8 shadow-amber-700 flex items-center space-x-4 lg:space-x-6" />
       <PageContainer>
         <RouterProvider router={router} />
+        <Toaster />
       </PageContainer>
     </ThemeProvider>
-  </React.StrictMode>,
+  </React.StrictMode>
 );

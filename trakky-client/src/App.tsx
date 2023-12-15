@@ -11,6 +11,7 @@ import { ExpensesPieChart, UsersDashboard, ExpensesDashboard } from "@/app/dashb
 import { Card, CardContent } from "@/components/ui/card.tsx";
 import { useDashboards } from "@/lib/hooks/dashboards-hooks.ts";
 import { Containers } from "@/components/ui/containers.tsx";
+import { FadeLeft } from "@/components/animations/fade.tsx";
 
 function App() {
   const [filteredPayments, setFilteredPayments] = useState<Payment[]>([]);
@@ -89,7 +90,9 @@ function App() {
 
         <div className={"lg:col-span-1 pt-4 md:pt-0 overflow-x-scroll"}>
           <SubTitle title={"Breakdown"} />
-          <ExpensesPieChart data={expensesBreakdown}></ExpensesPieChart>
+          <FadeLeft>
+            <ExpensesPieChart data={expensesBreakdown}></ExpensesPieChart>
+          </FadeLeft>
         </div>
       </div>
       <Card className="mt-0">

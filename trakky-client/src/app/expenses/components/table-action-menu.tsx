@@ -33,7 +33,7 @@ export function TableActionMenu({
   onDeleteConfirmed,
 }: {
   table: Table<any>;
-  onRefresh: () => void;
+  onRefresh: (flushPaymentsBeforeRefresh?: boolean) => void;
   onDeleteConfirmed: () => Promise<void>;
 }) {
 
@@ -51,7 +51,7 @@ export function TableActionMenu({
           }
         >
           <PaymentForm
-            refresh={onRefresh}
+            refresh={() => onRefresh(false)}
             title={"Add New Transaction"}
           ></PaymentForm>
         </PopupDialog>
@@ -59,7 +59,7 @@ export function TableActionMenu({
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger
-                onClick={onRefresh}
+                onClick={() => onRefresh(true)}
                 className="rounded w-8 flex justify-center items-center hover:text-gray-700 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring "
               >
                 <ReloadIcon />

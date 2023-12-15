@@ -20,6 +20,7 @@ import { fuzzyFilter } from "@/lib/filters.ts";
 import {
   ColumnDefinition,
 } from "@/app/expenses/components/columns.tsx";
+import { toast } from "@/components/ui/use-toast.ts";
 
 export function useTable({
                             data,
@@ -28,7 +29,7 @@ export function useTable({
                           }: {
   data: Payment[] | null;
   selectedYear: string | null;
-  refreshData: () => void;
+  refreshData(flushPaymentsBeforeRefresh?: boolean): void
 }) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
@@ -107,22 +108,28 @@ export function useTable({
     const deleted = await DeletePayments(ids);
 
     if (deleted) {
+      refreshData(false);
       table.resetRowSelection();
-      refreshData();
-      alert("Transactions deleted!");
+      toast({
+        title: "Transactions deleted!",
+        className: "bg-green-600",
+      })
     } else {
-      alert("Error! Could not delete transactions");
+      toast({
+        title: "Couldn't delete transactions!",
+        className: "bg-red-500",
+      })
     }
   }
 
   function onPaymentEdited() {
     table.resetRowSelection();
-    onRefresh().then(() => { });
+    onRefresh(false).then(() => { });
   }
 
-  async function onRefresh() {
+  async function onRefresh(flushPaymentsBeforeRefresh: boolean = true) {
     table.resetColumnFilters();
-    refreshData();
+    refreshData(flushPaymentsBeforeRefresh);
   }
 
   return {

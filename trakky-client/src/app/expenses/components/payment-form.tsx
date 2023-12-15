@@ -40,6 +40,7 @@ import {
 } from "@/infrastructure/payment.tsx";
 import { fetchOwners } from "@/infrastructure/owner.tsx";
 import { fetchTypes } from "@/infrastructure/transaction-type.tsx";
+import { toast } from "@/components/ui/use-toast.ts";
 
 let types: string[] = [];
 let owners: string[] = [];
@@ -84,7 +85,7 @@ export function PaymentForm({
   editValues,
 }: {
   title: string;
-  refresh: () => void;
+  refresh: (flushPaymentsBeforeRefresh: boolean) => void;
   editValues?: Payment;
 }) {
   const [isError, setIsError] = React.useState(false);
@@ -122,12 +123,21 @@ export function PaymentForm({
         form.resetField("amount");
         form.resetField("description");
         form.setFocus("amount");
+
+        toast({
+          title: "Transactions has been added!",
+          className: "bg-green-600",
+        })
       }
       setTimeout(() => {
-        refresh();
+        refresh(false);
         setIsSuccess(false);
       }, 1000);
     } else {
+      toast({
+        title: "Error: could not save transaction!",
+        className: "bg-red-600",
+      })
       setIsError(true);
     }
   }
@@ -254,6 +264,7 @@ export function PaymentForm({
               <CardFooter className="flex flex-col justify-between">
                 {!form.formState.isSubmitting && (
                   <Button
+                    disabled={!isError && isSuccess}
                     type="submit"
                     variant="outline"
                     className={cn(
@@ -268,21 +279,6 @@ export function PaymentForm({
                   >
                     {isSuccess && !isError ? "Saved" : "Save"}
                   </Button>
-                )}
-                {isError && (
-                  <div className="mt-6">
-                    <p className="text-red-500 text-xs">
-                      Something went wrong!
-                    </p>
-                    <p className="text-red-500 text-xs">
-                      Transaction not saved!
-                    </p>
-                  </div>
-                )}
-                {isSuccess && (
-                  <div className="mt-6">
-                    <p className="text-green-500 text-xs">Saved! ✅</p>
-                  </div>
                 )}
               </CardFooter>
             </form>

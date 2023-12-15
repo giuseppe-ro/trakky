@@ -41,6 +41,7 @@ import {
 import { fetchOwners } from "@/infrastructure/owner.tsx";
 import { fetchTypes } from "@/infrastructure/transaction-type.tsx";
 import { toast } from "@/components/ui/use-toast.ts";
+import { demoMode } from "@/constants";
 
 let types: string[] = [];
 let owners: string[] = [];
@@ -91,8 +92,6 @@ export function PaymentForm({
   const [isError, setIsError] = React.useState(false);
   const [isSuccess, setIsSuccess] = React.useState(false);
 
-  console.log("editValues", editValues);
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -117,7 +116,12 @@ export function PaymentForm({
         ? await AddPayments(values as unknown as Payment[])
         : await EditPayment(values as unknown as Payment);
 
-    if (success) {
+    if (demoMode) {
+      toast({
+        title: "Data cannot be modified in demo mode!",
+        variant: "warning"
+      })
+    } else if (success) {
       setIsSuccess(true);
       if (editValues === undefined) {
         form.resetField("amount");
@@ -254,7 +258,7 @@ export function PaymentForm({
                         className={cn(
                           "pb-0 mb-0",
                           form.formState.errors.description &&
-                            `shake-animation`,
+                          `shake-animation`,
                         )}
                       ></Textarea>
                     </Field>
@@ -264,21 +268,31 @@ export function PaymentForm({
               <CardFooter className="flex flex-col justify-between">
                 {!form.formState.isSubmitting && (
                   <Button
-                    disabled={!isError && isSuccess}
+                    disabled={!isError && isSuccess || demoMode}
                     type="submit"
                     variant="outline"
                     className={cn(
                       "w-full border transition-none border-green-500 hover:bg-green-500",
                       form.formState.isSubmitted &&
-                        isError &&
-                        "border-red-700 hover:border-red-950 hover:bg-red-700",
+                      isError &&
+                      "border-red-700 hover:border-red-950 hover:bg-red-700",
                       isSuccess &&
-                        !isError &&
-                        "border border-green-500 hover:border-green-950 bg-green-500 hover:bg-green-500",
+                      !isError &&
+                      !demoMode &&
+                      "border border-green-500 hover:border-green-950 bg-green-500 hover:bg-green-500",
+                      isSuccess &&
+                      // !isError &&
+                      demoMode &&
+                      "border border-yellow-500 bg-yellow-500",
                     )}
                   >
                     {isSuccess && !isError ? "Saved" : "Save"}
                   </Button>
+                )}
+                {demoMode && (
+                  <p className="text-sm font-medium text-destructive m-2">
+                    Demo mode. Data cannot be modified.
+                  </p>
                 )}
               </CardFooter>
             </form>

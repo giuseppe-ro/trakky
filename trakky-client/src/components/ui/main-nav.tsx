@@ -55,7 +55,7 @@ export function MainNav({
                 className="cursor-pointer text-slate-600 hover:text-slate-500"
                 target="_blank"
               >
-                <Github className="mr-6 h-4 w-4"/>
+                <Github className="mr-6 h-4 w-4" />
               </a>
             </div>
           </div>

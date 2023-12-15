@@ -21,6 +21,7 @@ import {
   ColumnDefinition,
 } from "@/app/expenses/components/columns.tsx";
 import { toast } from "@/components/ui/use-toast.ts";
+import { demoMode } from "@/constants";
 
 export function useTable({
                             data,
@@ -106,8 +107,13 @@ export function useTable({
       .rows.map((row: any) => row.original.id) as number[];
 
     const deleted = await DeletePayments(ids);
-
-    if (deleted) {
+    
+    if(demoMode) {
+      toast({
+        title: "Data cannot be modified in demo mode!",
+        variant: "warning"
+      })
+    } else if (deleted) {
       refreshData(false);
       table.resetRowSelection();
       toast({

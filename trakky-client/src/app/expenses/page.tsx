@@ -57,6 +57,7 @@ export default function ExpensesPage() {
         selectedYear={selectedYear ?? ""}
       />
     </Containers>
+    <div className="mt-4">
       <ExpensesTable
         expensesTableProps={{
           table,
@@ -66,6 +67,7 @@ export default function ExpensesPage() {
           page: "expenses",
         }}
       />
+    </div>
   </>
   );
 }

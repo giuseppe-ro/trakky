@@ -27,8 +27,9 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu.tsx";
 import { ChevronDown } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Containers } from "@/components/ui/containers.tsx";
+import { Button } from "@/components/ui/button.tsx";
 
 export interface ExpensesTableProps {
   table: TableType<any>;
@@ -44,6 +45,8 @@ export function ExpensesTable({
 }: {
   expensesTableProps: ExpensesTableProps;
 }) {
+  const [showTableBody, setShowTableBody] = useState<boolean>(true);
+
   const activeColumnsKey = `${expensesTableProps.page}_active_columns`;
 
   useEffect(() => {
@@ -88,13 +91,17 @@ export function ExpensesTable({
       {
         <>
           <FadeUp>
-            <Containers>
-              <TableActionMenu
-                table={expensesTableProps.table}
-                onDeleteConfirmed={expensesTableProps.onDeleteConfirmed}
-                onRefresh={expensesTableProps.onRefresh}
-              />
-            </Containers>
+            {
+              showTableBody && (
+                <Containers className="transition">
+                  <TableActionMenu
+                    table={expensesTableProps.table}
+                    onDeleteConfirmed={expensesTableProps.onDeleteConfirmed}
+                    onRefresh={expensesTableProps.onRefresh}
+                  />
+                </Containers>
+              )
+            }
             <Table className="bg-slate-950 border border-slate-800 overflow-x-scroll">
               <TableHeader className="hover:bg-transparent">
                 {expensesTableProps.table.getHeaderGroups().map((headerGroup) => (
@@ -126,8 +133,8 @@ export function ExpensesTable({
                                       "items-center border justify-center flex-col"
                                       ? "cursor-pointer select-none"
                                       : "",
-                                  onClick:
-                                    header.column.getToggleSortingHandler(),
+                                  onClick: showTableBody ? (header.column.getToggleSortingHandler()) : (() => {})
+                                    // header.column.getToggleSortingHandler()
                                 }}
                               >
                                 {flexRender(
@@ -183,40 +190,54 @@ export function ExpensesTable({
                   </TableRow>
                 ))}
               </TableHeader>
-              <TableBody>
-                {expensesTableProps.table.getRowModel().rows.map((row) => {
-                  return (
-                    <TableRow
-                      key={row.id}
-                      onClick={row.getToggleSelectedHandler()}
-                      className={cn(
-                        "hover:bg-slate-800/50 border border-slate-800",
-                        row.getIsSelected() &&
-                        "bg-slate-600/50 hover:bg-slate-600",
-                      )}
-                      {...{
-                        style: {
-                          overflow: "auto",
-                        },
-                      }}
-                    >
-                      {row.getVisibleCells().map((cell) => {
-                        return (
-                          <td
-                            key={cell.id}
-                            className="px-2 truncate text-xs font-thin md:font-normal md:text-sm"
-                          >
-                            {flexRender(
-                              cell.column.columnDef.cell,
-                              cell.getContext(),
-                            )}
-                          </td>
-                        );
-                      })}
+              {
+                  <TableBody>
+                    {showTableBody && expensesTableProps.table.getRowModel().rows.map((row) => {
+                      return (
+                        <TableRow
+                          key={row.id}
+                          onClick={row.getToggleSelectedHandler()}
+                          className={cn(
+                            "hover:bg-slate-800/50 border border-slate-800 transition",
+                            row.getIsSelected() &&
+                            "bg-slate-600/50 hover:bg-slate-600",
+                          )}
+                          {...{
+                            style: {
+                              overflow: "auto",
+                            },
+                          }}
+                        >
+                          {row.getVisibleCells().map((cell) => {
+                            return (
+                              <td
+                                key={cell.id}
+                                className="px-2 truncate text-xs font-thin md:font-normal md:text-sm"
+                              >
+                                {flexRender(
+                                  cell.column.columnDef.cell,
+                                  cell.getContext(),
+                                )}
+                              </td>
+                            );
+                          })}
+                        </TableRow>
+                      );
+                    })}
+                    <TableRow className="p-0 m-0">
+                      <td colSpan={expensesTableProps.table.getAllColumns().length}  className="p-0 m-0">
+                        <Button
+                          variant="outline"
+                          onClick={() => setShowTableBody(!showTableBody)}
+                          className="w-full rounded-none h-6 p-0 m-0 text-muted-foreground"
+                        >
+                          {showTableBody ? "Hide" : "Show"} data
+                        </Button>
+                      </td>
                     </TableRow>
-                  );
-                })}
-              </TableBody>
+                  </TableBody>
+              }
+
             </Table>
           </FadeUp>
         </>

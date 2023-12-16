@@ -76,6 +76,8 @@ function App() {
         />
 
       </Containers>
+      <FadeLeft>
+
       <div className="lg:grid gap-4 lg:grid-cols-2 mt-4">
           <ExpensesTable
             expensesTableProps={{
@@ -89,22 +91,22 @@ function App() {
           />
 
         <div className={"lg:col-span-1 pt-4 md:pt-0 overflow-x-scroll"}>
-          <SubTitle title={"Breakdown"} />
-          <FadeLeft>
-            <ExpensesPieChart data={expensesBreakdown}></ExpensesPieChart>
-          </FadeLeft>
+          <SubTitle title={"Expenses"} />
+          <ExpensesDashboard data={paymentOverviews} />
         </div>
       </div>
+      </FadeLeft>
+
       <Card className="mt-0">
         <CardContent className="pl-4">
           <div className="sm:grid gap-4 sm:grid-cols-2">
-            <div>
-              <SubTitle title={"Expenses"} />
-              <ExpensesDashboard data={paymentOverviews} />
-            </div>
             <div className="mt-4 sm:mt-0">
               <SubTitle title={"Users Comparison"} />
               <UsersDashboard data={ownersOverview} />
+            </div>
+            <div>
+              <SubTitle title={"Breakdown"} />
+              <ExpensesPieChart data={expensesBreakdown}></ExpensesPieChart>
             </div>
           </div>
         </CardContent>

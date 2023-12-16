@@ -6,7 +6,7 @@ export function formatCurrency(total: number) {
 }
 
 export function formatDate(date: Date): string {
-  return new Date(date).toLocaleString('en-GB', {month: 'short', year: 'numeric'});
+  return new Date(date).toLocaleString('en-GB', {month: 'long' });
 }
 
 export function formatStringDate(date: string): string {
@@ -25,4 +25,12 @@ export function convertDateFormat(date: string): string {
   const month = (dateObj.getMonth() + 1).toString().padStart(2, '0');
 
   return `${year}-${month}`;
+}
+
+export function convertFilterDateFormat(date: string): string {
+  const dateObj = new Date(date);
+  // const year = dateObj.getFullYear();
+  const month = (dateObj.getMonth() + 1).toString().padStart(2, '0');
+
+  return `-${month}`;
 }

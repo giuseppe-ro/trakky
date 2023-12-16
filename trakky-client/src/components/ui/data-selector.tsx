@@ -19,7 +19,7 @@ export function YearSelection({
 
   const year = (): string | null => {
     const storedYear = localStorage.getItem("selected_year");
-    if(storedYear !== null) {
+    if (storedYear !== null) {
       return storedYear;
     }
 
@@ -29,7 +29,7 @@ export function YearSelection({
   useEffect(() => {
     const year = localStorage.getItem("selected_year");
 
-    if(year) {
+    if (year) {
       try {
         console.log("setting year:", year)
         onYearChange(year);

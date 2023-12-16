@@ -8,7 +8,7 @@ import { PaymentForm } from "@/app/expenses/components/payment-form.tsx";
 export const ColumnDefinition: ColumnDef<Payment, number | string>[] = [
   {
     accessorKey: "date",
-    header: "Date",
+    header: "Month",
     enableColumnFilter: true,
     enableGlobalFilter: false,
     cell: ({ row }) => {

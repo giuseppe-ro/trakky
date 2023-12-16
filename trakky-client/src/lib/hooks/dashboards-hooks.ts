@@ -15,6 +15,7 @@ export function useDashboards({data, selectedYear}: {data: Payment[] | null, sel
   const [ownersOverview, setOwnersOverview] = useState<OwnerOverview[]>([]);
   const [expensesBreakdown, setExpensesBreakdown] = useState<any[]>()
 
+
   useEffect(() => {
     fetchBudgets().then((data) => {
       setBudgets(data);
@@ -27,6 +28,7 @@ export function useDashboards({data, selectedYear}: {data: Payment[] | null, sel
       budgets &&
       data
     ) {
+      console.log("budgets", budgets);
       setFilteredData(data);
       setExpensesBreakdown(getExpensesBreakdown(data));
       setPaymentOverviews(getYearlyPaymentsSummaries(data, budgets));

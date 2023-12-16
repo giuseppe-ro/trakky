@@ -15,7 +15,13 @@ export function usePaymentData() {
     const years = getAvailableYears(data);
     years.push("All");
     setAvailableYears(years);
-    setSelectedYear(years[0]);
+
+    const storedYear = localStorage.getItem("selected_year");
+    if (storedYear && years.includes(storedYear)) {
+      setSelectedYear(storedYear);
+    } else {
+      setSelectedYear(years[0]);
+    }
   }
 
   useEffect(() => {

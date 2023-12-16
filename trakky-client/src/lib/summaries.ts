@@ -19,17 +19,27 @@ export function getYearlyPaymentsSummaries(
   data: Payment[],
   budgets: Budget[],
 ): PaymentOverview[] {
+  const hasMultipleMonths = new Set(data.map(payment => new Date(payment.date).getMonth())).size > 1;
+
+  if(hasMultipleMonths) {
+
+    console.log("hasMultipleMonths", hasMultipleMonths);
+  }
+
   return data.reduce((summaries: PaymentOverview[], transaction) => {
     const year = new Date(transaction.date).getFullYear();
+    const month = new Date(transaction.date).getMonth();
     const index = year;
 
-    const budget = budgets
-      .filter((item) => new Date(item.date).getFullYear() === year)
-      .reduce((sum, current) => sum + parseInt(current.budget), 0);
-
-    const maxBudget = budgets
-      .filter((item) => new Date(item.date).getFullYear() === year)
-      .reduce((sum, current) => sum + parseInt(current.maxBudget), 0);
+    const currentBudgets = budgets.reduce((acc, current) => {
+      if (new Date(current.date).getFullYear() === year && (hasMultipleMonths || new Date(current.date).getMonth() === month)) {
+        return {
+          budget: acc.budget + parseInt(current.budget),
+          maxBudget: acc.maxBudget + parseInt(current.maxBudget),
+        };
+      }
+      return acc;
+    }, {budget: 0, maxBudget: 0});
 
     const existingYear = summaries.find(
       (summaryItem) => summaryItem.index === index,
@@ -41,8 +51,8 @@ export function getYearlyPaymentsSummaries(
         index,
         name: year.toString(),
         total: Math.round(transaction.amount),
-        budget: budget,
-        maxBudget: maxBudget,
+        budget: currentBudgets.budget,
+        maxBudget: currentBudgets.maxBudget,
       });
     }
 
@@ -54,6 +64,8 @@ export function getMonthlyPaymentsSummariesForYear(
   data: Payment[],
   budget: Budget,
 ): PaymentOverview[] {
+
+
   return data.reduce((summaries: PaymentOverview[], transaction) => {
     const date = new Date(transaction.date);
     const index = date.getMonth();

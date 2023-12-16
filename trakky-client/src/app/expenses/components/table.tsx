@@ -134,7 +134,6 @@ export function ExpensesTable({
                                       ? "cursor-pointer select-none"
                                       : "",
                                   onClick: showTableBody ? (header.column.getToggleSortingHandler()) : (() => {})
-                                    // header.column.getToggleSortingHandler()
                                 }}
                               >
                                 {flexRender(

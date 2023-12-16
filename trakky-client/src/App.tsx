@@ -91,15 +91,19 @@ function App() {
           />
 
         <div className={"lg:col-span-1 pt-4 md:pt-0 overflow-x-scroll"}>
-          <SubTitle title={"Expenses"} />
-          <ExpensesDashboard data={paymentOverviews} />
+          <Card className="mt-4">
+            <CardContent className="pl-4">
+              <SubTitle title={"Expenses"} />
+              <ExpensesDashboard data={paymentOverviews} />
+            </CardContent>
+          </Card>
         </div>
       </div>
       </FadeLeft>
 
       <Card className="mt-0">
         <CardContent className="pl-4">
-          <div className="sm:grid gap-4 sm:grid-cols-2">
+          <div className="lg:grid gap-4 lg:grid-cols-2">
             <div className="mt-4 sm:mt-0">
               <SubTitle title={"Users Comparison"} />
               <UsersDashboard data={ownersOverview} />

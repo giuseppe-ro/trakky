@@ -2,8 +2,8 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Payment } from "@/infrastructure/payment.tsx";
 import { formatCurrency, formatDate } from "@/lib/formatter.ts";
 import { fuzzySort } from "@/lib/filters.ts";
-import { EditCell } from "@/app/expenses/components/edit-cell.tsx";
-import { PaymentForm } from "@/app/expenses/components/payment-form.tsx";
+import { EditCell } from "@/components/ui/table/edit-cell.tsx";
+import { PaymentForm } from "@/components/ui/table/payment-form.tsx";
 
 export const ColumnDefinition: ColumnDef<Payment, number | string>[] = [
   {

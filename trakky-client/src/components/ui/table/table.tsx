@@ -12,13 +12,13 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@/components/ui/table.tsx";
 import { cn } from "@/lib/utils.ts";
-import { Filter } from "@/app/expenses/components/column-filter.tsx";
+import { Filter } from "@/components/ui/table/column-filter.tsx";
 import {
   colSize,
-} from "@/app/expenses/components/columns.tsx";
-import { TableActionMenu } from "@/app/expenses/components/table-action-menu.tsx";
+} from "@/components/ui/table/columns.tsx";
+import { TableActionMenu } from "@/components/ui/table/table-action-menu.tsx";
 import { FadeUp } from "@/components/animations/fade.tsx";
 import {
   DropdownMenu,
@@ -37,6 +37,7 @@ export interface ExpensesTableProps {
   onPaymentEdited: () => void;
   onRefresh: (flushPaymentsBeforeRefresh?: boolean) => void;
   page: string;
+  filtersOnly: boolean;
 }
 
 export function ExpensesTable({
@@ -45,7 +46,7 @@ export function ExpensesTable({
 }: {
   expensesTableProps: ExpensesTableProps;
 }) {
-  const [showTableBody, setShowTableBody] = useState<boolean>(true);
+  const [showTableBody, setShowTableBody] = useState<boolean>(!expensesTableProps.filtersOnly);
 
   const activeColumnsKey = `${expensesTableProps.page}_active_columns`;
 
@@ -191,7 +192,10 @@ export function ExpensesTable({
               </TableHeader>
               {
                   <TableBody>
-                    {showTableBody && expensesTableProps.table.getRowModel().rows.map((row) => {
+                    {
+                      showTableBody &&
+                      !expensesTableProps.filtersOnly &&
+                      expensesTableProps.table.getRowModel().rows.map((row) => {
                       return (
                         <TableRow
                           key={row.id}
@@ -222,18 +226,21 @@ export function ExpensesTable({
                           })}
                         </TableRow>
                       );
-                    })}
-                    <TableRow className="p-0 m-0">
-                      <td colSpan={expensesTableProps.table.getAllColumns().length}  className="p-0 m-0">
-                        <Button
-                          variant="outline"
-                          onClick={() => setShowTableBody(!showTableBody)}
-                          className="w-full rounded-none h-6 p-0 m-0 text-muted-foreground"
-                        >
-                          {showTableBody ? "Hide" : "Show"} data
-                        </Button>
-                      </td>
-                    </TableRow>
+                    })
+                    }
+                    { !expensesTableProps.filtersOnly &&
+                      <TableRow className="p-0 m-0">
+                        <td colSpan={expensesTableProps.table.getAllColumns().length}  className="p-0 m-0">
+                          <Button
+                            variant="outline"
+                            onClick={() => setShowTableBody(!showTableBody)}
+                            className="w-full rounded-none h-6 p-0 m-0 text-muted-foreground"
+                          >
+                            {showTableBody ? "Hide" : "Show"} data
+                          </Button>
+                        </td>
+                      </TableRow>
+                    }
                   </TableBody>
               }
 

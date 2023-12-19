@@ -14,12 +14,12 @@ import {
   useReactTable, VisibilityState
 } from "@tanstack/react-table";
 
-import { Total } from "@/app/expenses/components/summary.tsx";
+import { Total } from "@/components/ui/summary.tsx";
 import { DeletePayments, Payment } from "@/infrastructure/payment.tsx";
 import { fuzzyFilter } from "@/lib/filters.ts";
 import {
   ColumnDefinition,
-} from "@/app/expenses/components/columns.tsx";
+} from "@/components/ui/table/columns.tsx";
 import { toast } from "@/components/ui/use-toast.ts";
 import { demoMode } from "@/constants";
 

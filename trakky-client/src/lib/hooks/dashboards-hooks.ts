@@ -6,7 +6,7 @@ import {
   getYearlyPaymentsSummaries
 } from "@/lib/summaries.ts";
 import { Budget, fetchBudgets } from "@/infrastructure/budget.tsx";
-import { OwnerOverview, PaymentOverview } from "@/app/dashboard/components/dashboards.tsx";
+import { OwnerOverview, PaymentOverview } from "@/app/dashboards/components/dashboards.tsx";
 
 export function useDashboards({data, selectedYear}: {data: Payment[] | null, selectedYear: string | null}) {
   const [budgets, setBudgets] = useState<Budget[] | null>(null);

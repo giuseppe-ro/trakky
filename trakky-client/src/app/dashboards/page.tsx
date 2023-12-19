@@ -5,7 +5,7 @@ import { YearSelection } from "@/components/ui/data-selector.tsx";
 import { useTable } from "@/lib/hooks/table-hooks.ts";
 import { Payment } from "@/infrastructure/payment.tsx";
 import { useEffect, useState } from "react";
-import { ExpensesPieChart, UsersDashboard, ExpensesDashboard } from "@/app/dashboard/components/dashboards.tsx";
+import { ExpensesPieChart, UsersDashboard, ExpensesDashboard } from "@/app/dashboards/components/dashboards.tsx";
 import { useDashboards } from "@/lib/hooks/dashboards-hooks.ts";
 import { FadeLeft } from "@/components/animations/fade.tsx";
 
@@ -65,7 +65,7 @@ function DashboardPage() {
       />
       <FadeLeft>
 
-        <div className="mt-6">
+        <div className="mt-6 text-center">
             <SubTitle title={"Filters"} />
             <ExpensesTable
               expensesTableProps={{

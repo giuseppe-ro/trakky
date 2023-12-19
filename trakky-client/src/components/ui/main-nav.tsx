@@ -15,7 +15,7 @@ export function MainNav({
 }: React.HTMLAttributes<HTMLElement>) {
   const links: Links[] = [
     { href: "/", label: "Home" },
-    { href: "/dashboard", label: "Dashboards" },
+    { href: "/dashboards", label: "Dashboards" },
     { href: "/overview", label: "Overview" },
   ];
 

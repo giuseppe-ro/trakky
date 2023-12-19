@@ -6,7 +6,7 @@ import { useTable } from "@/lib/hooks/table-hooks.ts";
 import { Summary } from "@/components/ui/summary.tsx";
 import { Payment } from "@/infrastructure/payment.tsx";
 import { useEffect, useState } from "react";
-import { ExpensesPieChart, UsersDashboard, ExpensesDashboard } from "@/app/dashboard/components/dashboards.tsx";
+import { ExpensesPieChart, UsersDashboard, ExpensesDashboard } from "@/app/dashboards/components/dashboards.tsx";
 import { Card, CardContent } from "@/components/ui/card.tsx";
 import { useDashboards } from "@/lib/hooks/dashboards-hooks.ts";
 import { Containers } from "@/components/ui/containers.tsx";

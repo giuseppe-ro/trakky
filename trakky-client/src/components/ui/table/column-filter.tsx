@@ -1,8 +1,8 @@
 import { Column } from "@tanstack/react-table";
 import { Payment } from "@/infrastructure/payment.tsx";
 import { useMemo } from "react";
-import { DebouncedInput, DebouncedSelect } from "@/app/expenses/components/debounce-input.tsx";
-import { convertFilterDateFormat, formatDate, isValidDate } from "@/lib/formatter";
+import { DebouncedInput, DebouncedSelect } from "@/components/ui/table/debounce-input.tsx";
+import { convertFilterDateFormat, formatDate, isValidDate } from "@/lib/formatter.ts";
 
 export function Filter({
   column,

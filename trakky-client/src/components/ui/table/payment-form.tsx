@@ -41,7 +41,7 @@ import {
 import { fetchOwners } from "@/infrastructure/owner.tsx";
 import { fetchTypes } from "@/infrastructure/transaction-type.tsx";
 import { toast } from "@/components/ui/use-toast.ts";
-import { demoMode } from "@/constants";
+import { demoMode } from "@/constants.ts";
 
 let types: string[] = [];
 let owners: string[] = [];

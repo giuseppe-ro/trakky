@@ -1,6 +1,6 @@
-import { PopupDialog } from "@/app/expenses/components/popup-dialog.tsx";
+import { PopupDialog } from "@/components/ui/table/popup-dialog.tsx";
 import { Button } from "@/components/ui/button.tsx";
-import { PaymentForm } from "@/app/expenses/components/payment-form.tsx";
+import { PaymentForm } from "@/components/ui/table/payment-form.tsx";
 import {
   Tooltip,
   TooltipContent,
@@ -15,7 +15,7 @@ import {
   ReloadIcon,
 } from "@radix-ui/react-icons";
 import { SelectIcon } from "@radix-ui/react-select";
-import { DeletePaymentsDialog } from "@/app/expenses/components/delete-popup.tsx";
+import { DeletePaymentsDialog } from "@/components/ui/table/delete-popup.tsx";
 import { Payment } from "@/infrastructure/payment.tsx";
 import {
   Select,
@@ -25,7 +25,7 @@ import {
   SelectValue,
 } from "@/components/ui/select.tsx";
 import { Table } from "@tanstack/react-table";
-import { ExportDropdownMenu } from "@/app/expenses/components/download-dropdown.tsx";
+import { ExportDropdownMenu } from "@/components/ui/table/download-dropdown.tsx";
 
 export function TableActionMenu({
   table,

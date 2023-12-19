@@ -1,4 +1,4 @@
-import { PopupDialog } from "@/app/expenses/components/popup-dialog.tsx";
+import { PopupDialog } from "@/components/ui/table/popup-dialog.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { PenBoxIcon } from "lucide-react";
 import React from "react";

@@ -5,7 +5,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu.tsx";
 import { DownloadIcon } from "@radix-ui/react-icons";
 import { Payment } from "@/infrastructure/payment.tsx";
 import { Row, Table } from "@tanstack/react-table";

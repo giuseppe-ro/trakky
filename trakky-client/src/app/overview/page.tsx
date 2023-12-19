@@ -3,13 +3,16 @@ import { SubTitle, Text } from "@/components/ui/text.tsx";
 import { usePaymentData } from "@/lib/hooks/page-hooks.ts";
 import { YearSelection } from "@/components/ui/data-selector.tsx";
 import { useTable } from "@/lib/hooks/table-hooks.ts";
+import { Summary } from "@/components/ui/summary.tsx";
 import { Payment } from "@/infrastructure/payment.tsx";
 import { useEffect, useState } from "react";
 import { ExpensesPieChart, UsersDashboard, ExpensesDashboard } from "@/app/dashboard/components/dashboards.tsx";
+import { Card, CardContent } from "@/components/ui/card.tsx";
 import { useDashboards } from "@/lib/hooks/dashboards-hooks.ts";
+import { Containers } from "@/components/ui/containers.tsx";
 import { FadeLeft } from "@/components/animations/fade.tsx";
 
-function DashboardPage() {
+function OverviewPage() {
   const [filteredPayments, setFilteredPayments] = useState<Payment[]>([]);
 
   const {
@@ -21,6 +24,7 @@ function DashboardPage() {
   } = usePaymentData();
 
   const {
+    totalsPerYear,
     table,
     onDeleteConfirmed,
     onPaymentEdited,
@@ -57,50 +61,62 @@ function DashboardPage() {
 
   return (
     <>
-      <Text title={"Dashboards"} />
+      <Text title={"Overview"} />
       <YearSelection
         availableYears={availableYears}
         selectedYear={selectedYear}
         onYearChange={setSelectedYear}
       />
+      <Containers>
+        <Summary
+          table={table}
+          totalsPerYear={totalsPerYear}
+          selectedYear={selectedYear ?? ""}
+        />
+
+      </Containers>
       <FadeLeft>
 
-        <div className="mt-6">
-            <SubTitle title={"Filters"} />
-            <ExpensesTable
-              expensesTableProps={{
-                table,
-                onDeleteConfirmed,
-                onPaymentEdited,
-                onRefresh,
-                filtersOnly: true,
-                page: "home",
-              }}
-              {...{ className: "w-full" }}
-            />
-        </div>
+        <div className="lg:grid gap-4 lg:grid-cols-2 mt-4 text-center">
+          <ExpensesTable
+            expensesTableProps={{
+              table,
+              onDeleteConfirmed,
+              onPaymentEdited,
+              onRefresh,
+              filtersOnly: false,
+              page: "home",
+            }}
+            {...{ className: "lg:col-span-1" }}
+          />
 
+          <div className={"lg:col-span-1 pt-4 md:pt-0 overflow-x-scroll"}>
+            <Card className="mt-4">
+              <CardContent className="pl-4">
+                <SubTitle title={"Expenses"} />
+                <ExpensesDashboard data={paymentOverviews} />
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       </FadeLeft>
 
       <div className="mt-6 text-center mx-4 lg:mx-0">
-          <div className="lg:grid gap-4 lg:grid-cols-2">
-            <div className="mt-4 sm:mt-0">
-              <SubTitle title={"Expenses"} />
-              <ExpensesDashboard data={paymentOverviews} />
-            </div>
-            <div className="mt-4 sm:mt-0">
-              <SubTitle title={"Users Comparison"} />
-              <UsersDashboard data={ownersOverview} />
-            </div>
-
+        <div className="lg:grid gap-4 lg:grid-cols-2">
+          <div className="mt-4 sm:mt-0">
+            <SubTitle title={"Users Comparison"} />
+            <UsersDashboard data={ownersOverview} />
           </div>
-          <div>
+          <div className="mt-6 lg:mt-0">
             <SubTitle title={"Breakdown"} />
             <ExpensesPieChart data={expensesBreakdown}></ExpensesPieChart>
           </div>
+        </div>
+
       </div>
+
     </>
   );
 }
 
-export default DashboardPage;
+export default OverviewPage;

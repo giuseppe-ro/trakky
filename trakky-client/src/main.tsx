@@ -8,7 +8,7 @@ import { createBrowserRouter } from "react-router-dom";
 import DashboardPage from "./app/dashboard/page.tsx";
 import { MainNav } from "./components/ui/main-nav.tsx";
 import ErrorPage from "./app/error/page.tsx";
-import ExpensesPage from "@/app/expenses/page.tsx";
+import ExpensesPage from "@/app/overview/page.tsx";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { PageContainer } from "@/components/ui/containers.tsx";
@@ -23,7 +23,7 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
-    path: "/expenses",
+    path: "/overview",
     element: <ExpensesPage></ExpensesPage>,
   },
   {

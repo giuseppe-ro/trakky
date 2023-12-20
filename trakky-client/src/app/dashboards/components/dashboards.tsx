@@ -17,6 +17,7 @@ import {
 import React, { useCallback, useState } from "react";
 import { formatCurrency } from "@/lib/formatter.ts";
 import { AmountSummary } from "@/components/ui/amount-summary.tsx";
+import { Checkbox } from "@/components/ui/checkbox.tsx";
 
 const colors = [
   "#0bb4ff",
@@ -63,11 +64,12 @@ const OverviewTooltip = ({ label, children }: { label: string, children: React.R
 
 const PaymentsOverviewTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
+
     return (
         <OverviewTooltip label={label} >
-            <AmountSummary label="Total" amount={payload[0].value}></AmountSummary>
-            <AmountSummary label="Budget" amount={payload[1].value} difference={payload[1].value - payload[0].value} color={payload[1].stroke} />
-            <AmountSummary label="Max Budget" amount={payload[2].value} difference={payload[2].value - payload[0].value} color={payload[2].stroke}  />
+          <AmountSummary label="Total" amount={payload[0].value}></AmountSummary>
+          { payload[2]?.value && (<AmountSummary label={payload[2].name} amount={payload[2].value} difference={payload[2]?.value - payload[0]?.value} color={payload[2]?.stroke} />)}
+          { payload[1]?.value && (<AmountSummary label={payload[1].name} amount={payload[1].value} difference={payload[1]?.value - payload[0]?.value} color={payload[1]?.stroke} />)}
         </OverviewTooltip>
     );
   }
@@ -92,59 +94,96 @@ const OwnersOverviewTooltip = ({ active, payload, label }: any) => {
 };
 
 export function ExpensesDashboard({ data, ...props }: { data: PaymentOverview[] }) {
+  const isMaxBudgetLineSet = JSON.parse(localStorage.getItem("max_budget_line") || "true");
+  const [maxBudgetsLine, setMaxBudgetsLine] = useState<boolean>(isMaxBudgetLineSet);
+
+  const isBudgetLineSet = JSON.parse(localStorage.getItem("budget_line") || "true");
+  const [budgetsLine, setBudgetsLine] = useState<boolean>(isBudgetLineSet);
+
   data.sort((a, b) => a.index - b.index);
 
+  const onBudgetsCheckBoxClick = () => {
+    localStorage.setItem("budget_line", String(!budgetsLine));
+    setBudgetsLine(!budgetsLine);
+  }
+
+  const onMaxBudgetsCheckBoxClick = () => {
+    localStorage.setItem("max_budget_line", String(!maxBudgetsLine));
+    setMaxBudgetsLine(!maxBudgetsLine);
+  }
+
   return (
-    <ResponsiveContainer maxHeight={280} aspect={1.5} {...props}>
-      <ComposedChart data={data}
-                     // margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-      >
-        <XAxis
-          dataKey="name"
-          stroke="#888888"
-          fontSize={12}
-          tickLine={true}
-          axisLine={true}
-        />
-        <YAxis
-          stroke="#888888"
-          fontSize={12}
-          tickLine={true}
-          axisLine={true}
-          tickFormatter={(value) => `£${value}`}
-        />
-        <CartesianGrid strokeDasharray="4 4 4" stroke="white" opacity={0.15} />
-        {data && data.length > 0 && (<Legend />)}
-        <Tooltip content={<PaymentsOverviewTooltip />} />
-        <Bar name="Total" dataKey="total" fill="white">
-          {data.map((entry, index) => (
-            <Cell
-              cursor="pointer"
-              fill={
-                entry.total < entry.budget
-                  ? "#54ff5a"
-                  : entry.total < entry.maxBudget
-                    ? "#e6d800"
-                    : "#ff5454"
-              }
-              key={`cell-${index}`}
+    <>
+      <div className="flex items-center justify-center space-x-2">
+        <Checkbox id="budgets" checked={budgetsLine} onClick={onBudgetsCheckBoxClick} />
+        <label
+          htmlFor="budgets"
+          className="text-sm text-muted-foreground leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+        >
+          Budgets
+        </label>
+        <Checkbox id="maxBudgets" checked={maxBudgetsLine} onClick={onMaxBudgetsCheckBoxClick} />
+        <label
+          htmlFor="maxBudgets"
+          className="text-sm text-muted-foreground leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+        >
+          Max Budgets
+        </label>
+      </div>
+      <ResponsiveContainer maxHeight={280} aspect={1.5} {...props}>
+        <ComposedChart data={data}>
+          <XAxis
+            dataKey="name"
+            stroke="#888888"
+            fontSize={12}
+            tickLine={true}
+            axisLine={true}
+          />
+          <YAxis
+            stroke="#888888"
+            fontSize={12}
+            tickLine={true}
+            axisLine={true}
+            tickFormatter={(value) => `£${value}`}
+          />
+          <CartesianGrid strokeDasharray="4 4 4" stroke="white" opacity={0.15} />
+          {data && data.length > 0 && (<Legend />)}
+          <Tooltip content={<PaymentsOverviewTooltip />} />
+          <Bar name="Total" dataKey="total" fill="white" maxBarSize={20}>
+            {data.map((entry, index) => (
+              <Cell
+                cursor="pointer"
+                fill={
+                  entry.total < entry.budget
+                    ? "#54ff5a"
+                    : entry.total < entry.maxBudget
+                      ? "#e6d800"
+                      : "#ff5454"
+                }
+                key={`cell-${index}`}
+              />
+            ))}
+          </Bar>
+          { maxBudgetsLine && (
+            <Line
+              name="Max Budget"
+              type={"monotone"}
+              dataKey="maxBudget"
+              stroke="#ff5454"
             />
-          ))}
-        </Bar>
-        <Line
-          name="Budget"
-          type={"monotone"}
-          dataKey="budget"
-          stroke="#50e991"
-        />
-        <Line
-          name="Max Budget"
-          type={"monotone"}
-          dataKey="maxBudget"
-          stroke="#ff5454"
-        />
-      </ComposedChart>
-    </ResponsiveContainer>
+          )}
+          { budgetsLine && (
+            <Line
+              name="Budget"
+              type={"monotone"}
+              dataKey="budget"
+              stroke="#50e991"
+            />
+          )}
+        </ComposedChart>
+      </ResponsiveContainer>
+
+    </>
   );
 }
 
@@ -164,9 +203,7 @@ export function UsersDashboard({ data, ...props }: { data: OwnerOverview[] }) {
   return (
     <>
       <ResponsiveContainer maxHeight={280} aspect={1.5} {...props}>
-        <LineChart data={data}
-          // margin={{ top: 5, right: 0, left: 0, bottom: 5 }}
-          title="Text">
+        <LineChart data={data} title="Text">
           <XAxis
             dataKey="name"
             stroke="#888888"

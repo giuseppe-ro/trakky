@@ -82,7 +82,7 @@ function DashboardPage() {
 
       </FadeLeft>
 
-      <div className="mt-6 text-center mx-4 lg:mx-0">
+      <div className="mt-6 text-center mr-4 lg:mx-0">
           <div className="lg:grid gap-4 lg:grid-cols-2">
             <div className="mt-4 sm:mt-0">
               <SubTitle title={"Expenses"} />

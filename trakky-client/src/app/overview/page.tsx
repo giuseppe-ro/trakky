@@ -7,7 +7,6 @@ import { Summary } from "@/components/ui/summary.tsx";
 import { Payment } from "@/infrastructure/payment.tsx";
 import { useEffect, useState } from "react";
 import { ExpensesPieChart, UsersDashboard, ExpensesDashboard } from "@/app/dashboards/components/dashboards.tsx";
-import { Card, CardContent } from "@/components/ui/card.tsx";
 import { useDashboards } from "@/lib/hooks/dashboards-hooks.ts";
 import { Containers } from "@/components/ui/containers.tsx";
 import { FadeLeft } from "@/components/animations/fade.tsx";
@@ -91,17 +90,15 @@ function OverviewPage() {
           />
 
           <div className={"lg:col-span-1 pt-4 md:pt-0 overflow-x-scroll"}>
-            <Card className="mt-4">
-              <CardContent className="pl-4">
-                <SubTitle title={"Expenses"} />
-                <ExpensesDashboard data={paymentOverviews} />
-              </CardContent>
-            </Card>
+            <div className="mt-4 sm:mt-0 mr-4">
+              <SubTitle title={"Expenses"} />
+              <ExpensesDashboard data={paymentOverviews} />
+            </div>
           </div>
         </div>
       </FadeLeft>
 
-      <div className="mt-6 text-center mx-4 lg:mx-0">
+      <div className="mt-6 text-center mr-4 lg:mx-0">
         <div className="lg:grid gap-4 lg:grid-cols-2">
           <div className="mt-4 sm:mt-0">
             <SubTitle title={"Users Comparison"} />

@@ -89,7 +89,7 @@ export function TableActionMenu({
           <ExportDropdownMenu table={table} />
         </div>
         <div className="flex justify-center">
-          {table.getIsSomeRowsSelected() && (
+          {table.getIsSomeRowsSelected() || table.getIsAllRowsSelected() && (
             <DeletePaymentsDialog
               tooltipText={"Delete selected rows"}
               onDeleteConfirmed={onDeleteConfirmed}

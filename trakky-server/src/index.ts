@@ -132,25 +132,25 @@ app.get("/types", cors(corsOptions), (req: Request, res: Response) => {
 });
 
 app.listen(port, () => {
-  importFromJson()
+  // importFromJson()
   console.log(`⚡️[server]: Server is running at http://${host}:${port}`);
 });
 
 
-import data from './data.json';
+// import data from './data.json';
 
-function importFromJson() {
-  const mappedData = data.map((item) => {
-    return {
-      id: item.id,
-      amount: parseFloat(item.amount),
-      type: item.type,
-      owner: item.owner,
-      description: item.description,
-      date: new Date(item.date)
-    };
-  });
+// function importFromJson() {
+//   const mappedData = data.map((item) => {
+//     return {
+//       id: item.id,
+//       amount: parseFloat(item.amount),
+//       type: item.type,
+//       owner: item.owner,
+//       description: item.description,
+//       date: new Date(item.date)
+//     };
+//   });
 
-  addPayments(mappedData)
-  .then((res) => console.log(res))
-}
+//   addPayments(mappedData)
+//   .then((res) => console.log(res))
+// }

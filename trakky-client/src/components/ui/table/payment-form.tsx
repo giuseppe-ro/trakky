@@ -85,6 +85,7 @@ export function PaymentForm({
   refresh: (flushPaymentsBeforeRefresh: boolean) => void;
   editValues?: Payment;
 }) {
+
   const [isError, setIsError] = React.useState(false);
   const [isSuccess, setIsSuccess] = React.useState(false);
 
@@ -177,7 +178,7 @@ export function PaymentForm({
                   render={({ field }) => (
                     <Field name={"Amount"}>
                       <Input
-                        inputMode="none"
+                        inputMode="tel"
                         type="number"
                         step="any"
                         className={cn(

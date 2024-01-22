@@ -192,7 +192,33 @@ function useToast() {
 }
 
 
-
+function successFailToast(
+  {
+    success,
+    successMessage,
+    errorMessage
+  }: {
+    success: boolean,
+    successMessage: string;
+    errorMessage: string;
+  }) {
+  if (demoMode) {
+    toast({
+      title: "Data cannot be modified in demo mode!",
+      variant: "warning"
+    })
+  } else if (success) {
+    toast({
+      title: `${successMessage}`,
+      className: "bg-green-600",
+    })
+  } else {
+    toast({
+      title: `${errorMessage}`,
+      className: "bg-red-600",
+    })
+  }
+}
 
 function formToast(
   {
@@ -201,6 +227,8 @@ function formToast(
     refresh,
     setIsSuccess,
     setIsError,
+    successMessage,
+    errorMessage,
     editValues,
     fieldsToReset,
     focusOn
@@ -210,6 +238,8 @@ function formToast(
     refresh: (flushBeforeRefresh: boolean) => void;
     setIsSuccess: (isSuccess: boolean) => void;
     setIsError: (isError: boolean) => void;
+    successMessage: string;
+    errorMessage: string;
     editValues?: any;
     fieldsToReset: string[];
     focusOn?: string;
@@ -232,7 +262,8 @@ function formToast(
       }
 
       toast({
-        title: "Added!",
+        // title: "Added!",
+        title: `${successMessage}`,
         className: "bg-green-600",
       })
     }
@@ -242,11 +273,14 @@ function formToast(
     }, 1000);
   } else {
     toast({
-      title: "Error: could not save!",
+      // title: "Error: could not save!",
+      title: `${errorMessage}`,
       className: "bg-red-600",
     })
     setIsError(true);
   }
 }
 
-export { useToast, toast, formToast }
+
+
+export { useToast, toast, formToast, successFailToast }

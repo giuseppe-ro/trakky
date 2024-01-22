@@ -6,8 +6,15 @@ import { FadeLeft } from "@/components/animations/fade.tsx";
 import { BudgetForm } from "@/components/ui/table/budget-form.tsx";
 import { Containers } from "@/components/ui/containers.tsx";
 import { TableActionMenu } from "@/components/ui/table/table-action-menu.tsx";
-import { DeleteBudgetsDialog } from "@/components/ui/table/delete-popup.tsx";
+import { DeleteBudgetsDialog, DeleteDialog } from "@/components/ui/table/delete-popup.tsx";
 import { Budget } from "@/infrastructure/budget.tsx";
+import { useEffect, useState } from "react";
+import { AddTypes, DeleteTypes, fetchTypes, Type } from "@/infrastructure/transaction-type.tsx";
+import { TableRow } from "@/components/ui/table.tsx";
+import { cn } from "@/lib/utils.ts";
+import { Button } from "@/components/ui/button.tsx";
+import { SubmittableInput } from "@/components/ui/input.tsx";
+import { successFailToast } from "@/components/ui/use-toast.ts";
 
 
 function SettingsPage() {
@@ -25,6 +32,25 @@ function SettingsPage() {
     refreshData,
   })
 
+  const [types, setTypes] = useState<Type[]>([]);
+  const [newType, setNewType] = useState<string>("");
+
+  useEffect(() => {
+    fetchTypes().then((types) => setTypes(types));
+  }, []);
+
+  async function OnTypeAdd() {
+    const success = await AddTypes([{ name: newType } as Type]);
+
+    successFailToast({ success: success, successMessage: "Type added", errorMessage: "Something went wrong, couldn't save Type!" });
+
+    setTypes(await fetchTypes())
+  }
+
+  async function OnTypeDeleteConfirmed(id: number) {
+    await DeleteTypes([id]);
+  }
+
   return (
     <>
       <Text title={"Settings"} />
@@ -37,6 +63,7 @@ function SettingsPage() {
                table,
                filtersOnly: false,
                page: "settings",
+
                tableActionMenu:
                   <Containers className="transition">
                     <TableActionMenu
@@ -61,7 +88,39 @@ function SettingsPage() {
              }}
              {...{ className: "lg:col-span-1" }}
            />
-         </div>
+            <SubTitle title={"Types"} {...{ className: "text-center mt-4" }}   />
+              <div className="flex my-2 flex-row lg:flex-row justify-around">
+                <Button
+                  disabled={newType.length === 0}
+                  onClick={() => OnTypeAdd()}
+                  type={"submit"}
+                  variant="outline"
+                  className="rounded-r-none border-green-500/50 hover:bg-green-500/50"
+                >
+                  Add
+                </Button>
+                <SubmittableInput
+                  onSubmit={() => OnTypeAdd()}
+                  onChange={(e) => setNewType(e.target.value)}
+                  className="rounded-l-none focus-visible:ring-0 h-8 outline-none"
+                />
+
+              </div>
+              {types && types.map((type: Type) => (
+                  <TableRow key={type.id} className="w-full justify-center align-middle">
+                    <td className={cn(`text-left border-r-0 py-0.5 px-2 font-thin text-xs w-full border overflow-x-scroll scroll-smooth`)}>
+                      {type.name}
+                    </td>
+                    <td className="text-left border px-0 overflow-x-scroll scroll-smooth">
+                      <DeleteDialog
+                        onDeleteConfirmed={() => OnTypeDeleteConfirmed(type.id)}
+                        entries={<>{type.name}</>}
+                        tooltipText={"Delete"}
+                      />
+                    </td>
+                  </TableRow>
+                ))}
+          </div>
         </div>
       </FadeLeft>
     </>

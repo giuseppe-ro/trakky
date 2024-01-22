@@ -7,8 +7,8 @@ import {
   updatePayment,
 } from "./payments";
 import { getBudgets, addBudgets, updateBudget, deleteBudgets } from "./budgets";
-import { Budget, Payment } from "@prisma/client";
-import { getTypes } from "./types";
+import { Budget, Payment, Type } from "@prisma/client";
+import { addTypes, deleteTypes, getTypes } from "./types";
 import { getOwners } from "./owners";
 
 
@@ -165,6 +165,34 @@ app.get("/types", cors(corsOptions), (req: Request, res: Response) => {
   getTypes()
     .then((types) => {
       res.send(types);
+    })
+    .catch((e) => {
+      console.log(e);
+      res.status(400);
+      res.send(e);
+    });
+});
+
+app.post("/types", cors(corsOptions), (req: Request, res: Response) => {
+  const newTypes = req.body as Type[];
+
+  addTypes(newTypes)
+    .then((addedTypes) => {
+      res.send(addedTypes);
+    })
+    .catch((e) => {
+      console.log(e);
+      res.status(400);
+      res.send(e);
+    });
+});
+
+app.delete("/types", cors(corsOptions), (req: Request, res: Response) => {
+  const typeIds = req.body as number[];
+
+  deleteTypes(typeIds)
+    .then((deleted) => {
+      res.send(deleted);
     })
     .catch((e) => {
       console.log(e);

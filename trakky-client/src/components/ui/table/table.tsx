@@ -34,6 +34,7 @@ export interface CustomTableProps {
   page: string;
   filtersOnly: boolean;
   tableActionMenu?: ReactNode;
+  canHideRows?: boolean;
 }
 
 export function CustomTable({
@@ -216,7 +217,7 @@ export function CustomTable({
                       );
                     })
                     }
-                    { !tableProps.filtersOnly &&
+                    { !tableProps.filtersOnly && tableProps.canHideRows &&
                       <TableRow className="p-0 m-0">
                         <td colSpan={tableProps.table.getAllColumns().length} className="p-0 m-0">
                           <Button

@@ -25,7 +25,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover.tsx";
 import { cn } from "@/lib/utils.ts";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Minus } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar.tsx";
 import React from "react";
 import axios from "axios";
@@ -38,6 +38,7 @@ import {
 import { fetchOwners } from "@/infrastructure/owner.tsx";
 import { fetchTypes } from "@/infrastructure/transaction-type.tsx";
 import { formToast } from "@/components/ui/use-toast.ts";
+import { Toggle } from "@/components/ui/toggle.tsx";
 
 let types: string[] = [];
 let owners: string[] = [];
@@ -67,7 +68,7 @@ const formSchema = z.object({
   owner: z.string().refine((val) => owners.includes(val)),
   type: z.string().refine((val) => types.includes(val)),
   date: z.date(),
-  amount: z.string().refine((val) => Number(val) !== 0, {
+  amount: z.number().refine((val) => val !== 0, {
     message: "cannot be 0",
   }),
   description: z.string().refine((val) => val.length <= 50 && val.length > 0),
@@ -89,6 +90,8 @@ export function PaymentForm({
   const [isError, setIsError] = React.useState(false);
   const [isSuccess, setIsSuccess] = React.useState(false);
 
+  const [amountIsNegative, setAmountIsNegative] = React.useState(false);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -99,7 +102,7 @@ export function PaymentForm({
           : new Date(editValues?.date),
       owner: editValues?.owner ?? owners[0],
       type: editValues?.type ?? types[0],
-      amount: editValues?.amount.toString() ?? "0",
+      amount: editValues?.amount ?? 0,
       description: editValues?.description ?? "",
     },
   });
@@ -110,19 +113,14 @@ export function PaymentForm({
 
     const payments = values as unknown as Payment;
 
-    console.log(payments)
+    if(amountIsNegative) payments.amount = -Math.abs(payments.amount);
 
     const success =
       editValues === undefined
-        ? await AddPayments([{
-          id: payments.id,
-          amount: Number(payments.amount),
-          type: payments.type,
-          owner: payments.owner,
-          description: payments.description,
-          date: payments.date
-        }])
+        ? await AddPayments([payments])
         : await EditPayment(values as unknown as Payment);
+
+    setAmountIsNegative(false);
 
     formToast({
       success,
@@ -188,19 +186,29 @@ export function PaymentForm({
                   name="amount"
                   render={({ field }) => (
                     <Field name={"Amount"}>
-                      <Input
-                        inputMode="text"
-                        type="text"
-                        pattern="-?\d*\.?\d*"
-                        step="any"
-                        className={cn(
-                          form.formState.errors.amount && `shake-animation`,
-                        )}
-                        {...field}
-                        onChange={(n) => {
-                          field.onChange(n.target.value.toString());
-                        }}
-                      />
+                      <div className="flex flex-row">
+                        <Toggle
+                          aria-label="Toggle italic"
+                          className="flex sm:hidden rounded-l rounded-r-none"
+                          onClick={() => setAmountIsNegative(!amountIsNegative)}
+                          pressed={amountIsNegative}
+                        >
+                          <Minus className="h-4 w-4" />
+                        </Toggle>
+                        <Input
+                          inputMode="none"
+                          type="number"
+                          step="any"
+                          className={cn(
+                            form.formState.errors.amount && `shake-animation`,
+                            "rounded-l-none sm:rounded"
+                          )}
+                          {...field}
+                          onChange={(n) => {
+                            field.onChange(n.target.valueAsNumber);
+                          }}
+                        />
+                      </div>
                     </Field>
                   )}
                 />

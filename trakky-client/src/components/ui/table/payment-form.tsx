@@ -141,6 +141,8 @@ export function PaymentForm({
       refresh,
       setIsSuccess,
       setIsError,
+      successMessage: "Transaction saved",
+      errorMessage: "Something went wrong, couldn't save Transaction!",
       editValues,
       fieldsToReset: ["amount", "description"],
       focusOn: "amount",

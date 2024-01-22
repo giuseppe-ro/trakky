@@ -117,10 +117,11 @@ export function DeleteBudgetsDialog({
 }
 
 
-function DeleteDialog({
+export function DeleteDialog({
                        onDeleteConfirmed,
                        entries,
                        tooltipText,
+  // ...props
                        }: {
   onDeleteConfirmed: () => Promise<void>;
   entries: ReactNode;

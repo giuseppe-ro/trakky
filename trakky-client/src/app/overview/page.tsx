@@ -82,6 +82,7 @@ function OverviewPage() {
           <CustomTable
             tableProps={{
               table,
+              canHideRows: true,
               filtersOnly: false,
               page: "overview",
               tableActionMenu:

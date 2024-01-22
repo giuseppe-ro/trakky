@@ -64,6 +64,7 @@ export default function App() {
         <CustomTable
           tableProps={{
             table,
+            canHideRows: true,
             filtersOnly: false,
             page: "overview",
             tableActionMenu:

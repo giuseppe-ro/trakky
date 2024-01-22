@@ -196,7 +196,7 @@ export function PaymentForm({
                           <Minus className="h-4 w-4" />
                         </Toggle>
                         <Input
-                          inputMode="none"
+                          inputMode="decimal"
                           type="number"
                           step="any"
                           className={cn(

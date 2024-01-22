@@ -25,7 +25,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover.tsx";
 import { cn } from "@/lib/utils.ts";
-import { CalendarIcon, Minus } from "lucide-react";
+import { CalendarIcon, Minus, Plus } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar.tsx";
 import React from "react";
 import axios from "axios";
@@ -86,7 +86,6 @@ export function PaymentForm({
   refresh: (flushPaymentsBeforeRefresh: boolean) => void;
   editValues?: Payment;
 }) {
-
   const [isError, setIsError] = React.useState(false);
   const [isSuccess, setIsSuccess] = React.useState(false);
 
@@ -111,13 +110,17 @@ export function PaymentForm({
     setIsError(false);
     console.log(values);
 
-    const payments = values as unknown as Payment;
+    const payment = values as unknown as Payment;
 
-    if(amountIsNegative) payments.amount = -Math.abs(payments.amount);
+    if(amountIsNegative) {
+      payment.amount = -Math.abs(form.getValues("amount"))
+    } else {
+      payment.amount = Math.abs(form.getValues("amount"))
+    }
 
     const success =
       editValues === undefined
-        ? await AddPayments([payments])
+        ? await AddPayments(values as unknown as Payment[])
         : await EditPayment(values as unknown as Payment);
 
     setAmountIsNegative(false);
@@ -189,19 +192,23 @@ export function PaymentForm({
                       <div className="flex flex-row">
                         <Toggle
                           aria-label="Toggle italic"
-                          className="flex sm:hidden rounded-l rounded-r-none hover:bg-transparent"
+                          className={cn(
+                            form.formState.errors.amount && `shake-animation`,
+                            "rounded-l rounded-r-none border p-1 data-[state=on]:bg-red-500 data-[state=off]:bg-green-500 data-[state=on]:text-white data-[state=off]:text-white"
+                          )}
                           onClick={() => setAmountIsNegative(!amountIsNegative)}
                           pressed={amountIsNegative}
                         >
-                          <Minus className="h-4 w-4" />
+                          {amountIsNegative ? (<Minus className="h-4 w-2.5" />) : (<Plus className="h-4 w-2.5" />)}
                         </Toggle>
                         <Input
                           inputMode="decimal"
                           type="number"
                           step="any"
+                          min="0"
                           className={cn(
                             form.formState.errors.amount && `shake-animation`,
-                            "rounded-l-none sm:rounded"
+                            "rounded-l-none"
                           )}
                           {...field}
                           onChange={(n) => {

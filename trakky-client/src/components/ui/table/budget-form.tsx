@@ -66,11 +66,11 @@ export function BudgetForm({
     date: z.date().refine((val) => !existingDates.some((date) => date.getTime() === new Date(firstOfTheMonthDateString(val)).getTime()), {
       message: "Budget for this date already exists!",
     }),
-    budget: z.number().refine((val) => val !== 0, {
-      message: "cannot be 0",
+    budget: z.number().refine((val) => val > 0, {
+      message: "cannot be 0 or negative",
     }),
-    maxBudget: z.number().refine((val) => val !== 0, {
-      message: "cannot be 0",
+    maxBudget: z.number().refine((val) => val > 0, {
+      message: "cannot be 0 or negative",
     }),
   });
 
@@ -177,6 +177,7 @@ export function BudgetForm({
                         inputMode="decimal"
                         type="number"
                         step="any"
+                        min={0}
                         className={cn(
                           form.formState.errors.budget && `shake-animation`,
                         )}
@@ -197,6 +198,7 @@ export function BudgetForm({
                         inputMode="decimal"
                         type="number"
                         step="any"
+                        min={0}
                         className={cn(
                           form.formState.errors.maxBudget && `shake-animation`,
                         )}

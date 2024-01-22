@@ -73,7 +73,7 @@ function DashboardPage() {
           <CustomTable
             tableProps={{
               table,
-              filtersOnly: false,
+              filtersOnly: true,
               page: "overview",
               tableActionMenu:
                 <Containers className="transition">

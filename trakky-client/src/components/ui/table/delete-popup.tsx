@@ -72,10 +72,10 @@ export function DeletePaymentsDialog({
 
 
 export function DeleteBudgetsDialog({
-                                       onDeleteConfirmed,
-                                       entries,
-                                       tooltipText,
-                                     }: {
+  onDeleteConfirmed,
+  entries,
+  tooltipText,
+}: {
   onDeleteConfirmed: () => Promise<void>;
   entries: Budget[];
   tooltipText?: string;
@@ -118,11 +118,11 @@ export function DeleteBudgetsDialog({
 
 
 export function DeleteDialog({
-                       onDeleteConfirmed,
-                       entries,
-                       tooltipText,
+  onDeleteConfirmed,
+  entries,
+  tooltipText,
   // ...props
-                       }: {
+}: {
   onDeleteConfirmed: () => Promise<void>;
   entries: ReactNode;
   tooltipText?: string;
@@ -146,9 +146,9 @@ export function DeleteDialog({
                   </AlertDialogTitle>
                 </div>
                 <AlertDialogDescription>
-                  <div className="m-1 md:m-6">
+                  <span className="m-1 md:m-6">
                     {entries}
-                  </div>
+                  </span>
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>

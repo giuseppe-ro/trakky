@@ -48,7 +48,10 @@ function SettingsPage() {
   }
 
   async function OnTypeDeleteConfirmed(id: number) {
-    await DeleteTypes([id]);
+    const success = await DeleteTypes([id]);
+
+    successFailToast({ success: success, successMessage: "Type Removed", errorMessage: "Something went wrong, couldn't remove Type!" });
+    setTypes(await fetchTypes())
   }
 
   return (

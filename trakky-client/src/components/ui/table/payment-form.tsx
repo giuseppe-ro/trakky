@@ -189,7 +189,7 @@ export function PaymentForm({
                   render={({ field }) => (
                     <Field name={"Amount"}>
                       <Input
-                        inputMode="decimal"
+                        inputMode="text"
                         type="text"
                         pattern="-?\d*\.?\d*"
                         step="any"

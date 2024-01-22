@@ -106,6 +106,16 @@ export function PaymentForm({
     },
   });
 
+  function onAmountChange(amount: number) {
+    if(amount < 0) {
+      setAmountIsNegative(true);
+    } else {
+      setAmountIsNegative(false);
+    }
+
+    form.setValue("amount", amount);
+  }
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsError(false);
     console.log(values);
@@ -205,14 +215,13 @@ export function PaymentForm({
                           inputMode="decimal"
                           type="number"
                           step="any"
-                          min="0"
                           className={cn(
                             form.formState.errors.amount && `shake-animation`,
                             "rounded-l-none"
                           )}
                           {...field}
                           onChange={(n) => {
-                            field.onChange(n.target.valueAsNumber);
+                            onAmountChange(n.target.valueAsNumber);
                           }}
                         />
                       </div>

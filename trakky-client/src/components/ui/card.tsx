@@ -1,6 +1,8 @@
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button.tsx";
+import { demoMode } from "@/constants.ts";
 
 const Card = React.forwardRef<
   HTMLDivElement,
@@ -73,6 +75,50 @@ const CardFooter = React.forwardRef<
 ));
 CardFooter.displayName = "CardFooter";
 
+const CardFormFooter = (({
+                           isSubmitting,
+                           isSubmitted,
+                           isError,
+                           isSuccess
+                     }: {
+  isSubmitting: boolean;
+  isSubmitted: boolean;
+  isError: boolean;
+  isSuccess: boolean;
+}) => {
+  return (
+    <CardFooter className="flex flex-col justify-between">
+      {!isSubmitting && (
+        <Button
+          disabled={!isError && isSuccess || demoMode}
+          type="submit"
+          variant="outline"
+          className={cn(
+            "w-full border transition-none border-green-500 hover:bg-green-500",
+            isSubmitted &&
+            isError &&
+            "border-red-700 hover:border-red-950 hover:bg-red-700",
+            isSuccess &&
+            !isError &&
+            !demoMode &&
+            "border border-green-500 hover:border-green-950 bg-green-500 hover:bg-green-500",
+            isSuccess &&
+            demoMode &&
+            "border border-yellow-500 bg-yellow-500",
+          )}
+        >
+          {isSuccess && !isError ? "Saved" : "Save"}
+        </Button>
+      )}
+      {demoMode && (
+        <p className="text-sm font-medium text-destructive m-2">
+          Demo mode. Data cannot be modified.
+        </p>
+      )}
+    </CardFooter>
+  )
+});
+
 export {
   Card,
   CardHeader,
@@ -80,4 +126,5 @@ export {
   CardTitle,
   CardDescription,
   CardContent,
+  CardFormFooter
 };

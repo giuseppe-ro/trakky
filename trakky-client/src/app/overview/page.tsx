@@ -1,8 +1,8 @@
-import { ExpensesTable } from "@/components/ui/table/table.tsx";
+import { CustomTable } from "@/components/ui/table/table.tsx";
 import { SubTitle, Text } from "@/components/ui/text.tsx";
 import { usePaymentData } from "@/lib/hooks/page-hooks.ts";
 import { YearSelection } from "@/components/ui/data-selector.tsx";
-import { useTable } from "@/lib/hooks/table-hooks.ts";
+import { useExpensesTable } from "@/lib/hooks/table-hooks.ts";
 import { Summary } from "@/components/ui/summary.tsx";
 import { Payment } from "@/infrastructure/payment.tsx";
 import { useEffect, useState } from "react";
@@ -10,6 +10,9 @@ import { ExpensesPieChart, UsersDashboard, ExpensesDashboard } from "@/app/dashb
 import { useDashboards } from "@/lib/hooks/dashboards-hooks.ts";
 import { Containers } from "@/components/ui/containers.tsx";
 import { FadeLeft } from "@/components/animations/fade.tsx";
+import { PaymentForm } from "@/components/ui/table/payment-form.tsx";
+import { TableActionMenu } from "@/components/ui/table/table-action-menu.tsx";
+import { DeletePaymentsDialog } from "@/components/ui/table/delete-popup.tsx";
 
 function OverviewPage() {
   const [filteredPayments, setFilteredPayments] = useState<Payment[]>([]);
@@ -26,9 +29,8 @@ function OverviewPage() {
     totalsPerYear,
     table,
     onDeleteConfirmed,
-    onPaymentEdited,
     onRefresh,
-  } = useTable({
+  } = useExpensesTable({
     data: payments,
     selectedYear,
     refreshData,
@@ -77,14 +79,31 @@ function OverviewPage() {
       <FadeLeft>
 
         <div className="lg:grid gap-4 lg:grid-cols-2 mt-4 text-center">
-          <ExpensesTable
-            expensesTableProps={{
+          <CustomTable
+            tableProps={{
               table,
-              onDeleteConfirmed,
-              onPaymentEdited,
-              onRefresh,
               filtersOnly: false,
-              page: "home",
+              page: "overview",
+              tableActionMenu:
+                <Containers className="transition">
+                  <TableActionMenu
+                    table={table}
+                    onRefresh={onRefresh}
+                    addForm={ <PaymentForm
+                      refresh={() => onRefresh(false)}
+                      title={"Add New Transaction"}
+                    ></PaymentForm> }
+                    deleteForm={
+                      <DeletePaymentsDialog
+                        tooltipText={"Delete selected rows"}
+                        onDeleteConfirmed={onDeleteConfirmed}
+                        entries={table
+                          .getSelectedRowModel()
+                          .rows.map((row: any) => row.original as Payment)}
+                      ></DeletePaymentsDialog>
+                    }
+                  />
+                </Containers>,
             }}
             {...{ className: "lg:col-span-1" }}
           />

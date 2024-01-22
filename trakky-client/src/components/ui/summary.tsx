@@ -41,7 +41,8 @@ function formatCurrency(total: number) {
 
 export type Total = {
   amount: number;
-  date: number;
+  number: number;
+  date?: Date;
 };
 
 type OwnerBalance = {
@@ -75,7 +76,7 @@ export function Summary<TData>({
     .reduce((total, currentAmount) => total + currentAmount, 0);
 
   const previousYearTotal = totalsPerYear.find(
-    (t) => t.date === parseInt(selectedYear) - 1,
+    (t) => t.number === parseInt(selectedYear) - 1,
   );
 
   const ownerBalances: OwnerBalance[] = [];
@@ -134,7 +135,6 @@ export function Summary<TData>({
                         {balance.difference}
                       </span>}
                     </div>
-
                   </div>
                 </div>
               )}

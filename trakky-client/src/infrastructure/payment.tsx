@@ -1,7 +1,6 @@
 import { serverUrl, demoMode } from "@/constants.ts";
 import axios from "axios";
 import { mockPayments } from "@/lib/makeData.ts";
-import { convertDateFormat } from "@/lib/formatter";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
@@ -25,10 +24,9 @@ export async function fetchPayments(): Promise<Payment[]> {
           type: p.type,
           owner: p.owner,
           description: p.description,
-          date: convertDateFormat(p.date)
+          date: p.date
         }
-      }
-      );
+      });
 
   let response = await axios.get(`${serverUrl}/payments`);
 
@@ -41,7 +39,7 @@ export async function fetchPayments(): Promise<Payment[]> {
         type: p.type,
         owner: p.owner,
         description: p.description,
-        date: convertDateFormat(p.date)
+        date: p.date
       }
     }
     );
@@ -68,7 +66,7 @@ export async function EditPayment(payment: Payment): Promise<boolean> {
   if (demoMode) return true;
 
   try {
-    const res = await axios.put(`${serverUrl}/payments`, payment);
+    const res = await axios.put(`${serverUrl}/payment`, payment);
     if (res.status === 200) {
       return true;
     } else {

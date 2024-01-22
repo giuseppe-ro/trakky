@@ -5,6 +5,8 @@ import type {
   ToastActionElement,
   ToastProps,
 } from "@/components/ui/toast"
+import { demoMode } from "@/constants.ts";
+import { UseFormReturn } from "react-hook-form";
 
 const TOAST_LIMIT = 1
 const TOAST_REMOVE_DELAY = 200000
@@ -189,4 +191,62 @@ function useToast() {
   }
 }
 
-export { useToast, toast }
+
+
+
+function formToast(
+  {
+    success,
+    form,
+    refresh,
+    setIsSuccess,
+    setIsError,
+    editValues,
+    fieldsToReset,
+    focusOn
+  }: {
+    success: boolean,
+    form:  UseFormReturn<any>,
+    refresh: (flushBeforeRefresh: boolean) => void;
+    setIsSuccess: (isSuccess: boolean) => void;
+    setIsError: (isError: boolean) => void;
+    editValues?: any;
+    fieldsToReset: string[];
+    focusOn?: string;
+  }) {
+
+  if (demoMode) {
+    toast({
+      title: "Data cannot be modified in demo mode!",
+      variant: "warning"
+    })
+  } else if (success) {
+    setIsSuccess(true);
+    if (editValues === undefined) {
+      fieldsToReset.forEach((field) => {
+        form.resetField(field);
+      });
+
+      if(focusOn !== undefined) {
+        form.setFocus(focusOn);
+      }
+
+      toast({
+        title: "Added!",
+        className: "bg-green-600",
+      })
+    }
+    setTimeout(() => {
+      refresh(false);
+      setIsSuccess(false);
+    }, 1000);
+  } else {
+    toast({
+      title: "Error: could not save!",
+      className: "bg-red-600",
+    })
+    setIsError(true);
+  }
+}
+
+export { useToast, toast, formToast }

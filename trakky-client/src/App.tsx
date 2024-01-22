@@ -1,11 +1,15 @@
-import { ExpensesTable } from "@/components/ui/table/table";
+import { CustomTable } from "@/components/ui/table/table";
 import { Text } from "@/components/ui/text.tsx";
 import { usePaymentData } from "@/lib/hooks/page-hooks.ts";
 import { YearSelection } from "@/components/ui/data-selector.tsx";
-import { useTable } from "@/lib/hooks/table-hooks.ts";
+import { useExpensesTable } from "@/lib/hooks/table-hooks.ts";
 import { Summary } from "@/components/ui/summary.tsx";
 import { useEffect } from "react";
 import { Containers } from "@/components/ui/containers.tsx";
+import { PaymentForm } from "@/components/ui/table/payment-form.tsx";
+import { TableActionMenu } from "@/components/ui/table/table-action-menu.tsx";
+import { DeletePaymentsDialog } from "@/components/ui/table/delete-popup.tsx";
+import { Payment } from "@/infrastructure/payment.tsx";
 
 
 export default function App() {
@@ -21,9 +25,8 @@ export default function App() {
     totalsPerYear,
     table,
     onDeleteConfirmed,
-    onPaymentEdited,
     onRefresh,
-  } = useTable({
+  } = useExpensesTable({
     data: payments,
     selectedYear,
     refreshData,
@@ -58,14 +61,33 @@ export default function App() {
         />
       </Containers>
       <div className="mt-4">
-        <ExpensesTable
-          expensesTableProps={{
+        <CustomTable
+          tableProps={{
             table,
-            onDeleteConfirmed,
-            onPaymentEdited,
-            onRefresh,
             filtersOnly: false,
             page: "overview",
+            tableActionMenu:
+              <Containers className="transition">
+                <TableActionMenu
+                  table={table}
+                  onRefresh={onRefresh}
+                  addForm={
+                    <PaymentForm
+                      refresh={() => onRefresh(false)}
+                      title={"Add New Transaction"}
+                    ></PaymentForm>
+                  }
+                  deleteForm={
+                    <DeletePaymentsDialog
+                      tooltipText={"Delete selected rows"}
+                      onDeleteConfirmed={onDeleteConfirmed}
+                      entries={table
+                        .getSelectedRowModel()
+                        .rows.map((row: any) => row.original as Payment)}
+                    ></DeletePaymentsDialog>
+                  }
+                />
+              </Containers>,
           }}
         />
       </div>

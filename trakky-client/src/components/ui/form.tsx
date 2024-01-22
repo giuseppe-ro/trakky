@@ -163,6 +163,23 @@ const FormMessage = React.forwardRef<
 })
 FormMessage.displayName = "FormMessage"
 
+const Field = (({
+                 name,
+                 children,
+               }: {
+  name: string;
+  children: React.ReactNode;
+}) => {
+  return (
+    <FormItem className="text-center">
+      <FormLabel>{name}</FormLabel>
+      <FormControl>{children}</FormControl>
+      <FormMessage />
+    </FormItem>
+  );
+});
+
+
 export {
   useFormField,
   Form,
@@ -172,6 +189,7 @@ export {
   FormDescription,
   FormMessage,
   FormField,
+  Field
 }
 
 

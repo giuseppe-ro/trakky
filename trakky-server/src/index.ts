@@ -6,8 +6,8 @@ import {
   getPayment,
   updatePayment,
 } from "./payments";
-import { getBudgets } from "./budgets";
-import { Payment } from "@prisma/client";
+import { getBudgets, addBudgets, updateBudget, deleteBudgets } from "./budgets";
+import { Budget, Payment } from "@prisma/client";
 import { getTypes } from "./types";
 import { getOwners } from "./owners";
 
@@ -81,7 +81,7 @@ app.post("/payments", cors(corsOptions), (req: Request, res: Response) => {
     });
 });
 
-app.put("/payments", cors(corsOptions), (req: Request, res: Response) => {
+app.put("/payment", cors(corsOptions), (req: Request, res: Response) => {
   const editPayments = req.body as Payment;
 
   updatePayment(editPayments)
@@ -99,6 +99,48 @@ app.get("/budgets", cors(corsOptions), (req: Request, res: Response) => {
   getBudgets()
     .then((budgets) => {
       res.send(budgets);
+    })
+    .catch((e) => {
+      console.log(e);
+      res.status(400);
+      res.send(e);
+    });
+});
+
+app.post("/budgets", cors(corsOptions), (req: Request, res: Response) => {
+  const newBudgets = req.body as Budget[];
+
+  addBudgets(newBudgets)
+    .then((addedBudgets) => {
+      res.send(addedBudgets);
+    })
+    .catch((e) => {
+      console.log(e);
+      res.status(400);
+      res.send(e);
+    });
+});
+
+app.put("/budget", cors(corsOptions), (req: Request, res: Response) => {
+  const editBudget = req.body as Budget;
+
+  updateBudget(editBudget)
+    .then((budget) => {
+      res.send(budget);
+    })
+    .catch((e) => {
+      console.log(e);
+      res.status(400);
+      res.send(e);
+    });
+});
+
+app.delete("/budgets", cors(corsOptions), (req: Request, res: Response) => {
+  const budgetIds = req.body as number[];
+
+  deleteBudgets(budgetIds)
+    .then((deletedBudgets) => {
+      res.send(deletedBudgets);
     })
     .catch((e) => {
       console.log(e);

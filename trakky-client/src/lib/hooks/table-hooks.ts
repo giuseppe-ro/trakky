@@ -18,19 +18,21 @@ import { Total } from "@/components/ui/summary.tsx";
 import { DeletePayments, Payment } from "@/infrastructure/payment.tsx";
 import { fuzzyFilter } from "@/lib/filters.ts";
 import {
-  ColumnDefinition,
+  PaymentColumnDefinition,
+  BudgetColumnDefinition,
 } from "@/components/ui/table/columns.tsx";
 import { toast } from "@/components/ui/use-toast.ts";
 import { demoMode } from "@/constants";
+import { Budget, DeleteBudgets } from "@/infrastructure/budget.tsx";
 
-export function useTable({
+export function useExpensesTable({
                             data,
                             selectedYear,
                             refreshData
                           }: {
   data: Payment[] | null;
   selectedYear: string | null;
-  refreshData(flushPaymentsBeforeRefresh?: boolean): void
+  refreshData(flushBeforeRefresh?: boolean): void
 }) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
@@ -55,17 +57,18 @@ export function useTable({
       ? []
       : data.reduce((acc: Total[], payment) => {
         const year = new Date(payment.date).getFullYear();
-        const existing = acc.find((t) => t.date === year);
+
+        const existing = acc.find((t) => t.number === year);
         if (existing) {
           existing.amount += payment.amount;
         } else {
-          acc.push({ amount: payment.amount, date: year });
+          acc.push({ amount: payment.amount, number: year });
         }
         return acc;
       }, []);
 
   const columns = useMemo<ColumnDef<Payment, number | string>[]>(
-    () => ColumnDefinition,
+    () => PaymentColumnDefinition(refreshData),
     [],
   );
 
@@ -128,7 +131,7 @@ export function useTable({
     }
   }
 
-  function onPaymentEdited() {
+  function onEdited() {
     table.resetRowSelection();
     onRefresh(false).then(() => { });
   }
@@ -142,7 +145,107 @@ export function useTable({
     totalsPerYear,
     table,
     onDeleteConfirmed,
-    onPaymentEdited,
+    onPaymentEdited: onEdited,
+    onRefresh,
+  };
+}
+
+
+export function useBudgetsTable({
+                                   data,
+                                   refreshData
+                                 }: {
+  data: Budget[] | null;
+  refreshData(flushBeforeRefresh?: boolean): void
+}) {
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [globalFilter, setGlobalFilter] = useState("");
+  const [filteredData, setFilteredData] = useState<Budget[]>([]);
+
+  useEffect(() => {
+    if (data !== null) {
+      setFilteredData(data);
+    }
+  }, [data]);
+
+  const columns = useMemo<ColumnDef<Budget, number | string>[]>(
+    () => BudgetColumnDefinition(data, refreshData),
+    [],
+  );
+
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
+    'date': true,
+  })
+
+  const table: Table<any> = useReactTable({
+    data: filteredData,
+    columns,
+    filterFns: {
+      fuzzy: fuzzyFilter,
+    },
+    state: {
+      columnFilters,
+      globalFilter,
+      columnVisibility,
+    },
+    onColumnVisibilityChange: setColumnVisibility,
+    onColumnFiltersChange: setColumnFilters,
+    onGlobalFilterChange: setGlobalFilter,
+    globalFilterFn: fuzzyFilter,
+    getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getFacetedRowModel: getFacetedRowModel(),
+    getFacetedUniqueValues: getFacetedUniqueValues(),
+    getFacetedMinMaxValues: getFacetedMinMaxValues(),
+    debugTable: true,
+    debugHeaders: true,
+    debugColumns: false,
+  });
+
+  async function onDeleteConfirmed() {
+    console.log("Delete clicked!");
+    const ids = table
+      .getSelectedRowModel()
+      .rows.map((row: any) => row.original.id) as number[];
+
+    const deleted = await DeleteBudgets(ids);
+
+    if(demoMode) {
+      toast({
+        title: "Data cannot be modified in demo mode!",
+        variant: "warning"
+      })
+    } else if (deleted) {
+      refreshData(false);
+      table.resetRowSelection();
+      toast({
+        title: "Deleted!",
+        className: "bg-green-600",
+      })
+    } else {
+      toast({
+        title: "Couldn't delete!",
+        className: "bg-red-500",
+      })
+    }
+  }
+
+  function onEdited() {
+    table.resetRowSelection();
+    onRefresh(false).then(() => { });
+  }
+
+  async function onRefresh(flushBeforeRefresh: boolean = true) {
+    table.resetColumnFilters();
+    refreshData(flushBeforeRefresh);
+  }
+
+  return {
+    table,
+    onDeleteConfirmed,
+    onBudgetEdited: onEdited,
     onRefresh,
   };
 }

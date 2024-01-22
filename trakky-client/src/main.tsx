@@ -13,6 +13,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import { PageContainer } from "@/components/ui/containers.tsx";
 import { Toaster } from "@/components/ui/toaster.tsx";
+import SettingsPage from "@/app/settings/page.tsx";
 
 AOS.init({ once: true });
 
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
   {
     path: "/dashboards",
     element: <DashboardPage></DashboardPage>,
+  },
+  {
+    path: "/settings",
+    element: <SettingsPage></SettingsPage>,
   },
 ]);
 

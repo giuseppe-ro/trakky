@@ -189,7 +189,7 @@ export function PaymentForm({
                       <div className="flex flex-row">
                         <Toggle
                           aria-label="Toggle italic"
-                          className="flex sm:hidden rounded-l rounded-r-none"
+                          className="flex sm:hidden rounded-l rounded-r-none hover:bg-transparent"
                           onClick={() => setAmountIsNegative(!amountIsNegative)}
                           pressed={amountIsNegative}
                         >

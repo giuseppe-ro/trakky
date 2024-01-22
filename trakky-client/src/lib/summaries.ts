@@ -34,8 +34,8 @@ export function getYearlyPaymentsSummaries(
     const currentBudgets = budgets.reduce((acc, current) => {
       if (new Date(current.date).getFullYear() === year && (hasMultipleMonths || new Date(current.date).getMonth() === month)) {
         return {
-          budget: acc.budget + parseInt(current.budget),
-          maxBudget: acc.maxBudget + parseInt(current.maxBudget),
+          budget: acc.budget + current.budget,
+          maxBudget: acc.maxBudget + current.maxBudget,
         };
       }
       return acc;
@@ -82,8 +82,8 @@ export function getMonthlyPaymentsSummariesForYear(
         index,
         name,
         total: Math.round(transaction.amount),
-        budget: parseInt(budget.budget),
-        maxBudget: parseInt(budget.maxBudget),
+        budget: budget.budget,
+        maxBudget: budget.maxBudget,
       });
     }
     return summaries;

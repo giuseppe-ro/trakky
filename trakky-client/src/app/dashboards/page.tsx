@@ -8,6 +8,10 @@ import { useEffect, useState } from "react";
 import { ExpensesPieChart, UsersDashboard, ExpensesDashboard } from "@/app/dashboards/components/dashboards.tsx";
 import { useDashboards } from "@/lib/hooks/dashboards-hooks.ts";
 import { FadeLeft } from "@/components/animations/fade.tsx";
+import { Containers } from "@/components/ui/containers.tsx";
+import { TableActionMenu } from "@/components/ui/table/table-action-menu.tsx";
+import { PaymentForm } from "@/components/ui/table/payment-form.tsx";
+import { DeletePaymentsDialog } from "@/components/ui/table/delete-popup.tsx";
 
 function DashboardPage() {
   const [filteredPayments, setFilteredPayments] = useState<Payment[]>([]);
@@ -23,7 +27,6 @@ function DashboardPage() {
   const {
     table,
     onDeleteConfirmed,
-    onPaymentEdited,
     onRefresh,
   } = useExpensesTable({
     data: payments,
@@ -67,17 +70,34 @@ function DashboardPage() {
 
         <div className="mt-6 text-center">
             <SubTitle title={"Filters"} />
-            <CustomTable
-              tableProps={{
-                table,
-                onDeleteConfirmed,
-                onEdited: onPaymentEdited,
-                onRefresh,
-                filtersOnly: true,
-                page: "home",
-              }}
-              {...{ className: "w-full" }}
-            />
+          <CustomTable
+            tableProps={{
+              table,
+              filtersOnly: false,
+              page: "overview",
+              tableActionMenu:
+                <Containers className="transition">
+                  <TableActionMenu
+                    table={table}
+                    onRefresh={onRefresh}
+                    addForm={ <PaymentForm
+                      refresh={() => onRefresh(false)}
+                      title={"Add New Transaction"}
+                    ></PaymentForm> }
+                    deleteForm={
+                      <DeletePaymentsDialog
+                        tooltipText={"Delete selected rows"}
+                        onDeleteConfirmed={onDeleteConfirmed}
+                        entries={table
+                          .getSelectedRowModel()
+                          .rows.map((row: any) => row.original as Payment)}
+                      ></DeletePaymentsDialog>
+                    }
+                  />
+                </Containers>,
+            }}
+            {...{ className: "lg:col-span-1" }}
+          />
         </div>
 
       </FadeLeft>

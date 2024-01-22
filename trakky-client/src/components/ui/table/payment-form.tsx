@@ -67,7 +67,7 @@ const formSchema = z.object({
   owner: z.string().refine((val) => owners.includes(val)),
   type: z.string().refine((val) => types.includes(val)),
   date: z.date(),
-  amount: z.number().refine((val) => val !== 0, {
+  amount: z.string().refine((val) => Number(val) !== 0, {
     message: "cannot be 0",
   }),
   description: z.string().refine((val) => val.length <= 50 && val.length > 0),
@@ -99,7 +99,7 @@ export function PaymentForm({
           : new Date(editValues?.date),
       owner: editValues?.owner ?? owners[0],
       type: editValues?.type ?? types[0],
-      amount: editValues?.amount ?? 0,
+      amount: editValues?.amount.toString() ?? "0",
       description: editValues?.description ?? "",
     },
   });
@@ -108,9 +108,20 @@ export function PaymentForm({
     setIsError(false);
     console.log(values);
 
+    const payments = values as unknown as Payment;
+
+    console.log(payments)
+
     const success =
       editValues === undefined
-        ? await AddPayments(values as unknown as Payment[])
+        ? await AddPayments([{
+          id: payments.id,
+          amount: Number(payments.amount),
+          type: payments.type,
+          owner: payments.owner,
+          description: payments.description,
+          date: payments.date
+        }])
         : await EditPayment(values as unknown as Payment);
 
     formToast({
@@ -178,15 +189,16 @@ export function PaymentForm({
                   render={({ field }) => (
                     <Field name={"Amount"}>
                       <Input
-                        inputMode="tel"
-                        type="number"
+                        inputMode="decimal"
+                        type="text"
+                        pattern="-?\d*\.?\d*"
                         step="any"
                         className={cn(
                           form.formState.errors.amount && `shake-animation`,
                         )}
                         {...field}
                         onChange={(n) => {
-                          field.onChange(n.target.valueAsNumber);
+                          field.onChange(n.target.value.toString());
                         }}
                       />
                     </Field>

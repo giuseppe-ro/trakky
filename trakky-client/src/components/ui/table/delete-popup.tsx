@@ -20,18 +20,112 @@ import { Payment } from "@/infrastructure/payment.tsx";
 import { TableRow } from "@/components/ui/table.tsx";
 import { formatCurrency } from "@/lib/formatter.ts";
 import { cn } from "@/lib/utils.ts";
+import { ReactNode } from "react";
+import { Budget } from "@/infrastructure/budget.tsx";
 
 export function DeletePaymentsDialog({
   onDeleteConfirmed,
-  payments,
+  entries,
   tooltipText,
 }: {
   onDeleteConfirmed: () => Promise<void>;
-  payments: Payment[];
+  entries: Payment[];
   tooltipText?: string;
 }) {
   const tdStyle = "px-2 text-left border overflow-x-scroll scroll-smooth";
 
+  return (
+    <DeleteDialog
+      onDeleteConfirmed={onDeleteConfirmed}
+      tooltipText={tooltipText}
+      entries={<>
+        {entries.map((payment: Payment) => (
+          <TableRow key={payment.id} className="flex">
+            <td className={cn(`${tdStyle} w-[75px] text-left`)}>
+              {new Date(payment.date).toLocaleString("en-GB", {
+                month: "numeric",
+                year: "numeric",
+              })}
+            </td>
+            <td className={cn(`${tdStyle} w-[80px]`)}>
+              {payment.type}
+            </td>
+            <td className={cn(`${tdStyle} w-[55px]`)}>
+              {payment.owner}
+            </td>
+            <td
+              className={cn(
+                `${tdStyle} w-[70px] text-right overflow-auto`,
+              )}
+            >
+              {formatCurrency(payment.amount)}
+            </td>
+            <td className={cn(`${tdStyle} flex-grow truncate`)}>
+              {payment.description}
+            </td>
+          </TableRow>
+        ))}
+      </>}
+    />
+  );
+}
+
+
+export function DeleteBudgetsDialog({
+                                       onDeleteConfirmed,
+                                       entries,
+                                       tooltipText,
+                                     }: {
+  onDeleteConfirmed: () => Promise<void>;
+  entries: Budget[];
+  tooltipText?: string;
+}) {
+  const tdStyle = "px-2 text-left border overflow-x-scroll scroll-smooth";
+
+  return (
+    <DeleteDialog
+      onDeleteConfirmed={onDeleteConfirmed}
+      tooltipText={tooltipText}
+      entries={<>
+        {entries.map((budget: Budget) => (
+          <TableRow key={budget.id} className="flex max-w-[300px] align-middle justify-center">
+            <td className={cn(`${tdStyle} w-[100px] text-left`)}>
+              {new Date(budget.date).toLocaleString("en-GB", {
+                month: "numeric",
+                year: "numeric",
+              })}
+            </td>
+            <td
+              className={cn(
+                `${tdStyle} w-[100px] text-right overflow-auto`,
+              )}
+            >
+              {formatCurrency(budget.budget)}
+            </td>
+            <td
+              className={cn(
+                `${tdStyle} w-[100px] text-right overflow-auto`,
+              )}
+            >
+              {formatCurrency(budget.maxBudget)}
+            </td>
+          </TableRow>
+        ))}
+      </>}
+    />
+  );
+}
+
+
+function DeleteDialog({
+                       onDeleteConfirmed,
+                       entries,
+                       tooltipText,
+                       }: {
+  onDeleteConfirmed: () => Promise<void>;
+  entries: ReactNode;
+  tooltipText?: string;
+}) {
   return (
     <TooltipProvider>
       <Tooltip>
@@ -46,39 +140,13 @@ export function DeletePaymentsDialog({
                   <AlertDialogTitle>
                     Are you sure? This action cannot be undone.
                     <p className="text-sm mb-2 text-muted-foreground pb-2">
-                      This will permanently delete the below transactions:
+                      This will permanently delete the below entries:
                     </p>
                   </AlertDialogTitle>
                 </div>
-
                 <AlertDialogDescription>
                   <div className="m-1 md:m-6">
-                    {payments.map((payment: Payment) => (
-                      <TableRow key={payment.id} className="flex">
-                        <td className={cn(`${tdStyle} w-[75px] text-left`)}>
-                          {new Date(payment.date).toLocaleString("en-GB", {
-                            month: "numeric",
-                            year: "numeric",
-                          })}
-                        </td>
-                        <td className={cn(`${tdStyle} w-[80px]`)}>
-                          {payment.type}
-                        </td>
-                        <td className={cn(`${tdStyle} w-[55px]`)}>
-                          {payment.owner}
-                        </td>
-                        <td
-                          className={cn(
-                            `${tdStyle} w-[70px] text-right overflow-auto`,
-                          )}
-                        >
-                          {formatCurrency(payment.amount)}
-                        </td>
-                        <td className={cn(`${tdStyle} flex-grow truncate`)}>
-                          {payment.description}
-                        </td>
-                      </TableRow>
-                    ))}
+                    {entries}
                   </div>
                 </AlertDialogDescription>
               </AlertDialogHeader>
@@ -90,7 +158,7 @@ export function DeletePaymentsDialog({
                   className="bg-red-500 mx-6 mt-6 hover:bg-red-600 text-white "
                   onClick={() => {
                     onDeleteConfirmed().then(() => {
-                      console.log("payment deleted");
+                      console.log("entries deleted");
                     });
                   }}
                 >

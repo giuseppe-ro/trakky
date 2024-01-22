@@ -6,12 +6,11 @@ import { format } from "date-fns";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
+  Field,
   FormField,
-  Field
 } from "@/components/ui/form.tsx";
 import { Input } from "@/components/ui/input.tsx";
 import { Button } from "@/components/ui/button.tsx";
-import { Selection } from "@/components/ui/select.tsx";
 import {
   Card,
   CardContent,
@@ -29,26 +28,9 @@ import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar.tsx";
 import React from "react";
 import axios from "axios";
-import { Textarea } from "@/components/ui/textarea.tsx";
-import {
-  AddPayments,
-  EditPayment,
-  Payment,
-} from "@/infrastructure/payment.tsx";
-import { fetchOwners } from "@/infrastructure/owner.tsx";
-import { fetchTypes } from "@/infrastructure/transaction-type.tsx";
 import { formToast } from "@/components/ui/use-toast.ts";
-
-let types: string[] = [];
-let owners: string[] = [];
-
-fetchOwners()
-  .then((o) => o.map((owner) => owner.name))
-  .then((o) => (owners = o));
-
-fetchTypes()
-  .then((t) => t.map((type) => type.name))
-  .then((t) => (types = t));
+import { AddBudgets, Budget, EditBudget } from "@/infrastructure/budget.tsx";
+import { firstOfTheMonthDateString } from "@/lib/formatter.ts";
 
 const customErrorMap: z.ZodErrorMap = (issue, ctx) => {
   if (issue.code === z.ZodIssueCode.invalid_type) {
@@ -62,29 +44,36 @@ const customErrorMap: z.ZodErrorMap = (issue, ctx) => {
 
 z.setErrorMap(customErrorMap);
 
-const formSchema = z.object({
-  id: z.number().optional(),
-  owner: z.string().refine((val) => owners.includes(val)),
-  type: z.string().refine((val) => types.includes(val)),
-  date: z.date(),
-  amount: z.number().refine((val) => val !== 0, {
-    message: "cannot be 0",
-  }),
-  description: z.string().refine((val) => val.length <= 50 && val.length > 0),
-});
+
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
 
-export function PaymentForm({
+export function BudgetForm({
   title,
   refresh,
+  existingDates,
   editValues,
 }: {
   title: string;
-  refresh: (flushPaymentsBeforeRefresh: boolean) => void;
-  editValues?: Payment;
+  refresh: (flushBeforeRefresh: boolean) => void;
+  existingDates: Date[];
+  editValues?: Budget;
 }) {
+
+  const formSchema = z.object({
+    id: z.number().optional(),
+    date: z.date().refine((val) => !existingDates.some((date) => date.getTime() === new Date(firstOfTheMonthDateString(val)).getTime()), {
+      message: "Budget for this date already exists!",
+    }),
+    budget: z.number().refine((val) => val !== 0, {
+      message: "cannot be 0",
+    }),
+    maxBudget: z.number().refine((val) => val !== 0, {
+      message: "cannot be 0",
+    }),
+  });
+
   const [isError, setIsError] = React.useState(false);
   const [isSuccess, setIsSuccess] = React.useState(false);
 
@@ -96,21 +85,26 @@ export function PaymentForm({
         editValues?.date === undefined
           ? new Date()
           : new Date(editValues?.date),
-      owner: editValues?.owner ?? owners[0],
-      type: editValues?.type ?? types[0],
-      amount: editValues?.amount ?? 0,
-      description: editValues?.description ?? "",
-    },
-  });
+      budget: editValues?.budget === undefined ? 0 : Number(editValues?.budget),
+      maxBudget:
+        editValues?.maxBudget === undefined
+          ? 0
+          : Number(editValues?.maxBudget),
+  }});
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsError(false);
     console.log(values);
 
-    const success =
-      editValues === undefined
-        ? await AddPayments(values as unknown as Payment[])
-        : await EditPayment(values as unknown as Payment);
+    let success: boolean;
+
+    if (editValues === undefined) {
+      const budget = values as unknown as Budget;
+      budget.date = format(values.date, "yyyy-MM-dd");
+      success = await AddBudgets(values as unknown as Budget[]);
+    } else {
+      success = await EditBudget(values as unknown as Budget);
+    }
 
     formToast({
       success,
@@ -119,8 +113,7 @@ export function PaymentForm({
       setIsSuccess,
       setIsError,
       editValues,
-      fieldsToReset: ["amount", "description"],
-      focusOn: "amount",
+      fieldsToReset: ["budget", "maxBudget"],
     });
   }
 
@@ -140,7 +133,11 @@ export function PaymentForm({
                   render={({ field }) => (
                     <Field name={"Date"}>
                       <Popover>
-                        <PopoverTrigger asChild>
+                        <PopoverTrigger asChild
+                                        className={cn(
+                                          form.formState.errors.date && `shake-animation`,
+                                        )}
+                        >
                           <Button
                             variant={"outline"}
                             className={cn(
@@ -170,18 +167,18 @@ export function PaymentForm({
                 />
               </div>
 
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-2 gap-2">
                 <FormField
                   control={form.control}
-                  name="amount"
+                  name="budget"
                   render={({ field }) => (
-                    <Field name={"Amount"}>
+                    <Field name={"Budget"}>
                       <Input
-                        inputMode="none"
+                        inputMode="decimal"
                         type="number"
                         step="any"
                         className={cn(
-                          form.formState.errors.amount && `shake-animation`,
+                          form.formState.errors.budget && `shake-animation`,
                         )}
                         {...field}
                         onChange={(n) => {
@@ -193,52 +190,21 @@ export function PaymentForm({
                 />
                 <FormField
                   control={form.control}
-                  name="owner"
+                  name="maxBudget"
                   render={({ field }) => (
-                    <Field name={"Owner"}>
-                      <Selection
-                        value={field.value}
-                        onChange={field.onChange}
-                        options={owners}
-                        {...{
-                          className:
-                            "rounded-md w-full overscroll-contain mb-4",
-                        }}
-                      />
-                    </Field>
-                  )}
-                />
-                <FormField
-                  name="type"
-                  render={({ field }) => (
-                    <Field name={"Type"}>
-                      <Selection
-                        value={field.value}
-                        onChange={field.onChange}
-                        options={types}
-                        {...{
-                          className:
-                            "rounded-md w-full overscroll-contain mb-4",
-                        }}
-                      />
-                    </Field>
-                  )}
-                />
-              </div>
-              <div>
-                <FormField
-                  name="description"
-                  render={({ field }) => (
-                    <Field name={"Description"}>
-                      <Textarea
-                        onChange={field.onChange}
-                        value={field.value}
+                    <Field name={"Max Budget"}>
+                      <Input
+                        inputMode="decimal"
+                        type="number"
+                        step="any"
                         className={cn(
-                          "pb-0 mb-0",
-                          form.formState.errors.description &&
-                          `shake-animation`,
+                          form.formState.errors.maxBudget && `shake-animation`,
                         )}
-                      ></Textarea>
+                        {...field}
+                        onChange={(n) => {
+                          field.onChange(n.target.valueAsNumber);
+                        }}
+                      />
                     </Field>
                   )}
                 />

@@ -1,6 +1,5 @@
 import { PopupDialog } from "@/components/ui/table/popup-dialog.tsx";
 import { Button } from "@/components/ui/button.tsx";
-import { PaymentForm } from "@/components/ui/table/payment-form.tsx";
 import {
   Tooltip,
   TooltipContent,
@@ -15,8 +14,6 @@ import {
   ReloadIcon,
 } from "@radix-ui/react-icons";
 import { SelectIcon } from "@radix-ui/react-select";
-import { DeletePaymentsDialog } from "@/components/ui/table/delete-popup.tsx";
-import { Payment } from "@/infrastructure/payment.tsx";
 import {
   Select,
   SelectContent,
@@ -26,15 +23,18 @@ import {
 } from "@/components/ui/select.tsx";
 import { Table } from "@tanstack/react-table";
 import { ExportDropdownMenu } from "@/components/ui/table/download-dropdown.tsx";
+import { ReactNode } from "react";
 
 export function TableActionMenu({
   table,
   onRefresh,
-  onDeleteConfirmed,
+  addForm,
+  deleteForm
 }: {
   table: Table<any>;
   onRefresh: (flushPaymentsBeforeRefresh?: boolean) => void;
-  onDeleteConfirmed: () => Promise<void>;
+  addForm: ReactNode;
+  deleteForm: ReactNode;
 }) {
 
   return (
@@ -50,10 +50,7 @@ export function TableActionMenu({
             </Button>
           }
         >
-          <PaymentForm
-            refresh={() => onRefresh(false)}
-            title={"Add New Transaction"}
-          ></PaymentForm>
+          {addForm}
         </PopupDialog>
         <div className="flex justify-center">
           <TooltipProvider>
@@ -89,15 +86,7 @@ export function TableActionMenu({
           <ExportDropdownMenu table={table} />
         </div>
         <div className="flex justify-center">
-          {table.getIsSomeRowsSelected() || table.getIsAllRowsSelected() && (
-            <DeletePaymentsDialog
-              tooltipText={"Delete selected rows"}
-              onDeleteConfirmed={onDeleteConfirmed}
-              payments={table
-                .getSelectedRowModel()
-                .rows.map((row: any) => row.original as Payment)}
-            ></DeletePaymentsDialog>
-          )}
+          {(table.getIsSomeRowsSelected() || table.getIsAllRowsSelected()) && deleteForm}
         </div>
       </div>
       <div className="flex justify-end gap-x-1 md:gap-x-3 mt-2 md:mt-6 mb-2 ">

@@ -5,7 +5,7 @@ export function formatCurrency(total: number) {
   }).format(total);
 }
 
-export function formatDate(date: Date): string {
+export function formatDateMonth(date: Date): string {
   return new Date(date).toLocaleString('en-GB', {month: 'long' });
 }
 
@@ -25,6 +25,13 @@ export function convertDateFormat(date: string): string {
   const month = (dateObj.getMonth() + 1).toString().padStart(2, '0');
 
   return `${year}-${month}`;
+}
+
+export function firstOfTheMonthDateString(date: Date): Date {
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+
+  return new Date(`${year}-${month}-01`)
 }
 
 export function convertFilterDateFormat(date: string): string {

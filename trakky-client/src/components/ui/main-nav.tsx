@@ -17,6 +17,7 @@ export function MainNav({
     { href: "/", label: "Home" },
     { href: "/dashboards", label: "Dashboards" },
     { href: "/overview", label: "Overview" },
+    { href: "/settings", label: "Settings" },
   ];
 
   return (

@@ -18,7 +18,6 @@ import { Filter } from "@/components/ui/table/column-filter.tsx";
 import {
   colSize,
 } from "@/components/ui/table/columns.tsx";
-import { TableActionMenu } from "@/components/ui/table/table-action-menu.tsx";
 import { FadeUp } from "@/components/animations/fade.tsx";
 import {
   DropdownMenu,
@@ -27,42 +26,39 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu.tsx";
 import { ChevronDown } from "lucide-react";
-import { useEffect, useState } from "react";
-import { Containers } from "@/components/ui/containers.tsx";
+import { ReactNode, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button.tsx";
 
-export interface ExpensesTableProps {
+export interface CustomTableProps {
   table: TableType<any>;
-  onDeleteConfirmed: () => Promise<void>;
-  onPaymentEdited: () => void;
-  onRefresh: (flushPaymentsBeforeRefresh?: boolean) => void;
   page: string;
   filtersOnly: boolean;
+  tableActionMenu?: ReactNode;
 }
 
-export function ExpensesTable({
-  expensesTableProps,
+export function CustomTable({
+  tableProps,
   ...props
 }: {
-  expensesTableProps: ExpensesTableProps;
+  tableProps: CustomTableProps;
 }) {
-  const [showTableBody, setShowTableBody] = useState<boolean>(!expensesTableProps.filtersOnly);
+  const [showTableBody, setShowTableBody] = useState<boolean>(!tableProps.filtersOnly);
 
-  const activeColumnsKey = `${expensesTableProps.page}_active_columns`;
+  const activeColumnsKey = `${tableProps.page}_active_columns`;
 
   useEffect(() => {
     const storedActiveColumns = localStorage.getItem(activeColumnsKey);
 
     if (storedActiveColumns) {
       try {
-        expensesTableProps.table.setColumnVisibility(JSON.parse(storedActiveColumns));
+        tableProps.table.setColumnVisibility(JSON.parse(storedActiveColumns));
       } catch (e) {
         localStorage.removeItem("expenses_active_columns")
         console.log(e);
       }
     } else {
       let activeColumns = "{";
-      Object.values(expensesTableProps
+      Object.values(tableProps
         .table
         .getAllColumns())
         .forEach((column) => {
@@ -93,19 +89,11 @@ export function ExpensesTable({
         <>
           <FadeUp>
             {
-              showTableBody && (
-                <Containers className="transition">
-                  <TableActionMenu
-                    table={expensesTableProps.table}
-                    onDeleteConfirmed={expensesTableProps.onDeleteConfirmed}
-                    onRefresh={expensesTableProps.onRefresh}
-                  />
-                </Containers>
-              )
+              tableProps.tableActionMenu && (tableProps.tableActionMenu)
             }
             <Table className="bg-slate-950 border border-slate-800 overflow-x-scroll">
               <TableHeader className="hover:bg-transparent">
-                {expensesTableProps.table.getHeaderGroups().map((headerGroup) => (
+                {tableProps.table.getHeaderGroups().map((headerGroup) => (
                   <TableRow
                     key={headerGroup.id}
                     className="border border-slate-800"
@@ -151,7 +139,7 @@ export function ExpensesTable({
                                 <div className="m-0 p-0">
                                   <Filter
                                     column={header.column}
-                                    table={expensesTableProps.table}
+                                    table={tableProps.table}
                                   />
                                 </div>
                               ) : header.id == "edit" ? <> <DropdownMenu>
@@ -161,7 +149,7 @@ export function ExpensesTable({
                                   </a>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
-                                  {expensesTableProps.table
+                                  {tableProps.table
                                     .getAllColumns()
                                     .filter((column) => column.getCanHide())
                                     .map((column) => {
@@ -194,8 +182,8 @@ export function ExpensesTable({
                   <TableBody>
                     {
                       showTableBody &&
-                      !expensesTableProps.filtersOnly &&
-                      expensesTableProps.table.getRowModel().rows.map((row) => {
+                      !tableProps.filtersOnly &&
+                      tableProps.table.getRowModel().rows.map((row) => {
                       return (
                         <TableRow
                           key={row.id}
@@ -228,9 +216,9 @@ export function ExpensesTable({
                       );
                     })
                     }
-                    { !expensesTableProps.filtersOnly &&
+                    { !tableProps.filtersOnly &&
                       <TableRow className="p-0 m-0">
-                        <td colSpan={expensesTableProps.table.getAllColumns().length}  className="p-0 m-0">
+                        <td colSpan={tableProps.table.getAllColumns().length} className="p-0 m-0">
                           <Button
                             variant="outline"
                             onClick={() => setShowTableBody(!showTableBody)}

@@ -2,7 +2,7 @@ import { Column } from "@tanstack/react-table";
 import { Payment } from "@/infrastructure/payment.tsx";
 import { useMemo } from "react";
 import { DebouncedInput, DebouncedSelect } from "@/components/ui/table/debounce-input.tsx";
-import { convertFilterDateFormat, formatDate, isValidDate } from "@/lib/formatter.ts";
+import { convertFilterDateFormat, formatDateMonth, isValidDate } from "@/lib/formatter.ts";
 
 export function Filter({
   column,
@@ -23,7 +23,7 @@ export function Filter({
         ? []
         : isValidDate(firstValue) ? Array.from(column.getFacetedUniqueValues().keys())
           .reduce((acc, date) => {
-            const formattedDate = formatDate(date);
+            const formattedDate = formatDateMonth(date);
             if (!acc.some((obj: any) => obj.key === formattedDate)) {
               acc.push({ key: formattedDate, value: convertFilterDateFormat(date) });
             }

@@ -1,8 +1,8 @@
-import { ExpensesTable } from "@/components/ui/table/table.tsx";
+import { CustomTable } from "@/components/ui/table/table.tsx";
 import { SubTitle, Text } from "@/components/ui/text.tsx";
 import { usePaymentData } from "@/lib/hooks/page-hooks.ts";
 import { YearSelection } from "@/components/ui/data-selector.tsx";
-import { useTable } from "@/lib/hooks/table-hooks.ts";
+import { useExpensesTable } from "@/lib/hooks/table-hooks.ts";
 import { Payment } from "@/infrastructure/payment.tsx";
 import { useEffect, useState } from "react";
 import { ExpensesPieChart, UsersDashboard, ExpensesDashboard } from "@/app/dashboards/components/dashboards.tsx";
@@ -25,7 +25,7 @@ function DashboardPage() {
     onDeleteConfirmed,
     onPaymentEdited,
     onRefresh,
-  } = useTable({
+  } = useExpensesTable({
     data: payments,
     selectedYear,
     refreshData,
@@ -67,11 +67,11 @@ function DashboardPage() {
 
         <div className="mt-6 text-center">
             <SubTitle title={"Filters"} />
-            <ExpensesTable
-              expensesTableProps={{
+            <CustomTable
+              tableProps={{
                 table,
                 onDeleteConfirmed,
-                onPaymentEdited,
+                onEdited: onPaymentEdited,
                 onRefresh,
                 filtersOnly: true,
                 page: "home",

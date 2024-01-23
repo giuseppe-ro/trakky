@@ -9,7 +9,7 @@ import { demoMode } from "@/constants.ts";
 import { UseFormReturn } from "react-hook-form";
 
 const TOAST_LIMIT = 2
-const TOAST_REMOVE_DELAY = 200000
+const TOAST_REMOVE_DELAY = 200
 
 type ToasterToast = ToastProps & {
   id: string
@@ -156,11 +156,15 @@ function toast({ ...props }: Toast) {
     type: "ADD_TOAST",
     toast: {
       ...props,
+      // className: "max-w-full",
       style: {
         position: "fixed",
-        maxWidth: "300px",
+        maxWidth: "250px",
+        maxHeight: "60px",
         left: window.innerWidth + window.scrollX - 320  + 'px',
-        top: window.innerHeight + window.screenY - 80 + 'px'
+        top: window.innerHeight + window.screenY - 80 + 'px',
+        right: 20,
+        bottom: 20,
       },
       id,
       open: true,

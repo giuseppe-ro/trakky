@@ -68,14 +68,14 @@ function SettingsPage() {
 
     successFailToast({ success: success, successMessage: "Owner added", errorMessage: "Something went wrong, couldn't save Owner!" });
 
-    setTypes(await fetchOwners())
+    setOwners(await fetchOwners())
   }
 
   async function OnOwnerDeleteConfirmed(id: number) {
     const success = await DeleteOwners([id]);
 
     successFailToast({ success: success, successMessage: "Owner Removed", errorMessage: "Something went wrong, couldn't remove Owner!" });
-    setTypes(await fetchOwners())
+    setOwners(await fetchOwners())
   }
 
   return (
@@ -83,7 +83,7 @@ function SettingsPage() {
       <Text title={"Settings"} />
       <FadeLeft>
         <div className="flex flex-col lg:flex-row justify-around">
-          <>
+          <div>
            <SubTitle title={"Budgets"} {...{ className: "text-center" }}   />
            <CustomTable
              tableProps={{
@@ -114,7 +114,7 @@ function SettingsPage() {
              }}
              {...{ className: "lg:col-span-1" }}
            />
-          </>
+          </div>
           <div>
             <SubTitle title={"Types"} {...{ className: "text-center mt-4" }}   />
               <div className="flex my-2 flex-row lg:flex-row justify-around">

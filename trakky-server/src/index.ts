@@ -2,14 +2,13 @@ import express, { Express, Request, Response } from "express";
 import {
   addPayments,
   deletePayments,
-  getAllPayments,
-  getPayment,
+  getPayments,
   updatePayment,
 } from "./payments";
 import { getBudgets, addBudgets, updateBudget, deleteBudgets } from "./budgets";
-import { Budget, Payment, Type } from "@prisma/client";
+import { Budget, Owner, Payment, Prisma, Type } from "@prisma/client";
 import { addTypes, deleteTypes, getTypes } from "./types";
-import { getOwners } from "./owners";
+import { addOwners, deleteOwners, getOwners } from "./owners";
 
 
 const cors = require("cors");
@@ -33,172 +32,93 @@ app.use(express.json());
 const host = "0.0.0.0";
 const port = 8999;
 
-app.get(
-  "/payment/:id",
-  cors(corsOptions),
-  (req: Request<{ id: string }>, res: Response) => {
-    getPayment(parseInt(req.params.id))
-      .then((payments) => {
-        res.send(payments);
-      })
-      .catch((e) => {});
-  },
-);
+function baseHandler(res: Response, func: Function, args?: any) {
+  func(args)
+  .then((result: any) => {
+    res.send(result);
+  })
+  .catch((e: any) => {
+    console.log(e);
+    res.status(400);
+    res.send(e);
+  });
+} 
 
 app.get("/payments", cors(corsOptions), (req: Request, res: Response) => {
-  getAllPayments()
-    .then((payments) => {
-      res.send(payments);
-    })
-    .catch((e) => {});
+  return baseHandler(res, getPayments);
 });
 
 app.delete("/payments", cors(corsOptions), (req: Request, res: Response) => {
-  const paymentIds = req.body as number[];
+  const ids = req.body as number[];
 
-  deletePayments(paymentIds)
-    .then((deletedPayments) => {
-      res.send(deletedPayments);
-    })
-    .catch((e) => {
-      console.log(e);
-      res.status(400);
-      res.send(e);
-    });
+  return baseHandler(res, deletePayments, ids);
 });
 
 app.post("/payments", cors(corsOptions), (req: Request, res: Response) => {
   const newPayments = req.body as Payment[];
 
-  addPayments(newPayments)
-    .then((addedPayments) => {
-      res.send(addedPayments);
-    })
-    .catch((e) => {
-      console.log(e);
-      res.status(400);
-      res.send(e);
-    });
+  return baseHandler(res, addPayments, newPayments);
 });
+
 
 app.put("/payment", cors(corsOptions), (req: Request, res: Response) => {
   const editPayments = req.body as Payment;
 
-  updatePayment(editPayments)
-    .then((payment) => {
-      res.send(payment);
-    })
-    .catch((e) => {
-      console.log(e);
-      res.status(400);
-      res.send(e);
-    });
+  return baseHandler(res, updatePayment, editPayments);
 });
 
 app.get("/budgets", cors(corsOptions), (req: Request, res: Response) => {
-  getBudgets()
-    .then((budgets) => {
-      res.send(budgets);
-    })
-    .catch((e) => {
-      console.log(e);
-      res.status(400);
-      res.send(e);
-    });
+  return baseHandler(res, getBudgets);
 });
 
 app.post("/budgets", cors(corsOptions), (req: Request, res: Response) => {
-  const newBudgets = req.body as Budget[];
+  const newValues = req.body as Budget[];
 
-  addBudgets(newBudgets)
-    .then((addedBudgets) => {
-      res.send(addedBudgets);
-    })
-    .catch((e) => {
-      console.log(e);
-      res.status(400);
-      res.send(e);
-    });
+  return baseHandler(res, addBudgets, newValues);
 });
 
 app.put("/budget", cors(corsOptions), (req: Request, res: Response) => {
   const editBudget = req.body as Budget;
 
-  updateBudget(editBudget)
-    .then((budget) => {
-      res.send(budget);
-    })
-    .catch((e) => {
-      console.log(e);
-      res.status(400);
-      res.send(e);
-    });
+  return baseHandler(res, updateBudget, editBudget);
 });
 
 app.delete("/budgets", cors(corsOptions), (req: Request, res: Response) => {
-  const budgetIds = req.body as number[];
+  const ids = req.body as number[];
 
-  deleteBudgets(budgetIds)
-    .then((deletedBudgets) => {
-      res.send(deletedBudgets);
-    })
-    .catch((e) => {
-      console.log(e);
-      res.status(400);
-      res.send(e);
-    });
+  return baseHandler(res, deleteBudgets, ids);
 });
 
 app.get("/owners", cors(corsOptions), (req: Request, res: Response) => {
-  getOwners()
-    .then((owners) => {
-      res.send(owners);
-    })
-    .catch((e) => {
-      console.log(e);
-      res.status(400);
-      res.send(e);
-    });
+  return baseHandler(res, getOwners);
+});
+
+app.post("/owners", cors(corsOptions), (req: Request, res: Response) => {
+  const newValues = req.body as Owner[];
+
+  return baseHandler(res, addOwners, newValues);
+});
+
+app.delete("/owners", cors(corsOptions), (req: Request, res: Response) => {
+  const ids = req.body as number[];
+
+  return baseHandler(res, deleteOwners, ids);
 });
 
 app.get("/types", cors(corsOptions), (req: Request, res: Response) => {
-  getTypes()
-    .then((types) => {
-      res.send(types);
-    })
-    .catch((e) => {
-      console.log(e);
-      res.status(400);
-      res.send(e);
-    });
+  return baseHandler(res, getTypes);
 });
 
 app.post("/types", cors(corsOptions), (req: Request, res: Response) => {
   const newTypes = req.body as Type[];
 
-  addTypes(newTypes)
-    .then((addedTypes) => {
-      res.send(addedTypes);
-    })
-    .catch((e) => {
-      console.log(e);
-      res.status(400);
-      res.send(e);
-    });
+  return baseHandler(res, addTypes, newTypes);
 });
 
 app.delete("/types", cors(corsOptions), (req: Request, res: Response) => {
   const typeIds = req.body as number[];
 
-  deleteTypes(typeIds)
-    .then((deleted) => {
-      res.send(deleted);
-    })
-    .catch((e) => {
-      console.log(e);
-      res.status(400);
-      res.send(e);
-    });
+  return baseHandler(res, deleteTypes, typeIds);
 });
 
 app.listen(port, () => {

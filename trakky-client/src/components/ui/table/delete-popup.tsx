@@ -9,7 +9,6 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
@@ -38,34 +37,38 @@ export function DeletePaymentsDialog({
     <DeleteDialog
       onDeleteConfirmed={onDeleteConfirmed}
       tooltipText={tooltipText}
-      entries={<>
-        {entries.map((payment: Payment) => (
-          <TableRow key={payment.id} className="flex">
-            <td className={cn(`${tdStyle} w-[75px] text-left`)}>
-              {new Date(payment.date).toLocaleString("en-GB", {
-                month: "numeric",
-                year: "numeric",
-              })}
-            </td>
-            <td className={cn(`${tdStyle} w-[80px]`)}>
-              {payment.type}
-            </td>
-            <td className={cn(`${tdStyle} w-[55px]`)}>
-              {payment.owner}
-            </td>
-            <td
-              className={cn(
-                `${tdStyle} w-[70px] text-right overflow-auto`,
-              )}
-            >
-              {formatCurrency(payment.amount)}
-            </td>
-            <td className={cn(`${tdStyle} flex-grow truncate`)}>
-              {payment.description}
-            </td>
-          </TableRow>
-        ))}
-      </>}
+      entries={
+        <table className="w-full">
+          <tbody className="w-full">
+          {entries.map((payment: Payment) => (
+            <TableRow key={payment.id} className="flex max-w-full">
+              <td className={cn(`${tdStyle} w-[75px] text-left`)}>
+                {new Date(payment.date).toLocaleString("en-GB", {
+                  month: "numeric",
+                  year: "numeric",
+                })}
+              </td>
+              <td className={cn(`${tdStyle} w-[80px]`)}>
+                {payment.type}
+              </td>
+              <td className={cn(`${tdStyle} w-[55px]`)}>
+                {payment.owner}
+              </td>
+              <td
+                className={cn(
+                  `${tdStyle} w-[70px] text-right`,
+                )}
+              >
+                {formatCurrency(payment.amount)}
+              </td>
+              <td className={cn(`${tdStyle} max-w-[185px] truncate`)}>
+                {payment.description}
+              </td>
+            </TableRow>
+          ))}
+          </tbody>
+        </table>
+    }
     />
   );
 }
@@ -86,32 +89,37 @@ export function DeleteBudgetsDialog({
     <DeleteDialog
       onDeleteConfirmed={onDeleteConfirmed}
       tooltipText={tooltipText}
-      entries={<>
-        {entries.map((budget: Budget) => (
-          <TableRow key={budget.id} className="flex max-w-[300px] align-middle justify-center">
-            <td className={cn(`${tdStyle} w-[100px] text-left`)}>
-              {new Date(budget.date).toLocaleString("en-GB", {
-                month: "numeric",
-                year: "numeric",
-              })}
-            </td>
-            <td
-              className={cn(
-                `${tdStyle} w-[100px] text-right overflow-auto`,
-              )}
-            >
-              {formatCurrency(budget.budget)}
-            </td>
-            <td
-              className={cn(
-                `${tdStyle} w-[100px] text-right overflow-auto`,
-              )}
-            >
-              {formatCurrency(budget.maxBudget)}
-            </td>
-          </TableRow>
-        ))}
-      </>}
+      entries={
+      <div className="m-6">
+        <table className="w-full max-w-full">
+          <tbody className="w-full">
+          {entries.map((budget: Budget) => (
+            <TableRow key={budget.id} className="flex w-full border-none align-middle justify-center">
+              <td className={cn(`${tdStyle} w-[100px] text-left`)}>
+                {new Date(budget.date).toLocaleString("en-GB", {
+                  month: "numeric",
+                  year: "numeric",
+                })}
+              </td>
+              <td
+                className={cn(
+                  `${tdStyle} w-[100px] text-right overflow-auto`,
+                )}
+              >
+                {formatCurrency(budget.budget)}
+              </td>
+              <td
+                className={cn(
+                  `${tdStyle} w-[100px] text-right overflow-auto`,
+                )}
+              >
+                {formatCurrency(budget.maxBudget)}
+              </td>
+            </TableRow>
+          ))}
+          </tbody>
+        </table>
+      </div>}
     />
   );
 }
@@ -121,7 +129,6 @@ export function DeleteDialog({
   onDeleteConfirmed,
   entries,
   tooltipText,
-  // ...props
 }: {
   onDeleteConfirmed: () => Promise<void>;
   entries: ReactNode;
@@ -145,11 +152,9 @@ export function DeleteDialog({
                     </p>
                   </AlertDialogTitle>
                 </div>
-                <AlertDialogDescription>
-                  <span className="m-1 md:m-6">
+                <div className="m-6 text-sm text-muted-foreground">
                     {entries}
-                  </span>
-                </AlertDialogDescription>
+                </div>
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel className="mx-6 mb-6">
@@ -170,7 +175,7 @@ export function DeleteDialog({
           </AlertDialog>
         </TooltipTrigger>
         <TooltipContent className="bg-red-500/50 text-white">
-          <p>{tooltipText}</p>
+          {tooltipText}
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

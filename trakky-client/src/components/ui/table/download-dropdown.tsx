@@ -18,13 +18,13 @@ export function ExportDropdownMenu({ table }: { table: Table<any> }) {
   const [format, setFormat] = useState<string>("json");
 
   function convertToCSV(arr: any) {
-      const array = [Object.keys(arr[0])].concat(arr);
+    const array = [Object.keys(arr[0])].concat(arr);
 
-      return array
-        .map((it) => {
-          return Object.values(it).toString();
-        })
-        .join("\n");
+    return array
+      .map((it) => {
+        return Object.values(it).toString();
+      })
+      .join("\n");
   }
 
   const download = (rows: Row<any>[]) => {
@@ -33,7 +33,7 @@ export function ExportDropdownMenu({ table }: { table: Table<any> }) {
       ? convertToCSV(rows.map((row: any) => row.original as Payment))
       : JSON.stringify(rows.map((row: any) => row.original as Payment));
 
-    const file = new Blob([texts], {type: `text/${format}`});
+    const file = new Blob([texts], { type: `text/${format}` });
     const element = document.createElement("a");
     element.href = URL.createObjectURL(file);
     element.download = "Payments Export " + new Date().toLocaleString("en-GB", {
@@ -55,7 +55,7 @@ export function ExportDropdownMenu({ table }: { table: Table<any> }) {
             <DropdownMenuContent className="w-36">
               <DropdownMenuLabel>
                 <RadioGroup onValueChange={setFormat}
-                            defaultValue={format}>
+                  defaultValue={format}>
                   <RadioGroupFormat id={"json"} label={"JSON"}></RadioGroupFormat>
                   <RadioGroupFormat id={"csv"} label={"CSV"}></RadioGroupFormat>
                 </RadioGroup>
@@ -96,7 +96,7 @@ export function ExportDropdownMenu({ table }: { table: Table<any> }) {
           </DropdownMenu>
         </TooltipTrigger>
         <TooltipContent className="bg-slate-800 text-white">
-          <p>Export</p>
+          Export
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

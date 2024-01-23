@@ -62,7 +62,7 @@ export function TableActionMenu({
                 <ReloadIcon />
               </TooltipTrigger>
               <TooltipContent className="bg-slate-800 text-white">
-                <p>Refresh</p>
+                Refresh
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -77,7 +77,7 @@ export function TableActionMenu({
                 <SelectIcon />
               </TooltipTrigger>
               <TooltipContent tabIndex={-1} className="bg-slate-800 text-white">
-                <p>Select/Unselect visible rows</p>
+                Select/Unselect visible rows
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>

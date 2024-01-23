@@ -2,38 +2,13 @@ import { Payment, PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function getPayments(paymentIds: number[]) {
-  const response = await prisma.payment.findMany({
-    where: {
-      id: { in: paymentIds },
-    },
-  });
-
-  return response;
-}
-
-export async function getAllPayments() {
+export async function getPayments() {
   const response = await prisma.payment.findMany({
     orderBy: [
       {
         date: 'desc',
       },
     ],
-  });
-
-  return response;
-}
-
-export async function getPayment(paymentId: number) {
-  const response = await prisma.payment.findFirst({ 
-    orderBy: [
-      {
-        date: 'desc',
-      },
-    ],
-    where: { 
-      id: paymentId 
-    } 
   });
 
   return response;

@@ -220,6 +220,20 @@ function successFailToast(
   }
 }
 
+function valueExistsToast(existingValues: string[], value: string): boolean {
+  const exists = existingValues.some((v) => v.toLowerCase() == value.toLowerCase());
+
+  if(exists) {
+    toast({
+      title: `"${value}" already exists!`,
+      variant: "warning"
+    })
+    return true;
+  } else {
+    return false;
+  }
+}
+
 function formToast(
   {
     success,
@@ -283,4 +297,4 @@ function formToast(
 
 
 
-export { useToast, toast, formToast, successFailToast }
+export { useToast, toast, formToast, successFailToast, valueExistsToast }

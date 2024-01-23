@@ -118,7 +118,7 @@ export const BudgetColumnDefinition = (budgets: Budget[] | null, refresh: (flush
       header: () => null,
       cell: ({ row }) => {
         return budgets && (
-          <>
+          <div className="flex justify-center">
             <EditCell id={(row.original as Budget).id}>
               <BudgetForm
                 editValues={row.original as Budget}
@@ -127,7 +127,7 @@ export const BudgetColumnDefinition = (budgets: Budget[] | null, refresh: (flush
                 existingDates={budgets.map((b) => new Date(b.date))}
               ></BudgetForm>
             </EditCell>
-          </>
+          </div>
         )
       },
     },

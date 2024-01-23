@@ -8,7 +8,7 @@ import type {
 import { demoMode } from "@/constants.ts";
 import { UseFormReturn } from "react-hook-form";
 
-const TOAST_LIMIT = 1
+const TOAST_LIMIT = 2
 const TOAST_REMOVE_DELAY = 200000
 
 type ToasterToast = ToastProps & {
@@ -156,6 +156,12 @@ function toast({ ...props }: Toast) {
     type: "ADD_TOAST",
     toast: {
       ...props,
+      style: {
+        position: "fixed",
+        maxWidth: "300px",
+        left: window.innerWidth + window.scrollX - 320  + 'px',
+        top: window.innerHeight + window.screenY - 80 + 'px'
+      },
       id,
       open: true,
       onOpenChange: (open) => {
@@ -205,7 +211,7 @@ function successFailToast(
   if (demoMode) {
     toast({
       title: "Data cannot be modified in demo mode!",
-      variant: "warning"
+      variant: "warning",
     })
   } else if (success) {
     toast({
@@ -216,17 +222,17 @@ function successFailToast(
     toast({
       title: `${errorMessage}`,
       className: "bg-red-600",
+
     })
   }
 }
 
 function valueExistsToast(existingValues: string[], value: string): boolean {
   const exists = existingValues.some((v) => v.toLowerCase() == value.toLowerCase());
-
   if(exists) {
     toast({
       title: `"${value}" already exists!`,
-      variant: "warning"
+      variant: "warning",
     })
     return true;
   } else {

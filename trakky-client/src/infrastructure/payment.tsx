@@ -41,8 +41,7 @@ export async function fetchPayments(): Promise<Payment[]> {
         description: p.description,
         date: p.date
       }
-    }
-    );
+    });
 }
 
 export async function AddPayments(payments: Payment[]): Promise<boolean> {

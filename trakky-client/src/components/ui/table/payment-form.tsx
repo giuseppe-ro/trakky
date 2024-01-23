@@ -33,6 +33,7 @@ import { Textarea } from "@/components/ui/textarea.tsx";
 import {
   AddPayments,
   EditPayment,
+  DeletePayments,
   Payment,
 } from "@/infrastructure/payment.tsx";
 import { fetchOwners } from "@/infrastructure/owner.tsx";
@@ -45,7 +46,8 @@ let owners: string[] = [];
 
 fetchOwners()
   .then((o) => o.map((owner) => owner.name))
-  .then((o) => (owners = o));
+  .then((o) => (owners = o))
+  .then(() => owners.push("Shared"));
 
 fetchTypes()
   .then((t) => t.map((type) => type.name))
@@ -89,7 +91,7 @@ export function PaymentForm({
   const [isError, setIsError] = React.useState(false);
   const [isSuccess, setIsSuccess] = React.useState(false);
 
-  const [amountIsNegative, setAmountIsNegative] = React.useState(false);
+  const [amountIsNegative, setAmountIsNegative] = React.useState(  editValues ? editValues.amount < 0 : false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -128,12 +130,38 @@ export function PaymentForm({
       payment.amount = Math.abs(form.getValues("amount"))
     }
 
-    const success =
-      editValues === undefined
-        ? await AddPayments(values as unknown as Payment[])
-        : await EditPayment(values as unknown as Payment);
+    let payments: Payment[];
 
-    setAmountIsNegative(false);
+    if (payment.owner === "Shared") {
+      payments = owners
+        .filter((owner) => owner !== "Shared")
+        .map(owner => ({
+          amount: payment.amount / (owners.length - 1),
+          type: payment.type,
+          owner: owner,
+          description: payment.description,
+          date: payment.date
+        } as Payment));
+    } else {
+      payments = [payment];
+    }
+
+    let success: boolean;
+
+    if (payment.owner === "Shared") {
+      success = editValues === undefined
+        ? await AddPayments(payments)
+        : await Promise.all([
+          DeletePayments([Number(payment.id)]),
+          AddPayments(payments)
+        ]).then(([deleteSuccess, addSuccess]) => deleteSuccess && addSuccess);
+    } else {
+      success = editValues === undefined
+        ? await AddPayments(payments)
+        : await EditPayment(payment);
+    }
+
+    // setAmountIsNegative(false);
 
     formToast({
       success,

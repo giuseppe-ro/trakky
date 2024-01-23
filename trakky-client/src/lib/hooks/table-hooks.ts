@@ -57,12 +57,15 @@ export function useExpensesTable({
       ? []
       : data.reduce((acc: Total[], payment) => {
         const year = new Date(payment.date).getFullYear();
+        const month = new Date(payment.date).getMonth();
 
-        const existing = acc.find((t) => t.number === year);
+        const existing = acc.find((t) =>
+          t.date?.getFullYear() === year && t.date?.getMonth() === month
+        );
         if (existing) {
           existing.amount += payment.amount;
         } else {
-          acc.push({ amount: payment.amount, number: year });
+          acc.push({ amount: payment.amount, number: year, date: new Date(year, month) });
         }
         return acc;
       }, []);

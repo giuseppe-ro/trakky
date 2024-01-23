@@ -90,7 +90,8 @@ export function BudgetForm({
         editValues?.maxBudget === undefined
           ? 0
           : Number(editValues?.maxBudget),
-  }});
+    }
+  });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsError(false);
@@ -136,9 +137,9 @@ export function BudgetForm({
                     <Field name={"Date"}>
                       <Popover>
                         <PopoverTrigger asChild
-                                        className={cn(
-                                          form.formState.errors.date && `shake-animation`,
-                                        )}
+                          className={cn(
+                            form.formState.errors.date && `shake-animation`,
+                          )}
                         >
                           <Button
                             variant={"outline"}

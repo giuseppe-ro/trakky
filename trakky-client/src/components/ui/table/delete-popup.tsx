@@ -41,7 +41,7 @@ export function DeletePaymentsDialog({
         <table className="w-full">
           <tbody className="w-full">
           {entries.map((payment: Payment) => (
-            <TableRow key={payment.id} className="flex max-w-full">
+            <TableRow key={payment.id} className="flex max-w-[460px]">
               <td className={cn(`${tdStyle} w-[75px] text-left`)}>
                 {new Date(payment.date).toLocaleString("en-GB", {
                   month: "numeric",
@@ -56,12 +56,12 @@ export function DeletePaymentsDialog({
               </td>
               <td
                 className={cn(
-                  `${tdStyle} w-[70px] text-right`,
+                  `${tdStyle} text-right w-[100px]`,
                 )}
               >
                 {formatCurrency(payment.amount)}
               </td>
-              <td className={cn(`${tdStyle} max-w-[185px] truncate`)}>
+              <td className={cn(`${tdStyle} w-[150px] truncate`)}>
                 {payment.description}
               </td>
             </TableRow>

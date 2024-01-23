@@ -66,7 +66,7 @@ export default function App() {
             table,
             canHideRows: true,
             filtersOnly: false,
-            page: "overview",
+            page: "home",
             tableActionMenu:
               <Containers className="transition">
                 <TableActionMenu

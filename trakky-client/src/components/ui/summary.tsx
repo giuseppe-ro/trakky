@@ -5,6 +5,7 @@ import { Table } from "@tanstack/react-table";
 import { Tabs, TabsContent } from "@/components/ui/tabs.tsx";
 import { FadeLeft } from "@/components/animations/fade.tsx";
 import React from "react";
+import { calculateChange, getPreviousYearTotal, getPreviousYearTotalSoFar } from "@/lib/calculators.ts";
 
 function SummaryCard({
   title,
@@ -75,9 +76,13 @@ export function Summary<TData>({
     .rows.map((r) => parseFloat(r.getValue("amount")))
     .reduce((total, currentAmount) => total + currentAmount, 0);
 
-  const previousYearTotal = totalsPerYear.find(
-    (t) => t.number === parseInt(selectedYear) - 1,
-  );
+  const currentDate = new Date();
+  const lastYearCurrentMonth = new Date(currentDate.getFullYear() - 1, currentDate.getMonth()); // Calculate last year's current month
+
+  const previousYearTotal =
+    parseInt(selectedYear) === new Date().getFullYear()
+      ? getPreviousYearTotalSoFar(totalsPerYear, lastYearCurrentMonth)
+      : getPreviousYearTotal(totalsPerYear, selectedYear);
 
   const ownerBalances: OwnerBalance[] = [];
 
@@ -95,22 +100,18 @@ export function Summary<TData>({
   ownerBalances
     .forEach(bal => bal.difference = (partialTotal / ownerBalances.length) - bal.amount <= 0.1 ? "" : `(-${formatCurrency((partialTotal / ownerBalances.length) - bal.amount)})`)
 
-  const change =
-    previousYearTotal === undefined || previousYearTotal.amount === 0
-      ? 0
-      : Math.round(
-        ((totalAmount - previousYearTotal.amount) /
-          previousYearTotal.amount) *
-        100 *
-        100,
-      ) / 100;
+  const change = calculateChange(totalAmount, previousYearTotal);
 
-  const changePercentage =
-    isFinite(change) && change !== 0
-      ? change > 0
-        ? "+" + change + "% from previous year"
-        : change + "% from previous year"
-      : "";
+  let changePercentage = isFinite(change) && change !== 0 ? (change > 0 ? `+${change}% from previous year` : `${change}% from previous year`) : "";
+
+  if (parseInt(selectedYear) === new Date().getFullYear()) {
+    const month = lastYearCurrentMonth.toLocaleString('default', { month: 'short' });
+    const year = lastYearCurrentMonth.getFullYear();
+    changePercentage += ` (up to ${month} ${year})`;
+  } else {
+    changePercentage += ` (${parseInt(selectedYear) - 1})`;
+  }
+
 
   return (
     totalAmount > 0 && (

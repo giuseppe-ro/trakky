@@ -201,6 +201,18 @@ function useToast() {
   }
 }
 
+interface resultToastProps {
+  successMessage?: string;
+  errorMessage?: string;
+  success: boolean;
+}
+
+function resultToast(props: resultToastProps) {
+  toast({
+    title: `${props.success ? props.successMessage : props.errorMessage}`,
+    className: `${props.success ? "bg-green-600" : "bg-red-600"}`,
+  })
+}
 
 function successFailToast(
   {
@@ -213,21 +225,9 @@ function successFailToast(
     errorMessage: string;
   }) {
   if (demoMode) {
-    toast({
-      title: "Data cannot be modified in demo mode!",
-      variant: "warning",
-    })
-  } else if (success) {
-    toast({
-      title: `${successMessage}`,
-      className: "bg-green-600",
-    })
+    resultToast({ errorMessage: "Data cannot be modified in demo mode!", success: false });
   } else {
-    toast({
-      title: `${errorMessage}`,
-      className: "bg-red-600",
-
-    })
+    resultToast({ successMessage, errorMessage, success });
   }
 }
 
@@ -306,5 +306,4 @@ function formToast(
 }
 
 
-
-export { useToast, toast, formToast, successFailToast, valueExistsToast }
+export { useToast, toast, formToast, successFailToast, valueExistsToast, resultToast }

@@ -15,15 +15,16 @@ import {
 } from "@tanstack/react-table";
 
 import { Total } from "@/components/ui/summary.tsx";
-import { DeletePayments, Payment } from "@/infrastructure/payment.tsx";
+import { AddPayments, DeletePayments, Payment } from "@/infrastructure/payment.tsx";
 import { fuzzyFilter } from "@/lib/filters.ts";
 import {
   PaymentColumnDefinition,
   BudgetColumnDefinition,
 } from "@/components/ui/table/columns.tsx";
-import { toast } from "@/components/ui/use-toast.ts";
+import { resultToast, toast } from "@/components/ui/use-toast.ts";
 import { demoMode } from "@/constants";
 import { Budget, DeleteBudgets } from "@/infrastructure/budget.tsx";
+import * as z from "zod";
 
 export function useExpensesTable({
                             data,
@@ -149,7 +150,7 @@ export function useExpensesTable({
     table,
     onDeleteConfirmed,
     onPaymentEdited: onEdited,
-    onRefresh,
+    onRefresh
   };
 }
 
@@ -251,4 +252,49 @@ export function useBudgetsTable({
     onBudgetEdited: onEdited,
     onRefresh,
   };
+}
+
+
+export async function onTransactionsUpload(
+  file: File,
+  onRefresh?: (flushBeforeRefresh?: boolean) => void
+): Promise<void> {
+  const reader = new FileReader();
+
+  const paymentsSchema = z.tuple([
+    z.object({
+      owner: z.string().min(1),
+      type: z.string().min(1),
+      date: z.string().refine((val) => new Date(val) !== null, { message: "invalid date" }),
+      amount: z.number().refine((val) => val !== 0, {
+        message: "cannot be 0",
+      }),
+      description: z.string().refine((val) => val.length <= 50 && val.length > 0),
+    })
+  ]);
+
+  console.log("reading: ", file.name)
+  reader.onload = async (e) => {
+    const result = e.target?.result;
+    if (typeof result === "string") {
+      try {
+        const payments = paymentsSchema.parse(JSON.parse(result));
+
+        const uploadResult =  await AddPayments(payments as unknown as Payment[])
+        resultToast({successMessage: "Transactions uploaded!", errorMessage: "Upload Failed!" , success: uploadResult });
+
+        if (onRefresh) onRefresh(true);
+
+      } catch (e) {
+        if(e instanceof z.ZodError) {
+          resultToast({errorMessage: "Invalid file format!", success: false});
+        } else {
+          console.log(e);
+          resultToast({errorMessage: "Upload Failed!", success: false});
+        }
+      }
+    }
+  };
+
+  reader.readAsText(file);
 }

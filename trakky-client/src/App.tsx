@@ -35,7 +35,7 @@ export default function App() {
   useEffect(() => {
     const activeColumns = localStorage.getItem("expenses_active_columns");
 
-    if(activeColumns) {
+    if (activeColumns) {
       try {
         table.setColumnVisibility(JSON.parse(activeColumns));
       } catch (e) {

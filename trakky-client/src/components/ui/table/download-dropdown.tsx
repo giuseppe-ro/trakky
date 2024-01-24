@@ -37,6 +37,7 @@ export function ExportDropdownMenu({ table }: { table: Table<any> }) {
     const element = document.createElement("a");
     element.href = URL.createObjectURL(file);
     element.download = "Payments Export " + new Date().toLocaleString("en-GB", {
+      day: "numeric",
       month: "short",
       year: "numeric",
     }) + `.${format}`;

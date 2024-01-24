@@ -91,7 +91,7 @@ export function PaymentForm({
   const [isError, setIsError] = React.useState(false);
   const [isSuccess, setIsSuccess] = React.useState(false);
 
-  const [amountIsNegative, setAmountIsNegative] = React.useState(  editValues ? editValues.amount < 0 : false);
+  const [amountIsNegative, setAmountIsNegative] = React.useState(editValues ? editValues.amount < 0 : false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -109,7 +109,7 @@ export function PaymentForm({
   });
 
   function onAmountChange(amount: number) {
-    if(amount < 0) {
+    if (amount < 0) {
       setAmountIsNegative(true);
     } else {
       setAmountIsNegative(false);
@@ -124,7 +124,7 @@ export function PaymentForm({
 
     const payment = values as unknown as Payment;
 
-    if(amountIsNegative) {
+    if (amountIsNegative) {
       payment.amount = -Math.abs(form.getValues("amount"))
     } else {
       payment.amount = Math.abs(form.getValues("amount"))
@@ -170,7 +170,7 @@ export function PaymentForm({
       setIsSuccess,
       setIsError,
       successMessage: "Transaction saved",
-      errorMessage: "Something went wrong, couldn't save Transaction!",
+      errorMessage: "Error, couldn't save Transaction!",
       editValues,
       fieldsToReset: ["amount", "description"],
       focusOn: "amount",
@@ -222,42 +222,42 @@ export function PaymentForm({
                   )}
                 />
               </div>
-<div>
-  <FormField
-    control={form.control}
-    name="amount"
-    render={({ field }) => (
-      <Field name={"Amount"}>
-        <div className="flex flex-row">
-          <Toggle
-            aria-label="Toggle italic"
-            className={cn(
-              form.formState.errors.amount && `shake-animation`,
-              "rounded-l mr-0 rounded-r-none h-9 border px-3 data-[state=on]:bg-red-500 data-[state=off]:bg-green-500 data-[state=on]:text-white data-[state=off]:text-white"
-            )}
-            onClick={() => setAmountIsNegative(!amountIsNegative)}
-            pressed={amountIsNegative}
-          >
-            {amountIsNegative ? (<Minus className="h-4 w-2.5" />) : (<Plus className="h-4 w-2.5" />)}
-          </Toggle>
-          <Input
-            inputMode="decimal"
-            type="number"
-            step="any"
-            className={cn(
-              form.formState.errors.amount && `shake-animation`,
-              "rounded-l-none h-9 ml-0"
-            )}
-            {...field}
-            onChange={(n) => {
-              onAmountChange(n.target.valueAsNumber);
-            }}
-          />
-        </div>
-      </Field>
-    )}
-  />
-</div>
+              <div>
+                <FormField
+                  control={form.control}
+                  name="amount"
+                  render={({ field }) => (
+                    <Field name={"Amount"}>
+                      <div className="flex flex-row">
+                        <Toggle
+                          aria-label="Toggle italic"
+                          className={cn(
+                            form.formState.errors.amount && `shake-animation`,
+                            "rounded-l mr-0 rounded-r-none h-9 border px-3 data-[state=on]:bg-red-500 data-[state=off]:bg-green-500 data-[state=on]:text-white data-[state=off]:text-white"
+                          )}
+                          onClick={() => setAmountIsNegative(!amountIsNegative)}
+                          pressed={amountIsNegative}
+                        >
+                          {amountIsNegative ? (<Minus className="h-4 w-2.5" />) : (<Plus className="h-4 w-2.5" />)}
+                        </Toggle>
+                        <Input
+                          inputMode="decimal"
+                          type="number"
+                          step="any"
+                          className={cn(
+                            form.formState.errors.amount && `shake-animation`,
+                            "rounded-l-none h-9 ml-0"
+                          )}
+                          {...field}
+                          onChange={(n) => {
+                            onAmountChange(n.target.valueAsNumber);
+                          }}
+                        />
+                      </div>
+                    </Field>
+                  )}
+                />
+              </div>
               <div className="grid grid-cols-2 gap-2">
                 <FormField
                   control={form.control}

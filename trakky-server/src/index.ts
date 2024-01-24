@@ -13,8 +13,7 @@ const corsOptions = {
     "http://trakky.localhost", 
     "http://trakky.localhost/*",
     "http://trakky.localdomain",
-    "http://trakky.localdomain/*",
-    "*"
+    "http://trakky.localdomain/*"
   ],
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   preflightContinue: false,

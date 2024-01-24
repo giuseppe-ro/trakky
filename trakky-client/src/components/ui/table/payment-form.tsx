@@ -161,8 +161,6 @@ export function PaymentForm({
         : await EditPayment(payment);
     }
 
-    // setAmountIsNegative(false);
-
     formToast({
       success,
       form,
@@ -170,7 +168,7 @@ export function PaymentForm({
       setIsSuccess,
       setIsError,
       successMessage: "Transaction saved",
-      errorMessage: "Error, couldn't save Transaction!",
+      errorMessage: "Couldn't save Transaction!",
       editValues,
       fieldsToReset: ["amount", "description"],
       focusOn: "amount",

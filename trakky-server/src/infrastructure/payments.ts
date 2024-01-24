@@ -1,4 +1,5 @@
 import { Payment, PrismaClient } from "@prisma/client";
+import { PrismaClientInitializationError, PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 const prisma = new PrismaClient();
 
@@ -15,13 +16,10 @@ export async function getPayments() {
 }
 
 export async function addPayments(payment: Payment[]) {
-  const response = await prisma.payment.createMany({
+
+  return  await prisma.payment.createMany({
     data: payment,
   });
-
-  console.log(response);
-
-  return response;
 }
 
 export async function updatePayment(payment: Payment) {

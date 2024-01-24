@@ -2,12 +2,16 @@ import * as React from "react"
 import * as TooltipPrimitive from "@radix-ui/react-tooltip"
 
 import { cn } from "@/lib/utils"
+import { serverIsDown } from "@/infrastructure/healthcheck.ts";
 
 const TooltipProvider = TooltipPrimitive.Provider
 
 const Tooltip = TooltipPrimitive.Root
 
 const TooltipTrigger = TooltipPrimitive.Trigger
+
+serverIsDown().then((isDown) => TooltipTrigger.defaultProps = { disabled: isDown });
+
 
 const TooltipContent = React.forwardRef<
   React.ElementRef<typeof TooltipPrimitive.Content>,

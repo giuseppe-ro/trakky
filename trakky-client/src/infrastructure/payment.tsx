@@ -61,6 +61,28 @@ export async function AddPayments(payments: Payment[]): Promise<boolean> {
   }
 }
 
+export async function UploadPayments(file: File): Promise<null | string> {
+  if (demoMode) return null;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    return await axios.post(`${serverUrl}/upload/payments`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+      .then((res) => {
+        console.log(res);
+        return null;
+      })
+      .catch((err: any) => {
+        console.log(err);
+        console.log("data:", err.response.data);
+        return err.response.data;
+      });
+}
+
 export async function EditPayment(payment: Payment): Promise<boolean> {
   if (demoMode) return true;
 

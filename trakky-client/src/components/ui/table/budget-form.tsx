@@ -114,7 +114,7 @@ export function BudgetForm({
       setIsSuccess,
       setIsError,
       successMessage: "Budget added!",
-      errorMessage: "Error, couldn't save Budget!",
+      errorMessage: "Couldn't save Budget!",
       editValues,
       fieldsToReset: ["budget", "maxBudget"],
     });

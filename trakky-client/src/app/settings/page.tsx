@@ -14,9 +14,10 @@ import { TableRow } from "@/components/ui/table.tsx";
 import { cn } from "@/lib/utils.ts";
 import { Button } from "@/components/ui/button.tsx";
 import { SubmittableInput } from "@/components/ui/input.tsx";
-import { successFailToast, valueExistsToast } from "@/components/ui/use-toast.ts";
+import { successFailToast, toast, valueExistsToast } from "@/components/ui/use-toast.ts";
 import { AddOwners, DeleteOwners, fetchOwners, Owner } from "@/infrastructure/owner.tsx";
 import { FileUploadItem } from "@/components/ui/table/file-upload.tsx";
+import { fetchBackup } from "@/infrastructure/backup.tsx";
 
 
 function SettingsPage() {
@@ -34,6 +35,7 @@ function SettingsPage() {
     refreshData,
   })
 
+
   const [types, setTypes] = useState<Type[]>([]);
   const [newType, setNewType] = useState<string>("");
   const [newOwner, setNewOwner] = useState<string>("");
@@ -44,6 +46,7 @@ function SettingsPage() {
     fetchTypes().then((types) => setTypes(types));
     fetchOwners().then((owners) => setOwners(owners));
   }, []);
+
 
   async function OnTypeAdd() {
     if (newType.length === 0 || valueExistsToast(types.map((o) => o.name), newType)) return;
@@ -79,10 +82,36 @@ function SettingsPage() {
     setOwners(await fetchOwners())
   }
 
+  async function DownloadBackup() {
+    try {
+      const backup = await fetchBackup();
+      const element = document.createElement("a");
+      const file = new Blob([JSON.stringify(backup)], {type: 'text/plain'});
+      element.href = URL.createObjectURL(file);
+      element.download = "backup.json";
+      document.body.appendChild(element); // Required for this to work in FireFox
+      element.click();
+    } catch (e) {
+      toast({
+        title: "Error",
+        description: "Couldn't download backup!",
+        duration: 2000,
+        variant: "destructive"
+      })
+    }
+  }
+
   return (
     <>
       <Text title={"Settings"} />
       <FadeLeft>
+        <div className="flex flex-col mb-4 md:mb-0">
+          <SubTitle title={"Backup"} {...{ className: "text-center mt-4" }} />
+          <div className="flex flex-row gap-2">
+            <Button variant="outline" className="w-full" onClick={DownloadBackup}>Download Backup</Button>
+            <Button variant="outline" className="w-full" disabled>Upload Backup</Button>
+          </div>
+        </div>
         <div className="flex flex-col mb-4 md:mb-0">
           <SubTitle title={"Transactions"} {...{ className: "text-center mt-4" }} />
             <FileUploadItem

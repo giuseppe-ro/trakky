@@ -55,18 +55,22 @@ export function ExportDropdownMenu({ table }: { table: Table<any> }) {
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-36">
               <DropdownMenuLabel>
-                <RadioGroup onValueChange={setFormat}
+                <RadioGroup
+                  onValueChange={setFormat}
+                  disabled={table.getRowModel().rows.length === 0}
                   defaultValue={format}>
                   <RadioGroupFormat id={"json"} label={"JSON"}></RadioGroupFormat>
                   <RadioGroupFormat id={"csv"} label={"CSV"}></RadioGroupFormat>
                 </RadioGroup>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
+              <DropdownMenuItem
+                disabled={table.getRowModel().rows.length === 0}
+              >
                 <DownloadButton
                   text={"Export All"}
                   onClick={() => download(table.getFilteredRowModel().rows)}
-                  disabled={false}
+                  disabled={table.getRowModel().rows.length === 0}
                 />
               </DropdownMenuItem>
               <DropdownMenuItem

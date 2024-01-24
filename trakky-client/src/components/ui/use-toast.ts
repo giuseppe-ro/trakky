@@ -8,8 +8,8 @@ import type {
 import { demoMode } from "@/constants.ts";
 import { UseFormReturn } from "react-hook-form";
 
-const TOAST_LIMIT = 2
-const TOAST_REMOVE_DELAY = 200
+const TOAST_LIMIT = 1
+const TOAST_REMOVE_DELAY = 20
 
 type ToasterToast = ToastProps & {
   id: string
@@ -156,15 +156,14 @@ function toast({ ...props }: Toast) {
     type: "ADD_TOAST",
     toast: {
       ...props,
-      // className: "max-w-full",
       style: {
         position: "fixed",
-        maxWidth: "250px",
-        maxHeight: "60px",
+        maxWidth: "300px",
+        height: "60px",
         left: window.innerWidth + window.scrollX - 320  + 'px',
-        top: window.innerHeight + window.screenY - 80 + 'px',
-        right: 20,
-        bottom: 20,
+        top: window.innerHeight + window.screenY - 100 + 'px',
+        right: 0,
+        bottom: 0,
       },
       id,
       open: true,
@@ -201,18 +200,6 @@ function useToast() {
   }
 }
 
-interface resultToastProps {
-  successMessage?: string;
-  errorMessage?: string;
-  success: boolean;
-}
-
-function resultToast(props: resultToastProps) {
-  toast({
-    title: `${props.success ? props.successMessage : props.errorMessage}`,
-    className: `${props.success ? "bg-green-600" : "bg-red-600"}`,
-  })
-}
 
 function successFailToast(
   {
@@ -225,9 +212,15 @@ function successFailToast(
     errorMessage: string;
   }) {
   if (demoMode) {
-    resultToast({ errorMessage: "Data cannot be modified in demo mode!", success: false });
+    toast({
+      title: "Data cannot be modified in demo mode!",
+      variant: "warning"
+    })
   } else {
-    resultToast({ successMessage, errorMessage, success });
+    toast({
+      variant: success ? "success" : "destructive" ,
+      title: `${success ? successMessage : errorMessage}`,
+    })
   }
 }
 
@@ -286,9 +279,8 @@ function formToast(
       }
 
       toast({
-        // title: "Added!",
-        title: `${successMessage}`,
-        className: "bg-green-600",
+        description: `${successMessage}`,
+        variant: "success",
       })
     }
     setTimeout(() => {
@@ -297,13 +289,13 @@ function formToast(
     }, 1000);
   } else {
     toast({
-      // title: "Error: could not save!",
-      title: `${errorMessage}`,
-      className: "bg-red-600",
+      title: "Error",
+      description: `${errorMessage}`,
+      variant: "destructive",
     })
     setIsError(true);
   }
 }
 
 
-export { useToast, toast, formToast, successFailToast, valueExistsToast, resultToast }
+export { useToast, toast, formToast, successFailToast, valueExistsToast }

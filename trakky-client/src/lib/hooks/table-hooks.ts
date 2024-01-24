@@ -15,13 +15,13 @@ import {
 } from "@tanstack/react-table";
 
 import { Total } from "@/components/ui/summary.tsx";
-import { AddPayments, DeletePayments, Payment } from "@/infrastructure/payment.tsx";
+import { DeletePayments, Payment, UploadPayments } from "@/infrastructure/payment.tsx";
 import { fuzzyFilter } from "@/lib/filters.ts";
 import {
   PaymentColumnDefinition,
   BudgetColumnDefinition,
 } from "@/components/ui/table/columns.tsx";
-import { resultToast, toast } from "@/components/ui/use-toast.ts";
+import { toast } from "@/components/ui/use-toast.ts";
 import { demoMode } from "@/constants";
 import { Budget, DeleteBudgets } from "@/infrastructure/budget.tsx";
 import * as z from "zod";
@@ -261,7 +261,7 @@ export async function onTransactionsUpload(
 ): Promise<void> {
   const reader = new FileReader();
 
-  const paymentsSchema = z.tuple([
+  const paymentsSchema = z.array(
     z.object({
       owner: z.string().min(1),
       type: z.string().min(1),
@@ -271,30 +271,48 @@ export async function onTransactionsUpload(
       }),
       description: z.string().refine((val) => val.length <= 50 && val.length > 0),
     })
-  ]);
+  );
 
   console.log("reading: ", file.name)
   reader.onload = async (e) => {
     const result = e.target?.result;
     if (typeof result === "string") {
       try {
-        const payments = paymentsSchema.parse(JSON.parse(result));
-
-        const uploadResult =  await AddPayments(payments as unknown as Payment[])
-        resultToast({successMessage: "Transactions uploaded!", errorMessage: "Upload Failed!" , success: uploadResult });
-
-        if (onRefresh) onRefresh(true);
-
+        paymentsSchema.parse(JSON.parse(result));
       } catch (e) {
         if(e instanceof z.ZodError) {
-          resultToast({errorMessage: "Invalid file format!", success: false});
+          toast({
+              variant: "destructive",
+              title: "Invalid file format!",
+            })
         } else {
           console.log(e);
-          resultToast({errorMessage: "Upload Failed!", success: false});
+          toast({
+            variant: "destructive",
+            title: "Upload Failed!",
+          })
         }
       }
     }
   };
 
   reader.readAsText(file);
+
+  try {
+    const uploadResult = await UploadPayments(file);
+    toast({
+      variant: uploadResult === null ? "success" : "destructive" ,
+      title: `${uploadResult === null ? "Transactions uploaded!" : uploadResult}`,
+    })
+  } catch ( e: any ) {
+    console.log(e);
+    toast({
+      variant: "destructive",
+      title: e.data,
+    })
+  } finally {
+    if(onRefresh) {
+      onRefresh();
+    }
+  }
 }

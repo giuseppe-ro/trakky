@@ -23,8 +23,7 @@ export function FileUploadItem(props: FileUploadButtonProps) {
       const fileUploaded = event.target.files[0];
 
       console.log("handle change")
-      props.onUpload(fileUploaded).then((success) => {
-        console.log("success", success)
+      props.onUpload(fileUploaded).then(() => {
       });
     }
   };

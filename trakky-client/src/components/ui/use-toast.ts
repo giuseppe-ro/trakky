@@ -9,7 +9,7 @@ import { demoMode } from "@/constants.ts";
 import { UseFormReturn } from "react-hook-form";
 
 const TOAST_LIMIT = 1
-const TOAST_REMOVE_DELAY = 20
+const TOAST_REMOVE_DELAY = 2000
 
 type ToasterToast = ToastProps & {
   id: string

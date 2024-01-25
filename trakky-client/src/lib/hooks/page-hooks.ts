@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchPayments, Payment } from "@/infrastructure/payment.tsx";
+import { FetchPayments, Payment } from "@/infrastructure/payment.tsx";
 import { getAvailableYears } from "@/lib/summaries.ts";
 import { Budget, fetchBudgets } from "@/infrastructure/budget.tsx";
 
@@ -11,7 +11,7 @@ export function usePaymentData() {
   async function refreshData(flushPaymentsBeforeRefresh: boolean = true) {
     if(flushPaymentsBeforeRefresh) setPayments([]);
 
-    const data = await fetchPayments();
+    const data = await FetchPayments();
     setPayments(data);
     const years = getAvailableYears(data);
     years.push("All");

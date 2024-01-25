@@ -1,9 +1,10 @@
 import axios from "axios";
-import { serverUrl } from "@/constants.ts";
 import { Budget } from "@/infrastructure/budget.tsx";
 import { Payment } from "@/infrastructure/payment.tsx";
 import { Type } from "@/infrastructure/transaction-type.tsx";
 import { Owner } from "@/infrastructure/owner.tsx";
+import { BaseFetchHandler } from "@/infrastructure/base.tsx";
+import { mockBackup } from "@/lib/makeData.ts";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
@@ -14,7 +15,10 @@ export interface Backup {
   owners: Owner[];
 }
 
+function mapBackup<T>(data: any): T[] {
+  return [data] as T[];
+}
+
 export async function fetchBackup(): Promise<Backup> {
-  let response = await axios.get(`${serverUrl}/backup`);
-  return (await response.data) as Backup;
+  return (await BaseFetchHandler<Backup>(mockBackup,"backup", mapBackup))[0];
 }

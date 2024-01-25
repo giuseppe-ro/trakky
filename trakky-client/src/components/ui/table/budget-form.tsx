@@ -62,7 +62,6 @@ export function BudgetForm({
 }) {
 
   const formSchema = z.object({
-    id: z.number().optional(),
     date: z.date().refine((val) => !existingDates.some((date) => date.getTime() === new Date(firstOfTheMonthDateString(val)).getTime()), {
       message: "Budget for this date already exists!",
     }),
@@ -80,7 +79,6 @@ export function BudgetForm({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      id: editValues?.id === undefined ? undefined : Number(editValues?.id),
       date:
         editValues?.date === undefined
           ? new Date()
@@ -102,7 +100,7 @@ export function BudgetForm({
     if (editValues === undefined) {
       const budget = values as unknown as Budget;
       budget.date = format(values.date, "yyyy-MM-dd");
-      success = await AddBudgets(values as unknown as Budget[]);
+      success = await AddBudgets([budget]);
     } else {
       success = await EditBudget(values as unknown as Budget);
     }

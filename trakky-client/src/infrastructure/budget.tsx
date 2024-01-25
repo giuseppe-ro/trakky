@@ -1,6 +1,11 @@
-import { demoMode, serverUrl } from "@/constants.ts";
 import { makeBudgets } from "@/lib/makeData.ts";
 import axios from "axios";
+import {
+  BaseFetchHandler,
+  BaseHandler,
+  HandleExceptionBoolean,
+  HandleResponseBoolean
+} from "@/infrastructure/base.tsx";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
@@ -11,11 +16,8 @@ export interface Budget {
   maxBudget: number;
 }
 
-export async function fetchBudgets(): Promise<Budget[]> {
-  if (demoMode) return makeBudgets();
-
-  let response = await axios.get(`${serverUrl}/budgets`);
-  return (await response.data)
+function mapBudgets<T>(data: any): T[] {
+  return data
     .sort((p: Budget) => p.date)
     .reverse()
     .map((p: Budget) => {
@@ -28,57 +30,19 @@ export async function fetchBudgets(): Promise<Budget[]> {
     });
 }
 
+export async function fetchBudgets(): Promise<Budget[]> {
+  return await BaseFetchHandler<Budget>(makeBudgets, "budgets", mapBudgets);
+}
+
 
 export async function AddBudgets(budgets: Budget[]): Promise<boolean> {
-  if (demoMode) return true;
-
-  try {
-    const res = await axios.post(`${serverUrl}/budgets`, budgets);
-    if (res.status === 200) {
-      return true;
-    } else {
-      console.log(res);
-      return false;
-    }
-  } catch (error) {
-    console.log(error);
-    return false;
-  }
+  return await BaseHandler(axios.post, "budgets", budgets, HandleResponseBoolean, HandleExceptionBoolean, true);
 }
 
 export async function EditBudget(budget: Budget): Promise<boolean> {
-  if (demoMode) return true;
-
-  try {
-    const res = await axios.put(`${serverUrl}/budget`, budget);
-    if (res.status === 200) {
-      return true;
-    } else {
-      console.log(res);
-      return false;
-    }
-  } catch (error) {
-    console.log(error);
-    return false;
-  }
+  return await BaseHandler(axios.put, "budget", budget, HandleResponseBoolean, HandleExceptionBoolean, true);
 }
 
 export async function DeleteBudgets(ids: number[]): Promise<boolean> {
-  if (demoMode) return true;
-
-  try {
-    const res = await axios.delete(`${serverUrl}/budgets`, {
-      data: ids,
-    });
-
-    if (res.status === 200) {
-      return true;
-    } else {
-      console.log(res);
-      return false;
-    }
-  } catch (e) {
-    console.log(e);
-    return false;
-  }
+  return await BaseHandler(axios.delete, "budgets", {data: ids}, HandleResponseBoolean, HandleExceptionBoolean, true);
 }

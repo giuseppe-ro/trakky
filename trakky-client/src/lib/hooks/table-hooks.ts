@@ -259,6 +259,15 @@ export async function onTransactionsUpload(
   file: File,
   onRefresh?: (flushBeforeRefresh?: boolean) => void
 ): Promise<void> {
+
+  if(demoMode) {
+    toast({
+      variant: "warning",
+      title: "Data cannot be modified in demo mode!",
+    })
+    return;
+  }
+
   const reader = new FileReader();
 
   const paymentsSchema = z.array(

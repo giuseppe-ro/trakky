@@ -41,3 +41,24 @@ export function convertFilterDateFormat(date: string): string {
 
   return `-${month}`;
 }
+
+
+export function getPercentageChangeText(change: number, selectedThisYear: boolean, selectedYear: string, lastYearCurrentMonth: Date): string {
+  if (change === 0) {
+    return ""
+  }
+
+  let changePercentage = change > 0
+    ? `+${change}% from previous year`
+    : `${change}% from previous year`;
+
+  if (selectedThisYear) {
+    const month = lastYearCurrentMonth.toLocaleString('default', { month: 'short' });
+    const year = lastYearCurrentMonth.getFullYear();
+    changePercentage += ` (up to ${month} ${year})`;
+  } else {
+    changePercentage += ` (${parseInt(selectedYear) - 1})`;
+  }
+
+  return changePercentage;
+}

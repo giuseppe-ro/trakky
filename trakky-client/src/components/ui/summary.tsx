@@ -5,7 +5,12 @@ import { Table } from "@tanstack/react-table";
 import { Tabs, TabsContent } from "@/components/ui/tabs.tsx";
 import { FadeLeft } from "@/components/animations/fade.tsx";
 import React from "react";
-import { calculateChange, getPreviousYearTotal, getPreviousYearTotalSoFar } from "@/lib/calculators.ts";
+import {
+  calculateChange,
+  getPreviousYearTotal,
+  getPreviousYearPartialTotal,
+} from "@/lib/calculators.ts";
+import { getPercentageChangeText } from "@/lib/formatter.ts";
 
 function SummaryCard({
   title,
@@ -78,11 +83,15 @@ export function Summary<TData>({
 
   const currentDate = new Date();
   const lastYearCurrentMonth = new Date(currentDate.getFullYear() - 1, currentDate.getMonth()); // Calculate last year's current month
+  const selectedThisYear = parseInt(selectedYear) === currentDate.getFullYear();
 
   const previousYearTotal =
-    parseInt(selectedYear) === new Date().getFullYear()
-      ? getPreviousYearTotalSoFar(totalsPerYear, lastYearCurrentMonth)
+    selectedThisYear
+      ? getPreviousYearPartialTotal(totalsPerYear, lastYearCurrentMonth)
       : getPreviousYearTotal(totalsPerYear, selectedYear);
+
+  const change = calculateChange(totalAmount, previousYearTotal);
+  let changePercentage = getPercentageChangeText(change, selectedThisYear, selectedYear, lastYearCurrentMonth);
 
   const ownerBalances: OwnerBalance[] = [];
 
@@ -100,17 +109,6 @@ export function Summary<TData>({
   ownerBalances
     .forEach(bal => bal.difference = (partialTotal / ownerBalances.length) - bal.amount <= 0.1 ? "" : `(-${formatCurrency((partialTotal / ownerBalances.length) - bal.amount)})`)
 
-  const change = calculateChange(totalAmount, previousYearTotal);
-
-  let changePercentage = isFinite(change) && change !== 0 ? (change > 0 ? `+${change}% from previous year` : `${change}% from previous year`) : "";
-
-  if (parseInt(selectedYear) === new Date().getFullYear()) {
-    const month = lastYearCurrentMonth.toLocaleString('default', { month: 'short' });
-    const year = lastYearCurrentMonth.getFullYear();
-    changePercentage += ` (up to ${month} ${year})`;
-  } else {
-    changePercentage += ` (${parseInt(selectedYear) - 1})`;
-  }
 
 
   return (

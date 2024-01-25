@@ -1,5 +1,6 @@
 import { Total } from "@/components/ui/summary.tsx";
 
+
 export function calculateChange(current: number, previous: number) {
   if (previous === undefined || previous === 0) {
     return 0;
@@ -13,7 +14,7 @@ export function calculateChange(current: number, previous: number) {
   ) / 100;
 }
 
-export function getPreviousYearTotalSoFar(
+export function getPreviousYearPartialTotal(
   totalsPerYear: Total[],
   lastYearCurrentMonth: Date,
 ) {

@@ -11,21 +11,29 @@ export function baseHandler(res: Response, func: Function, args?: any) {
       if (e instanceof PrismaClientKnownRequestError) { 
         if (e.code === 'P2002') {
           res.status(400);
-          res.send("Unable to add duplicated data!");
+          res.send({
+            error: "Unable to add duplicated data!"
+          });
         } else {
           res.status(401)
-          res.send("An error occurred with the database!");
+          res.send({
+            error: "An error occurred with the database!"
+          });
         }
        } else if ((e as any).message.toLowerCase().includes("authentication failed")){
         console.log("error type: Auth error", e);
         res.status(401)
-        res.send("Database Authentication failed.")
+        res.send({
+            error: "Database Authentication failed."
+        })
        }
     })
     .catch((e: any) => {
       console.log(e);
       res.status(401)
-      res.send("Server Error.")
+      res.send({
+            error: "Server Error."
+        })
     }
     );
-  } 
+} 

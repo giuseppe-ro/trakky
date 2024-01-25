@@ -64,23 +64,31 @@ export async function AddPayments(payments: Payment[]): Promise<boolean> {
 export async function UploadPayments(file: File): Promise<null | string> {
   if (demoMode) return null;
 
-    const formData = new FormData();
-    formData.append("file", file);
+  const formData = new FormData();
+  formData.append("file", file);
 
-    return await axios.post(`${serverUrl}/upload/payments`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
+  return await axios.post(`${serverUrl}/upload/payments`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  })
+    .then((res) => {
+      console.log(res);
+      return null;
     })
-      .then((res) => {
-        console.log(res);
-        return null;
-      })
-      .catch((err: any) => {
-        console.log(err);
-        console.log("data:", err.response.data);
-        return err.response.data;
-      });
+    .catch((err: any) => {
+      console.log(err);
+
+      if (err.code === "ERR_NETWORK") {
+        return "The server is down or not reachable.";
+      }
+
+      if (err.response?.data?.error) {
+        console.log("data:", err.response.data.error);
+        return err.response.data.error;
+      }
+      return "Could not upload file.";
+    });
 }
 
 export async function EditPayment(payment: Payment): Promise<boolean> {

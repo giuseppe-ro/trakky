@@ -217,10 +217,19 @@ function successFailToast(
       variant: "warning"
     })
   } else {
-    toast({
-      variant: success ? "success" : "destructive" ,
-      title: `${success ? successMessage : errorMessage}`,
-    })
+
+    if(success) {
+      toast({
+        variant: "success",
+        description: successMessage,
+      })
+    } else {
+      toast({
+        variant: "destructive" ,
+        description: errorMessage,
+        title: "Error"
+      })
+    }
   }
 }
 

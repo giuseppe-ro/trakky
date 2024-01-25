@@ -53,7 +53,7 @@ function SettingsPage() {
 
     const success = await AddTypes([{ name: newType } as Type]);
 
-    successFailToast({ success: success, successMessage: "Type added", errorMessage: "Error, couldn't save Type!" });
+    successFailToast({ success: success, successMessage: "Type added", errorMessage: "Couldn't save Type!" });
 
     setTypes(await fetchTypes())
   }
@@ -61,7 +61,7 @@ function SettingsPage() {
   async function OnTypeDeleteConfirmed(id: number) {
     const success = await DeleteTypes([id]);
 
-    successFailToast({ success: success, successMessage: "Type Removed", errorMessage: "Error, couldn't remove Type!" });
+    successFailToast({ success: success, successMessage: "Type Removed", errorMessage: "Couldn't remove Type!" });
     setTypes(await fetchTypes())
   }
 
@@ -70,7 +70,7 @@ function SettingsPage() {
 
     const success = await AddOwners([{ name: newOwner } as Owner]);
 
-    successFailToast({ success: success, successMessage: "Owner added", errorMessage: "Error, couldn't save Owner!" });
+    successFailToast({ success: success, successMessage: "Owner added", errorMessage: "Couldn't save Owner!" });
 
     setOwners(await fetchOwners())
   }
@@ -78,7 +78,7 @@ function SettingsPage() {
   async function OnOwnerDeleteConfirmed(id: number) {
     const success = await DeleteOwners([id]);
 
-    successFailToast({ success: success, successMessage: "Owner Removed", errorMessage: "Error, couldn't remove Owner!" });
+    successFailToast({ success: success, successMessage: "Owner Removed", errorMessage: "Couldn't remove Owner!" });
     setOwners(await fetchOwners())
   }
 
@@ -86,7 +86,7 @@ function SettingsPage() {
     try {
       const backup = await fetchBackup();
       const element = document.createElement("a");
-      const file = new Blob([JSON.stringify(backup)], {type: 'text/plain'});
+      const file = new Blob([JSON.stringify(backup)], { type: 'text/plain' });
       element.href = URL.createObjectURL(file);
       element.download = "backup.json";
       document.body.appendChild(element); // Required for this to work in FireFox
@@ -114,10 +114,10 @@ function SettingsPage() {
         </div>
         <div className="flex flex-col mb-4 md:mb-0">
           <SubTitle title={"Transactions"} {...{ className: "text-center mt-4" }} />
-            <FileUploadItem
-              onUpload={onTransactionsUpload}
-              text={"Upload Transactions"}
-              className={""} />
+          <FileUploadItem
+            onUpload={onTransactionsUpload}
+            text={"Upload Transactions"}
+            className={""} />
         </div>
         <div className="flex flex-col lg:flex-row gap-3 justify-center">
           <div className="flex-grow">
@@ -174,20 +174,20 @@ function SettingsPage() {
               </div>
               <table>
                 <tbody>
-                {types && types.map((type: Type) => (
-                  <TableRow key={type.id} className="w-full justify-center align-middle">
-                    <td className={cn(`text-left border-r-0 py-0.5 px-2 font-thin text-xs w-full border overflow-x-scroll scroll-smooth`)}>
-                      {type.name}
-                    </td>
-                    <td className="m-6 text-left border px-0 overflow-x-scroll scroll-smooth">
-                      <DeleteDialog
-                        onDeleteConfirmed={() => OnTypeDeleteConfirmed(type.id)}
-                        entries={type.name}
-                        tooltipText={"Delete"}
-                      />
-                    </td>
-                  </TableRow>
-                ))}
+                  {types && types.map((type: Type) => (
+                    <TableRow key={type.id} className="w-full justify-center align-middle">
+                      <td className={cn(`text-left border-r-0 py-0.5 px-2 font-thin text-xs w-full border overflow-x-scroll scroll-smooth`)}>
+                        {type.name}
+                      </td>
+                      <td className="m-6 text-left border px-0 overflow-x-scroll scroll-smooth">
+                        <DeleteDialog
+                          onDeleteConfirmed={() => OnTypeDeleteConfirmed(type.id)}
+                          entries={type.name}
+                          tooltipText={"Delete"}
+                        />
+                      </td>
+                    </TableRow>
+                  ))}
                 </tbody>
               </table>
             </div>
@@ -212,20 +212,20 @@ function SettingsPage() {
               </div>
               <table>
                 <tbody>
-                {owners && owners.map((owner: Owner) => (
-                  <TableRow key={owner.id} className="w-full justify-center align-middle">
-                    <td className={cn(`text-left border-r-0 py-0.5 px-2 font-thin text-xs w-full border overflow-x-scroll scroll-smooth`)}>
-                      {owner.name}
-                    </td>
-                    <td className="m-6 text-left border px-0 overflow-x-scroll scroll-smooth">
-                      <DeleteDialog
-                        onDeleteConfirmed={() => OnOwnerDeleteConfirmed(owner.id)}
-                        entries={owner.name}
-                        tooltipText={"Delete"}
-                      />
-                    </td>
-                  </TableRow>
-                ))}
+                  {owners && owners.map((owner: Owner) => (
+                    <TableRow key={owner.id} className="w-full justify-center align-middle">
+                      <td className={cn(`text-left border-r-0 py-0.5 px-2 font-thin text-xs w-full border overflow-x-scroll scroll-smooth`)}>
+                        {owner.name}
+                      </td>
+                      <td className="m-6 text-left border px-0 overflow-x-scroll scroll-smooth">
+                        <DeleteDialog
+                          onDeleteConfirmed={() => OnOwnerDeleteConfirmed(owner.id)}
+                          entries={owner.name}
+                          tooltipText={"Delete"}
+                        />
+                      </td>
+                    </TableRow>
+                  ))}
                 </tbody>
               </table>
             </div>

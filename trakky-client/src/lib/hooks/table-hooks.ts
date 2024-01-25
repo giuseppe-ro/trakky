@@ -300,10 +300,19 @@ export async function onTransactionsUpload(
 
   try {
     const uploadResult = await UploadPayments(file);
-    toast({
-      variant: uploadResult === null ? "success" : "destructive" ,
-      title: `${uploadResult === null ? "Transactions uploaded!" : uploadResult}`,
-    })
+
+    if(uploadResult === null) {
+      toast({
+        variant: "success",
+        description: "Upload Successful!",
+      })
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Error!",
+        description: uploadResult,
+      })
+    }
   } catch ( e: any ) {
     console.log(e);
     toast({

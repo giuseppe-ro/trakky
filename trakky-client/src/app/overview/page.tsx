@@ -88,6 +88,7 @@ function OverviewPage() {
               tableActionMenu:
                 <Containers className="transition">
                   <TableActionMenu
+                    exportName={"Payments"}
                     table={table}
                     onRefresh={onRefresh}
                     addForm={ <PaymentForm

@@ -13,8 +13,9 @@ import { Label } from "@/components/ui/label.tsx";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group.tsx";
 import { useState } from "react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip.tsx";
+import { downloadFile } from "@/lib/utils.ts";
 
-export function ExportDropdownMenu({ table }: { table: Table<any> }) {
+export function ExportDropdownMenu({ table, name }: { table: Table<any>, name: string }) {
   const [format, setFormat] = useState<string>("json");
 
   function convertToCSV(arr: any) {
@@ -28,21 +29,11 @@ export function ExportDropdownMenu({ table }: { table: Table<any> }) {
   }
 
   const download = (rows: Row<any>[]) => {
-
     const texts = format === "csv"
       ? convertToCSV(rows.map((row: any) => row.original as Payment))
       : JSON.stringify(rows.map((row: any) => row.original as Payment));
 
-    const file = new Blob([texts], { type: `text/${format}` });
-    const element = document.createElement("a");
-    element.href = URL.createObjectURL(file);
-    element.download = "Payments Export " + new Date().toLocaleString("en-GB", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    }) + `.${format}`;
-    document.body.appendChild(element);
-    element.click();
+    downloadFile(texts, format, name);
   }
 
   return (

@@ -29,12 +29,14 @@ export function TableActionMenu({
   table,
   onRefresh,
   addForm,
-  deleteForm
+  deleteForm,
+  exportName
 }: {
   table: Table<any>;
   onRefresh: (flushPaymentsBeforeRefresh?: boolean) => void;
   addForm: ReactNode;
   deleteForm: ReactNode;
+  exportName: string;
 }) {
 
   return (
@@ -84,7 +86,7 @@ export function TableActionMenu({
           </TooltipProvider>
         </div>
         <div className="flex justify-center" >
-          <ExportDropdownMenu table={table} />
+          <ExportDropdownMenu table={table} name={exportName} />
         </div>
         <div className="flex justify-center">
           {(table.getIsSomeRowsSelected() || table.getIsAllRowsSelected()) && deleteForm}

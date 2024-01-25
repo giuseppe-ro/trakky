@@ -11,7 +11,7 @@ import { Budget } from "@/infrastructure/budget.tsx";
 import { useEffect, useState } from "react";
 import { AddTypes, DeleteTypes, fetchTypes, Type } from "@/infrastructure/transaction-type.tsx";
 import { TableRow } from "@/components/ui/table.tsx";
-import { cn } from "@/lib/utils.ts";
+import { cn, downloadFile } from "@/lib/utils.ts";
 import { Button } from "@/components/ui/button.tsx";
 import { SubmittableInput } from "@/components/ui/input.tsx";
 import { successFailToast, toast, valueExistsToast } from "@/components/ui/use-toast.ts";
@@ -85,12 +85,9 @@ function SettingsPage() {
   async function DownloadBackup() {
     try {
       const backup = await fetchBackup();
-      const element = document.createElement("a");
-      const file = new Blob([JSON.stringify(backup)], { type: 'text/plain' });
-      element.href = URL.createObjectURL(file);
-      element.download = "backup.json";
-      document.body.appendChild(element); // Required for this to work in FireFox
-      element.click();
+
+      downloadFile(JSON.stringify(backup), "json", "Backup");
+
     } catch (e) {
       toast({
         title: "Error",
@@ -130,6 +127,7 @@ function SettingsPage() {
                 tableActionMenu:
                   <Containers className="transition">
                     <TableActionMenu
+                      exportName={"Budgets"}
                       table={table}
                       onRefresh={onRefresh}
                       addForm={<BudgetForm

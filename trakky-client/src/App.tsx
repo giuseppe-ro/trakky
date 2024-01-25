@@ -70,6 +70,7 @@ export default function App() {
             tableActionMenu:
               <Containers className="transition">
                 <TableActionMenu
+                  exportName={"Payments"}
                   table={table}
                   onRefresh={onRefresh}
                   addForm={

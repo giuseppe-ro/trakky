@@ -1,19 +1,18 @@
 import express, { Express, Request, Response } from "express";
-import os from 'os';
 import { usePaymentsApi } from "./api/payments";
 import { useBackupApi } from "./api/backup";
 import { useBudgetsApi } from "./api/budgets";
 import { useOwnersApi } from "./api/owners";
 import { useTypesApi } from "./api/types";
-
-const cors = require("cors");
+import multer from 'multer';
+import cors from 'cors';
+import os from 'os';
 
 const corsOptions = {
   origin: [
-    "http://trakky.localhost", 
-    "http://trakky.localhost/*",
+    "http://trakky.localhost",
     "http://trakky.localdomain",
-    "http://trakky.localdomain/*"
+    "http://localdomain:5173",
   ],
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   preflightContinue: false,
@@ -21,10 +20,9 @@ const corsOptions = {
 };
 
 const app: Express = express();
-const multer  = require('multer');
 const upload = multer({ dest: os.tmpdir() });
 
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 
 const host = "0.0.0.0";

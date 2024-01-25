@@ -1,8 +1,8 @@
 import { makeOwners } from "@/lib/makeData.ts";
 import axios from "axios";
 import {
-  BaseFetchHandler,
-  BaseHandler,
+  BaseFetchResultHandler,
+  BaseResultHandler,
   HandleExceptionBoolean,
   HandleResponseBoolean
 } from "@/infrastructure/base.tsx";
@@ -19,18 +19,18 @@ function mapOwners<T>(data: any): T[] {
 }
 
 export async function fetchOwners(): Promise<Owner[]> {
-  return await BaseFetchHandler<Owner>(makeOwners, "owners", mapOwners);
+  return await BaseFetchResultHandler<Owner>(makeOwners, "owners", mapOwners);
 }
 
 
 export async function AddOwners(owners: Owner[]): Promise<boolean> {
-  return await BaseHandler(axios.post, "owners", owners, HandleResponseBoolean, HandleExceptionBoolean, true)
+  return await BaseResultHandler(axios.post, "owners", owners, HandleResponseBoolean, HandleExceptionBoolean, true)
 }
 
 export async function EditOwner(owner: Owner): Promise<boolean> {
-  return await BaseHandler(axios.put, "owner", owner, HandleResponseBoolean, HandleExceptionBoolean, true)
+  return await BaseResultHandler(axios.put, "owner", owner, HandleResponseBoolean, HandleExceptionBoolean, true)
 }
 
 export async function DeleteOwners(ids: number[]): Promise<boolean> {
-  return await BaseHandler(axios.delete, "owners", {data: ids}, HandleResponseBoolean, HandleExceptionBoolean, true)
+  return await BaseResultHandler(axios.delete, "owners", {data: ids}, HandleResponseBoolean, HandleExceptionBoolean, true)
 }

@@ -1,8 +1,8 @@
 import { makeBudgets } from "@/lib/makeData.ts";
 import axios from "axios";
 import {
-  BaseFetchHandler,
-  BaseHandler,
+  BaseFetchResultHandler,
+  BaseResultHandler,
   HandleExceptionBoolean,
   HandleResponseBoolean
 } from "@/infrastructure/base.tsx";
@@ -31,18 +31,18 @@ function mapBudgets<T>(data: any): T[] {
 }
 
 export async function fetchBudgets(): Promise<Budget[]> {
-  return await BaseFetchHandler<Budget>(makeBudgets, "budgets", mapBudgets);
+  return await BaseFetchResultHandler<Budget>(makeBudgets, "budgets", mapBudgets);
 }
 
 
 export async function AddBudgets(budgets: Budget[]): Promise<boolean> {
-  return await BaseHandler(axios.post, "budgets", budgets, HandleResponseBoolean, HandleExceptionBoolean, true);
+  return await BaseResultHandler(axios.post, "budgets", budgets, HandleResponseBoolean, HandleExceptionBoolean, true);
 }
 
 export async function EditBudget(budget: Budget): Promise<boolean> {
-  return await BaseHandler(axios.put, "budget", budget, HandleResponseBoolean, HandleExceptionBoolean, true);
+  return await BaseResultHandler(axios.put, "budget", budget, HandleResponseBoolean, HandleExceptionBoolean, true);
 }
 
 export async function DeleteBudgets(ids: number[]): Promise<boolean> {
-  return await BaseHandler(axios.delete, "budgets", {data: ids}, HandleResponseBoolean, HandleExceptionBoolean, true);
+  return await BaseResultHandler(axios.delete, "budgets", {data: ids}, HandleResponseBoolean, HandleExceptionBoolean, true);
 }

@@ -12,7 +12,7 @@ const corsOptions = {
   origin: [
     "http://trakky.localhost",
     "http://trakky.localdomain",
-    "http://localdomain:5173",
+    "http://localdomain",
   ],
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   preflightContinue: false,

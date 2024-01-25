@@ -3,18 +3,28 @@ import { demoMode, serverUrl } from "@/constants.ts";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
-export async function BaseFetchHandler<T>(
+
+export async function BaseFetchHandler(endpoint: string): Promise<AxiosResponse<any>> {
+  return await axios.get(`${serverUrl}/${endpoint}`);
+}
+
+export async function BaseFetchResultHandler<T>(
   demoModeFunc: () => T[],
   endpoint: string,
-  mapper: (p: any) => T[]
+  mapper?: (p: any) => T[]
 ): Promise<T[]> {
   if (demoMode)
     return demoModeFunc();
 
   try {
-    let response = await axios.get(`${serverUrl}/${endpoint}`);
+    let response = await BaseFetchHandler(endpoint);
     const data = (await response.data);
-    return mapper(data);
+
+    if(mapper) {
+      return mapper(data);
+    }
+
+    return data;
 
   } catch (e) {
     console.log(e);
@@ -23,7 +33,7 @@ export async function BaseFetchHandler<T>(
   return [];
 }
 
-export async function BaseHandler<TReturn>(
+export async function BaseResultHandler<TReturn>(
   apiFunc: (<T = any, R = AxiosResponse<T, any>, D = any>(url: string, data?: D | undefined, config?: AxiosRequestConfig<D> | undefined) => Promise<R>)
         |  (<T = any, R = AxiosResponse<T, any>, D = any>(url: string, config?: AxiosRequestConfig<D> | undefined) => Promise<R>),
   endpoint: string,

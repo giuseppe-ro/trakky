@@ -1,7 +1,7 @@
 import { demoMode, serverUrl } from "@/constants.ts";
 import { makeTypes } from "@/lib/makeData.ts";
 import axios from "axios";
-import { BaseHandler, HandleExceptionBoolean, HandleResponseBoolean } from "@/infrastructure/base.tsx";
+import { BaseResultHandler, HandleExceptionBoolean, HandleResponseBoolean } from "@/infrastructure/base.tsx";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
@@ -18,9 +18,9 @@ export async function fetchTypes(): Promise<Type[]> {
 }
 
 export async function AddTypes(types: Type[]): Promise<boolean> {
-  return await BaseHandler(axios.post, "types", types, HandleResponseBoolean, HandleExceptionBoolean, true)
+  return await BaseResultHandler(axios.post, "types", types, HandleResponseBoolean, HandleExceptionBoolean, true)
 }
 
 export async function DeleteTypes(ids: number[]): Promise<boolean> {
-  return await BaseHandler(axios.delete, "types", {data: ids}, HandleResponseBoolean, HandleExceptionBoolean, true)
+  return await BaseResultHandler(axios.delete, "types", {data: ids}, HandleResponseBoolean, HandleExceptionBoolean, true)
 }

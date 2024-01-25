@@ -1,8 +1,8 @@
 import axios from "axios";
 import { mockPayments } from "@/lib/makeData.ts";
 import {
-  BaseFetchHandler,
-  BaseHandler, HandleExceptionBoolean,
+  BaseFetchResultHandler,
+  BaseResultHandler, HandleExceptionBoolean,
   HandleExceptionMessage,
   HandleResponseBoolean,
   HandleResponseMessage
@@ -34,11 +34,11 @@ function mapPayments<T>(data: any): T[] {
 }
 
 export async function FetchPayments(): Promise<Payment[]> {
-  return await BaseFetchHandler<Payment>(mockPayments, "payments", mapPayments);
+  return await BaseFetchResultHandler<Payment>(mockPayments, "payments", mapPayments);
 }
 
 export async function AddPayments(payments: Payment[]): Promise<boolean> {
-  return await BaseHandler(axios.post, "payments", payments, HandleResponseBoolean, HandleExceptionBoolean, true)
+  return await BaseResultHandler(axios.post, "payments", payments, HandleResponseBoolean, HandleExceptionBoolean, true)
 }
 
 export async function UploadPayments(file: File): Promise<null | string> {
@@ -52,13 +52,13 @@ export async function UploadPayments(file: File): Promise<null | string> {
     },
   }
 
-  return await BaseHandler(axios.post, "upload/payments", formData, HandleResponseMessage, HandleExceptionMessage, null, config)
+  return await BaseResultHandler(axios.post, "upload/payments", formData, HandleResponseMessage, HandleExceptionMessage, null, config)
 }
 
 export async function EditPayment(payment: Payment): Promise<boolean> {
-  return await BaseHandler(axios.put, "payment", payment, HandleResponseBoolean, HandleExceptionBoolean, true);
+  return await BaseResultHandler(axios.put, "payment", payment, HandleResponseBoolean, HandleExceptionBoolean, true);
 }
 
 export async function DeletePayments(ids: number[]): Promise<boolean> {
-  return await BaseHandler(axios.delete, "payments", {data: ids}, HandleResponseBoolean, HandleExceptionBoolean, true);
+  return await BaseResultHandler(axios.delete, "payments", {data: ids}, HandleResponseBoolean, HandleExceptionBoolean, true);
 }

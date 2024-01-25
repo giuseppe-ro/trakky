@@ -1,6 +1,9 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { demoMode, serverUrl } from "@/constants.ts";
 
+import axiosRetry from 'axios-retry';
+axiosRetry(axios, { retries: 3, retryDelay: axiosRetry.exponentialDelay });
+
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
 

@@ -20,6 +20,7 @@ export function MainNav({
     { href: "/settings", label: "Settings" },
   ];
 
+
   return (
     <>
       <div className="sticky top-0 bg-gray-950 z-50">
@@ -50,6 +51,7 @@ export function MainNav({
                     </div>
                   )}
                 </nav>
+
               </div>
               <a
                 href="https://github.com/Joe85gr/trakky"
@@ -59,10 +61,11 @@ export function MainNav({
                 <Github className="mr-6 h-4 w-4" />
               </a>
             </div>
+
           </div>
         </div>
       </div>
-      {children}
+        {children}
     </>
   );
 }

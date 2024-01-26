@@ -1,5 +1,21 @@
 import React from "react";
 
+export function FadeDown({
+                         children,
+                         ...props
+                       }: React.HTMLAttributes<HTMLElement>) {
+  return (
+    <div
+      data-aos="fade-down"
+      data-aos-easing="ease-out-cubic"
+      data-aos-duration="500"
+      {...props}
+    >
+      {children}
+    </div>
+  );
+}
+
 export function FadeUp({
   children,
   ...props

@@ -14,6 +14,7 @@ import "aos/dist/aos.css";
 import { PageContainer } from "@/components/ui/containers.tsx";
 import { Toaster } from "@/components/ui/toaster.tsx";
 import SettingsPage from "@/app/settings/page.tsx";
+import { HealthCheckProvider } from "@/components/ui/health-check-provider.tsx";
 
 AOS.init({ once: true });
 
@@ -41,10 +42,11 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ThemeProvider>
       <MainNav className="h-8 shadow-amber-700 flex items-center space-x-4 lg:space-x-6" />
-      <PageContainer>
-        <RouterProvider router={router} />
-        <Toaster />
-      </PageContainer>
+      <HealthCheckProvider />
+        <PageContainer>
+          <RouterProvider router={router} />
+          <Toaster />
+        </PageContainer>
     </ThemeProvider>
   </React.StrictMode>
 );

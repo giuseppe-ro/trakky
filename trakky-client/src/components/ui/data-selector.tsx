@@ -1,6 +1,8 @@
 import { Selection } from "@/components/ui/select.tsx";
 import { FadeRight } from "@/components/animations/fade.tsx";
 import { useEffect } from "react";
+import { cn } from "@/lib/utils.ts";
+import { demoMode } from "@/constants.ts";
 
 export function YearSelection({
   availableYears,
@@ -42,7 +44,7 @@ export function YearSelection({
 
   return (
     availableYears.length > 0 && (
-      <FadeRight className="sticky top-20 z-50 px-2 md:px-0">
+      <FadeRight className={cn(`sticky top-20 z-30 px-2 md:px-0`, demoMode && "top-24")}>
         <Selection
           value={year()}
           onChange={changeYear}

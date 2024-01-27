@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { demoMode } from "@/constants.ts";
 import { Github } from "lucide-react";
 
 interface Links {
@@ -45,11 +44,6 @@ export function MainNav({
                       </a>
                     );
                   })}
-                  {demoMode && (
-                    <div className="text-sm font-medium text-destructive">
-                      Demo mode
-                    </div>
-                  )}
                 </nav>
 
               </div>

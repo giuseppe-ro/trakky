@@ -13,12 +13,18 @@ export function mockBackup() {
   } as unknown as Backup;
 }
 
+const sortByDate = (a: any, b: any) => {
+  const dateA = new Date(a.date);
+  const dateB = new Date(b.date);
+  return dateB.getTime() - dateA.getTime(); // Sorts in descending order
+};
+
 export function mockPayments() {
-  return payments as Payment[];
+  return payments.sort(sortByDate) as unknown as Payment[];
 }
 
 export function makeBudgets() {
-  return budgets as unknown as Budget[];
+  return budgets.sort(sortByDate) as unknown as Budget[];
 }
 
 export function makeOwners() {

@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Payment } from "@/infrastructure/payment.tsx";
-import { formatCurrency, formatDateMonth, formatStringDate } from "@/lib/formatter.ts";
+import { formatCurrency, formatStringDate } from "@/lib/formatter.ts";
 import { fuzzySort } from "@/lib/filters.ts";
 import { EditCell } from "@/components/ui/table/edit-cell.tsx";
 import { PaymentForm } from "@/components/ui/table/payment-form.tsx";
@@ -17,7 +17,8 @@ export const PaymentColumnDefinition = (refresh: (flushPaymentsBeforeRefresh: bo
       enableColumnFilter: true,
       enableGlobalFilter: false,
       cell: ({ row }) => {
-        const formatted = formatDateMonth(row.getValue("date"));
+        const formatted = formatStringDate(row.getValue("date"));
+        // const formatted = formatDateMonth(row.getValue("date"));
 
         return <div className="text-right font-sm">{formatted}</div>;
       },

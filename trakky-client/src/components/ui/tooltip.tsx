@@ -3,6 +3,7 @@ import * as TooltipPrimitive from "@radix-ui/react-tooltip"
 
 import { cn } from "@/lib/utils"
 import { serverIsDown } from "@/infrastructure/healthcheck.ts";
+import { demoMode } from "@/constants";
 
 const TooltipProvider = TooltipPrimitive.Provider
 
@@ -10,7 +11,7 @@ const Tooltip = TooltipPrimitive.Root
 
 const TooltipTrigger = TooltipPrimitive.Trigger
 
-serverIsDown().then((isDown) => TooltipTrigger.defaultProps = { disabled: isDown });
+serverIsDown().then((isDown) => TooltipTrigger.defaultProps = { disabled: isDown && !demoMode });
 
 
 const TooltipContent = React.forwardRef<

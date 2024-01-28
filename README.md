@@ -16,9 +16,11 @@ Set the db:
 Create a db named "expenses", and a user with full permission to that database.
 ```bash
 cd trakky-server
+export DATABASE_URL="mysql://USERNAME:PASSWORD@URL:PORT/expenses?schema=public"
 npm install
 npx prisma migrate dev --name init
 ```
+This will initialise the database and create the necessary tables.
 
 Set and run the backend:
 ```bash

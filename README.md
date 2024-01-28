@@ -1,5 +1,5 @@
 > [!IMPORTANT]  
-> Still under development.
+> Still under development. Some weirdness is to be expected :)
 
 # Trakky
 

@@ -13,15 +13,15 @@ export function HealthCheckProvider() {
   }, []);
 
   return (<>
-    {serverDown && (
-        <div className="sticky top-16 bg-gray-950 z-40">
-          <FadeDown className="top-16 z-40">
-            <div className="bg-yellow-600 w-full text-white text-xs md:text-base text-center">
-              The server is down or not reachable.
-            </div>
-          </FadeDown>
-        </div>
-      )}
+    {!demoMode && serverDown && (
+      <div className="sticky top-16 bg-gray-950 z-40">
+        <FadeDown className="top-16 z-40">
+          <div className="bg-yellow-600 w-full text-white text-xs md:text-base text-center">
+            The server is down or not reachable.
+          </div>
+        </FadeDown>
+      </div>
+    )}
     {demoMode && (
       <div className="sticky top-16 bg-gray-950 z-40">
         <FadeDown className="top-16 z-40">

@@ -1,21 +1,13 @@
-import { demoMode } from "@/constants.ts";
-import { BaseFetchHandler } from "@/infrastructure/base.tsx";
-
+import { baseApiCall, makeBaseRequest } from "@/infrastructure/base-api.ts";
 export async function serverIsDown() {
-  if(demoMode) return false;
 
-  let isDown = false;
+  const config = makeBaseRequest("health-check", "GET")
 
-  try {
-    const res = await BaseFetchHandler("health-check");
+  const { data, error } = await baseApiCall<boolean>({ request: config, demoModeData: () => false });
 
-    if (res.status !== 200) {
-      isDown = true;
-    }
-  } catch (e) {
-    isDown = true;
-    console.log(e);
+  if(error) {
+    console.log("Error while performing health check:", error);
   }
 
-  return isDown;
+  return !data ?? true;
 }

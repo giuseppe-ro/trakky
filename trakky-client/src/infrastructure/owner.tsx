@@ -1,11 +1,7 @@
 import { makeOwners } from "@/lib/makeData.ts";
 import axios from "axios";
-import {
-  BaseFetchResultHandler,
-  BaseResultHandler,
-  HandleExceptionBoolean,
-  HandleResponseBoolean
-} from "@/infrastructure/base.tsx";
+
+import { baseApiCall, makeBaseRequest } from "@/infrastructure/base-api.ts";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
@@ -14,23 +10,54 @@ export interface Owner {
   name: string;
 }
 
-function mapOwners<T>(data: any): T[] {
-  return data;
-}
-
 export async function fetchOwners(): Promise<Owner[]> {
-  return await BaseFetchResultHandler<Owner>(makeOwners, "owners", mapOwners);
+  const config = makeBaseRequest("owners", "GET")
+
+  const { data, error } = await baseApiCall<Owner[]>({ request: config, demoModeData: makeOwners });
+
+  if (error) {
+    console.log("Error while getting owners:", error);
+  }
+
+  return data ?? [];
 }
 
 
 export async function AddOwners(owners: Owner[]): Promise<boolean> {
-  return await BaseResultHandler(axios.post, "owners", owners, HandleResponseBoolean, HandleExceptionBoolean, true)
+  const config = makeBaseRequest("owners", "POST")
+  config.data = owners;
+
+  const { data, error } = await baseApiCall<boolean>({ request: config, demoModeData: () => true });
+
+  if (error) {
+    console.log("Error while adding owners:", error);
+  }
+
+  return data ?? false;
 }
 
 export async function EditOwner(owner: Owner): Promise<boolean> {
-  return await BaseResultHandler(axios.put, "owner", owner, HandleResponseBoolean, HandleExceptionBoolean, true)
+  const config = makeBaseRequest("owners", "PUT")
+  config.data = owner;
+
+  const { data, error } = await baseApiCall<boolean>({ request: config, demoModeData: () => true });
+
+  if (error) {
+    console.log("Error while editing owners:", error);
+  }
+
+  return data ?? false;
 }
 
 export async function DeleteOwners(ids: number[]): Promise<boolean> {
-  return await BaseResultHandler(axios.delete, "owners", {data: ids}, HandleResponseBoolean, HandleExceptionBoolean, true)
+  const config = makeBaseRequest("owners", "DELETE")
+  config.data = ids;
+
+  const { data, error } = await baseApiCall<boolean>({ request: config, demoModeData: () => true });
+
+  if (error) {
+    console.log("Error while getting owners:", error);
+  }
+
+  return data ?? false;
 }

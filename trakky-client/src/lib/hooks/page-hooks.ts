@@ -47,12 +47,13 @@ export function useBudgetsData() {
     if(flushBeforeRefresh) setBudgets([]);
 
     const data = await fetchBudgets();
+
     setBudgets(data);
   }
 
   useEffect(() => {
     refreshData().then(() => {
-      console.log("Refreshed payments data");
+      console.log("Refreshed payments data.");
     });
   }, []);
 

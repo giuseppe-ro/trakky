@@ -1,4 +1,4 @@
-import { Express, Request, Response } from "express";
+import express, { Express, Request, Response } from "express";
 import { getPayments } from "../infrastructure/payments";
 import { getBudgets } from "../infrastructure/budgets";
 import { getOwners } from "../infrastructure/owners";
@@ -14,8 +14,8 @@ async function getBackup() {
     }
   }
 
-export function useBackupApi(app: Express, cors: any) { 
-    app.get("/backup", cors, (req: Request, res: Response) => {
-        return baseHandler(res, getBackup);
-      });
-}
+export const backupRouter = express.Router();
+
+backupRouter.get("/", (req: Request, res: Response) => {
+  return baseHandler(res, getBackup);
+});

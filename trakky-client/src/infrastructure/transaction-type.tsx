@@ -1,9 +1,5 @@
-import { demoMode, serverUrl } from "@/constants.ts";
 import { makeTypes } from "@/lib/makeData.ts";
-import axios from "axios";
-import { BaseResultHandler, HandleExceptionBoolean, HandleResponseBoolean } from "@/infrastructure/base.tsx";
-
-axios.defaults.headers.post["Content-Type"] = "application/json";
+import { baseApiCall, makeBaseRequest } from "@/infrastructure/base-api.ts";
 
 export interface Type {
   id: number;
@@ -11,16 +7,39 @@ export interface Type {
 }
 
 export async function fetchTypes(): Promise<Type[]> {
-  if (demoMode) return makeTypes();
+  const config = makeBaseRequest("types", "GET")
 
-  let response = await axios.get(`${serverUrl}/types`);
-  return (await response.data) as Type[];
+  const { data, error } = await baseApiCall<Type[]>({ request: config, demoModeData: makeTypes });
+
+  if (error) {
+    console.log("Error while getting types:", error);
+  }
+
+  return data ?? [];
 }
 
 export async function AddTypes(types: Type[]): Promise<boolean> {
-  return await BaseResultHandler(axios.post, "types", types, HandleResponseBoolean, HandleExceptionBoolean, true)
+  const config = makeBaseRequest("types", "POST")
+  config.data = types;
+
+  const { data, error } = await baseApiCall<boolean>({ request: config });
+
+  if (error) {
+    console.log("Error while adding types:", error);
+  }
+
+  return data ?? false;
 }
 
 export async function DeleteTypes(ids: number[]): Promise<boolean> {
-  return await BaseResultHandler(axios.delete, "types", {data: ids}, HandleResponseBoolean, HandleExceptionBoolean, true)
+  const config = makeBaseRequest("types", "DELETE")
+  config.data = ids;
+
+  const { data, error } = await baseApiCall<boolean>({ request: config });
+
+  if (error) {
+    console.log("Error while deleting types:", error);
+  }
+
+  return data ?? false;
 }

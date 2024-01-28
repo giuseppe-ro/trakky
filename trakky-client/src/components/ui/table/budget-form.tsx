@@ -61,10 +61,9 @@ export function BudgetForm({
   editValues?: Budget;
 }) {
 
+
   const formSchema = z.object({
-    date: z.date().refine((val) => !existingDates.some((date) => date.getTime() === new Date(firstOfTheMonthDateString(val)).getTime()), {
-      message: "Budget for this date already exists!",
-    }),
+    date: z.date(),
     budget: z.number().refine((val) => val > 0, {
       message: "cannot be 0 or negative",
     }),
@@ -93,16 +92,29 @@ export function BudgetForm({
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsError(false);
-    console.log(values);
 
     let success: boolean;
+    const budget = values as unknown as Budget;
 
     if (editValues === undefined) {
-      const budget = values as unknown as Budget;
+
+        const budgetExists = existingDates
+          .some((date) =>
+            date.getTime() === new Date(firstOfTheMonthDateString(new Date(budget.date))).getTime());
+
+        if (budgetExists) {
+            form.setError("date", {
+            type: "manual",
+            message: "Budget already exists for this date",
+            });
+            return;
+        }
+
       budget.date = format(values.date, "yyyy-MM-dd");
       success = await AddBudgets([budget]);
     } else {
-      success = await EditBudget(values as unknown as Budget);
+      budget.id = editValues.id;
+      success = await EditBudget(budget);
     }
 
     formToast({

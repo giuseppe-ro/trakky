@@ -156,6 +156,7 @@ export function PaymentForm({
           AddPayments(payments)
         ]).then(([deleteSuccess, addSuccess]) => deleteSuccess && addSuccess);
     } else {
+
       success = editValues === undefined
         ? await AddPayments(payments)
         : await EditPayment(payment);

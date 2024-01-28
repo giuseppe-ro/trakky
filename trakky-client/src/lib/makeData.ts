@@ -5,12 +5,12 @@ import budgets from "./mockBudgets.json";
 import { Backup } from "@/infrastructure/backup.tsx";
 
 export function mockBackup() {
-  return [{
+  return {
     payments: mockPayments(),
     budgets: makeBudgets(),
     owners: makeOwners(),
     types: makeTypes(),
-  } ]as unknown as Backup[];
+  } as unknown as Backup;
 }
 
 export function mockPayments() {

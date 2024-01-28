@@ -1,11 +1,6 @@
 import { makeBudgets } from "@/lib/makeData.ts";
 import axios from "axios";
-import {
-  BaseFetchResultHandler,
-  BaseResultHandler,
-  HandleExceptionBoolean,
-  HandleResponseBoolean
-} from "@/infrastructure/base.tsx";
+import { baseApiCall, makeBaseRequest } from "@/infrastructure/base-api.ts";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
@@ -16,33 +11,56 @@ export interface Budget {
   maxBudget: number;
 }
 
-function mapBudgets<T>(data: any): T[] {
-  return data
-    .sort((p: Budget) => p.date)
-    .reverse()
-    .map((p: Budget) => {
-      return {
-        id: p.id,
-        date: p.date,
-        budget: p.budget,
-        maxBudget: p.maxBudget,
-      }
-    });
-}
-
 export async function fetchBudgets(): Promise<Budget[]> {
-  return await BaseFetchResultHandler<Budget>(makeBudgets, "budgets", mapBudgets);
+  const config = makeBaseRequest("budgets", "GET")
+
+  const { data, error } = await baseApiCall<Budget[]>({ request: config, demoModeData: makeBudgets });
+
+  if (error) {
+    console.log("Error while getting budgets:", error);
+  }
+
+  return data ?? [];
+
 }
 
 
 export async function AddBudgets(budgets: Budget[]): Promise<boolean> {
-  return await BaseResultHandler(axios.post, "budgets", budgets, HandleResponseBoolean, HandleExceptionBoolean, true);
+  const config = makeBaseRequest("budgets", "POST")
+  config.data = budgets;
+
+  const { data, error } = await baseApiCall<boolean>({ request: config, demoModeData: () => true });
+
+  if (error) {
+    console.log("Error while adding budgets:", error);
+  }
+
+  return data ?? false;
 }
 
 export async function EditBudget(budget: Budget): Promise<boolean> {
-  return await BaseResultHandler(axios.put, "budget", budget, HandleResponseBoolean, HandleExceptionBoolean, true);
+  console.log("EditBudget infrastructure: ", budget);
+  const config = makeBaseRequest("budgets", "PUT")
+  config.data = budget;
+
+  const { data, error } = await baseApiCall<boolean>({ request: config, demoModeData: () => true });
+
+  if (error) {
+    console.log("Error while editing budget:", error);
+  }
+
+  return data ?? false;
 }
 
 export async function DeleteBudgets(ids: number[]): Promise<boolean> {
-  return await BaseResultHandler(axios.delete, "budgets", {data: ids}, HandleResponseBoolean, HandleExceptionBoolean, true);
+  const config = makeBaseRequest("budgets", "DELETE")
+  config.data = ids;
+
+  const { data, error } = await baseApiCall<boolean>({ request: config, demoModeData: () => true });
+
+  if (error) {
+    console.log("Error while deleting budgets:", error);
+  }
+
+  return data ?? false;
 }

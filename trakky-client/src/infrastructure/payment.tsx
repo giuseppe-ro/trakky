@@ -1,17 +1,10 @@
-import axios from "axios";
 import { mockPayments } from "@/lib/makeData.ts";
-import {
-  BaseFetchResultHandler,
-  BaseResultHandler, HandleExceptionBoolean,
-  HandleExceptionMessage,
-  HandleResponseBoolean,
-  HandleResponseMessage
-} from "@/infrastructure/base.tsx";
+import { baseApiCall, makeBaseRequest } from "@/infrastructure/base-api.ts";
+import { Endpoint } from "@/constants.ts";
 
-axios.defaults.headers.post["Content-Type"] = "application/json";
 
 export interface Payment {
-  id: string;
+  id?: string;
   amount: number;
   type: string;
   owner: string;
@@ -19,46 +12,77 @@ export interface Payment {
   date: string;
 }
 
-function mapPayments<T>(data: any): T[] {
-  return data.sort((p: any) => p.date)
-    .map((p: Payment) => {
-      return {
-        id: p.id,
-        amount: p.amount,
-        type: p.type,
-        owner: p.owner,
-        description: p.description,
-        date: p.date
-      }
-    })
-}
-
 export async function FetchPayments(): Promise<Payment[]> {
-  return await BaseFetchResultHandler<Payment>(mockPayments, "payments", mapPayments);
+  const config = makeBaseRequest(Endpoint.Payments, "GET")
+
+  const { data, error } = await baseApiCall<Payment[]>({ request: config, demoModeData: mockPayments });
+
+  if (error) {
+    console.log("Error while getting payments:", error);
+  }
+
+  return data ?? [];
 }
 
 export async function AddPayments(payments: Payment[]): Promise<boolean> {
-  return await BaseResultHandler(axios.post, "payments", payments, HandleResponseBoolean, HandleExceptionBoolean, true)
+  console.log("AddPayments", payments);
+  const config = makeBaseRequest(Endpoint.Payments, "POST")
+
+  config.data = payments;
+
+  const { data, error } = await baseApiCall<boolean>({ request: config, demoModeData: () => true });
+
+  if (error) {
+    console.log("Error while editing payments:", error);
+  }
+
+  return data ?? false;
 }
 
 export async function UploadPayments(file: File): Promise<null | string> {
 
+  const config = makeBaseRequest(`${Endpoint.Payments}/upload`, "POST")
+
   const formData = new FormData();
   formData.append("file", file);
 
-  const config = {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
+  config.data = formData;
+
+  if (config.headers) {
+    config.headers["content-type"] = "multipart/form-data";
   }
 
-  return await BaseResultHandler(axios.post, "upload/payments", formData, HandleResponseMessage, HandleExceptionMessage, null, config)
+  const { data, error } = await baseApiCall<boolean>({ request: config, demoModeData: () => true });
+
+  if (error) {
+    console.log("Error while uploading payments:", error);
+  }
+
+  return data ? null : error?.error ?? "Unknown error";
 }
 
 export async function EditPayment(payment: Payment): Promise<boolean> {
-  return await BaseResultHandler(axios.put, "payment", payment, HandleResponseBoolean, HandleExceptionBoolean, true);
+  const config = makeBaseRequest(Endpoint.Payments, "PUT")
+  config.data = payment;
+
+  const { data, error } = await baseApiCall<boolean>({ request: config, demoModeData: () => true });
+
+  if (error) {
+    console.log("Error while editing payments:", error);
+  }
+
+  return data ?? false;
 }
 
 export async function DeletePayments(ids: number[]): Promise<boolean> {
-  return await BaseResultHandler(axios.delete, "payments", {data: ids}, HandleResponseBoolean, HandleExceptionBoolean, true);
+  const config = makeBaseRequest(Endpoint.Payments, "DELETE")
+  config.data = ids;
+
+  const { data, error } = await baseApiCall<boolean>({ request: config, demoModeData: () => true });
+
+  if (error) {
+    console.log("Error while delete payments:", error);
+  }
+
+  return data ?? false;
 }

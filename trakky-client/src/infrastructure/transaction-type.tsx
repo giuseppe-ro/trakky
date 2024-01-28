@@ -1,5 +1,6 @@
 import { makeTypes } from "@/lib/makeData.ts";
 import { baseApiCall, makeBaseRequest } from "@/infrastructure/base-api.ts";
+import { Endpoint } from "@/constants.ts";
 
 export interface Type {
   id: number;
@@ -7,7 +8,7 @@ export interface Type {
 }
 
 export async function fetchTypes(): Promise<Type[]> {
-  const config = makeBaseRequest("types", "GET")
+  const config = makeBaseRequest(Endpoint.Types, "GET")
 
   const { data, error } = await baseApiCall<Type[]>({ request: config, demoModeData: makeTypes });
 
@@ -19,7 +20,7 @@ export async function fetchTypes(): Promise<Type[]> {
 }
 
 export async function AddTypes(types: Type[]): Promise<boolean> {
-  const config = makeBaseRequest("types", "POST")
+  const config = makeBaseRequest(Endpoint.Types, "POST")
   config.data = types;
 
   const { data, error } = await baseApiCall<boolean>({ request: config });
@@ -32,7 +33,7 @@ export async function AddTypes(types: Type[]): Promise<boolean> {
 }
 
 export async function DeleteTypes(ids: number[]): Promise<boolean> {
-  const config = makeBaseRequest("types", "DELETE")
+  const config = makeBaseRequest(Endpoint.Types, "DELETE")
   config.data = ids;
 
   const { data, error } = await baseApiCall<boolean>({ request: config });

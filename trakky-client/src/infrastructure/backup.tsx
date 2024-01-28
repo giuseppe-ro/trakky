@@ -4,6 +4,7 @@ import { Payment } from "@/infrastructure/payment.tsx";
 import { Type } from "@/infrastructure/transaction-type.tsx";
 import { Owner } from "@/infrastructure/owner.tsx";
 import { mockBackup } from "@/lib/makeData.ts";
+import { Endpoint } from "@/constants.ts";
 import { baseApiCall, makeBaseRequest } from "@/infrastructure/base-api.ts";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
@@ -17,7 +18,7 @@ export interface Backup {
 
 
 export async function fetchBackup(): Promise<Backup | null> {
-  const config = makeBaseRequest("backup", "GET")
+  const config = makeBaseRequest(Endpoint.Backup, "GET")
 
   const { data, error } = await baseApiCall<Backup>({ request: config, demoModeData: mockBackup });
 

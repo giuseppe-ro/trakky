@@ -1,7 +1,8 @@
 import { baseApiCall, makeBaseRequest } from "@/infrastructure/base-api.ts";
+import { Endpoint } from "@/constants.ts";
 export async function serverIsDown() {
 
-  const config = makeBaseRequest("health-check", "GET")
+  const config = makeBaseRequest(Endpoint.HealthCheck, "GET")
 
   const { data, error } = await baseApiCall<boolean>({ request: config, demoModeData: () => false });
 

@@ -1,6 +1,6 @@
 import { mockPayments } from "@/lib/makeData.ts";
-import { baseApiCall, makeBaseRequest } from "@/infrastructure/base-api.ts";
 import { Endpoint } from "@/constants.ts";
+import { baseApiCall, makeBaseRequest } from "@/infrastructure/base-api.ts";
 
 
 export interface Payment {

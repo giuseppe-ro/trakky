@@ -1,5 +1,6 @@
 import { makeBudgets } from "@/lib/makeData.ts";
 import axios from "axios";
+import { Endpoint } from "@/constants.ts";
 import { baseApiCall, makeBaseRequest } from "@/infrastructure/base-api.ts";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
@@ -12,7 +13,7 @@ export interface Budget {
 }
 
 export async function fetchBudgets(): Promise<Budget[]> {
-  const config = makeBaseRequest("budgets", "GET")
+  const config = makeBaseRequest(Endpoint.Budgets, "GET")
 
   const { data, error } = await baseApiCall<Budget[]>({ request: config, demoModeData: makeBudgets });
 
@@ -26,7 +27,7 @@ export async function fetchBudgets(): Promise<Budget[]> {
 
 
 export async function AddBudgets(budgets: Budget[]): Promise<boolean> {
-  const config = makeBaseRequest("budgets", "POST")
+  const config = makeBaseRequest(Endpoint.Budgets, "POST")
   config.data = budgets;
 
   const { data, error } = await baseApiCall<boolean>({ request: config, demoModeData: () => true });
@@ -40,7 +41,7 @@ export async function AddBudgets(budgets: Budget[]): Promise<boolean> {
 
 export async function EditBudget(budget: Budget): Promise<boolean> {
   console.log("EditBudget infrastructure: ", budget);
-  const config = makeBaseRequest("budgets", "PUT")
+  const config = makeBaseRequest(Endpoint.Budgets, "PUT")
   config.data = budget;
 
   const { data, error } = await baseApiCall<boolean>({ request: config, demoModeData: () => true });
@@ -53,7 +54,7 @@ export async function EditBudget(budget: Budget): Promise<boolean> {
 }
 
 export async function DeleteBudgets(ids: number[]): Promise<boolean> {
-  const config = makeBaseRequest("budgets", "DELETE")
+  const config = makeBaseRequest(Endpoint.Budgets, "DELETE")
   config.data = ids;
 
   const { data, error } = await baseApiCall<boolean>({ request: config, demoModeData: () => true });

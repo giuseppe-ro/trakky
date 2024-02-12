@@ -1,5 +1,5 @@
 import { CustomTable } from "@/components/ui/table/table";
-import { Text } from "@/components/ui/text.tsx";
+import { Title } from "@/components/ui/text.tsx";
 import { usePaymentData } from "@/lib/hooks/page-hooks.ts";
 import { YearSelection } from "@/components/ui/data-selector.tsx";
 import { useExpensesTable } from "@/lib/hooks/table-hooks.ts";
@@ -50,7 +50,7 @@ export default function App() {
 
   return (
     <>
-      <Text title={"Expenses"} />
+      <Title title={"Expenses"} />
       <YearSelection
         availableYears={availableYears}
         selectedYear={selectedYear}

@@ -1,5 +1,5 @@
 import { CustomSmallTable, CustomTable } from "@/components/ui/table/table.tsx";
-import { SubTitle, Text } from "@/components/ui/text.tsx";
+import { SubTitle, Title } from "@/components/ui/text.tsx";
 import { useBudgetsData } from "@/lib/hooks/page-hooks.ts";
 import { onTransactionsUpload, useBudgetsTable } from "@/lib/hooks/table-hooks.ts";
 import { FadeLeft, FadeUp } from "@/components/animations/fade.tsx";
@@ -122,7 +122,7 @@ function SettingsPage() {
 
   return (
     <>
-      <Text title={"Settings"} />
+      <Title title={"Settings"} />
       <FadeLeft>
         <div className="flex flex-col mb-4 md:mb-0">
           <SubTitle title={"Backup"} {...{ className: "text-center mt-4" }} />
@@ -139,7 +139,7 @@ function SettingsPage() {
             className={""} />
         </div>
       </FadeLeft>
-      {fetchState.error ? <Text title={fetchState.error.message} />
+      {fetchState.error ? <Title title={fetchState.error.message} />
         : fetchState.loading ? <Spinner className="flex justify-center align-middle my-12" />
           :
           <FadeUp>

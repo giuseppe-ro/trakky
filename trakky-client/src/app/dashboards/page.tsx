@@ -1,5 +1,5 @@
 import { CustomTable } from "@/components/ui/table/table.tsx";
-import { SubTitle, Text } from "@/components/ui/text.tsx";
+import { SubTitle, Title } from "@/components/ui/text.tsx";
 import { usePaymentData } from "@/lib/hooks/page-hooks.ts";
 import { YearSelection } from "@/components/ui/data-selector.tsx";
 import { useExpensesTable } from "@/lib/hooks/table-hooks.ts";
@@ -54,7 +54,7 @@ function DashboardPage() {
 
   return (
     <>
-      <Text title={"Dashboards"} />
+      <Title title={"Dashboards"} />
       <YearSelection
         availableYears={availableYears}
         selectedYear={selectedYear}

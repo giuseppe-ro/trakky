@@ -1,6 +1,6 @@
 import { Card, CardHeader, CardTitle } from "@/components/ui/card.tsx";
 
-export function Text({ title, ...props }: { title?: string }) {
+export function Title({ title, ...props }: { title?: string }) {
   return (
     <div data-aos="fade-zoom-in" data-aos-easing="ease-in-out">
       <Card className="bg-transparent border-none" {...props}>

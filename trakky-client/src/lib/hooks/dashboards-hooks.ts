@@ -5,7 +5,7 @@ import {
   getMonthlyPaymentsSummariesForYear, getYearlyOwnersSummaries,
   getYearlyPaymentsSummaries
 } from "@/lib/summaries.ts";
-import { Budget, fetchBudgets } from "@/infrastructure/budget.tsx";
+import { Budget, getBudgets } from "@/infrastructure/budget.tsx";
 import { OwnerOverview, PaymentOverview } from "@/app/dashboards/components/dashboards.tsx";
 
 export function useDashboards({data, selectedYear}: {data: Payment[] | null, selectedYear: string | null}) {
@@ -15,14 +15,20 @@ export function useDashboards({data, selectedYear}: {data: Payment[] | null, sel
   const [ownersOverview, setOwnersOverview] = useState<OwnerOverview[]>([]);
   const [expensesBreakdown, setExpensesBreakdown] = useState<any[]>()
 
-
   useEffect(() => {
-    fetchBudgets().then((data) => {
-      setBudgets(data);
-    });
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    const fetchData = async () => {
+      setBudgets(await getBudgets(signal));
+    }
+
+      fetchData().then(() => {});
   }, []);
 
   useEffect(() => {
+    // const controller = new AbortController();
+
     if (
       selectedYear === "All" &&
       budgets &&

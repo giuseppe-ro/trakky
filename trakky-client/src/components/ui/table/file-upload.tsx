@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input.tsx";
 import { Button } from "@/components/ui/button.tsx";
 
 export interface FileUploadButtonProps {
-  onUpload: (file: File) => Promise<void>;
+  onUpload: (file: File, signal?: AbortSignal | undefined) => Promise<void>;
   text: string;
   className?: string;
 }

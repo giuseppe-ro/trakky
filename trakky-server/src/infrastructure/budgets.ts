@@ -24,8 +24,6 @@ export async function addBudgets(budgets: Budget[]) {
 
 export async function updateBudget(budget: Budget) {
 
-  console.log("Updating:", budget)
-
   const response = await prisma.budget.update({
     where: { id: budget.id },
     data: budget,

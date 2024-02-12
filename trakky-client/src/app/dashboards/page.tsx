@@ -7,7 +7,7 @@ import { Payment } from "@/infrastructure/payment.tsx";
 import { useEffect, useState } from "react";
 import { ExpensesPieChart, UsersDashboard, ExpensesDashboard } from "@/app/dashboards/components/dashboards.tsx";
 import { useDashboards } from "@/lib/hooks/dashboards-hooks.ts";
-import { FadeLeft } from "@/components/animations/fade.tsx";
+import { FadeLeft, FadeUp } from "@/components/animations/fade.tsx";
 
 function DashboardPage() {
   const [filteredPayments, setFilteredPayments] = useState<Payment[]>([]);
@@ -29,7 +29,6 @@ function DashboardPage() {
   })
 
   useEffect(() => {
-
     const filteredPayments = table
       .getFilteredRowModel()
       .rows
@@ -44,6 +43,7 @@ function DashboardPage() {
         }) as Payment);
 
     setFilteredPayments(filteredPayments);
+
   }, [table.getFilteredRowModel()]);
 
   const {
@@ -61,38 +61,34 @@ function DashboardPage() {
         onYearChange={setSelectedYear}
       />
       <FadeLeft>
-
         <div className="mt-6 text-center">
             <SubTitle title={"Filters"} />
           <CustomTable
-            tableProps={{
-              table,
-              filtersOnly: true,
-              page: "overview",
-            }}
-            {...{ className: "lg:col-span-1" }}
+            table={table}
+            filtersOnly={true}
+            page="dashboard"
           />
         </div>
 
       </FadeLeft>
-
-      <div className="mt-6 text-center mr-4 lg:mx-0">
+      <FadeUp>
+        <div className="mt-6 text-center mr-4 lg:mx-0">
           <div className="lg:grid gap-4 lg:grid-cols-2">
             <div className="mt-4 sm:mt-0">
               <SubTitle title={"Expenses"} />
               <ExpensesDashboard data={paymentOverviews} />
             </div>
             <div className="mt-4 sm:mt-0">
-              <SubTitle title={"Users Comparison"} />
+              <SubTitle title={"Users Comparison"} { ...{ className: "mb-4" }}/>
               <UsersDashboard data={ownersOverview} />
             </div>
-
           </div>
           <div>
             <SubTitle title={"Breakdown"} />
             <ExpensesPieChart data={expensesBreakdown}></ExpensesPieChart>
           </div>
-      </div>
+        </div>
+      </FadeUp>
     </>
   );
 }

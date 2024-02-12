@@ -1,5 +1,5 @@
 import { Payment, PrismaClient } from "@prisma/client";
-import { PrismaClientInitializationError, PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
+import { logger } from "../logger";
 
 const prisma = new PrismaClient();
 
@@ -24,16 +24,22 @@ export async function addPayments(payment: Payment[]) {
 
 export async function updatePayment(payment: Payment) {
 
-  console.log("Updating:", payment)
+  try {
 
-  const response = await prisma.payment.update({
-    where: { id: payment.id },
-    data: payment,
-  });
+    logger.info("updating:", payment)
+    const response = await prisma.payment.update({
+      where: { id: payment.id },
+      data: payment,
+    });
 
-  console.log(response);
+    logger.info(`Updated payment: ${JSON.stringify(payment)}`);
 
-  return response;
+    return response;
+  } catch (e) {
+    logger.error(e);
+  }
+
+  return null;
 }
 
 export async function deletePayments(paymentIds: number[]) {
@@ -43,7 +49,7 @@ export async function deletePayments(paymentIds: number[]) {
     },
   });
 
-  console.log(response);
+  logger.info(`Deleted payment ids: ${JSON.stringify(paymentIds)}`);
 
   return response;
 }

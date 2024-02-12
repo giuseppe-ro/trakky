@@ -17,8 +17,8 @@ export interface Backup {
 }
 
 
-export async function fetchBackup(): Promise<Backup | null> {
-  const config = makeBaseRequest(Endpoint.Backup, "GET")
+export async function fetchBackup(signal?: AbortSignal): Promise<Backup | null> {
+  const config = makeBaseRequest(Endpoint.Backup, "GET", signal)
 
   const { data, error } = await baseApiCall<Backup>({ request: config, demoModeData: mockBackup });
 

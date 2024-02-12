@@ -15,6 +15,7 @@ import { PageContainer } from "@/components/ui/containers.tsx";
 import { Toaster } from "@/components/ui/toaster.tsx";
 import SettingsPage from "@/app/settings/page.tsx";
 import { HealthCheckProvider } from "@/components/ui/health-check-provider.tsx";
+import { AuthenticationCustomProvider } from "@/components/ui/auth/authentication.tsx";
 
 AOS.init({ once: true });
 
@@ -38,15 +39,19 @@ const router = createBrowserRouter([
   },
 ]);
 
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ThemeProvider>
-      <MainNav className="h-8 shadow-amber-700 flex items-center space-x-4 lg:space-x-6" />
-      <HealthCheckProvider />
-        <PageContainer>
-          <RouterProvider router={router} />
-          <Toaster />
-        </PageContainer>
+      <AuthenticationCustomProvider>
+        <MainNav className="h-8 shadow-amber-700 flex items-center space-x-4 lg:space-x-6" >
+          <HealthCheckProvider />
+          <PageContainer>
+            <RouterProvider router={router} />
+            <Toaster />
+          </PageContainer>
+        </MainNav>
+      </AuthenticationCustomProvider>
     </ThemeProvider>
   </React.StrictMode>
 );

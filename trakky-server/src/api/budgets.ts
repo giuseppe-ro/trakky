@@ -7,23 +7,18 @@ import { Budget } from "@prisma/client";
 export const budgetsRouter = express.Router();
 
 budgetsRouter.get("/", (req: Request, res: Response) => {
-  return baseHandler(res, getBudgets);
+  return baseHandler(res, getBudgets, req.body);
 });
 
 budgetsRouter.post("/", (req: Request, res: Response) => {
-  const newValues = req.body as Budget[];
-
-  return baseHandler(res, addBudgets, newValues);
+  console.log("Adding budget:", req.body)
+  return baseHandler(res, addBudgets, req.body);
 });
 
 budgetsRouter.put("/", (req: Request, res: Response) => {
-  const editBudget = req.body as Budget;
-
-  return baseHandler(res, updateBudget, editBudget);
+  return baseHandler(res, updateBudget, req.body);
 });
 
 budgetsRouter.delete("/", (req: Request, res: Response) => {
-  const ids = req.body as number[];
-
-  return baseHandler(res, deleteBudgets, ids);
+  return baseHandler(res, deleteBudgets, req.body);
 });

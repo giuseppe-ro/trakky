@@ -7,7 +7,7 @@ import { Type } from "@prisma/client";
 export const typesRouter = express.Router();
 
 typesRouter.get("/", (req: Request, res: Response) => {
-  return baseHandler(res, getTypes);
+  return baseHandler(res, getTypes, req.body);
 });
 
 typesRouter.post("/", (req: Request, res: Response) => {

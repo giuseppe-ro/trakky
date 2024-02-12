@@ -1,5 +1,5 @@
 import { makeTypes } from "@/lib/makeData.ts";
-import { baseApiCall, makeBaseRequest } from "@/infrastructure/base-api.ts";
+import { baseApiCall, baseRequestData, makeBaseRequest } from "@/infrastructure/base-api.ts";
 import { Endpoint } from "@/constants.ts";
 
 export interface Type {
@@ -7,8 +7,9 @@ export interface Type {
   name: string;
 }
 
-export async function fetchTypes(): Promise<Type[]> {
-  const config = makeBaseRequest(Endpoint.Types, "GET")
+export async function getTypes(signal?: AbortSignal) {
+  const config = makeBaseRequest(Endpoint.Types, "GET");
+  config.signal = signal;
 
   const { data, error } = await baseApiCall<Type[]>({ request: config, demoModeData: makeTypes });
 
@@ -16,12 +17,12 @@ export async function fetchTypes(): Promise<Type[]> {
     console.log("Error while getting types:", error);
   }
 
-  return data ?? [];
+  return{ data: data ?? [], error };
 }
 
 export async function AddTypes(types: Type[]): Promise<boolean> {
   const config = makeBaseRequest(Endpoint.Types, "POST")
-  config.data = types;
+  config.data = baseRequestData(types);
 
   const { data, error } = await baseApiCall<boolean>({ request: config });
 
@@ -34,7 +35,7 @@ export async function AddTypes(types: Type[]): Promise<boolean> {
 
 export async function DeleteTypes(ids: number[]): Promise<boolean> {
   const config = makeBaseRequest(Endpoint.Types, "DELETE")
-  config.data = ids;
+  config.data = baseRequestData(ids);
 
   const { data, error } = await baseApiCall<boolean>({ request: config });
 

@@ -2,7 +2,7 @@ import { makeOwners } from "@/lib/makeData.ts";
 import axios from "axios";
 
 import { Endpoint } from "@/constants.ts";
-import { baseApiCall, makeBaseRequest } from "@/infrastructure/base-api.ts";
+import { baseApiCall, baseRequestData, makeBaseRequest } from "@/infrastructure/base-api.ts";
 
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
@@ -11,22 +11,23 @@ export interface Owner {
   name: string;
 }
 
-export async function fetchOwners(): Promise<Owner[]> {
-  const config = makeBaseRequest(Endpoint.Owners, "GET")
+export interface ErrorResponse {
+  message: string;
+}
 
-  const { data, error } = await baseApiCall<Owner[]>({ request: config, demoModeData: makeOwners });
+export async function getOwners(signal?: AbortSignal) {
+  const config = makeBaseRequest(Endpoint.Owners, "GET", signal);
 
-  if (error) {
-    console.log("Error while getting owners:", error);
-  }
+  const { data, error} = await baseApiCall<Owner[]>({ request: config, demoModeData: makeOwners });
 
-  return data ?? [];
+  return { data: data ?? [], error };
 }
 
 
-export async function AddOwners(owners: Owner[]): Promise<boolean> {
-  const config = makeBaseRequest(Endpoint.Owners, "POST")
-  config.data = owners;
+export async function AddOwners(owners: Owner[], signal?: AbortSignal): Promise<boolean> {
+  const config = makeBaseRequest(Endpoint.Owners, "POST", signal)
+
+  config.data = baseRequestData(owners);
 
   const { data, error } = await baseApiCall<boolean>({ request: config, demoModeData: () => true });
 
@@ -39,7 +40,7 @@ export async function AddOwners(owners: Owner[]): Promise<boolean> {
 
 export async function EditOwner(owner: Owner): Promise<boolean> {
   const config = makeBaseRequest(Endpoint.Owners, "PUT")
-  config.data = owner;
+  config.data = baseRequestData(owner);
 
   const { data, error } = await baseApiCall<boolean>({ request: config, demoModeData: () => true });
 
@@ -50,9 +51,9 @@ export async function EditOwner(owner: Owner): Promise<boolean> {
   return data ?? false;
 }
 
-export async function DeleteOwners(ids: number[]): Promise<boolean> {
-  const config = makeBaseRequest(Endpoint.Owners, "DELETE")
-  config.data = ids;
+export async function DeleteOwners(ids: number[], signal?: AbortSignal): Promise<boolean> {
+  const config = makeBaseRequest(Endpoint.Owners, "DELETE", signal)
+  config.data = baseRequestData(ids);
 
   const { data, error } = await baseApiCall<boolean>({ request: config, demoModeData: () => true });
 

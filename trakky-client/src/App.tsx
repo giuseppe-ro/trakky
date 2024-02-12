@@ -10,6 +10,8 @@ import { PaymentForm } from "@/components/ui/table/payment-form.tsx";
 import { TableActionMenu } from "@/components/ui/table/table-action-menu.tsx";
 import { DeletePaymentsDialog } from "@/components/ui/table/delete-popup.tsx";
 import { Payment } from "@/infrastructure/payment.tsx";
+import { FadeUp } from "@/components/animations/fade.tsx";
+import { StorageKey } from "@/constants.ts";
 
 
 export default function App() {
@@ -33,13 +35,14 @@ export default function App() {
   })
 
   useEffect(() => {
-    const activeColumns = localStorage.getItem("expenses_active_columns");
+    `StorageKey`
+    const activeColumns = localStorage.getItem(`expenses_${StorageKey.ActiveColumns}`);
 
     if (activeColumns) {
       try {
         table.setColumnVisibility(JSON.parse(activeColumns));
       } catch (e) {
-        localStorage.removeItem("expenses_active_columns")
+        localStorage.removeItem(`expenses_${StorageKey.ActiveColumns}`)
         console.log(e);
       }
     }
@@ -60,14 +63,14 @@ export default function App() {
           selectedYear={selectedYear ?? ""}
         />
       </Containers>
-      <div className="mt-4">
-        <CustomTable
-          tableProps={{
-            table,
-            canHideRows: true,
-            filtersOnly: false,
-            page: "home",
-            tableActionMenu:
+      <FadeUp>
+        <div className="mt-4">
+          <CustomTable
+            table={table}
+            canHideRows={true}
+            filtersOnly={false}
+            page="home"
+            tableActionMenu={
               <Containers className="transition">
                 <TableActionMenu
                   exportName={"Payments"}
@@ -89,10 +92,12 @@ export default function App() {
                     ></DeletePaymentsDialog>
                   }
                 />
-              </Containers>,
-          }}
-        />
-      </div>
+              </Containers>
+            }
+          />
+        </div>
+
+      </FadeUp>
     </>
   );
 }

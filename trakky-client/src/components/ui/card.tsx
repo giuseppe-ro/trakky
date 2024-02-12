@@ -3,6 +3,7 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button.tsx";
 import { demoMode } from "@/constants.ts";
+import Spinner from "@/components/ui/spinner.tsx";
 
 const Card = React.forwardRef<
   HTMLDivElement,
@@ -77,38 +78,41 @@ CardFooter.displayName = "CardFooter";
 
 const CardFormFooter = (({
                            isSubmitting,
-                           isSubmitted,
+                           submitted,
+                           isSubmittedSuccessfully,
                            isError,
-                           isSuccess
                      }: {
   isSubmitting: boolean;
-  isSubmitted: boolean;
+  submitted: boolean;
+  isSubmittedSuccessfully: boolean;
   isError: boolean;
-  isSuccess: boolean;
 }) => {
+
   return (
     <CardFooter className="flex flex-col justify-between">
+      {isSubmitting && ( <Spinner className="w-6 h-6" /> )}
       {!isSubmitting && (
         <Button
-          disabled={!isError && isSuccess || demoMode}
+          disabled={demoMode || isSubmitting || (isSubmittedSuccessfully && !isError) }
           type="submit"
           variant="outline"
           className={cn(
             "w-full border transition-none border-green-500 hover:bg-green-500",
-            isSubmitted &&
-            isError &&
-            "border-red-700 hover:border-red-950 hover:bg-red-700",
-            isSuccess &&
-            !isError &&
-            !demoMode &&
-            "border border-green-500 hover:border-green-950 bg-green-500 hover:bg-green-500",
-            isSuccess &&
+            isSubmittedSuccessfully &&
             demoMode &&
             "border border-yellow-500 bg-yellow-500",
+            isError && submitted &&
+            "border border-destructive bg-destructive hover:bg-destructive shake-animation",
           )}
         >
-          {isSuccess && !isError ? "Saved" : "Save"}
+          { isSubmittedSuccessfully && !isError ? "Saved! ✅" : "Save"}
         </Button>
+      )}
+      {isError && (
+        <p className="text-sm font-medium text-destructive m-2">
+          Error! Could not save changes.
+          Try again.
+        </p>
       )}
       {demoMode && (
         <p className="text-sm font-medium text-destructive m-2">

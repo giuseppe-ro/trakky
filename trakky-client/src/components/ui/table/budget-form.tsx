@@ -27,10 +27,10 @@ import { cn } from "@/lib/utils.ts";
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar.tsx";
 import React from "react";
-import axios from "axios";
-import { formToast } from "@/components/ui/use-toast.ts";
+import { resultToast } from "@/components/ui/use-toast.ts";
 import { AddBudgets, Budget, EditBudget } from "@/infrastructure/budget.tsx";
 import { firstOfTheMonthDateString } from "@/lib/formatter.ts";
+import { errorMessage } from "@/components/ui/table/form-error-message.ts";
 
 const customErrorMap: z.ZodErrorMap = (issue, ctx) => {
   if (issue.code === z.ZodIssueCode.invalid_type) {
@@ -44,10 +44,6 @@ const customErrorMap: z.ZodErrorMap = (issue, ctx) => {
 
 z.setErrorMap(customErrorMap);
 
-
-
-axios.defaults.headers.post["Content-Type"] = "application/json";
-axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
 
 export function BudgetForm({
   title,
@@ -73,7 +69,6 @@ export function BudgetForm({
   });
 
   const [isError, setIsError] = React.useState(false);
-  const [isSuccess, setIsSuccess] = React.useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -93,7 +88,6 @@ export function BudgetForm({
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsError(false);
 
-    let success: boolean;
     const budget = values as unknown as Budget;
 
     if (editValues === undefined) {
@@ -103,31 +97,39 @@ export function BudgetForm({
             date.getTime() === new Date(firstOfTheMonthDateString(new Date(budget.date))).getTime());
 
         if (budgetExists) {
-            form.setError("date", {
-            type: "manual",
-            message: "Budget already exists for this date",
+              form.setError("date", {
+                type: "manual",
+                message: "Budget already exists for this date",
             });
             return;
         }
 
-      budget.date = format(values.date, "yyyy-MM-dd");
-      success = await AddBudgets([budget]);
+      const {data, error} = await AddBudgets([budget]);
+      if(error || !data) {
+        return errorMessage(setIsError, error?.error);
+      }
+
     } else {
       budget.id = editValues.id;
-      success = await EditBudget(budget);
+      const {data, error} = await EditBudget(budget);
+
+      if(error || !data) {
+        return errorMessage(setIsError, error?.error);
+      }
     }
 
-    formToast({
-      success,
-      form,
-      refresh,
-      setIsSuccess,
-      setIsError,
-      successMessage: "Budget added!",
-      errorMessage: "Couldn't save Budget!",
-      editValues,
-      fieldsToReset: ["budget", "maxBudget"],
+    resultToast({
+      isError: false,
+      message: "Transaction saved",
     });
+
+    setTimeout(() => {
+      form.reset({ }, { keepValues: true });
+      form.clearErrors();
+      refresh(true);
+
+    }, 1000);
+
   }
 
   return (
@@ -141,6 +143,7 @@ export function BudgetForm({
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <div className="grid grid-cols-1">
                 <FormField
+                  disabled={form.formState.isSubmitting || form.formState.isSubmitSuccessful}
                   control={form.control}
                   name="date"
                   render={({ field }) => (
@@ -152,6 +155,7 @@ export function BudgetForm({
                           )}
                         >
                           <Button
+                            disabled={form.formState.isSubmitting || form.formState.isSubmitted}
                             variant={"outline"}
                             className={cn(
                               "w-full justify-start text-left font-normal",
@@ -187,6 +191,7 @@ export function BudgetForm({
                   render={({ field }) => (
                     <Field name={"Budget"}>
                       <Input
+                        disabled={form.formState.isSubmitting || form.formState.isSubmitted}
                         inputMode="decimal"
                         type="number"
                         step="any"
@@ -208,6 +213,7 @@ export function BudgetForm({
                   render={({ field }) => (
                     <Field name={"Max Budget"}>
                       <Input
+                        disabled={form.formState.isSubmitting || form.formState.isSubmitted}
                         inputMode="decimal"
                         type="number"
                         step="any"
@@ -226,9 +232,9 @@ export function BudgetForm({
               </div>
               <CardFormFooter
                 isSubmitting={form.formState.isSubmitting}
-                isSubmitted={form.formState.isSubmitted}
+                submitted={form.formState.isSubmitted}
+                isSubmittedSuccessfully={form.formState.isSubmitSuccessful}
                 isError={isError}
-                isSuccess={isSuccess}
               />
             </form>
           </CardContent>

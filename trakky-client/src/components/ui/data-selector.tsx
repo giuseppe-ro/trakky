@@ -2,7 +2,7 @@ import { Selection } from "@/components/ui/select.tsx";
 import { FadeRight } from "@/components/animations/fade.tsx";
 import { useEffect } from "react";
 import { cn } from "@/lib/utils.ts";
-import { demoMode } from "@/constants.ts";
+import { demoMode, StorageKey } from "@/constants.ts";
 
 export function YearSelection({
   availableYears,
@@ -15,12 +15,12 @@ export function YearSelection({
 }) {
 
   const changeYear = (year: string) => {
-    localStorage.setItem("selected_year", year);
+    localStorage.setItem(StorageKey.SelectedYear, year);
     onYearChange(year);
   }
 
   const year = (): string | null => {
-    const storedYear = localStorage.getItem("selected_year");
+    const storedYear = localStorage.getItem(StorageKey.SelectedYear);
     if (storedYear !== null) {
       return storedYear;
     }
@@ -29,14 +29,14 @@ export function YearSelection({
   }
 
   useEffect(() => {
-    const year = localStorage.getItem("selected_year");
+    const year = localStorage.getItem(StorageKey.SelectedYear);
 
     if (year) {
       try {
         console.log("setting year:", year)
         onYearChange(year);
       } catch (e) {
-        localStorage.removeItem("selected_year")
+        localStorage.removeItem(StorageKey.SelectedYear)
         console.log(e);
       }
     }

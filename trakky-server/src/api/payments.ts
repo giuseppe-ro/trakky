@@ -1,7 +1,6 @@
 import express, { Request, Response } from "express";
 import { addPayments, deletePayments, getPayments, updatePayment } from "../infrastructure/payments";
 import { baseHandler } from "./base";
-import { Payment } from "@prisma/client";
 import * as z from "zod";
 import fs from 'fs';
 import multer from 'multer';
@@ -26,27 +25,19 @@ const upload = multer({ dest: os.tmpdir() });
 
 
 paymentsRouter.get("/", (req: Request, res: Response) => {
-  return baseHandler(res, getPayments);
+  return baseHandler(res, getPayments, req.body);
 });
 
 paymentsRouter.post("/", (req: Request, res: Response) => {
-  console.log("Post payments:", req.body);
-
-  const newValues = req.body as Payment[];
-      
-  return baseHandler(res, addPayments, newValues);
+  return baseHandler(res, addPayments, req.body);
 });
 
 paymentsRouter.put("/", (req: Request, res: Response) => {
-  const editedValue = req.body as Payment;
-
-  return baseHandler(res, updatePayment, editedValue);
+  return baseHandler(res, updatePayment, req.body);
 });
 
 paymentsRouter.delete("/", (req: Request, res: Response) => {
-  const ids = req.body as number[];
-
-  return baseHandler(res, deletePayments, ids);
+  return baseHandler(res, deletePayments, req.body);
 });
 
 paymentsRouter.post("/upload", upload.single('file'), (req: Request, res: Response) => {
@@ -63,10 +54,10 @@ paymentsRouter.post("/upload", upload.single('file'), (req: Request, res: Respon
 
       try {
           console.log("Parsing file..")
-          const parsedData = paymentsSchema.parse(JSON.parse(data));
-          console.log("File parsed: ", parsedData)
+          const payments = paymentsSchema.parse(JSON.parse(data));
+          console.log("File parsed: ", payments)
 
-          return baseHandler(res, addPayments, parsedData);
+          return baseHandler(res, addPayments, {data: payments, user: req.headers["user"]});
 
       } catch (err) {
           console.log("Err")

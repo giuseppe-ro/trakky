@@ -23,21 +23,18 @@ import {
 } from "@/components/ui/select.tsx";
 import { Table } from "@tanstack/react-table";
 import { ExportDropdownMenu } from "@/components/ui/table/download-dropdown.tsx";
-import { ReactNode } from "react";
+import { memo, ReactNode } from "react";
 
-export function TableActionMenu({
-  table,
-  onRefresh,
-  addForm,
-  deleteForm,
-  exportName
-}: {
+interface TableActionMenuProps {
   table: Table<any>;
   onRefresh: (flushPaymentsBeforeRefresh?: boolean) => void;
   addForm: ReactNode;
   deleteForm: ReactNode;
   exportName: string;
-}) {
+}
+
+export const TableActionMenu = memo((props: TableActionMenuProps) => {
+  const { table, onRefresh, addForm, deleteForm, exportName } = props;
 
   return (
     <div className="flex justify-between items-center">
@@ -161,4 +158,4 @@ export function TableActionMenu({
       </div>
     </div>
   );
-}
+});

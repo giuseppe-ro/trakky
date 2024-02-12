@@ -18,6 +18,7 @@ import React, { useCallback, useState } from "react";
 import { formatCurrency } from "@/lib/formatter.ts";
 import { AmountSummary } from "@/components/ui/amount-summary.tsx";
 import { Checkbox } from "@/components/ui/checkbox.tsx";
+import { StorageKey } from "@/constants.ts";
 
 const colors = [
   "#0bb4ff",
@@ -94,21 +95,21 @@ const OwnersOverviewTooltip = ({ active, payload, label }: any) => {
 };
 
 export function ExpensesDashboard({ data, ...props }: { data: PaymentOverview[] }) {
-  const isMaxBudgetLineSet = JSON.parse(localStorage.getItem("max_budget_line") || "true");
+  const isMaxBudgetLineSet = JSON.parse(localStorage.getItem(StorageKey.ShowMaxBudget) || "true");
   const [maxBudgetsLine, setMaxBudgetsLine] = useState<boolean>(isMaxBudgetLineSet);
 
-  const isBudgetLineSet = JSON.parse(localStorage.getItem("budget_line") || "true");
+  const isBudgetLineSet = JSON.parse(localStorage.getItem(StorageKey.ShowBudget) || "true");
   const [budgetsLine, setBudgetsLine] = useState<boolean>(isBudgetLineSet);
 
   data.sort((a, b) => a.index - b.index);
 
   const onBudgetsCheckBoxClick = () => {
-    localStorage.setItem("budget_line", String(!budgetsLine));
+    localStorage.setItem(StorageKey.ShowBudget, String(!budgetsLine));
     setBudgetsLine(!budgetsLine);
   }
 
   const onMaxBudgetsCheckBoxClick = () => {
-    localStorage.setItem("max_budget_line", String(!maxBudgetsLine));
+    localStorage.setItem(StorageKey.ShowMaxBudget, String(!maxBudgetsLine));
     setMaxBudgetsLine(!maxBudgetsLine);
   }
 

@@ -6,7 +6,6 @@ import type {
   ToastProps,
 } from "@/components/ui/toast"
 import { demoMode } from "@/constants.ts";
-import { UseFormReturn } from "react-hook-form";
 
 const TOAST_LIMIT = 1
 const TOAST_REMOVE_DELAY = 2000
@@ -93,8 +92,6 @@ export const reducer = (state: State, action: Action): State => {
     case "DISMISS_TOAST": {
       const { toastId } = action
 
-      // ! Side effects ! - This could be extracted into a dismissToast() action,
-      // but I'll keep it here for simplicity
       if (toastId) {
         addToRemoveQueue(toastId)
       } else {
@@ -246,65 +243,27 @@ function valueExistsToast(existingValues: string[], value: string): boolean {
   }
 }
 
-function formToast(
+function resultToast(
   {
-    success,
-    form,
-    refresh,
-    setIsSuccess,
-    setIsError,
-    successMessage,
-    errorMessage,
-    editValues,
-    fieldsToReset,
-    focusOn
+    isError,
+    message,
   }: {
-    success: boolean,
-    form:  UseFormReturn<any>,
-    refresh: (flushBeforeRefresh: boolean) => void;
-    setIsSuccess: (isSuccess: boolean) => void;
-    setIsError: (isError: boolean) => void;
-    successMessage: string;
-    errorMessage: string;
-    editValues?: any;
-    fieldsToReset: string[];
-    focusOn?: string;
+    isError: boolean,
+    message: string;
   }) {
-
-  if (demoMode) {
-    toast({
-      title: "Data cannot be modified in demo mode!",
-      variant: "warning"
-    })
-  } else if (success) {
-    setIsSuccess(true);
-    if (editValues === undefined) {
-      fieldsToReset.forEach((field) => {
-        form.resetField(field);
-      });
-
-      if(focusOn !== undefined) {
-        form.setFocus(focusOn);
-      }
-
-      toast({
-        description: `${successMessage}`,
-        variant: "success",
-      })
-    }
-    setTimeout(() => {
-      refresh(false);
-      setIsSuccess(false);
-    }, 1000);
-  } else {
+  if(isError) {
     toast({
       title: "Error",
-      description: `${errorMessage}`,
+      description: message,
       variant: "destructive",
     })
-    setIsError(true);
+  } else {
+    toast({
+      variant: "success",
+      description: message,
+    })
   }
 }
 
 
-export { useToast, toast, formToast, successFailToast, valueExistsToast }
+export { useToast, toast, successFailToast, valueExistsToast, resultToast }

@@ -1,23 +1,24 @@
 import { useEffect, useState } from "react";
-import { FetchPayments, Payment } from "@/infrastructure/payment.tsx";
+import { GetPayments, Payment } from "@/infrastructure/payment.tsx";
 import { getAvailableYears } from "@/lib/summaries.ts";
-import { Budget, fetchBudgets } from "@/infrastructure/budget.tsx";
+import { Budget, getBudgets } from "@/infrastructure/budget.tsx";
+import { StorageKey } from "@/constants.ts";
 
 export function usePaymentData() {
   const [payments, setPayments] = useState<Payment[]>([]);
   const [availableYears, setAvailableYears] = useState<string[]>([]);
   const [selectedYear, setSelectedYear] = useState<string | null>("");
 
-  async function refreshData(flushPaymentsBeforeRefresh: boolean = true) {
+  async function refreshData(signal?: AbortSignal, flushPaymentsBeforeRefresh: boolean = true) {
     if(flushPaymentsBeforeRefresh) setPayments([]);
 
-    const data = await FetchPayments();
+    const data = await GetPayments(signal);
     setPayments(data);
     const years = getAvailableYears(data);
     years.push("All");
     setAvailableYears(years);
 
-    const storedYear = localStorage.getItem("selected_year");
+    const storedYear = localStorage.getItem(StorageKey.SelectedYear);
     if (storedYear && years.includes(storedYear)) {
       setSelectedYear(storedYear);
     } else {
@@ -26,9 +27,13 @@ export function usePaymentData() {
   }
 
   useEffect(() => {
-    refreshData().then(() => {
-      console.log("Refreshed payments data");
-    });
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+      refreshData(signal).then(() => {
+        console.log("Refreshed payments data");
+      });
+
   }, []);
 
   return {
@@ -42,19 +47,22 @@ export function usePaymentData() {
 
 export function useBudgetsData() {
   const [budgets, setBudgets] = useState<Budget[]>([]);
+  async function refreshData(flushBeforeRefresh: boolean = true, signal?: AbortSignal) {
 
-  async function refreshData(flushBeforeRefresh: boolean = true) {
     if(flushBeforeRefresh) setBudgets([]);
 
-    const data = await fetchBudgets();
+    const data = await getBudgets(signal);
 
     setBudgets(data);
   }
 
   useEffect(() => {
-    refreshData().then(() => {
-      console.log("Refreshed payments data.");
-    });
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+      refreshData(true, signal).then (() => {
+
+      });
   }, []);
 
   return {

@@ -7,17 +7,13 @@ import { Owner } from "@prisma/client";
 export const ownersRouter = express.Router();
 
  ownersRouter.get("/", (req: Request, res: Response) => {
-  return baseHandler(res, getOwners);
+  return baseHandler(res, getOwners, req.body);
 });
 
 ownersRouter.post("/", (req: Request, res: Response) => {
-  const newValues = req.body as Owner[];
-
-  return baseHandler(res, addOwners, newValues);
+  return baseHandler(res, addOwners, req.body);
 });
 
 ownersRouter.delete("/", (req: Request, res: Response) => {
-  const ids = req.body as number[];
-
-  return baseHandler(res, deleteOwners, ids);
+  return baseHandler(res, deleteOwners, req.body);
 });

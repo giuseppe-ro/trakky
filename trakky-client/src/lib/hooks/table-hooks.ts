@@ -33,7 +33,7 @@ export function useExpensesTable({
                           }: {
   data: Payment[] | null;
   selectedYear: string | null;
-  refreshData(flushBeforeRefresh?: boolean): void
+  refreshData(signal?: AbortSignal, flushBeforeRefresh?: boolean): void
 }) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
@@ -107,13 +107,13 @@ export function useExpensesTable({
     debugColumns: false,
   });
 
-  async function onDeleteConfirmed() {
+  async function onDeleteConfirmed(signal?: AbortSignal) {
     console.log("Delete clicked!");
     const ids = table
       .getSelectedRowModel()
       .rows.map((row: any) => row.original.id) as number[];
 
-    const deleted = await DeletePayments(ids);
+    const deleted = await DeletePayments(ids, signal);
     
     if(demoMode) {
       toast({
@@ -121,7 +121,7 @@ export function useExpensesTable({
         variant: "warning"
       })
     } else if (deleted) {
-      refreshData(false);
+      refreshData(signal, false);
       table.resetRowSelection();
       toast({
         title: "Transactions deleted!",
@@ -140,9 +140,9 @@ export function useExpensesTable({
     onRefresh(false).then(() => { });
   }
 
-  async function onRefresh(flushPaymentsBeforeRefresh: boolean = true) {
+  async function onRefresh(flushPaymentsBeforeRefresh: boolean = true, signal?: AbortSignal) {
     table.resetColumnFilters();
-    refreshData(flushPaymentsBeforeRefresh);
+    refreshData(signal, flushPaymentsBeforeRefresh);
   }
 
   return {
@@ -165,6 +165,10 @@ export function useBudgetsTable({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
   const [filteredData, setFilteredData] = useState<Budget[]>([]);
+
+  const controller = new AbortController();
+  const signal = controller.signal;
+
 
   useEffect(() => {
     if (data !== null) {
@@ -214,7 +218,7 @@ export function useBudgetsTable({
       .getSelectedRowModel()
       .rows.map((row: any) => row.original.id) as number[];
 
-    const deleted = await DeleteBudgets(ids);
+    const deleted = await DeleteBudgets(ids, signal);
 
     if(demoMode) {
       toast({
@@ -257,6 +261,7 @@ export function useBudgetsTable({
 
 export async function onTransactionsUpload(
   file: File,
+  signal?: AbortSignal,
   onRefresh?: (flushBeforeRefresh?: boolean) => void
 ): Promise<void> {
 
@@ -267,7 +272,6 @@ export async function onTransactionsUpload(
     })
     return;
   }
-
   const reader = new FileReader();
 
   const paymentsSchema = z.array(
@@ -308,7 +312,7 @@ export async function onTransactionsUpload(
   reader.readAsText(file);
 
   try {
-    const uploadResult = await UploadPayments(file);
+    const uploadResult = await UploadPayments(file, signal);
 
     if(uploadResult === null) {
       toast({

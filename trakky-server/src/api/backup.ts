@@ -17,5 +17,5 @@ async function getBackup() {
 export const backupRouter = express.Router();
 
 backupRouter.get("/", (req: Request, res: Response) => {
-  return baseHandler(res, getBackup);
+  return baseHandler(res, getBackup, req.body);
 });

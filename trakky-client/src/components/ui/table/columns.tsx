@@ -8,7 +8,7 @@ import { Budget } from "@/infrastructure/budget.tsx";
 import { BudgetForm } from "@/components/ui/table/budget-form.tsx";
 
 
-export const PaymentColumnDefinition = (refresh: (flushPaymentsBeforeRefresh: boolean) => void): ColumnDef<Payment, number | string>[] => {
+export const PaymentColumnDefinition = (refresh: (signal?: AbortSignal, flushPaymentsBeforeRefresh?: boolean) => void): ColumnDef<Payment, number | string>[] => {
 
   return [
     {

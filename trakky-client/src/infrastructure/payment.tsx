@@ -1,6 +1,6 @@
 import { mockPayments } from "@/lib/makeData.ts";
 import { Endpoint } from "@/constants.ts";
-import { baseApiCall, makeBaseRequest } from "@/infrastructure/base-api.ts";
+import { baseApiCall, baseRequestData, makeBaseRequest } from "@/infrastructure/base-api.ts";
 
 
 export interface Payment {
@@ -12,8 +12,8 @@ export interface Payment {
   date: string;
 }
 
-export async function FetchPayments(): Promise<Payment[]> {
-  const config = makeBaseRequest(Endpoint.Payments, "GET")
+export async function GetPayments(signal?: AbortSignal): Promise<Payment[]> {
+  const config = makeBaseRequest(Endpoint.Payments, "GET", signal)
 
   const { data, error } = await baseApiCall<Payment[]>({ request: config, demoModeData: mockPayments });
 
@@ -24,11 +24,11 @@ export async function FetchPayments(): Promise<Payment[]> {
   return data ?? [];
 }
 
-export async function AddPayments(payments: Payment[]): Promise<boolean> {
+export async function AddPayments(payments: Payment[], signal?: AbortSignal) {
   console.log("AddPayments", payments);
-  const config = makeBaseRequest(Endpoint.Payments, "POST")
+  const config = makeBaseRequest(Endpoint.Payments, "POST", signal)
 
-  config.data = payments;
+  config.data = baseRequestData(payments);
 
   const { data, error } = await baseApiCall<boolean>({ request: config, demoModeData: () => true });
 
@@ -36,12 +36,12 @@ export async function AddPayments(payments: Payment[]): Promise<boolean> {
     console.log("Error while editing payments:", error);
   }
 
-  return data ?? false;
+  return { data: data ?? false, error };
 }
 
-export async function UploadPayments(file: File): Promise<null | string> {
+export async function UploadPayments(file: File, signal?: AbortSignal): Promise<null | string> {
 
-  const config = makeBaseRequest(`${Endpoint.Payments}/upload`, "POST")
+  const config = makeBaseRequest(`${Endpoint.Payments}/upload`, "POST", signal)
 
   const formData = new FormData();
   formData.append("file", file);
@@ -61,9 +61,9 @@ export async function UploadPayments(file: File): Promise<null | string> {
   return data ? null : error?.error ?? "Unknown error";
 }
 
-export async function EditPayment(payment: Payment): Promise<boolean> {
-  const config = makeBaseRequest(Endpoint.Payments, "PUT")
-  config.data = payment;
+export async function EditPayment(payment: Payment, signal?: AbortSignal) {
+  const config = makeBaseRequest(Endpoint.Payments, "PUT", signal)
+  config.data = baseRequestData(payment);
 
   const { data, error } = await baseApiCall<boolean>({ request: config, demoModeData: () => true });
 
@@ -71,12 +71,13 @@ export async function EditPayment(payment: Payment): Promise<boolean> {
     console.log("Error while editing payments:", error);
   }
 
-  return data ?? false;
+  return { data: data ?? false, error };
 }
 
-export async function DeletePayments(ids: number[]): Promise<boolean> {
-  const config = makeBaseRequest(Endpoint.Payments, "DELETE")
-  config.data = ids;
+export async function DeletePayments(ids: number[], signal?: AbortSignal) {
+  const config = makeBaseRequest(Endpoint.Payments, "DELETE", signal)
+
+  config.data = baseRequestData(ids);
 
   const { data, error } = await baseApiCall<boolean>({ request: config, demoModeData: () => true });
 
@@ -84,5 +85,5 @@ export async function DeletePayments(ids: number[]): Promise<boolean> {
     console.log("Error while delete payments:", error);
   }
 
-  return data ?? false;
+  return { data: data ?? false, error };
 }

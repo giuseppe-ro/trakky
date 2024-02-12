@@ -9,10 +9,10 @@ import { useEffect, useState } from "react";
 import { ExpensesPieChart, UsersDashboard, ExpensesDashboard } from "@/app/dashboards/components/dashboards.tsx";
 import { useDashboards } from "@/lib/hooks/dashboards-hooks.ts";
 import { Containers } from "@/components/ui/containers.tsx";
-import { FadeLeft } from "@/components/animations/fade.tsx";
 import { PaymentForm } from "@/components/ui/table/payment-form.tsx";
 import { TableActionMenu } from "@/components/ui/table/table-action-menu.tsx";
 import { DeletePaymentsDialog } from "@/components/ui/table/delete-popup.tsx";
+import { FadeUp } from "@/components/animations/fade.tsx";
 
 function OverviewPage() {
   const [filteredPayments, setFilteredPayments] = useState<Payment[]>([]);
@@ -37,7 +37,6 @@ function OverviewPage() {
   })
 
   useEffect(() => {
-
     const filteredPayments = table
       .getFilteredRowModel()
       .rows
@@ -52,6 +51,7 @@ function OverviewPage() {
         }) as Payment);
 
     setFilteredPayments(filteredPayments);
+
   }, [table.getFilteredRowModel()]);
 
   const {
@@ -74,65 +74,61 @@ function OverviewPage() {
           totalsPerYear={totalsPerYear}
           selectedYear={selectedYear ?? ""}
         />
-
       </Containers>
-      <FadeLeft>
-
-        <div className="lg:grid gap-4 lg:grid-cols-2 mt-4 text-center">
+      <FadeUp>
+        <div className="mt-6 text-center">
           <CustomTable
-            tableProps={{
-              table,
-              canHideRows: true,
-              filtersOnly: false,
-              page: "overview",
-              tableActionMenu:
-                <Containers className="transition">
-                  <TableActionMenu
-                    exportName={"Payments"}
-                    table={table}
-                    onRefresh={onRefresh}
-                    addForm={ <PaymentForm
+            table={table}
+            canHideRows={true}
+            filtersOnly={false}
+            page="overview"
+            tableActionMenu={
+              <Containers className="transition">
+                <TableActionMenu
+                  exportName={"Payments"}
+                  table={table}
+                  onRefresh={onRefresh}
+                  addForm={
+                    <PaymentForm
                       refresh={() => onRefresh(false)}
                       title={"Add New Transaction"}
-                    ></PaymentForm> }
-                    deleteForm={
-                      <DeletePaymentsDialog
-                        tooltipText={"Delete selected rows"}
-                        onDeleteConfirmed={onDeleteConfirmed}
-                        entries={table
-                          .getSelectedRowModel()
-                          .rows.map((row: any) => row.original as Payment)}
-                      ></DeletePaymentsDialog>
-                    }
-                  />
-                </Containers>,
-            }}
-            {...{ className: "lg:col-span-1" }}
+                    ></PaymentForm>
+                  }
+                  deleteForm={
+                    <DeletePaymentsDialog
+                      tooltipText={"Delete selected rows"}
+                      onDeleteConfirmed={onDeleteConfirmed}
+                      entries={table
+                        .getSelectedRowModel()
+                        .rows.map((row: any) => row.original as Payment)}
+                    ></DeletePaymentsDialog>
+                  }
+                />
+              </Containers>
+            }
           />
-
-          <div className={"lg:col-span-1 pt-4 md:pt-0 overflow-x-scroll"}>
-            <div className="mt-4 sm:mt-0 mr-4">
+        </div>
+        <div className="mt-6 text-center mr-4 lg:mx-0">
+          <div className="lg:grid gap-4 lg:grid-cols-2">
+            <div className="mt-4 sm:mt-0">
               <SubTitle title={"Expenses"} />
               <ExpensesDashboard data={paymentOverviews} />
             </div>
+            <div className="mt-4 sm:mt-0">
+              <SubTitle title={"Users Comparison"} { ...{ className: "mb-4" }} />
+              <UsersDashboard data={ownersOverview} />
+            </div>
           </div>
         </div>
-      </FadeLeft>
-
-      <div className="mt-6 text-center mr-4 lg:mx-0">
-        <div className="lg:grid gap-4 lg:grid-cols-2">
-          <div className="mt-4 sm:mt-0">
-            <SubTitle title={"Users Comparison"} />
-            <UsersDashboard data={ownersOverview} />
-          </div>
-          <div className="mt-6 lg:mt-0">
-            <SubTitle title={"Breakdown"} />
-            <ExpensesPieChart data={expensesBreakdown}></ExpensesPieChart>
+        <div className="mt-6 text-center mr-4 lg:mx-0">
+          <div className="lg:grid gap-4 lg:grid-cols-1">
+            <div className="mt-6 lg:mt-0">
+              <SubTitle title={"Breakdown"} />
+              <ExpensesPieChart data={expensesBreakdown}></ExpensesPieChart>
+            </div>
           </div>
         </div>
-
-      </div>
-
+      </FadeUp>
     </>
   );
 }

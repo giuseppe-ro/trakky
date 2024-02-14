@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import serverIsDown from '@/infrastructure/healthcheck';
 import { demoMode } from '@/constants';
 import { FadeDown } from '@/components/animations/fade';

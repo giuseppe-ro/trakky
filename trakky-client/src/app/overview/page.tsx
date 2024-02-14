@@ -95,7 +95,6 @@ function OverviewPage() {
                   }
                   deleteForm={
                     <DeletePaymentsDialog
-                      tooltipText="Delete selected rows"
                       onDeleteConfirmed={onDeleteConfirmed}
                       entries={table
                         .getSelectedRowModel()

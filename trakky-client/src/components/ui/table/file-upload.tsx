@@ -1,6 +1,6 @@
-import { useRef } from "react";
-import { Input } from "@/components/ui/input.tsx";
-import { Button } from "@/components/ui/button.tsx";
+import { useRef } from 'react';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 export interface FileUploadButtonProps {
   onUpload: (file: File, signal?: AbortSignal | undefined) => Promise<void>;
@@ -13,18 +13,17 @@ export function FileUploadItem(props: FileUploadButtonProps) {
   const handleClick = () => {
     if (hiddenFileInput.current) {
       hiddenFileInput.current.click();
-      hiddenFileInput.current.value = "";
+      hiddenFileInput.current.value = '';
     }
   };
 
-  const handleChange = (event: any) => {
-    if (event.target.files) {
+  const { onUpload, className, text } = props;
 
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
       const fileUploaded = event.target.files[0];
 
-      console.log("handle change")
-      props.onUpload(fileUploaded).then(() => {
-      });
+      onUpload(fileUploaded).then(() => {});
     }
   };
 
@@ -32,10 +31,10 @@ export function FileUploadItem(props: FileUploadButtonProps) {
     <>
       <Button
         variant="outline"
-        className={`w-full ${props.className}`}
+        className={`w-full ${className}`}
         onClick={handleClick}
       >
-        {props.text}
+        {text}
       </Button>
       <Input
         accept="application/JSON"
@@ -47,3 +46,7 @@ export function FileUploadItem(props: FileUploadButtonProps) {
     </>
   );
 }
+
+FileUploadItem.defaultProps = {
+  className: null,
+};

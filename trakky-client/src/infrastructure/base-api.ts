@@ -1,38 +1,42 @@
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import { ApiResponse } from "../models/api-response";
-import { AppError } from "../models/app-error";
-import { demoMode } from "@/constants.ts";
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { demoMode } from '@/constants';
 import axiosRetry from 'axios-retry';
-import { serverUrl } from "@/authConfig.ts";
+import { serverUrl } from '@/authConfig';
+import { AppError } from '../models/app-error';
+import { ApiResponse } from '../models/api-response';
 
 axiosRetry(axios, { retries: 3, retryDelay: axiosRetry.exponentialDelay });
 
 export enum ErrorMessage {
-  NO_CONNECTION = "Could not connect to the server.",
-  UNAUTHORIZED = "Unauthorized.",
-  FORBIDDEN = "Forbidden.",
-  NOT_FOUND = "Not found.",
-  INTERNAL_SERVER_ERROR = "Internal server error.",
-  BAD_REQUEST = "Bad request.",
-  UNKNOWN_ERROR = "An unknown error occurred.",
+  NO_CONNECTION = 'Could not connect to the server.',
+  UNAUTHORIZED = 'Unauthorized.',
+  FORBIDDEN = 'Forbidden.',
+  NOT_FOUND = 'Not found.',
+  INTERNAL_SERVER_ERROR = 'Internal server error.',
+  BAD_REQUEST = 'Bad request.',
+  UNKNOWN_ERROR = 'An unknown error occurred.',
 }
 
-export const makeBaseRequest = (endpoint: string, method: string, signal?: AbortSignal): AxiosRequestConfig => {
+export const makeBaseRequest = (
+  endpoint: string,
+  method: string,
+  signal?: AbortSignal
+): AxiosRequestConfig => {
   return {
     url: `${serverUrl}/${endpoint}`,
     method,
     signal,
     headers: {
-      "content-type": "application/json",
+      'content-type': 'application/json',
     },
   };
-}
+};
 
 export const baseApiCall = async <T>(options: {
   request: AxiosRequestConfig;
-  demoModeData?: () => T
+  demoModeData?: () => T;
 }): Promise<ApiResponse<T>> => {
-  if(demoMode && options.demoModeData) {
+  if (demoMode && options.demoModeData) {
     return {
       data: options.demoModeData(),
       error: null,
@@ -40,9 +44,10 @@ export const baseApiCall = async <T>(options: {
   }
 
   try {
-    const token = localStorage.getItem("ROCP_token")?.replace(/"/g, "");
+    const token = localStorage.getItem('ROCP_token')?.replace(/"/g, '');
     if (token && options.request.headers) {
-      options.request.headers["Authorization"] = `Bearer ${token}`;
+      // eslint-disable-next-line no-param-reassign
+      options.request.headers.Authorization = `Bearer ${token}`;
     }
 
     const response: AxiosResponse = await axios(options.request);
@@ -53,12 +58,8 @@ export const baseApiCall = async <T>(options: {
       error: null,
     };
   } catch (error) {
-    console.log("error", error)
-
     if (axios.isAxiosError(error)) {
       const axiosError = error as AxiosError;
-
-      console.log("axiosError", axiosError)
 
       const { response } = axiosError;
 
@@ -73,8 +74,6 @@ export const baseApiCall = async <T>(options: {
       } else {
         message = ErrorMessage.NO_CONNECTION;
       }
-
-      console.log("message", message);
 
       return {
         data: null,
@@ -95,6 +94,6 @@ export const baseApiCall = async <T>(options: {
 
 export const baseRequestData = <T>(data: T) => {
   return {
-    data: data
-  }
-}
+    data,
+  };
+};

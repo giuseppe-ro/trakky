@@ -1,18 +1,17 @@
-import { CustomTable } from "@/components/ui/table/table";
-import { Title } from "@/components/ui/text.tsx";
-import { usePaymentData } from "@/lib/hooks/page-hooks.ts";
-import { YearSelection } from "@/components/ui/data-selector.tsx";
-import { useExpensesTable } from "@/lib/hooks/table-hooks.ts";
-import { Summary } from "@/components/ui/summary.tsx";
-import { useEffect } from "react";
-import { Containers } from "@/components/ui/containers.tsx";
-import { PaymentForm } from "@/components/ui/table/payment-form.tsx";
-import { TableActionMenu } from "@/components/ui/table/table-action-menu.tsx";
-import { DeletePaymentsDialog } from "@/components/ui/table/delete-popup.tsx";
-import { Payment } from "@/infrastructure/payment.tsx";
-import { FadeUp } from "@/components/animations/fade.tsx";
-import { StorageKey } from "@/constants.ts";
-
+import { useEffect } from 'react';
+import { CustomTable } from '@/components/ui/table/table';
+import { Title } from '@/components/ui/text';
+import usePaymentData from '@/lib/hooks/page-hooks';
+import YearSelection from '@/components/ui/data-selector';
+import { useExpensesTable } from '@/lib/hooks/table-hooks';
+import { Summary } from '@/components/ui/summary';
+import { Containers } from '@/components/ui/containers';
+import { PaymentForm } from '@/components/ui/table/payment-form';
+import { TableActionMenu } from '@/components/ui/table/table-action-menu';
+import { DeletePaymentsDialog } from '@/components/ui/table/delete-popup';
+import { FadeUp } from '@/components/animations/fade';
+import { StorageKey } from '@/constants';
+import { Payment } from './models/dtos';
 
 export default function App() {
   const {
@@ -23,34 +22,30 @@ export default function App() {
     setSelectedYear,
   } = usePaymentData();
 
-  const {
-    totalsPerYear,
-    table,
-    onDeleteConfirmed,
-    onRefresh,
-  } = useExpensesTable({
-    data: payments,
-    selectedYear,
-    refreshData,
-  })
+  const { totalsPerYear, table, onDeleteConfirmed, onRefresh } =
+    useExpensesTable({
+      data: payments,
+      selectedYear,
+      refreshData,
+    });
 
   useEffect(() => {
-    `StorageKey`
-    const activeColumns = localStorage.getItem(`expenses_${StorageKey.ActiveColumns}`);
+    const activeColumns = localStorage.getItem(
+      `expenses_${StorageKey.ActiveColumns}`
+    );
 
     if (activeColumns) {
       try {
         table.setColumnVisibility(JSON.parse(activeColumns));
-      } catch (e) {
-        localStorage.removeItem(`expenses_${StorageKey.ActiveColumns}`)
-        console.log(e);
+      } catch {
+        localStorage.removeItem(`expenses_${StorageKey.ActiveColumns}`);
       }
     }
-  }, []);
+  }, [table]);
 
   return (
     <>
-      <Title title={"Expenses"} />
+      <Title title="Expenses" />
       <YearSelection
         availableYears={availableYears}
         selectedYear={selectedYear}
@@ -60,43 +55,41 @@ export default function App() {
         <Summary
           table={table}
           totalsPerYear={totalsPerYear}
-          selectedYear={selectedYear ?? ""}
+          selectedYear={selectedYear ?? ''}
         />
       </Containers>
       <FadeUp>
         <div className="mt-4">
           <CustomTable
             table={table}
-            canHideRows={true}
+            canHideRows
             filtersOnly={false}
             page="home"
             tableActionMenu={
               <Containers className="transition">
                 <TableActionMenu
-                  exportName={"Payments"}
+                  exportName="Payments"
                   table={table}
                   onRefresh={onRefresh}
                   addForm={
                     <PaymentForm
                       refresh={() => onRefresh(false)}
-                      title={"Add New Transaction"}
-                    ></PaymentForm>
+                      title="Add New Transaction"
+                    />
                   }
                   deleteForm={
                     <DeletePaymentsDialog
-                      tooltipText={"Delete selected rows"}
                       onDeleteConfirmed={onDeleteConfirmed}
                       entries={table
                         .getSelectedRowModel()
-                        .rows.map((row: any) => row.original as Payment)}
-                    ></DeletePaymentsDialog>
+                        .rows.map((row) => row.original as Payment)}
+                    />
                   }
                 />
               </Containers>
             }
           />
         </div>
-
       </FadeUp>
     </>
   );

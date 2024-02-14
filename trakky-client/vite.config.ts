@@ -1,25 +1,21 @@
-import path from "path"
-import react from "@vitejs/plugin-react"
-import { defineConfig } from "vite"
-import { resolve } from 'path'
-
+import path, { resolve } from 'path';
+import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vite';
 
 export default defineConfig({
-  plugins: [
-    react()
-  ],
+  plugins: [react()],
   server: {
-    port:  8997,
+    port: 8997,
     proxy: {
-        '/api': {
-            target: process.env.VITE_API_BASE_URL,
-            changeOrigin: true,
-        },
+      '/api': {
+        target: process.env.VITE_API_BASE_URL,
+        changeOrigin: true,
+      },
     },
-},
-    resolve: {
+  },
+  resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
+      '@': path.resolve(__dirname, './src'),
     },
   },
   build: {
@@ -30,4 +26,4 @@ export default defineConfig({
       },
     },
   },
-})
+});

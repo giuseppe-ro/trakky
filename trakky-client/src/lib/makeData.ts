@@ -1,19 +1,13 @@
-import { Payment } from "@/infrastructure/payment.tsx";
-import { Budget } from "@/infrastructure/budget.tsx";
-import payments from "./mockPayments.json";
-import budgets from "./mockBudgets.json";
-import { Backup } from "@/infrastructure/backup.tsx";
+import { Payment, Budget, Backup } from '@/models/dtos';
 
-export function mockBackup() {
-  return {
-    payments: mockPayments(),
-    budgets: makeBudgets(),
-    owners: makeOwners(),
-    types: makeTypes(),
-  } as unknown as Backup;
+import payments from './mockPayments.json';
+import budgets from './mockBudgets.json';
+
+interface ImportedData {
+  date: string;
 }
 
-const sortByDate = (a: any, b: any) => {
+const sortByDate = (a: ImportedData, b: ImportedData) => {
   const dateA = new Date(a.date);
   const dateB = new Date(b.date);
   return dateB.getTime() - dateA.getTime(); // Sorts in descending order
@@ -29,16 +23,25 @@ export function makeBudgets() {
 
 export function makeOwners() {
   return [
-    { id: 1, name: "Donald" },
-    { id: 2, name: "Goofy" },
+    { id: 1, name: 'Donald' },
+    { id: 2, name: 'Goofy' },
   ];
 }
 
 export function makeTypes() {
   return [
-    { id: 1, name: "Food" },
-    { id: 2, name: "General" },
-    { id: 3, name: "Personal" },
-    { id: 4, name: "Travel" },
+    { id: 1, name: 'Food' },
+    { id: 2, name: 'General' },
+    { id: 3, name: 'Personal' },
+    { id: 4, name: 'Travel' },
   ];
+}
+
+export function mockBackup() {
+  return {
+    payments: mockPayments(),
+    budgets: makeBudgets(),
+    owners: makeOwners(),
+    types: makeTypes(),
+  } as unknown as Backup;
 }

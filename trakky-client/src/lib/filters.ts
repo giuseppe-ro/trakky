@@ -1,5 +1,9 @@
-import { FilterFn, SortingFn, sortingFns } from "@tanstack/react-table";
-import { compareItems, rankItem } from "@tanstack/match-sorter-utils";
+/* eslint-disable func-names */
+/* eslint-disable no-extend-native */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { FilterFn, SortingFn, sortingFns } from '@tanstack/react-table';
+import { compareItems, rankItem } from '@tanstack/match-sorter-utils';
 
 export const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   const itemRank = rankItem(row.getValue(columnId), value);
@@ -16,14 +20,13 @@ export const fuzzySort: SortingFn<any> = (rowA, rowB, columnId) => {
 
   if (rowA.columnFiltersMeta[columnId]) {
     dir = compareItems(
-      rowA.columnFiltersMeta[columnId]?.itemRank!,
-      rowB.columnFiltersMeta[columnId]?.itemRank!,
+      rowA.columnFiltersMeta[columnId].itemRank!,
+      rowB.columnFiltersMeta[columnId].itemRank!
     );
   }
 
   return dir === 0 ? sortingFns.alphanumeric(rowA, rowB, columnId) : dir;
 };
-
 
 declare global {
   interface Array<T> {
@@ -31,6 +34,8 @@ declare global {
   }
 }
 
-Array.prototype.filterBy = function(str: string): string[] {
-  return this.filter(item => new RegExp('^' + str.replace(/\*/g, '.*') + '$').test(item));
+Array.prototype.filterBy = function (str: string): string[] {
+  return this.filter((item) =>
+    new RegExp(`^${str.replace(/\*/g, '.*')}$`).test(item)
+  );
 };

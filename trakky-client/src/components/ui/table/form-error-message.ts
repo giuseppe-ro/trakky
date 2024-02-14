@@ -1,10 +1,19 @@
-import { resultToast } from "@/components/ui/use-toast.ts";
+import { resultToast } from '@/components/ui/use-toast';
 
-export const errorMessage = (setIsError: (value: boolean) => void, errorMessage?: string) => {
+export function errorMessage(
+  setIsError: (value: boolean) => void,
+  message?: string
+) {
   setIsError(true);
 
   return resultToast({
     isError: true,
-    message: errorMessage ?? "Unknown error",
+    message: message ?? 'Unknown error',
   });
 }
+
+errorMessage.defaultProps = {
+  message: null,
+};
+
+export default errorMessage;

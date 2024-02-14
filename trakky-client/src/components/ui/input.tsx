@@ -1,13 +1,14 @@
-import * as React from "react"
+/* eslint-disable react/display-name */
+import * as React from 'react';
 
-import { cn } from "@/lib/utils"
+import { cn } from '@/lib/utils';
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {}
 
 export interface SubmittableInputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
-  onSubmit: () => void
+  onSubmit: () => void;
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
@@ -16,35 +17,39 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       <input
         type={type}
         className={cn(
-          "flex h-8 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
+          'flex h-8 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
           className
         )}
         ref={ref}
         {...props}
       />
-    )
+    );
   }
-)
-Input.displayName = "Input"
+);
+Input.displayName = 'Input';
 
-const SubmittableInput = React.forwardRef<HTMLInputElement, SubmittableInputProps>(
-  ({ className, type, ...props }, ref) => {
-  const handleKeyDown = (event:  React.KeyboardEvent<HTMLInputElement>) => {
+const SubmittableInput = React.forwardRef<
+  HTMLInputElement,
+  SubmittableInputProps
+>(({ className, type, ...props }, ref) => {
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      props.onSubmit()
+      props.onSubmit();
     }
-  }
+  };
 
-  return <input
-    type={type}
-    onKeyDown={handleKeyDown}
-    className={cn(
-      "flex h-8 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
-      className
-    )}
-    ref={ref}
-    {...props}
-  />
-})
+  return (
+    <input
+      type={type}
+      onKeyDown={handleKeyDown}
+      className={cn(
+        'flex h-8 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
+        className
+      )}
+      ref={ref}
+      {...props}
+    />
+  );
+});
 
-export { Input, SubmittableInput }
+export { Input, SubmittableInput };

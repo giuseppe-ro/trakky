@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from 'react';
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -10,45 +10,46 @@ import {
   getFacetedUniqueValues,
   getFilteredRowModel,
   getPaginationRowModel,
-  getSortedRowModel, Table,
-  useReactTable, VisibilityState
-} from "@tanstack/react-table";
+  getSortedRowModel,
+  useReactTable,
+  VisibilityState,
+} from '@tanstack/react-table';
 
-import { Total } from "@/components/ui/summary.tsx";
-import { DeletePayments, Payment, UploadPayments } from "@/infrastructure/payment.tsx";
-import { fuzzyFilter } from "@/lib/filters.ts";
+import { fuzzyFilter } from '@/lib/filters';
 import {
   PaymentColumnDefinition,
   BudgetColumnDefinition,
-} from "@/components/ui/table/columns.tsx";
-import { toast } from "@/components/ui/use-toast.ts";
-import { demoMode } from "@/constants";
-import { Budget, DeleteBudgets } from "@/infrastructure/budget.tsx";
-import * as z from "zod";
+} from '@/components/ui/table/columns';
+import { toast } from '@/components/ui/use-toast';
+import { demoMode } from '@/constants';
+import { DeleteBudgets } from '@/infrastructure/budget';
+import * as z from 'zod';
+import { DeletePayments, UploadPayments } from '@/infrastructure/payment';
+import { Budget, Payment } from '@/models/dtos';
+import { Total } from '@/models/total';
 
 export function useExpensesTable({
-                            data,
-                            selectedYear,
-                            refreshData
-                          }: {
+  data,
+  selectedYear,
+  refreshData,
+}: {
   data: Payment[] | null;
   selectedYear: string | null;
-  refreshData(signal?: AbortSignal, flushBeforeRefresh?: boolean): void
+  refreshData(signal?: AbortSignal, flushBeforeRefresh?: boolean): void;
 }) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [globalFilter, setGlobalFilter] = useState("");
+  const [globalFilter, setGlobalFilter] = useState('');
   const [filteredData, setFilteredData] = useState<Payment[]>([]);
 
   useEffect(() => {
-    if (selectedYear === "All" && data)
-      setFilteredData(data);
+    if (selectedYear === 'All' && data) setFilteredData(data);
     else if (data && selectedYear !== null) {
       setFilteredData(
         data.filter(
           (payment) =>
             new Date(payment.date).getFullYear() ===
-            parseInt(selectedYear ?? ""),
-        ),
+            parseInt(selectedYear ?? '', 10)
+        )
       );
     }
   }, [data, selectedYear]);
@@ -57,30 +58,36 @@ export function useExpensesTable({
     data === null
       ? []
       : data.reduce((acc: Total[], payment) => {
-        const year = new Date(payment.date).getFullYear();
-        const month = new Date(payment.date).getMonth();
+          const year = new Date(payment.date).getFullYear();
+          const month = new Date(payment.date).getMonth();
 
-        const existing = acc.find((t) =>
-          t.date?.getFullYear() === year && t.date?.getMonth() === month
-        );
-        if (existing) {
-          existing.amount += payment.amount;
-        } else {
-          acc.push({ amount: payment.amount, number: year, date: new Date(year, month) });
-        }
-        return acc;
-      }, []);
+          const existing = acc.find(
+            (t) =>
+              t.date?.getFullYear() === year && t.date?.getMonth() === month
+          );
+          if (existing) {
+            existing.amount += payment.amount;
+          } else {
+            acc.push({
+              amount: payment.amount,
+              number: year,
+              date: new Date(year, month),
+            });
+          }
+          return acc;
+        }, []);
 
   const columns = useMemo<ColumnDef<Payment, number | string>[]>(
     () => PaymentColumnDefinition(refreshData),
-    [],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
   );
 
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
-    'date': false,
-  })
+    date: false,
+  });
 
-  const table: Table<any> = useReactTable({
+  const table = useReactTable({
     data: filteredData,
     columns,
     filterFns: {
@@ -108,41 +115,43 @@ export function useExpensesTable({
   });
 
   async function onDeleteConfirmed(signal?: AbortSignal) {
-    console.log("Delete clicked!");
     const ids = table
       .getSelectedRowModel()
-      .rows.map((row: any) => row.original.id) as number[];
+      .rows.map((row) => row.original.id) as number[];
 
     const deleted = await DeletePayments(ids, signal);
-    
-    if(demoMode) {
+
+    if (demoMode) {
       toast({
-        title: "Data cannot be modified in demo mode!",
-        variant: "warning"
-      })
+        title: 'Data cannot be modified in demo mode!',
+        variant: 'warning',
+      });
     } else if (deleted) {
       refreshData(signal, false);
       table.resetRowSelection();
       toast({
-        title: "Transactions deleted!",
-        className: "bg-green-600",
-      })
+        title: 'Transactions deleted!',
+        className: 'bg-green-600',
+      });
     } else {
       toast({
         title: "Couldn't delete transactions!",
-        className: "bg-red-500",
-      })
+        className: 'bg-red-500',
+      });
     }
+  }
+
+  async function onRefresh(
+    flushPaymentsBeforeRefresh: boolean = true,
+    signal?: AbortSignal
+  ) {
+    table.resetColumnFilters();
+    refreshData(signal, flushPaymentsBeforeRefresh);
   }
 
   function onEdited() {
     table.resetRowSelection();
-    onRefresh(false).then(() => { });
-  }
-
-  async function onRefresh(flushPaymentsBeforeRefresh: boolean = true, signal?: AbortSignal) {
-    table.resetColumnFilters();
-    refreshData(signal, flushPaymentsBeforeRefresh);
+    onRefresh(false).then(() => {});
   }
 
   return {
@@ -150,25 +159,23 @@ export function useExpensesTable({
     table,
     onDeleteConfirmed,
     onPaymentEdited: onEdited,
-    onRefresh
+    onRefresh,
   };
 }
 
-
 export function useBudgetsTable({
-                                   data,
-                                   refreshData
-                                 }: {
+  data,
+  refreshData,
+}: {
   data: Budget[] | null;
-  refreshData(flushBeforeRefresh?: boolean): void
+  refreshData(flushBeforeRefresh?: boolean): void;
 }) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [globalFilter, setGlobalFilter] = useState("");
+  const [globalFilter, setGlobalFilter] = useState('');
   const [filteredData, setFilteredData] = useState<Budget[]>([]);
 
   const controller = new AbortController();
-  const signal = controller.signal;
-
+  const { signal } = controller;
 
   useEffect(() => {
     if (data !== null) {
@@ -178,14 +185,15 @@ export function useBudgetsTable({
 
   const columns = useMemo<ColumnDef<Budget, number | string>[]>(
     () => BudgetColumnDefinition(data, refreshData),
-    [],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
   );
 
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
-    'date': true,
-  })
+    date: true,
+  });
 
-  const table: Table<any> = useReactTable({
+  const table = useReactTable({
     data: filteredData,
     columns,
     filterFns: {
@@ -213,41 +221,40 @@ export function useBudgetsTable({
   });
 
   async function onDeleteConfirmed() {
-    console.log("Delete clicked!");
     const ids = table
       .getSelectedRowModel()
-      .rows.map((row: any) => row.original.id) as number[];
+      .rows.map((row) => row.original.id) as number[];
 
     const deleted = await DeleteBudgets(ids, signal);
 
-    if(demoMode) {
+    if (demoMode) {
       toast({
-        title: "Data cannot be modified in demo mode!",
-        variant: "warning"
-      })
+        title: 'Data cannot be modified in demo mode!',
+        variant: 'warning',
+      });
     } else if (deleted) {
       refreshData(false);
       table.resetRowSelection();
       toast({
-        title: "Deleted!",
-        className: "bg-green-600",
-      })
+        title: 'Deleted!',
+        className: 'bg-green-600',
+      });
     } else {
       toast({
         title: "Couldn't delete!",
-        className: "bg-red-500",
-      })
+        className: 'bg-red-500',
+      });
     }
-  }
-
-  function onEdited() {
-    table.resetRowSelection();
-    onRefresh(false).then(() => { });
   }
 
   async function onRefresh(flushBeforeRefresh: boolean = true) {
     table.resetColumnFilters();
     refreshData(flushBeforeRefresh);
+  }
+
+  function onEdited() {
+    table.resetRowSelection();
+    onRefresh(false).then(() => {});
   }
 
   return {
@@ -258,18 +265,16 @@ export function useBudgetsTable({
   };
 }
 
-
 export async function onTransactionsUpload(
   file: File,
   signal?: AbortSignal,
   onRefresh?: (flushBeforeRefresh?: boolean) => void
 ): Promise<void> {
-
-  if(demoMode) {
+  if (demoMode) {
     toast({
-      variant: "warning",
-      title: "Data cannot be modified in demo mode!",
-    })
+      variant: 'warning',
+      title: 'Data cannot be modified in demo mode!',
+    });
     return;
   }
   const reader = new FileReader();
@@ -278,32 +283,34 @@ export async function onTransactionsUpload(
     z.object({
       owner: z.string().min(1),
       type: z.string().min(1),
-      date: z.string().refine((val) => new Date(val) !== null, { message: "invalid date" }),
+      date: z
+        .string()
+        .refine((val) => new Date(val) !== null, { message: 'invalid date' }),
       amount: z.number().refine((val) => val !== 0, {
-        message: "cannot be 0",
+        message: 'cannot be 0',
       }),
-      description: z.string().refine((val) => val.length <= 50 && val.length > 0),
+      description: z
+        .string()
+        .refine((val) => val.length <= 50 && val.length > 0),
     })
   );
 
-  console.log("reading: ", file.name)
   reader.onload = async (e) => {
     const result = e.target?.result;
-    if (typeof result === "string") {
+    if (typeof result === 'string') {
       try {
         paymentsSchema.parse(JSON.parse(result));
-      } catch (e) {
-        if(e instanceof z.ZodError) {
+      } catch (error) {
+        if (error instanceof z.ZodError) {
           toast({
-              variant: "destructive",
-              title: "Invalid file format!",
-            })
+            variant: 'destructive',
+            title: 'Invalid file format!',
+          });
         } else {
-          console.log(e);
           toast({
-            variant: "destructive",
-            title: "Upload Failed!",
-          })
+            variant: 'destructive',
+            title: 'Upload Failed!',
+          });
         }
       }
     }
@@ -314,26 +321,25 @@ export async function onTransactionsUpload(
   try {
     const uploadResult = await UploadPayments(file, signal);
 
-    if(uploadResult === null) {
+    if (uploadResult === null) {
       toast({
-        variant: "success",
-        description: "Upload Successful!",
-      })
+        variant: 'success',
+        description: 'Upload Successful!',
+      });
     } else {
       toast({
-        variant: "destructive",
-        title: "Error!",
+        variant: 'destructive',
+        title: 'Error!',
         description: uploadResult,
-      })
+      });
     }
-  } catch ( e: any ) {
-    console.log(e);
+  } catch {
     toast({
-      variant: "destructive",
-      title: e.data,
-    })
+      variant: 'destructive',
+      title: 'Unknown Error.',
+    });
   } finally {
-    if(onRefresh) {
+    if (onRefresh) {
       onRefresh();
     }
   }

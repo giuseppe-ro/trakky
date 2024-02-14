@@ -1,5 +1,5 @@
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog.tsx";
-import React from "react";
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import React from 'react';
 
 export function PopupDialog({
   trigger,
@@ -15,3 +15,5 @@ export function PopupDialog({
     </Dialog>
   );
 }
+
+export default PopupDialog;

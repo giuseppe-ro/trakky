@@ -24,7 +24,11 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
   },
-  "include": ["src"],
+  "include": [
+    ".eslintrc.cjs",
+    "vite.config.ts",
+    "src"
+  ],
   "references": [{ "path": "./tsconfig.node.json" }],
   "baseUrl": ".",
 }

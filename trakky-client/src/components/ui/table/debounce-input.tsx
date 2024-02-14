@@ -1,10 +1,18 @@
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select.tsx";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
+
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 export interface SelectOption {
-  key: string,
-  value: string,
-  text?: string
+  key: string;
+  value: string;
+  text?: string;
 }
 
 export function DebouncedInput({
@@ -15,8 +23,8 @@ export function DebouncedInput({
 }: {
   value: string | number;
   onChange: (value: string | number) => void;
-  debounce?: number;
-} & Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange">) {
+  debounce?: number | undefined;
+} & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'>) {
   const [value, setValue] = useState(initialValue);
 
   useEffect(() => {
@@ -29,7 +37,8 @@ export function DebouncedInput({
     }, debounce);
 
     return () => clearTimeout(timeout);
-  }, [value]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debounce, value]);
 
   return (
     <input
@@ -40,6 +49,10 @@ export function DebouncedInput({
   );
 }
 
+DebouncedInput.defaultProps = {
+  debounce: null,
+};
+
 export function DebouncedSelect({
   value: initialValue,
   options,
@@ -49,8 +62,8 @@ export function DebouncedSelect({
   value: string | number;
   options: SelectOption[];
   onChange: (value: string | number) => void;
-  debounce?: number;
-} & Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange">) {
+  debounce?: number | undefined;
+} & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'>) {
   const [value, setValue] = useState(initialValue);
 
   useEffect(() => {
@@ -63,23 +76,25 @@ export function DebouncedSelect({
     }, debounce);
 
     return () => clearTimeout(timeout);
-  }, [value]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debounce, value]);
 
   return (
-    <Select
-      defaultValue={"All"}
-      onValueChange={(e) => setValue(e)}
-    >
+    <Select defaultValue="All" onValueChange={(e) => setValue(e)}>
       <SelectTrigger className="w-full justify-between h-[18px] md:h-[19.4px] border-none outline-none bg-slate-800 text-xs p-0 pl-2 md:pr-1 md:py-1 rounded-none overflow-hidden">
         <SelectValue placeholder="" />
       </SelectTrigger>
       <SelectContent className="max-h-[200px]">
         <SelectGroup>
-          <SelectItem key={"All"} value={"All"} className="text-xs">
-            {"All"}
+          <SelectItem key="All" value="All" className="text-xs">
+            All
           </SelectItem>
-          {options.map((option: SelectOption, index: number) => (
-            <SelectItem key={index} value={option.value} className="text-xs">
+          {options.map((option: SelectOption) => (
+            <SelectItem
+              key={option.key}
+              value={option.value}
+              className="text-xs"
+            >
               {option.key}
             </SelectItem>
           ))}
@@ -88,3 +103,7 @@ export function DebouncedSelect({
     </Select>
   );
 }
+
+DebouncedSelect.defaultProps = {
+  debounce: null,
+};

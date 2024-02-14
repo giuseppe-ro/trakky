@@ -1,8 +1,7 @@
-import { memo, useEffect, useState } from "react";
-import { serverIsDown } from "@/infrastructure/healthcheck.ts";
-import { FadeDown } from "@/components/animations/fade.tsx";
-import { demoMode } from "@/constants.ts";
-
+import React, { memo, useEffect, useState } from 'react';
+import serverIsDown from '@/infrastructure/healthcheck';
+import { demoMode } from '@/constants';
+import { FadeDown } from '@/components/animations/fade';
 
 export const HealthCheckProvider = memo(() => {
   const [serverDown, setServerDown] = useState(false);
@@ -14,13 +13,11 @@ export const HealthCheckProvider = memo(() => {
     } catch (error) {
       setServerDown(true);
     }
-  }
+  };
 
   useEffect(() => {
-      checkServer().then(() => { });
+    checkServer().then(() => {});
   }, []);
-
-
 
   return (
     <>
@@ -43,5 +40,9 @@ export const HealthCheckProvider = memo(() => {
         </div>
       )}
     </>
-  )
-})
+  );
+});
+
+HealthCheckProvider.displayName = 'HealthCheckProvider';
+
+export default HealthCheckProvider;

@@ -1,14 +1,16 @@
-import { baseApiCall, makeBaseRequest } from "@/infrastructure/base-api.ts";
-import { Endpoint } from "@/constants.ts";
-export async function serverIsDown(signal?: AbortSignal): Promise<boolean> {
+import { baseApiCall, makeBaseRequest } from '@/infrastructure/base-api';
+import { Endpoint } from '@/constants';
 
-  const config = makeBaseRequest(Endpoint.HealthCheck, "GET", signal)
+async function serverIsDown(signal?: AbortSignal) {
+  const config = makeBaseRequest(Endpoint.HealthCheck, 'GET', signal);
 
-  const { data, error } = await baseApiCall<boolean>({ request: config, demoModeData: () => false });
+  const { data } = await baseApiCall<boolean>({
+    request: config,
+    demoModeData: () => false,
+  });
 
-  if(error) {
-    console.log("Error while performing health check:", error);
-  }
-
+  // TODO: return error as well and handle
   return !data ?? true;
 }
+
+export default serverIsDown;

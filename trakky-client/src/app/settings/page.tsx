@@ -1,203 +1,280 @@
-import { CustomSmallTable, CustomTable } from "@/components/ui/table/table.tsx";
-import { SubTitle, Title } from "@/components/ui/text.tsx";
-import { useBudgetsData } from "@/lib/hooks/page-hooks.ts";
-import { onTransactionsUpload, useBudgetsTable } from "@/lib/hooks/table-hooks.ts";
-import { FadeLeft, FadeUp } from "@/components/animations/fade.tsx";
-import { BudgetForm } from "@/components/ui/table/budget-form.tsx";
-import { Containers } from "@/components/ui/containers.tsx";
-import { TableActionMenu } from "@/components/ui/table/table-action-menu.tsx";
-import { DeleteBudgetsDialog } from "@/components/ui/table/delete-popup.tsx";
-import { Budget } from "@/infrastructure/budget.tsx";
-import { useEffect, useReducer, useState } from "react";
-import { AddTypes, DeleteTypes, getTypes, Type } from "@/infrastructure/transaction-type.tsx";
-import { downloadFile } from "@/lib/utils.ts";
-import { Button } from "@/components/ui/button.tsx";
-import { successFailToast, toast, valueExistsToast } from "@/components/ui/use-toast.ts";
-import { AddOwners, DeleteOwners, getOwners, Owner } from "@/infrastructure/owner.tsx";
-import { FileUploadItem } from "@/components/ui/table/file-upload.tsx";
-import { fetchBackup } from "@/infrastructure/backup.tsx";
-import { FetchActionType, FETCH_INITIAL_STATE, paymentFormDataReducer } from "@/components/ui/table/payment-form-reducer.ts";
-import Spinner from "@/components/ui/spinner.tsx";
-
+import { useEffect, useReducer, useState } from 'react';
+import { CustomSmallTable, CustomTable } from '@/components/ui/table/table';
+import { SubTitle, Title } from '@/components/ui/text';
+import { onTransactionsUpload, useBudgetsTable } from '@/lib/hooks/table-hooks';
+import { FadeLeft, FadeUp } from '@/components/animations/fade';
+import {
+  AddTypes,
+  DeleteTypes,
+  getTypes,
+} from '@/infrastructure/transaction-type';
+import { downloadFile } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import {
+  successFailToast,
+  toast,
+  valueExistsToast,
+} from '@/components/ui/use-toast';
+import { AddOwners, DeleteOwners, getOwners } from '@/infrastructure/owner';
+import { FileUploadItem } from '@/components/ui/table/file-upload';
+import fetchBackup from '@/infrastructure/backup';
+import {
+  FetchActionType,
+  FETCH_INITIAL_STATE,
+  paymentFormDataReducer,
+} from '@/components/ui/table/payment-form-reducer';
+import { Type, Owner, Budget } from '@/models/dtos';
+import Spinner from '@/components/ui/spinner';
+import { getBudgets } from '@/infrastructure/budget';
+import { ContentResultContainer } from '@/components/ui/containers';
+import { ErrorMessage } from '@/infrastructure/base-api';
+import BudgetActionMenu from './components/budget-action-menu';
 
 function SettingsPage() {
-  const {
-    budgets,
-    refreshData,
-  } = useBudgetsData();
+  const [budgets, setBudgets] = useState<Budget[]>([]);
+  async function refreshData(
+    flushBeforeRefresh: boolean = true,
+    signal?: AbortSignal
+  ) {
+    if (flushBeforeRefresh) setBudgets([]);
 
-  const {
-    table,
-    onDeleteConfirmed,
-    onRefresh,
-  } = useBudgetsTable({
+    const { data, error } = await getBudgets(signal);
+
+    if (error) throw new Error(error.error);
+
+    setBudgets(data);
+  }
+
+  const { table, onDeleteConfirmed, onRefresh } = useBudgetsTable({
     data: budgets,
     refreshData,
-  })
-  const [newType, setNewType] = useState<string>("");
-  const [newOwner, setNewOwner] = useState<string>("");
-  const [fetchState, fetchDispatch] = useReducer(paymentFormDataReducer, FETCH_INITIAL_STATE);
+  });
+  const [newType, setNewType] = useState<string>('');
+  const [newOwner, setNewOwner] = useState<string>('');
+  const [fetchState, fetchDispatch] = useReducer(
+    paymentFormDataReducer,
+    FETCH_INITIAL_STATE
+  );
 
   const fetchOwners = async (signal?: AbortSignal) => {
-    if(fetchState.error) return;
+    if (fetchState.error) return;
 
     const { data: ownersData, error: ownersError } = await getOwners(signal);
-    if(ownersError) {
-      fetchDispatch({ type: FetchActionType.FETCH_ERROR, payload: ownersError });
+    if (ownersError) {
+      fetchDispatch({
+        type: FetchActionType.FETCH_ERROR,
+        payload: ownersError,
+      });
       return;
     }
 
-    fetchDispatch({ type: FetchActionType.FETCHED_OWNERS, payload: ownersData });
-  }
+    fetchDispatch({
+      type: FetchActionType.FETCHED_OWNERS,
+      payload: ownersData,
+    });
+  };
 
   const fetchTypes = async (signal?: AbortSignal) => {
-    if(fetchState.error) return;
+    if (fetchState.error) return;
 
     const { data: typesData, error: typesError } = await getTypes(signal);
-    if(typesError) {
+    if (typesError) {
       fetchDispatch({ type: FetchActionType.FETCH_ERROR, payload: typesError });
       return;
     }
 
     fetchDispatch({ type: FetchActionType.FETCHED_TYPES, payload: typesData });
-  }
+  };
 
-  useEffect(  () => {
+  useEffect(() => {
     const controller = new AbortController();
-    const signal = controller.signal;
+    const { signal } = controller;
 
     async function fetchData() {
-      fetchDispatch({ type: FetchActionType.FETCH_START });
-
       await fetchOwners(signal);
       await fetchTypes(signal);
+      await refreshData(true, signal);
     }
 
-      fetchData().then(() => {
+    fetchDispatch({ type: FetchActionType.FETCH_START });
+
+    fetchData()
+      .then(() => {
         fetchDispatch({ type: FetchActionType.FETCH_END });
+      })
+      .catch((e) => {
+        fetchDispatch({
+          type: FetchActionType.FETCH_ERROR,
+          payload: e.message ?? ErrorMessage.UNKNOWN_ERROR,
+        });
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  async function OnTypeAdd() {
-    if (newType.length === 0 || valueExistsToast(fetchState.types.map((o: Type) => o.name), newType)) return;
+  const OnTypeAdd = async () => {
+    if (
+      newType.length === 0 ||
+      valueExistsToast(
+        fetchState.types.map((o: Type) => o.name),
+        newType
+      )
+    )
+      return;
     const success = await AddTypes([{ name: newType } as Type]);
     await fetchTypes();
-    successFailToast({ success: success, successMessage: "Type added", errorMessage: "Couldn't save Type!" });
-  }
+    successFailToast({
+      success,
+      successMessage: 'Type added',
+      errorMessage: "Couldn't save Type!",
+    });
+  };
 
   async function OnTypeDeleteConfirmed(id: number) {
     const success = await DeleteTypes([id]);
     await fetchTypes();
-    successFailToast({ success: success, successMessage: "Type Removed", errorMessage: "Couldn't remove Type!" });
+    successFailToast({
+      success,
+      successMessage: 'Type Removed',
+      errorMessage: "Couldn't remove Type!",
+    });
   }
 
-  async function OnOwnerAdd() {
-    if (newOwner.length === 0 || valueExistsToast(fetchState.owners.map((o: Owner) => o.name), newOwner)) return;
+  const OnOwnerAdd = async () => {
+    if (
+      newOwner.length === 0 ||
+      valueExistsToast(
+        fetchState.owners.map((o: Owner) => o.name),
+        newOwner
+      )
+    )
+      return;
     const success = await AddOwners([{ name: newOwner } as Owner]);
     await fetchOwners();
-    successFailToast({ success: success, successMessage: "Owner added", errorMessage: "Couldn't save Owner!" });
-  }
+    successFailToast({
+      success,
+      successMessage: 'Owner added',
+      errorMessage: "Couldn't save Owner!",
+    });
+  };
 
-  async function OnOwnerDeleteConfirmed(id: number) {
+  const OnOwnerDeleteConfirmed = async (id: number) => {
     const success = await DeleteOwners([id]);
     await fetchOwners();
-    successFailToast({ success: success, successMessage: "Owner Removed", errorMessage: "Couldn't remove Owner!" });
-  }
+    successFailToast({
+      success,
+      successMessage: 'Owner Removed',
+      errorMessage: "Couldn't remove Owner!",
+    });
+  };
+
+  const errorToast = (message: string) => {
+    toast({
+      title: 'Error',
+      description: message,
+      duration: 2000,
+      variant: 'destructive',
+    });
+  };
+
+  const defaultError = "Couldn't download backup!";
 
   async function DownloadBackup() {
     try {
-      const backup = await fetchBackup();
+      const { data, error } = await fetchBackup();
 
-      downloadFile(JSON.stringify(backup), "json", "Backup");
-
+      if (data) {
+        downloadFile(JSON.stringify(data), 'json', 'Backup');
+      } else {
+        errorToast(error?.error ?? defaultError);
+      }
     } catch (e) {
-      toast({
-        title: "Error",
-        description: "Couldn't download backup!",
-        duration: 2000,
-        variant: "destructive"
-      })
+      errorToast(defaultError);
     }
   }
-
   return (
     <>
-      <Title title={"Settings"} />
+      <Title title="Settings" />
+
       <FadeLeft>
         <div className="flex flex-col mb-4 md:mb-0">
-          <SubTitle title={"Backup"} {...{ className: "text-center mt-4" }} />
+          <SubTitle title="Backup" {...{ className: 'text-center mt-4' }} />
           <div className="flex flex-row gap-2">
-            <Button variant="outline" className="w-full" onClick={DownloadBackup}>Download Backup</Button>
-            <Button variant="outline" className="w-full" disabled>Upload Backup</Button>
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => DownloadBackup()}
+            >
+              Download Backup
+            </Button>
+            <Button variant="outline" className="w-full" disabled>
+              Upload Backup
+            </Button>
           </div>
         </div>
         <div className="flex flex-col mb-4 md:mb-0">
-          <SubTitle title={"Transactions"} {...{ className: "text-center mt-4" }} />
+          <SubTitle
+            title="Transactions"
+            {...{ className: 'text-center mt-4' }}
+          />
           <FileUploadItem
             onUpload={onTransactionsUpload}
-            text={"Upload Transactions"}
-            className={""} />
+            text="Upload Transactions"
+            className=""
+          />
         </div>
       </FadeLeft>
-      {fetchState.error ? <Title title={fetchState.error.message} />
-        : fetchState.loading ? <Spinner className="flex justify-center align-middle my-12" />
-          :
-          <FadeUp>
-            <div className="flex flex-col lg:flex-row gap-3 justify-center">
+      <FadeUp>
+        <div className="flex flex-col lg:flex-row gap-3 justify-center">
+          <ContentResultContainer
+            loading={fetchState.loading}
+            error={fetchState.error}
+          >
+            <>
               <div className="flex-grow">
-                <SubTitle title={"Budgets"} {...{ className: "text-center mt-4" }} />
+                <SubTitle
+                  title="Budgets"
+                  {...{ className: 'text-center mt-4' }}
+                />
                 <CustomTable
                   table={table}
-                  canHideRows={true}
+                  canHideRows
                   filtersOnly={false}
                   page="settings"
                   tableActionMenu={
-                    <Containers className="transition">
-                      <TableActionMenu
-                        exportName={"Budgets"}
-                        table={table}
-                        onRefresh={onRefresh}
-                        addForm={<BudgetForm
-                          refresh={() => onRefresh(false)}
-                          existingDates={budgets.map((b) => new Date(b.date))}
-                          title={"Add New Budget"}
-                        ></BudgetForm>}
-                        deleteForm={
-                          <DeleteBudgetsDialog
-                            tooltipText={"Delete selected rows"}
-                            onDeleteConfirmed={onDeleteConfirmed}
-                            entries={table
-                              .getSelectedRowModel()
-                              .rows.map((row: any) => row.original as Budget)}
-                          />
-                        }
-                      />
-                    </Containers>
+                    <BudgetActionMenu
+                      table={table}
+                      budgets={budgets}
+                      onDeleteConfirmed={onDeleteConfirmed}
+                      onRefresh={onRefresh}
+                    />
                   }
                 />
               </div>
               <div className="flex flex-col sm:flex-row gap-3 justify-center flex-grow">
                 <CustomSmallTable
-                  title={"Types"}
+                  title="Types"
                   values={fetchState.types}
                   onAdd={OnTypeAdd}
                   newValue={newType}
                   setNew={setNewType}
-                  onDeleteConfirmed={OnTypeDeleteConfirmed}
+                  onDeleteConfirmed={(id) => OnTypeDeleteConfirmed(id)}
                 />
                 <CustomSmallTable
-                  title={"Owners"}
+                  title="Owners"
                   values={fetchState.owners}
-                  onAdd={OnOwnerAdd}
+                  onAdd={() => OnOwnerAdd()}
                   newValue={newOwner}
                   setNew={setNewOwner}
-                  onDeleteConfirmed={OnOwnerDeleteConfirmed}
+                  onDeleteConfirmed={(id) => OnOwnerDeleteConfirmed(id)}
                 />
               </div>
-            </div>
-
-          </FadeUp>
-      }
+            </>
+          </ContentResultContainer>
+          {fetchState.loading && (
+            <Spinner className="flex flex-row justify-center align-middle my-12" />
+          )}
+        </div>
+      </FadeUp>
     </>
   );
 }

@@ -191,6 +191,7 @@ function SettingsPage() {
       errorToast(defaultError);
     }
   }
+
   return (
     <>
       <Title title="Settings" />
@@ -203,6 +204,7 @@ function SettingsPage() {
               variant="outline"
               className="w-full"
               onClick={() => DownloadBackup()}
+              disabled={fetchState.error !== null}
             >
               Download Backup
             </Button>
@@ -219,7 +221,7 @@ function SettingsPage() {
           <FileUploadItem
             onUpload={onTransactionsUpload}
             text="Upload Transactions"
-            className=""
+            disabled={fetchState.error !== null}
           />
         </div>
       </FadeLeft>

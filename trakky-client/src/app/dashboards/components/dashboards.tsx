@@ -174,22 +174,24 @@ export function ExpensesDashboard({ data }: { data: PaymentOverview[] }) {
     <>
       <div className="flex items-center justify-center space-x-2">
         <Checkbox
+          disabled={data.length === 0}
           id="budgets"
           checked={budgetsLine}
           onClick={onBudgetsCheckBoxClick}
         />
         <p
-          className="text-sm text-muted-foreground leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          className="text-sm text-muted-foreground leading-none peer-disabled:opacity-70"
           aria-label="budgetd"
         >
           Budgets
         </p>
         <Checkbox
+          disabled={data.length === 0}
           id="maxBudgets"
           checked={maxBudgetsLine}
           onClick={onMaxBudgetsCheckBoxClick}
         />
-        <p className="text-sm text-muted-foreground leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+        <p className="text-sm text-muted-foreground leading-none peer-disabled:opacity-70">
           Max Budgets
         </p>
       </div>

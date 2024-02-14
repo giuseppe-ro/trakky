@@ -36,6 +36,7 @@ interface TableActionMenuProps<TData> {
 export const TableActionMenu = memo(
   <TData extends object>(props: TableActionMenuProps<TData>) => {
     const { table, onRefresh, addForm, deleteForm, exportName } = props;
+    const noData = table.getPageCount() === 0;
 
     return (
       <div className="flex justify-between items-center">
@@ -43,6 +44,7 @@ export const TableActionMenu = memo(
           <PopupDialog
             trigger={
               <Button
+                disabled={noData}
                 variant="outline"
                 className="border-green-500/50 h-8 hover:bg-green-500/50"
               >
@@ -56,8 +58,9 @@ export const TableActionMenu = memo(
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger
+                  disabled={noData}
                   onClick={() => onRefresh(true)}
-                  className="rounded w-8 flex justify-center items-center hover:text-gray-700 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring "
+                  className="rounded w-8 flex justify-center items-center text-white disabled:text-gray-700 hover:text-gray-700 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring "
                 >
                   <ReloadIcon />
                 </TooltipTrigger>
@@ -71,7 +74,8 @@ export const TableActionMenu = memo(
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger
-                  className="rounded w-8 hover:text-gray-700 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring "
+                  disabled={noData}
+                  className="rounded w-8 hover:text-gray-700  text-white disabled:text-gray-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring "
                   onClick={table.getToggleAllPageRowsSelectedHandler()}
                 >
                   <SelectIcon />
@@ -95,6 +99,7 @@ export const TableActionMenu = memo(
         </div>
         <div className="flex justify-end gap-x-1 md:gap-x-3 mt-2 md:mt-6 mb-2 ">
           <Select
+            disabled={noData}
             value={table.getState().pagination.pageSize.toString()}
             onValueChange={(value) => {
               table.setPageSize(Number(value));
@@ -115,8 +120,9 @@ export const TableActionMenu = memo(
             </SelectContent>
           </Select>
           <div className="flex items-center text-sm font-thin whitespace-nowrap">
-            {table.getState().pagination.pageIndex + 1} of{' '}
-            {table.getPageCount()}
+            {!noData &&
+              `${table.getState().pagination.pageIndex + 1} of 
+            ${table.getPageCount()}`}
           </div>
           <div className="flex justify-between gap-x-2">
             <div className="flex gap-x-1">

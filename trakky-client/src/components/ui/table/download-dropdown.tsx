@@ -64,6 +64,7 @@ export function ExportDropdownMenu<TData>({
   table: Table<TData>;
   name: string;
 }) {
+  const noData = table.getPageCount() === 0;
   const [format, setFormat] = useState<string>('json');
 
   function convertToCSV(arr: any) {
@@ -89,28 +90,23 @@ export function ExportDropdownMenu<TData>({
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger
+          disabled={noData}
           tabIndex={-1}
-          className="rounded w-8 text-green-500 hover:text-green-500/50 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring "
+          className="rounded w-8 text-green-500 hover:text-green-500/50 disabled:text-green-500/50  focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring "
         >
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <DownloadIcon className="rounded w-8 h-8 p-1.5 cursor-pointer text-green-500 hover:text-green-500/50 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring " />
+              <DownloadIcon className="rounded w-8 h-8 p-1.5 cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring " />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-36">
               <DropdownMenuLabel>
-                <RadioGroup
-                  onValueChange={setFormat}
-                  disabled={table.getRowModel().rows.length === 0}
-                  defaultValue={format}
-                >
+                <RadioGroup onValueChange={setFormat} defaultValue={format}>
                   <RadioGroupFormat id="json" label="JSON" />
                   <RadioGroupFormat id="csv" label="CSV" />
                 </RadioGroup>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem
-                disabled={table.getRowModel().rows.length === 0}
-              >
+              <DropdownMenuItem>
                 <DownloadButton
                   text="Export All"
                   onClick={() => download(table.getFilteredRowModel().rows)}

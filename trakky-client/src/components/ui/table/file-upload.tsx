@@ -6,9 +6,15 @@ export interface FileUploadButtonProps {
   onUpload: (file: File, signal?: AbortSignal | undefined) => Promise<void>;
   text: string;
   className?: string;
+  disabled?: boolean;
 }
 
-export function FileUploadItem(props: FileUploadButtonProps) {
+export function FileUploadItem({
+  onUpload,
+  text,
+  className,
+  disabled,
+}: FileUploadButtonProps) {
   const hiddenFileInput = useRef<HTMLInputElement>(null);
   const handleClick = () => {
     if (hiddenFileInput.current) {
@@ -16,8 +22,6 @@ export function FileUploadItem(props: FileUploadButtonProps) {
       hiddenFileInput.current.value = '';
     }
   };
-
-  const { onUpload, className, text } = props;
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -30,6 +34,7 @@ export function FileUploadItem(props: FileUploadButtonProps) {
   return (
     <>
       <Button
+        disabled={disabled}
         variant="outline"
         className={`w-full ${className}`}
         onClick={handleClick}
@@ -49,4 +54,5 @@ export function FileUploadItem(props: FileUploadButtonProps) {
 
 FileUploadItem.defaultProps = {
   className: null,
+  disabled: false,
 };

@@ -18,7 +18,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { memo, ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { SubTitle } from '@/components/ui/text';
 import { SubmittableInput } from '@/components/ui/input';
@@ -34,202 +34,205 @@ export interface CustomTableProps<TData> {
   canHideRows?: boolean;
 }
 
-export const CustomTable = memo(
-  <TData extends object>(tableProps: CustomTableProps<TData>) => {
-    const [showTableBody, setShowTableBody] = useState<boolean>(
-      !tableProps.filtersOnly
-    );
+export function CustomTable<TData extends object>({
+  table,
+  filtersOnly,
+  page,
+  tableActionMenu,
+  canHideRows,
+}: CustomTableProps<TData>) {
+  const [showTableBody, setShowTableBody] = useState<boolean>(!filtersOnly);
 
-    const activeColumnsKey = `${tableProps.page}_${StorageKey.ActiveColumns}`;
+  const noData = table.getPageCount() === 0;
 
-    useEffect(() => {
-      const storedActiveColumns = localStorage.getItem(activeColumnsKey);
+  const activeColumnsKey = `${page}_${StorageKey.ActiveColumns}`;
 
-      if (storedActiveColumns) {
-        try {
-          tableProps.table.setColumnVisibility(JSON.parse(storedActiveColumns));
-        } catch (e) {
-          localStorage.removeItem(activeColumnsKey);
+  useEffect(() => {
+    const storedActiveColumns = localStorage.getItem(activeColumnsKey);
+
+    if (storedActiveColumns) {
+      try {
+        table.setColumnVisibility(JSON.parse(storedActiveColumns));
+      } catch (e) {
+        localStorage.removeItem(activeColumnsKey);
+      }
+    } else {
+      let activeColumns = '{';
+      Object.values(table.getAllColumns()).forEach((column) => {
+        if (column.getCanHide()) {
+          activeColumns += `"${column.id}":${column.getIsVisible()},`;
         }
-      } else {
-        let activeColumns = '{';
-        Object.values(tableProps.table.getAllColumns()).forEach((column) => {
-          if (column.getCanHide()) {
-            activeColumns += `"${column.id}":${column.getIsVisible()},`;
-          }
-        });
-        activeColumns = activeColumns.substring(0, activeColumns.length - 1);
-        activeColumns += '}';
-        localStorage.setItem(activeColumnsKey, activeColumns);
-      }
-    }, [activeColumnsKey, tableProps.table]);
+      });
+      activeColumns = activeColumns.substring(0, activeColumns.length - 1);
+      activeColumns += '}';
+      localStorage.setItem(activeColumnsKey, activeColumns);
+    }
+  }, [activeColumnsKey, table]);
 
-    const saveActiveCols = (col: string, state: boolean) => {
-      const storedActiveColumns = localStorage.getItem(activeColumnsKey);
+  const saveActiveCols = (col: string, state: boolean) => {
+    const storedActiveColumns = localStorage.getItem(activeColumnsKey);
 
-      if (storedActiveColumns) {
-        const activeColumns = JSON.parse(storedActiveColumns);
-        activeColumns[col] = state;
-        localStorage.setItem(activeColumnsKey, JSON.stringify(activeColumns));
-      }
-    };
+    if (storedActiveColumns) {
+      const activeColumns = JSON.parse(storedActiveColumns);
+      activeColumns[col] = state;
+      localStorage.setItem(activeColumnsKey, JSON.stringify(activeColumns));
+    }
+  };
 
-    const renderFilterCells = (header: Header<TData, unknown>) => {
-      if (header.column.getCanFilter())
-        return (
-          <div className="m-0 p-0">
-            <Filter column={header.column} table={tableProps.table} />
-          </div>
-        );
+  const renderFilterCells = (header: Header<TData, unknown>) => {
+    if (header.column.getCanFilter())
+      return (
+        <div className="m-0 p-0">
+          <Filter column={header.column} table={table} />
+        </div>
+      );
 
-      if (header.id === 'edit') {
-        return (
-          <>
-            {' '}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <div className="flex flex-row justify-center align-middle">
-                  <ChevronDownIcon className="h-4 w-4 cursor-pointer mx-1.5" />
-                </div>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                {tableProps.table
-                  .getAllColumns()
-                  .filter((column) => column.getCanHide())
-                  .map((column) => {
-                    return (
-                      <DropdownMenuCheckboxItem
-                        key={column.id}
-                        className="capitalize"
-                        checked={column.getIsVisible()}
-                        onCheckedChange={(value) => {
-                          column.toggleVisibility(value);
-                          saveActiveCols(column.id, value);
-                        }}
-                      >
-                        {column.id}
-                      </DropdownMenuCheckboxItem>
-                    );
-                  })}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </>
-        );
-      }
-
-      return null;
-    };
-
-    return (
-      <div>
-        {tableProps.tableActionMenu && tableProps.tableActionMenu}
-        <Table className="bg-slate-950 border border-slate-800 overflow-x-scroll">
-          <TableHeader className="hover:bg-transparent">
-            {tableProps.table.getHeaderGroups().map((headerGroup) => (
-              <TableRow
-                key={headerGroup.id}
-                className="border border-slate-800"
-              >
-                {headerGroup.headers.map((header) => {
+    if (header.id === 'edit') {
+      return (
+        <>
+          {' '}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <div className="flex flex-row justify-center align-middle">
+                <ChevronDownIcon className="h-4 w-4 cursor-pointer mx-1.5" />
+              </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {table
+                .getAllColumns()
+                .filter((column) => column.getCanHide())
+                .map((column) => {
                   return (
-                    <TableHead
-                      className="h-full border border-slate-800 text-center text-xs md:text-sm"
-                      key={header.id}
-                      {...{
-                        colSpan: header.colSpan,
-                        style: {
-                          backgroundColor: 'bg-slate-950',
-                          width: colSize(header.id),
-                          maxWidth: colSize(header.id),
-                          overflow: 'auto',
-                        },
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      className="capitalize"
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value) => {
+                        column.toggleVisibility(value);
+                        saveActiveCols(column.id, value);
                       }}
                     >
-                      {header.isPlaceholder ? null : (
-                        <>
-                          <div
-                            {...{
-                              className: 'cursor-pointer select-none',
-                              onClick: showTableBody
-                                ? header.column.getToggleSortingHandler()
-                                : () => {},
-                            }}
-                          >
-                            {flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
-                            {{
-                              asc: '↑',
-                              desc: '↓',
-                            }[header.column.getIsSorted() as string] ?? null}
-                          </div>
-                          {renderFilterCells(header)}
-                        </>
-                      )}
-                    </TableHead>
+                      {column.id}
+                    </DropdownMenuCheckboxItem>
                   );
                 })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {showTableBody &&
-              !tableProps.filtersOnly &&
-              tableProps.table.getRowModel().rows.map((row) => {
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </>
+      );
+    }
+
+    return null;
+  };
+
+  return (
+    <div>
+      {tableActionMenu && tableActionMenu}
+      <Table className="bg-slate-950 border border-slate-800 overflow-x-scroll">
+        <TableHeader className="hover:bg-transparent">
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id} className="border border-slate-800">
+              {headerGroup.headers.map((header) => {
                 return (
-                  <TableRow
-                    key={row.id}
-                    onClick={row.getToggleSelectedHandler()}
-                    className={cn(
-                      'hover:bg-slate-800/50 border border-slate-800',
-                      row.getIsSelected() &&
-                        'bg-slate-600/50 hover:bg-slate-600'
-                    )}
+                  <TableHead
+                    className="h-full border border-slate-800 text-center text-xs md:text-sm"
+                    key={header.id}
                     {...{
+                      colSpan: header.colSpan,
                       style: {
+                        backgroundColor: 'bg-slate-950',
+                        width: colSize(header.id),
+                        maxWidth: colSize(header.id),
                         overflow: 'auto',
                       },
                     }}
                   >
-                    {row.getVisibleCells().map((cell) => {
-                      return (
-                        <td
-                          key={cell.id}
-                          className="px-2 truncate text-xs font-thin md:font-normal md:text-sm"
+                    {header.isPlaceholder ? null : (
+                      <>
+                        <div
+                          {...{
+                            className: 'cursor-pointer select-none',
+                            onClick:
+                              !noData && showTableBody
+                                ? header.column.getToggleSortingHandler()
+                                : () => {},
+                          }}
                         >
                           {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
+                            header.column.columnDef.header,
+                            header.getContext()
                           )}
-                        </td>
-                      );
-                    })}
-                  </TableRow>
+                          {{
+                            asc: '↑',
+                            desc: '↓',
+                          }[header.column.getIsSorted() as string] ?? null}
+                        </div>
+                        {renderFilterCells(header)}
+                      </>
+                    )}
+                  </TableHead>
                 );
               })}
-            {!tableProps.filtersOnly && tableProps.canHideRows && (
-              <TableRow className="p-0 m-0">
-                <td
-                  colSpan={tableProps.table.getAllColumns().length}
-                  className="p-0 m-0"
+            </TableRow>
+          ))}
+        </TableHeader>
+        <TableBody>
+          {showTableBody &&
+            !filtersOnly &&
+            table.getRowModel().rows.map((row) => {
+              return (
+                <TableRow
+                  key={row.id}
+                  onClick={row.getToggleSelectedHandler()}
+                  className={cn(
+                    'hover:bg-slate-800/50 border border-slate-800',
+                    row.getIsSelected() && 'bg-slate-600/50 hover:bg-slate-600'
+                  )}
+                  {...{
+                    style: {
+                      overflow: 'auto',
+                    },
+                  }}
                 >
-                  <Button
-                    variant="outline"
-                    onClick={() => setShowTableBody(!showTableBody)}
-                    className="w-full rounded-none h-6 p-0 m-0 text-muted-foreground"
-                  >
-                    {showTableBody ? 'Hide' : 'Show'} data
-                  </Button>
-                </td>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
-    );
-  }
-);
+                  {row.getVisibleCells().map((cell) => {
+                    return (
+                      <td
+                        key={cell.id}
+                        className="px-2 truncate text-xs font-thin md:font-normal md:text-sm"
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </td>
+                    );
+                  })}
+                </TableRow>
+              );
+            })}
+          {!filtersOnly && !noData && canHideRows && (
+            <TableRow className="p-0 m-0">
+              <td colSpan={table.getAllColumns().length} className="p-0 m-0">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowTableBody(!showTableBody)}
+                  className="w-full rounded-none h-6 p-0 m-0 text-muted-foreground"
+                >
+                  {showTableBody ? 'Hide' : 'Show'} data
+                </Button>
+              </td>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </div>
+  );
+}
+
+CustomTable.defaultProps = {
+  tableActionMenu: null,
+  canHideRows: false,
+};
 
 CustomTable.displayName = 'CustomTable';
 interface CustomSmallTableProps {

@@ -11,7 +11,7 @@ interface AuthConfig {
   scopes_supported: string[];
 }
 
-export async function getOpenIdConfiguration(signal?: AbortSignal) {
+export async function GetOpenIdConfiguration(signal?: AbortSignal) {
   const config = {
     url: openIdWellKnownUrl,
     method: 'GET',
@@ -26,4 +26,4 @@ export async function getOpenIdConfiguration(signal?: AbortSignal) {
   return { data, error };
 }
 
-export default getOpenIdConfiguration;
+export default GetOpenIdConfiguration;

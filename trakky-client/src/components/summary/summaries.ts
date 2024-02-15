@@ -1,7 +1,4 @@
-import {
-  OwnerOverview,
-  PaymentOverview,
-} from '@/app/dashboards/components/dashboards';
+import { PaymentOverview, OwnerOverview } from '@/components/dashboards/charts';
 import { Payment, Budget } from '@/models/dtos';
 
 export function getAvailableYears(data: Payment[]) {

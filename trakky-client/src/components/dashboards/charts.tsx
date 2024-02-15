@@ -18,9 +18,9 @@ import {
 } from 'recharts';
 import React, { useCallback, useState } from 'react';
 import { formatCurrency } from '@/lib/formatter';
-import { AmountSummary } from '@/components/ui/amount-summary';
 import Checkbox from '@/components/ui/checkbox';
 import { StorageKey } from '@/constants';
+import AmountSummary from './amount-summary';
 
 const colors = [
   '#0bb4ff',

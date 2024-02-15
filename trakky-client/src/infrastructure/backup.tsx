@@ -6,7 +6,7 @@ import { Backup } from '@/models/dtos';
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
-async function fetchBackup(signal?: AbortSignal) {
+async function GetBackup(signal?: AbortSignal) {
   const config = makeBaseRequest(Endpoint.Backup, 'GET', signal);
 
   const { data, error } = await baseApiCall<Backup>({
@@ -17,4 +17,4 @@ async function fetchBackup(signal?: AbortSignal) {
   return { data: data ?? null, error };
 }
 
-export default fetchBackup;
+export default GetBackup;

@@ -1,5 +1,5 @@
 import { Selection } from '@/components/ui/select';
-import { FadeRight } from '@/components/animations/fade';
+import { FadeRight } from '@/components/ui/animations/fade';
 import { useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { demoMode, StorageKey } from '@/constants';

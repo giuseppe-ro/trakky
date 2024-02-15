@@ -1,27 +1,19 @@
 import { useEffect, useState } from 'react';
 
-import { CustomTable } from '@/components/ui/table/table';
-import { SubTitle, Title } from '@/components/ui/text';
-import usePaymentData from '@/lib/hooks/page-hooks';
+import { Title } from '@/components/ui/text';
+import usePaymentData from '@/lib/hooks/payments-hooks';
 import YearSelection from '@/components/ui/data-selector';
-import { useExpensesTable } from '@/lib/hooks/table-hooks';
-import { Summary } from '@/components/ui/summary';
-import {
-  ExpensesPieChart,
-  UsersDashboard,
-  ExpensesDashboard,
-} from '@/app/dashboards/components/dashboards';
-import { useDashboards } from '@/lib/hooks/dashboards-hooks';
+import { usePaymentsTable } from '@/lib/hooks/table-hooks';
 import { Containers } from '@/components/ui/containers';
-import { PaymentForm } from '@/components/ui/table/payment-form';
-import { TableActionMenu } from '@/components/ui/table/table-action-menu';
-import { DeletePaymentsDialog } from '@/components/ui/table/delete-popup';
-import { FadeUp } from '@/components/animations/fade';
+import { FadeUp } from '@/components/ui/animations/fade';
 import { Payment } from '@/models/dtos';
+import PaymentsTable from '@/components/payments/table';
+import Dashboards from '@/components/dashboards/dashboards';
+import Summary from '@/components/summary/summary';
+import useDashboards from '@/lib/hooks/use-dashboard';
 
 function OverviewPage() {
   const [filteredPayments, setFilteredPayments] = useState<Payment[]>([]);
-
   const {
     payments,
     availableYears,
@@ -31,7 +23,7 @@ function OverviewPage() {
   } = usePaymentData();
 
   const { totalsPerYear, table, onDeleteConfirmed, onRefresh } =
-    useExpensesTable({
+    usePaymentsTable({
       data: payments,
       selectedYear,
       refreshData,
@@ -76,56 +68,17 @@ function OverviewPage() {
       </Containers>
       <FadeUp>
         <div className="mt-6 text-center">
-          <CustomTable
+          <PaymentsTable
             table={table}
-            canHideRows
-            filtersOnly={false}
-            page="overview"
-            tableActionMenu={
-              <Containers className="transition">
-                <TableActionMenu
-                  exportName="Payments"
-                  table={table}
-                  onRefresh={onRefresh}
-                  addForm={
-                    <PaymentForm
-                      refresh={() => onRefresh(false)}
-                      title="Add New Transaction"
-                    />
-                  }
-                  deleteForm={
-                    <DeletePaymentsDialog
-                      onDeleteConfirmed={onDeleteConfirmed}
-                      entries={table
-                        .getSelectedRowModel()
-                        .rows.map((row) => row.original as Payment)}
-                    />
-                  }
-                />
-              </Containers>
-            }
+            onDeleteConfirmed={onDeleteConfirmed}
+            onRefresh={onRefresh}
           />
         </div>
-        <div className="mt-6 text-center mr-4 lg:mx-0">
-          <div className="lg:grid gap-4 lg:grid-cols-2">
-            <div className="mt-4 sm:mt-0">
-              <SubTitle title="Expenses" />
-              <ExpensesDashboard data={paymentOverviews} />
-            </div>
-            <div className="mt-4 sm:mt-0">
-              <SubTitle title="Users Comparison" {...{ className: 'mb-4' }} />
-              <UsersDashboard data={ownersOverview} />
-            </div>
-          </div>
-        </div>
-        <div className="mt-6 text-center mr-4 lg:mx-0">
-          <div className="lg:grid gap-4 lg:grid-cols-1">
-            <div className="mt-6 lg:mt-0">
-              <SubTitle title="Breakdown" />
-              <ExpensesPieChart data={expensesBreakdown} />
-            </div>
-          </div>
-        </div>
+        <Dashboards
+          paymentOverviews={paymentOverviews}
+          ownersOverview={ownersOverview}
+          expensesBreakdown={expensesBreakdown}
+        />
       </FadeUp>
     </>
   );

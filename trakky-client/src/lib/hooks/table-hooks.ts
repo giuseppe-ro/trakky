@@ -28,7 +28,7 @@ import { DeletePayments, UploadPayments } from '@/infrastructure/payment';
 import { Budget, Payment } from '@/models/dtos';
 import { Total } from '@/models/total';
 
-export function useExpensesTable({
+export function usePaymentsTable({
   data,
   selectedYear,
   refreshData,

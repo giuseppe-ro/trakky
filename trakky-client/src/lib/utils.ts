@@ -21,3 +21,11 @@ export function downloadFile(texts: string, format: string, name: string) {
   document.body.appendChild(element);
   element.click();
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function delayForDemo(promise: any) {
+  await new Promise((resolve) => {
+    setTimeout(resolve, 5000);
+  });
+  return promise;
+}

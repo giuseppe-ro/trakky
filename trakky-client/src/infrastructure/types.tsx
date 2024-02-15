@@ -7,7 +7,7 @@ import {
 import { Endpoint } from '@/constants';
 import { Type } from '@/models/dtos';
 
-export async function getTypes(signal?: AbortSignal) {
+export async function GetTypes(signal?: AbortSignal) {
   const config = makeBaseRequest(Endpoint.Types, 'GET');
   config.signal = signal;
 

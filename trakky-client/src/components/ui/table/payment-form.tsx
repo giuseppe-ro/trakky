@@ -29,8 +29,7 @@ import {
   EditPayment,
   DeletePayments,
 } from '@/infrastructure/payment';
-import { getOwners } from '@/infrastructure/owner';
-import { getTypes } from '@/infrastructure/transaction-type';
+import { GetOwners } from '@/infrastructure/owner';
 import { resultToast } from '@/components/ui/use-toast';
 import { Toggle } from '@/components/ui/toggle';
 import Spinner from '@/components/ui/spinner';
@@ -43,6 +42,7 @@ import { ErrorMessage } from '@/infrastructure/base-api';
 import { errorMessage } from '@/components/ui/table/form-error-message';
 import { CalendarIcon, MinusIcon, PlusIcon } from 'lucide-react';
 import { Payment } from '@/models/dtos';
+import { GetTypes } from '@/infrastructure/types';
 
 const customErrorMap: z.ZodErrorMap = (issue, ctx) => {
   if (issue.code === z.ZodIssueCode.invalid_type) {
@@ -105,7 +105,7 @@ export function PaymentForm({
     const formData = async () => {
       dispatchFetch({ type: FetchActionType.FETCH_START });
 
-      const { data: ownersData, error: ownersError } = await getOwners(signal);
+      const { data: ownersData, error: ownersError } = await GetOwners(signal);
 
       if (ownersError) {
         dispatchFetch({
@@ -122,7 +122,7 @@ export function PaymentForm({
         payload: fetchedOwners,
       });
 
-      const { data: typesData, error: typesError } = await getTypes(signal);
+      const { data: typesData, error: typesError } = await GetTypes(signal);
       if (typesError) {
         dispatchFetch({
           type: FetchActionType.FETCH_ERROR,

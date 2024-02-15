@@ -2,17 +2,13 @@ import { useEffect, useState } from 'react';
 
 import { CustomTable } from '@/components/ui/table/table';
 import { SubTitle, Title } from '@/components/ui/text';
-import usePaymentData from '@/lib/hooks/page-hooks';
+import usePaymentData from '@/lib/hooks/payments-hooks';
 import YearSelection from '@/components/ui/data-selector';
-import { useExpensesTable } from '@/lib/hooks/table-hooks';
-import {
-  ExpensesPieChart,
-  UsersDashboard,
-  ExpensesDashboard,
-} from '@/app/dashboards/components/dashboards';
-import dashboards from '@/lib/hooks/dashboards-hooks';
-import { FadeLeft, FadeUp } from '@/components/animations/fade';
+import { usePaymentsTable } from '@/lib/hooks/table-hooks';
+import { FadeLeft, FadeUp } from '@/components/ui/animations/fade';
 import { Payment } from '@/models/dtos';
+import Dashboards from '@/components/dashboards/dashboards';
+import useDashboard from '@/lib/hooks/use-dashboard';
 
 function DashboardPage() {
   const [filteredPayments, setFilteredPayments] = useState<Payment[]>([]);
@@ -25,7 +21,7 @@ function DashboardPage() {
     setSelectedYear,
   } = usePaymentData();
 
-  const { table } = useExpensesTable({
+  const { table } = usePaymentsTable({
     data: payments,
     selectedYear,
     refreshData,
@@ -49,7 +45,7 @@ function DashboardPage() {
     setFilteredPayments(newFilteredPayments);
   }, [filteredRowModel]);
 
-  const { paymentOverviews, ownersOverview, expensesBreakdown } = dashboards({
+  const { paymentOverviews, ownersOverview, expensesBreakdown } = useDashboard({
     data: filteredPayments,
     selectedYear,
   });
@@ -69,22 +65,11 @@ function DashboardPage() {
         </div>
       </FadeLeft>
       <FadeUp>
-        <div className="mt-6 text-center mr-4 lg:mx-0">
-          <div className="lg:grid gap-4 lg:grid-cols-2">
-            <div className="mt-4 sm:mt-0">
-              <SubTitle title="Expenses" />
-              <ExpensesDashboard data={paymentOverviews} />
-            </div>
-            <div className="mt-4 sm:mt-0">
-              <SubTitle title="Users Comparison" {...{ className: 'mb-4' }} />
-              <UsersDashboard data={ownersOverview} />
-            </div>
-          </div>
-          <div>
-            <SubTitle title="Breakdown" />
-            <ExpensesPieChart data={expensesBreakdown} />
-          </div>
-        </div>
+        <Dashboards
+          paymentOverviews={paymentOverviews}
+          ownersOverview={ownersOverview}
+          expensesBreakdown={expensesBreakdown}
+        />
       </FadeUp>
     </>
   );

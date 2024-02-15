@@ -1,0 +1,23 @@
+name: _test
+
+on:
+  workflow_call:
+
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "21.x"
+
+      - name: Test Client
+        run: |
+          cd trakky-client
+          npm ci
+          npm run lint
+          npm run build --if-present
+          npm run lint

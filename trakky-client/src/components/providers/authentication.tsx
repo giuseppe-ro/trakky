@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { AuthProvider, TAuthConfig } from 'react-oauth2-code-pkce';
-import { getOpenIdConfiguration } from '@/infrastructure/auth';
+import { GetOpenIdConfiguration } from '@/infrastructure/auth';
 import Spinner from '@/components/ui/spinner';
 import { demoMode, StorageKey } from '@/constants';
 import { clientId } from '@/authConfig';
@@ -18,7 +18,7 @@ export function AuthenticationCustomProvider({
     if (demoMode) return;
 
     const fetchConfig = async (): Promise<AppError | null | undefined> => {
-      const { data, error } = await getOpenIdConfiguration();
+      const { data, error } = await GetOpenIdConfiguration();
       if (data) {
         const config = {
           autoLogin: false,

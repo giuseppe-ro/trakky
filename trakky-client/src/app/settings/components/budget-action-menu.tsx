@@ -5,7 +5,7 @@ import TableActionMenu from '@/components/ui/table/table-action-menu';
 import { Table } from '@tanstack/react-table';
 import { Budget } from '@/models/dtos';
 import BudgetForm from './budget-form';
-import BudgetToDeleteList from './delete';
+import BudgetToDeleteList from './budget-delete';
 
 interface BudgetActionMenuProps {
   table: Table<any>;

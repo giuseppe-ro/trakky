@@ -10,7 +10,7 @@ import { Budget } from '@/models/dtos';
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
-export async function getBudgets(signal?: AbortSignal) {
+export async function GetBudgets(signal?: AbortSignal) {
   const config = makeBaseRequest(Endpoint.Budgets, 'GET', signal);
   const { data, error } = await baseApiCall<Budget[]>({
     request: config,

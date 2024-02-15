@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { GetPayments } from '@/infrastructure/payment';
-import { getAvailableYears } from '@/lib/summaries';
 import { StorageKey } from '@/constants';
 import { Payment } from '@/models/dtos';
+import { getAvailableYears } from '@/components/summary/summaries';
 
 function usePaymentData() {
   const [payments, setPayments] = useState<Payment[]>([]);

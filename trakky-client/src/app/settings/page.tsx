@@ -2,12 +2,7 @@ import { useEffect, useReducer, useState } from 'react';
 import { CustomSmallTable, CustomTable } from '@/components/ui/table/table';
 import { SubTitle, Title } from '@/components/ui/text';
 import { onTransactionsUpload, useBudgetsTable } from '@/lib/hooks/table-hooks';
-import { FadeLeft, FadeUp } from '@/components/animations/fade';
-import {
-  AddTypes,
-  DeleteTypes,
-  getTypes,
-} from '@/infrastructure/transaction-type';
+import { FadeLeft, FadeUp } from '@/components/ui/animations/fade';
 import { downloadFile } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
@@ -15,9 +10,9 @@ import {
   toast,
   valueExistsToast,
 } from '@/components/ui/use-toast';
-import { AddOwners, DeleteOwners, getOwners } from '@/infrastructure/owner';
+import { AddOwners, DeleteOwners, GetOwners } from '@/infrastructure/owner';
 import { FileUploadItem } from '@/components/ui/table/file-upload';
-import fetchBackup from '@/infrastructure/backup';
+import GetBackup from '@/infrastructure/backup';
 import {
   FetchActionType,
   FETCH_INITIAL_STATE,
@@ -25,9 +20,10 @@ import {
 } from '@/components/ui/table/payment-form-reducer';
 import { Type, Owner, Budget } from '@/models/dtos';
 import Spinner from '@/components/ui/spinner';
-import { getBudgets } from '@/infrastructure/budget';
+import { GetBudgets } from '@/infrastructure/budget';
 import { ContentResultContainer } from '@/components/ui/containers';
 import { ErrorMessage } from '@/infrastructure/base-api';
+import { GetTypes, AddTypes, DeleteTypes } from '@/infrastructure/types';
 import BudgetActionMenu from './components/budget-action-menu';
 
 function SettingsPage() {
@@ -38,7 +34,7 @@ function SettingsPage() {
   ) {
     if (flushBeforeRefresh) setBudgets([]);
 
-    const { data, error } = await getBudgets(signal);
+    const { data, error } = await GetBudgets(signal);
 
     if (error) throw new Error(error.error);
 
@@ -59,7 +55,7 @@ function SettingsPage() {
   const fetchOwners = async (signal?: AbortSignal) => {
     if (fetchState.error) return;
 
-    const { data: ownersData, error: ownersError } = await getOwners(signal);
+    const { data: ownersData, error: ownersError } = await GetOwners(signal);
     if (ownersError) {
       fetchDispatch({
         type: FetchActionType.FETCH_ERROR,
@@ -77,7 +73,7 @@ function SettingsPage() {
   const fetchTypes = async (signal?: AbortSignal) => {
     if (fetchState.error) return;
 
-    const { data: typesData, error: typesError } = await getTypes(signal);
+    const { data: typesData, error: typesError } = await GetTypes(signal);
     if (typesError) {
       fetchDispatch({ type: FetchActionType.FETCH_ERROR, payload: typesError });
       return;
@@ -180,7 +176,7 @@ function SettingsPage() {
 
   async function DownloadBackup() {
     try {
-      const { data, error } = await fetchBackup();
+      const { data, error } = await GetBackup();
 
       if (data) {
         downloadFile(JSON.stringify(data), 'json', 'Backup');

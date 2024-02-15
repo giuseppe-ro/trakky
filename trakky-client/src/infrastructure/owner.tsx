@@ -15,7 +15,7 @@ export interface ErrorResponse {
   message: string;
 }
 
-export async function getOwners(signal?: AbortSignal) {
+export async function GetOwners(signal?: AbortSignal) {
   const config = makeBaseRequest(Endpoint.Owners, 'GET', signal);
 
   const { data, error } = await baseApiCall<Owner[]>({

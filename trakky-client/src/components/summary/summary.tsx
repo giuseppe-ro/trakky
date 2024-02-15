@@ -3,15 +3,15 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table } from '@tanstack/react-table';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
-import { FadeLeft } from '@/components/animations/fade';
+import { FadeLeft } from '@/components/ui/animations/fade';
 import React from 'react';
-import {
-  calculateChange,
-  getPreviousYearTotal,
-  getPreviousYearPartialTotal,
-} from '@/lib/calculators';
 import { getPercentageChangeText } from '@/lib/formatter';
 import { Total } from '@/models/total';
+import {
+  getPreviousYearPartialTotal,
+  getPreviousYearTotal,
+  calculateChange,
+} from './calculators';
 
 interface SummaryCardProps {
   title: string;

@@ -1,7 +1,7 @@
 import { memo, useEffect, useState } from 'react';
 import serverIsDown from '@/infrastructure/healthcheck';
 import { demoMode } from '@/constants';
-import { FadeDown } from '@/components/animations/fade';
+import { FadeDown } from '@/components/ui/animations/fade';
 
 export const HealthCheckProvider = memo(() => {
   const [serverDown, setServerDown] = useState(false);

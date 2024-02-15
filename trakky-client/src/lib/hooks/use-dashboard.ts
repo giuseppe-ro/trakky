@@ -1,17 +1,14 @@
 import { useEffect, useState } from 'react';
+import { GetBudgets } from '@/infrastructure/budget';
+import { Budget, Payment } from '@/models/dtos';
+import { OwnerOverview, PaymentOverview } from '@/components/dashboards/charts';
 import {
   getExpensesBreakdown,
+  getYearlyPaymentsSummaries,
+  getYearlyOwnersSummaries,
   getMonthlyOwnersSummariesForYear,
   getMonthlyPaymentsSummariesForYear,
-  getYearlyOwnersSummaries,
-  getYearlyPaymentsSummaries,
-} from '@/lib/summaries';
-import { getBudgets } from '@/infrastructure/budget';
-import {
-  OwnerOverview,
-  PaymentOverview,
-} from '@/app/dashboards/components/dashboards';
-import { Budget, Payment } from '@/models/dtos';
+} from '@/components/summary/summaries';
 
 export function useDashboards({
   data,
@@ -34,7 +31,7 @@ export function useDashboards({
     const { signal } = controller;
 
     const fetchData = async () => {
-      const { data: newData, error } = await getBudgets(signal);
+      const { data: newData, error } = await GetBudgets(signal);
 
       if (error) throw new Error(error.error);
 

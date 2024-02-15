@@ -12,10 +12,10 @@ import SettingsPage from '@/app/settings/page';
 import { HealthCheckProvider } from '@/components/providers/health-check';
 import { AuthenticationCustomProvider } from '@/components/providers/authentication';
 import ErrorPage from './app/error/page';
-import { MainNav } from './components/ui/main-nav';
 import DashboardPage from './app/dashboards/page';
 import { ThemeProvider } from './components/providers/theme';
 import App from './App';
+import MainNav from './components/navbar/main-nav';
 
 AOS.init({ once: true });
 

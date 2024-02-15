@@ -1,0 +1,21 @@
+name: push_docker
+
+on:
+    repository_dispatch:
+        types: [create_release]
+
+permissions:
+  contents: write
+
+jobs:
+
+    build:
+        uses: ./.github/workflows/_build.yml
+
+    push:
+        needs: [ build ]
+        uses: ./.github/workflows/_push.yml
+        with:
+            release_type: ${{ github.event.client_payload.release_type }}
+            release_notes: ${{ github.event.client_payload.release_notes }}
+        secrets: inherit

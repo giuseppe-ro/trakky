@@ -1,4 +1,4 @@
-import { makeTypes } from '@/lib/makeData';
+import { mockTypes } from '@/lib/makeData';
 import {
   baseApiCall,
   baseRequestData,
@@ -13,7 +13,7 @@ export async function GetTypes(signal?: AbortSignal) {
 
   const { data, error } = await baseApiCall<Type[]>({
     request: config,
-    demoModeData: makeTypes,
+    demoModeData: mockTypes,
   });
 
   return { data: data ?? [], error };

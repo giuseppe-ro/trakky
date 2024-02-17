@@ -139,3 +139,5 @@ data.json
 
 .vite
 .vscode
+trakky-client/html
+**/html/*

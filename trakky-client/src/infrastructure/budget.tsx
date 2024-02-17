@@ -1,4 +1,4 @@
-import { makeBudgets } from '@/lib/makeData';
+import { mockBudgets } from '@/lib/makeData';
 import axios from 'axios';
 import { Endpoint } from '@/constants';
 import {
@@ -14,7 +14,7 @@ export async function GetBudgets(signal?: AbortSignal) {
   const config = makeBaseRequest(Endpoint.Budgets, 'GET', signal);
   const { data, error } = await baseApiCall<Budget[]>({
     request: config,
-    demoModeData: makeBudgets,
+    demoModeData: mockBudgets,
   });
 
   return { data: data ?? [], error };

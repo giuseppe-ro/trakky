@@ -6,6 +6,7 @@ export default defineConfig({
     alias: [{ find: '@', replacement: resolve(__dirname, './src') }],
   },
   test: {
+    reporters: ['default', 'html'],
     exclude: [...configDefaults.exclude],
     globals: true,
     environment: 'jsdom',

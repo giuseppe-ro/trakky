@@ -1,4 +1,4 @@
-import { makeOwners } from '@/lib/makeData';
+import { mockOwners } from '@/lib/makeData';
 import axios from 'axios';
 
 import { Endpoint } from '@/constants';
@@ -20,7 +20,7 @@ export async function GetOwners(signal?: AbortSignal) {
 
   const { data, error } = await baseApiCall<Owner[]>({
     request: config,
-    demoModeData: makeOwners,
+    demoModeData: mockOwners,
   });
 
   return { data: data ?? [], error };

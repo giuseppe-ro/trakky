@@ -3,7 +3,7 @@ FROM node:21-alpine AS builder
 WORKDIR /app
 
 COPY ./package*.json ./
-RUN npm install
+RUN npm ci
 
 ARG OPENID_AUTH_CLIENT_ID
 ARG OPENID_WELL_KNOWN_CONFIG_URL

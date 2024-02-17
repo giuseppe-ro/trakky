@@ -3,8 +3,9 @@ import { GetPayments } from '@/infrastructure/payment';
 import { StorageKey } from '@/constants';
 import { Payment } from '@/models/dtos';
 import { getAvailableYears } from '@/components/summary/summaries';
+import { Table } from '@tanstack/react-table';
 
-function usePaymentData() {
+export function usePaymentData() {
   const [payments, setPayments] = useState<Payment[]>([]);
   const [availableYears, setAvailableYears] = useState<string[]>([]);
   const [selectedYear, setSelectedYear] = useState<string | null>('');
@@ -45,4 +46,26 @@ function usePaymentData() {
   };
 }
 
-export default usePaymentData;
+export const useFilteredPayments = <TData>(table: Table<TData>) => {
+  const [filteredPayments, setFilteredPayments] = useState<Payment[]>([]);
+
+  const filteredRowModel = table.getFilteredRowModel();
+
+  useEffect(() => {
+    const newFilteredPayments = filteredRowModel.rows.map(
+      (row) =>
+        ({
+          id: row.getValue('date'),
+          amount: row.getValue('amount'),
+          type: row.getValue('type'),
+          owner: row.getValue('owner'),
+          description: row.getValue('description'),
+          date: row.getValue('date'),
+        }) as Payment
+    );
+
+    setFilteredPayments(newFilteredPayments);
+  }, [filteredRowModel]);
+
+  return filteredPayments;
+};

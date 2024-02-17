@@ -1,9 +1,9 @@
 import { Title } from '@/components/ui/text';
-import usePaymentData from '@/lib/hooks/payments-hooks';
 import YearSelection from '@/components/ui/data-selector';
 import { usePaymentsTable } from '@/lib/hooks/table-hooks';
 import { Containers } from '@/components/ui/containers';
 import { FadeUp } from '@/components/ui/animations/fade';
+import { usePaymentData } from '@/lib/hooks/payments-hooks';
 import PaymentsTable from './components/payments/table';
 import Summary from './components/summary/summary';
 

@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { GetBudgets } from '@/infrastructure/budget';
 import { Budget, Payment } from '@/models/dtos';
-import { OwnerOverview, PaymentOverview } from '@/components/dashboards/charts';
 import {
   getExpensesBreakdown,
   getYearlyPaymentsSummaries,
@@ -9,6 +8,8 @@ import {
   getMonthlyOwnersSummariesForYear,
   getMonthlyPaymentsSummariesForYear,
 } from '@/components/summary/summaries';
+import { OwnerOverview } from '@/models/owner-overview';
+import { PaymentOverview } from '@/models/payment-overview';
 
 export function useDashboards({
   data,

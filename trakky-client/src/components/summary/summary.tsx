@@ -8,9 +8,9 @@ import React from 'react';
 import { getPercentageChangeText } from '@/lib/formatter';
 import { Total } from '@/models/total';
 import {
-  getPreviousYearPartialTotal,
+  getTotalForDate,
   getPreviousYearTotal,
-  calculateChange,
+  calculatePercentageDiff,
 } from './calculators';
 
 interface SummaryCardProps {
@@ -96,10 +96,10 @@ export function Summary<TData>({
     parseInt(selectedYear, 10) === currentDate.getFullYear();
 
   const previousYearTotal = selectedThisYear
-    ? getPreviousYearPartialTotal(totalsPerYear, lastYearCurrentMonth)
+    ? getTotalForDate(totalsPerYear, lastYearCurrentMonth)
     : getPreviousYearTotal(totalsPerYear, selectedYear);
 
-  const change = calculateChange(totalAmount, previousYearTotal);
+  const change = calculatePercentageDiff(totalAmount, previousYearTotal);
   const changePercentage = getPercentageChangeText(
     change,
     selectedThisYear,

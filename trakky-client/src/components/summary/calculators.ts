@@ -1,6 +1,6 @@
 import { Total } from '@/models/total';
 
-export function calculateChange(current: number, previous: number) {
+export function calculatePercentageDiff(current: number, previous: number) {
   if (previous === undefined || previous === 0) {
     return 0;
   }
@@ -8,18 +8,13 @@ export function calculateChange(current: number, previous: number) {
   return Math.round(((current - previous) / previous) * 100 * 100) / 100;
 }
 
-export function getPreviousYearPartialTotal(
-  totalsPerYear: Total[],
-  lastYearCurrentMonth: Date
-) {
-  return totalsPerYear
+export function getTotalForDate(totals: Total[], untilDate: Date) {
+  const untilDateYear = untilDate.getFullYear();
+  return totals
     .filter((total) => {
       if (total.date) {
-        const totalDate = new Date(total.date);
-        return (
-          totalDate <= lastYearCurrentMonth &&
-          totalDate.getFullYear() === lastYearCurrentMonth.getFullYear()
-        );
+        const date = new Date(total.date);
+        return date <= untilDate && date.getFullYear() === untilDateYear;
       }
       return false;
     })
@@ -31,11 +26,12 @@ export function getPreviousYearTotal(
   totalsPerYear: Total[],
   selectedYear: string
 ) {
+  const numericYear = Number(selectedYear) - 1;
   return totalsPerYear
     .filter((total) => {
       if (total.date) {
         const totalDate = new Date(total.date);
-        return totalDate.getFullYear() === Number(selectedYear) - 1;
+        return totalDate.getFullYear() === numericYear;
       }
       return false;
     })

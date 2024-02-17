@@ -20,6 +20,8 @@ import React, { useCallback, useState } from 'react';
 import { formatCurrency } from '@/lib/formatter';
 import Checkbox from '@/components/ui/checkbox';
 import { StorageKey } from '@/constants';
+import { OwnerOverview } from '@/models/owner-overview';
+import { PaymentOverview } from '@/models/payment-overview';
 import AmountSummary from './amount-summary';
 
 const colors = [
@@ -40,14 +42,6 @@ const getRandomColor = (index: number) => {
   const randomIndex = Math.floor(Math.random() * colors.length);
   return colors.splice(randomIndex, 1)[0];
 };
-
-export interface PaymentOverview {
-  index: number;
-  name: string;
-  total: number;
-  budget: number;
-  maxBudget: number;
-}
 
 function OverviewTooltip({
   label,
@@ -253,11 +247,6 @@ export function ExpensesDashboard({ data }: { data: PaymentOverview[] }) {
   );
 }
 
-export interface OwnerOverview {
-  index: number;
-  name: string;
-  owners: { [key: string]: number };
-}
 export function UsersDashboard({ data }: { data: OwnerOverview[] }) {
   data.sort((a, b) => a.index - b.index);
 
@@ -272,7 +261,13 @@ export function UsersDashboard({ data }: { data: OwnerOverview[] }) {
 
   return (
     <ResponsiveContainer maxHeight={280} aspect={1.5}>
-      <LineChart data={data} title="Text">
+      <LineChart
+        data={data}
+        title="Text"
+        data-testid="linechart"
+        height={100}
+        width={100}
+      >
         <XAxis
           dataKey="name"
           stroke="#888888"
@@ -403,7 +398,7 @@ export function ExpensesPieChart({
   return (
     data && (
       <ResponsiveContainer maxHeight={290} aspect={1}>
-        <PieChart>
+        <PieChart title="Pie Chart" width={100} height={100}>
           <Pie
             activeIndex={activeIndex}
             activeShape={renderActiveShape}

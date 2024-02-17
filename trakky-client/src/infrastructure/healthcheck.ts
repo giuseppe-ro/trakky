@@ -10,7 +10,7 @@ async function serverIsDown(signal?: AbortSignal) {
   });
 
   // TODO: return error as well and handle
-  return !data ?? true;
+  return !data;
 }
 
 export default serverIsDown;

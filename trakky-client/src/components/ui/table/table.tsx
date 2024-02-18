@@ -176,9 +176,10 @@ export function CustomTable<TData extends object>({
             </TableRow>
           ))}
         </TableHeader>
-        {showTableBody && !filtersOnly && (
-          <TableBody>
-            {table.getRowModel().rows.map((row) => {
+        <TableBody>
+          {showTableBody &&
+            !filtersOnly &&
+            table.getRowModel().rows.map((row) => {
               return (
                 <TableRow
                   key={row.id}
@@ -209,21 +210,20 @@ export function CustomTable<TData extends object>({
                 </TableRow>
               );
             })}
-            {!filtersOnly && !noData && canHideRows && (
-              <TableRow className="p-0 m-0">
-                <td colSpan={table.getAllColumns().length} className="p-0 m-0">
-                  <Button
-                    variant="outline"
-                    onClick={() => setShowTableBody(!showTableBody)}
-                    className="w-full rounded-none h-6 p-0 m-0 text-muted-foreground"
-                  >
-                    {showTableBody ? 'Hide' : 'Show'} data
-                  </Button>
-                </td>
-              </TableRow>
-            )}
-          </TableBody>
-        )}
+          {!filtersOnly && !noData && canHideRows && (
+            <TableRow className="p-0 m-0" aria-label="Hide Table Button">
+              <td colSpan={table.getAllColumns().length} className="p-0 m-0">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowTableBody(!showTableBody)}
+                  className="w-full rounded-none h-6 p-0 m-0 text-muted-foreground"
+                >
+                  {showTableBody ? 'Hide' : 'Show'} data
+                </Button>
+              </td>
+            </TableRow>
+          )}
+        </TableBody>
       </Table>
     </div>
   );

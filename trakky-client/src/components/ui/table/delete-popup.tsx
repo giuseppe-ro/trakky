@@ -15,11 +15,9 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { TrashIcon } from '@radix-ui/react-icons';
-import { TableRow } from '@/components/ui/table';
-import { formatCurrency } from '@/lib/formatter';
-import { cn } from '@/lib/utils';
 import { ReactNode } from 'react';
 import { Payment } from '@/models/dtos';
+import PaymentsRecap from '@/components/payments/payments-recap';
 
 export function DeleteDialog({
   onDeleteConfirmed,
@@ -48,7 +46,7 @@ export function DeleteDialog({
                     </p>
                   </AlertDialogTitle>
                 </div>
-                <div className="m-6 text-sm text-muted-foreground">
+                <div className="flex justify-center align-middle m-6 text-sm text-muted-foreground">
                   {entries}
                 </div>
               </AlertDialogHeader>
@@ -87,36 +85,11 @@ export function DeletePaymentsDialog({
   onDeleteConfirmed: () => Promise<void>;
   entries: Payment[];
 }) {
-  const tdStyle = 'px-2 text-left border overflow-x-scroll scroll-smooth';
-
   return (
     <DeleteDialog
       onDeleteConfirmed={onDeleteConfirmed}
       tooltipText="Delete selected rows"
-      entries={
-        <table className="w-full">
-          <tbody className="w-full">
-            {entries.map((payment: Payment) => (
-              <TableRow key={payment.id} className="flex max-w-[460px]">
-                <td className={cn(`${tdStyle} w-[75px] text-left`)}>
-                  {new Date(payment.date).toLocaleString('en-GB', {
-                    month: 'numeric',
-                    year: 'numeric',
-                  })}
-                </td>
-                <td className={cn(`${tdStyle} w-[80px]`)}>{payment.type}</td>
-                <td className={cn(`${tdStyle} w-[55px]`)}>{payment.owner}</td>
-                <td className={cn(`${tdStyle} text-right w-[100px]`)}>
-                  {formatCurrency(payment.amount)}
-                </td>
-                <td className={cn(`${tdStyle} w-[150px] truncate`)}>
-                  {payment.description}
-                </td>
-              </TableRow>
-            ))}
-          </tbody>
-        </table>
-      }
+      entries={<PaymentsRecap entries={entries} />}
     />
   );
 }

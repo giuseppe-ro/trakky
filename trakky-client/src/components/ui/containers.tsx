@@ -25,7 +25,7 @@ export function PageContainer({
 
   return (
     <div
-      className={`md:container px-0 pb-2 md:px-12 mx-auto w-full transition ${className}`}
+      className={`md:container px-0 pb-2 sm:px-12 mx-auto w-full transition ${className}`}
     >
       <Loading loading={loginInProgress}>{containerContent()}</Loading>
     </div>

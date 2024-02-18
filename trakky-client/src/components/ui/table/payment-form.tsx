@@ -42,6 +42,7 @@ import { errorMessage } from '@/components/ui/table/form-error-message';
 import { CalendarIcon, MinusIcon, PlusIcon } from 'lucide-react';
 import { Payment } from '@/models/dtos';
 import { GetTypes } from '@/infrastructure/types';
+import PaymentsRecap from '@/components/payments/payments-recap';
 import Loading from '../loading';
 
 const customErrorMap: z.ZodErrorMap = (issue, ctx) => {
@@ -75,6 +76,7 @@ export function PaymentForm({
   refresh: (signal?: AbortSignal, flushPaymentsBeforeRefresh?: boolean) => void;
   editValues?: Payment;
 }) {
+  const [addedPayments, setAddedPayments] = useState<Payment[]>([]);
   const [amountIsNegative, setAmountIsNegative] = useState(
     editValues ? editValues.amount < 0 : false
   );
@@ -219,6 +221,8 @@ export function PaymentForm({
       }
     }
 
+    setAddedPayments(addedPayments.concat(payments));
+
     resultToast({
       isError: false,
       message: 'Transaction saved',
@@ -246,7 +250,7 @@ export function PaymentForm({
           <CardTitle>{title}</CardTitle>
         </CardHeader>
         <CardContent className="border-none">
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="grid grid-cols-1">
               <FormField
                 control={form.control}
@@ -385,6 +389,16 @@ export function PaymentForm({
               submitted={form.formState.isSubmitted}
               isError={isError}
             />
+            {addedPayments.length > 0 && (
+              <div className="flex flex-col justify-center align-middle text-muted-foreground">
+                <div className="text-center text-sm font-medium mb-1">
+                  Added entries:
+                </div>
+                <div className="text-sm">
+                  <PaymentsRecap entries={addedPayments} limitedSpace />
+                </div>
+              </div>
+            )}
           </form>
         </CardContent>
       </>
@@ -392,13 +406,11 @@ export function PaymentForm({
   };
 
   return (
-    <div>
-      <Form {...form}>
-        <Card className="p-0 md:p-2">
-          <Loading loading={fetchState.loading}>{cardContent()}</Loading>
-        </Card>
-      </Form>
-    </div>
+    <Form {...form}>
+      <Card className="p-0 md:p-2">
+        <Loading loading={fetchState.loading}>{cardContent()}</Loading>
+      </Card>
+    </Form>
   );
 }
 

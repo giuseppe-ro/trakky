@@ -36,7 +36,7 @@ interface TableActionMenuProps<TData> {
 export const TableActionMenu = memo(
   <TData extends object>(props: TableActionMenuProps<TData>) => {
     const { table, onRefresh, addForm, deleteForm, exportName } = props;
-    const noData = table.getPageCount() === 0;
+    const noData = table.getState().pagination.pageSize === 0;
 
     return (
       <div className="flex justify-between items-center">

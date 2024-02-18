@@ -30,15 +30,17 @@ describe('test BudgetToDeleteList rendering', () => {
     });
   });
 
-  it('should render filters without table body', () => {
+  it('should render filters without table body', async () => {
     // act
     render(<DashboardPage />);
 
     // assert
-    expect(screen.getByTitle('Filters')).toBeVisible();
+    await waitFor(() => {
+      expect(screen.getByTitle('Filters')).toBeVisible();
 
-    expect(screen.getByRole('table').querySelector('thead')).toBeVisible();
-    expect(screen.queryByTitle('Hide Table Button')).toBeNull();
+      expect(screen.getByRole('table').querySelector('thead')).toBeVisible();
+      expect(screen.queryByTitle('Hide Table Button')).toBeNull();
+    });
   });
 
   it('should render expenses, users and breakdown charts', async () => {

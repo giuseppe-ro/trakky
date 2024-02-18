@@ -62,6 +62,16 @@ export function getPercentageChangeText(
   return changePercentage;
 }
 
+export function getPercentageChangeText2(change: number): string {
+  if (change === 0) {
+    return '';
+  }
+
+  return change > 0
+    ? `+${change}% from previous year`
+    : `${change}% from previous year`;
+}
+
 export const differenceText = (
   partialTot: number,
   ownerBalancesLenght: number,

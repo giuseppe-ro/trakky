@@ -5,7 +5,7 @@ import * as React from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { demoMode } from '@/constants';
-import Spinner from '@/components/ui/spinner';
+import Loading from './loading';
 
 const Card = React.forwardRef<
   HTMLDivElement,
@@ -91,8 +91,7 @@ function CardFormFooter({
 }) {
   return (
     <CardFooter className="flex flex-col justify-between">
-      {isSubmitting && <Spinner className="w-6 h-6" />}
-      {!isSubmitting && (
+      <Loading loading={isSubmitting}>
         <Button
           disabled={
             demoMode || isSubmitting || (isSubmittedSuccessfully && !isError)
@@ -111,7 +110,7 @@ function CardFormFooter({
         >
           {isSubmittedSuccessfully && !isError ? 'Saved! ✅' : 'Save'}
         </Button>
-      )}
+      </Loading>
       {isError && (
         <p className="text-sm font-medium text-destructive m-2">
           Error! Could not save changes. Try again.

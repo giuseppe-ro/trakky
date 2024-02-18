@@ -5,6 +5,7 @@ import { Containers } from '@/components/ui/containers';
 import { FadeUp } from '@/components/ui/animations/fade';
 import { usePaymentData } from '@/lib/hooks/payments-hooks';
 import useSummary from '@/lib/hooks/use-summary';
+import Loading from '@/components/ui/loading';
 import PaymentsTable from './components/payments/table';
 import Summary from './components/summary/summary';
 
@@ -37,24 +38,26 @@ export default function App() {
         selectedYear={selectedYear}
         onYearChange={setSelectedYear}
       />
-      <Containers>
-        <Summary
-          ownerBalances={ownerBalances}
-          totalAmount={totalAmount}
-          partialTotal={partialTotal}
-          totalsPerYear={totalsPerYear}
-          selectedYear={selectedYear ?? ''}
-        />
-      </Containers>
-      <FadeUp>
-        <div className="mt-4">
-          <PaymentsTable
-            table={table}
-            onDeleteConfirmed={onDeleteConfirmed}
-            onRefresh={onRefresh}
+      <Loading loading={payments.length === 0}>
+        <Containers>
+          <Summary
+            ownerBalances={ownerBalances}
+            totalAmount={totalAmount}
+            partialTotal={partialTotal}
+            totalsPerYear={totalsPerYear}
+            selectedYear={selectedYear ?? ''}
           />
-        </div>
-      </FadeUp>
+        </Containers>
+        <FadeUp>
+          <div className="mt-4">
+            <PaymentsTable
+              table={table}
+              onDeleteConfirmed={onDeleteConfirmed}
+              onRefresh={onRefresh}
+            />
+          </div>
+        </FadeUp>
+      </Loading>
     </>
   );
 }

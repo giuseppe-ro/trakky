@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
 import { AuthContext, IAuthContext } from 'react-oauth2-code-pkce';
-import Spinner from '@/components/ui/spinner';
 import { demoMode } from '@/constants';
 import { ReloadIcon } from '@radix-ui/react-icons';
 import Login from './login';
+import Loading from './loading';
 
 export function PageContainer({
   children,
@@ -16,10 +16,6 @@ export function PageContainer({
     useContext<IAuthContext>(AuthContext);
 
   const containerContent = () => {
-    if (loginInProgress) {
-      return <Spinner className="flex justify-center align-middle my-12" />;
-    }
-
     if (token || demoMode) {
       return children;
     }
@@ -31,7 +27,7 @@ export function PageContainer({
     <div
       className={`md:container px-0 pb-2 md:px-12 mx-auto w-full transition ${className}`}
     >
-      {containerContent()}
+      <Loading loading={loginInProgress}>{containerContent()}</Loading>
     </div>
   );
 }
@@ -41,21 +37,14 @@ PageContainer.defaultProps = {
 };
 
 interface ContentResultContainerProps {
-  loading: boolean;
   error: string | null;
   children: React.ReactNode;
 }
 
 export function ContentResultContainer({
-  loading,
   error,
   children,
 }: ContentResultContainerProps) {
-  if (loading)
-    return (
-      <Spinner className="flex flex-row justify-center align-middle m-32" />
-    );
-
   if (error !== null) {
     return (
       <div

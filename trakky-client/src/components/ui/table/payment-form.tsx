@@ -32,7 +32,6 @@ import {
 import { GetOwners } from '@/infrastructure/owner';
 import { resultToast } from '@/components/ui/use-toast';
 import { Toggle } from '@/components/ui/toggle';
-import Spinner from '@/components/ui/spinner';
 import {
   FetchActionType,
   paymentFormDataReducer,
@@ -43,6 +42,7 @@ import { errorMessage } from '@/components/ui/table/form-error-message';
 import { CalendarIcon, MinusIcon, PlusIcon } from 'lucide-react';
 import { Payment } from '@/models/dtos';
 import { GetTypes } from '@/infrastructure/types';
+import Loading from '../loading';
 
 const customErrorMap: z.ZodErrorMap = (issue, ctx) => {
   if (issue.code === z.ZodIssueCode.invalid_type) {
@@ -159,8 +159,6 @@ export function PaymentForm({
   function onAmountChange(amount: number) {
     if (amount < 0) {
       setAmountIsNegative(true);
-    } else {
-      setAmountIsNegative(false);
     }
 
     form.setValue('amount', amount);
@@ -231,7 +229,7 @@ export function PaymentForm({
       form.setValue('owner', payment.owner);
       form.setValue('type', payment.type);
       form.setValue('date', new Date(payment.date));
-      refresh(undefined, true);
+      refresh(undefined, false);
     }, 1000);
   }
 
@@ -239,12 +237,6 @@ export function PaymentForm({
     if (fetchState.error !== null) {
       return (
         <div className="my-12 text-center text-red-500">{fetchState.error}</div>
-      );
-    }
-
-    if (fetchState.loading) {
-      return (
-        <Spinner className="flex flex-row justify-center align-middle my-12" />
       );
     }
 
@@ -402,7 +394,9 @@ export function PaymentForm({
   return (
     <div>
       <Form {...form}>
-        <Card className="p-0 md:p-2">{cardContent()}</Card>
+        <Card className="p-0 md:p-2">
+          <Loading loading={fetchState.loading}>{cardContent()}</Loading>
+        </Card>
       </Form>
     </div>
   );

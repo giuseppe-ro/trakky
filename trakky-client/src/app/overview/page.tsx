@@ -12,6 +12,7 @@ import Dashboards from '@/components/dashboards/dashboards';
 import Summary from '@/components/summary/summary';
 import useDashboards from '@/lib/hooks/use-dashboard';
 import useSummary from '@/lib/hooks/use-summary';
+import Loading from '@/components/ui/loading';
 
 function OverviewPage() {
   const {
@@ -48,29 +49,31 @@ function OverviewPage() {
         selectedYear={selectedYear}
         onYearChange={setSelectedYear}
       />
-      <Containers>
-        <Summary
-          ownerBalances={ownerBalances}
-          totalAmount={totalAmount}
-          partialTotal={partialTotal}
-          totalsPerYear={totalsPerYear}
-          selectedYear={selectedYear ?? ''}
-        />
-      </Containers>
-      <FadeUp>
-        <div className="mt-6 text-center">
-          <PaymentsTable
-            table={table}
-            onDeleteConfirmed={onDeleteConfirmed}
-            onRefresh={onRefresh}
+      <Loading loading={payments.length === 0}>
+        <Containers>
+          <Summary
+            ownerBalances={ownerBalances}
+            totalAmount={totalAmount}
+            partialTotal={partialTotal}
+            totalsPerYear={totalsPerYear}
+            selectedYear={selectedYear ?? ''}
           />
-        </div>
-        <Dashboards
-          paymentOverviews={paymentOverviews}
-          ownersOverview={ownersOverview}
-          expensesBreakdown={expensesBreakdown}
-        />
-      </FadeUp>
+        </Containers>
+        <FadeUp>
+          <div className="mt-6 text-center">
+            <PaymentsTable
+              table={table}
+              onDeleteConfirmed={onDeleteConfirmed}
+              onRefresh={onRefresh}
+            />
+          </div>
+          <Dashboards
+            paymentOverviews={paymentOverviews}
+            ownersOverview={ownersOverview}
+            expensesBreakdown={expensesBreakdown}
+          />
+        </FadeUp>
+      </Loading>
     </>
   );
 }

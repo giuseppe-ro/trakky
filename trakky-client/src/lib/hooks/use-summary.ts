@@ -15,7 +15,7 @@ function useSummary(table: Table<any>, selectedYear: string | null) {
 
   useEffect(() => {
     const amountSum = table
-      .getFilteredRowModel()
+      .getPreFilteredRowModel()
       .rows.map((r) => parseFloat(r.getValue('amount')))
       .reduce((total, currentAmount) => total + currentAmount, 0);
 

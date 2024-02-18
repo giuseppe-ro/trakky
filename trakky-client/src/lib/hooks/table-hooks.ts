@@ -85,6 +85,7 @@ export function usePaymentsTable({
 
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     date: false,
+    id: false,
   });
 
   const table = useReactTable({
@@ -109,9 +110,6 @@ export function usePaymentsTable({
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
     getFacetedMinMaxValues: getFacetedMinMaxValues(),
-    debugTable: true,
-    debugHeaders: true,
-    debugColumns: false,
   });
 
   async function onDeleteConfirmed(signal?: AbortSignal) {
@@ -145,7 +143,9 @@ export function usePaymentsTable({
     flushPaymentsBeforeRefresh: boolean = true,
     signal?: AbortSignal
   ) {
-    table.resetColumnFilters();
+    if (flushPaymentsBeforeRefresh) {
+      table.resetColumnFilters();
+    }
     refreshData(signal, flushPaymentsBeforeRefresh);
   }
 

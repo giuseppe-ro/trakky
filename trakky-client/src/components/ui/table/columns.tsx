@@ -11,6 +11,15 @@ export const PaymentColumnDefinition = (
 ): ColumnDef<Payment, number | string>[] => {
   return [
     {
+      accessorKey: 'id',
+      header: 'Id',
+      enableColumnFilter: false,
+      enableGlobalFilter: false,
+      cell: ({ row }) => {
+        return <div className="text-right font-sm">{row.getValue('id')}</div>;
+      },
+    },
+    {
       accessorKey: 'date',
       header: 'Month',
       enableColumnFilter: true,
@@ -143,7 +152,7 @@ export const colSize = (id: string): number | string => {
       return 40;
     case 'date':
       return 90;
-    case 'type' || 'owner':
+    case 'type' || 'owner' || 'id':
       return 80;
     case 'amount':
       return 115;

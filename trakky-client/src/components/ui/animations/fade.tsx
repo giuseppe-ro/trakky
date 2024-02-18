@@ -5,33 +5,41 @@ export function FadeDown({ children }: React.HTMLAttributes<HTMLElement>) {
     <div
       data-aos="fade-down"
       data-aos-easing="ease-out-cubic"
-      data-aos-duration="500"
+      data-aos-duration="100"
     >
       {children}
     </div>
   );
 }
 
-export function FadeUp({ children }: React.HTMLAttributes<HTMLElement>) {
+export function FadeUp({
+  children,
+  ...props
+}: React.HTMLAttributes<HTMLElement>) {
   return (
     <div
       data-aos="fade-up"
       data-aos-easing="ease-out-cubic"
       data-aos-duration="500"
-      data-aos-delay="800"
+      data-aos-delay="100"
+      {...props}
     >
       {children}
     </div>
   );
 }
 
-export function FadeLeft({ children }: React.HTMLAttributes<HTMLElement>) {
+export function FadeLeft({
+  children,
+  ...props
+}: React.HTMLAttributes<HTMLElement>) {
   return (
     <div
       data-aos="fade-left"
       data-aos-easing="ease-out-cubic"
       data-aos-mirror="true"
-      data-aos-delay="500"
+      data-aos-delay="100"
+      {...props}
     >
       {children}
     </div>
@@ -49,6 +57,22 @@ export function FadeRight({
       data-aos-duration="500"
       data-aos-delay="100"
       className="sticky top-20 z-50"
+      {...props}
+    >
+      {children}
+    </div>
+  );
+}
+
+export function FlipUp({
+  children,
+  ...props
+}: React.HTMLAttributes<HTMLElement>) {
+  return (
+    <div
+      data-aos="flip-up"
+      data-aos-easing="ease-out-cubic"
+      data-aos-delay="100"
       {...props}
     >
       {children}

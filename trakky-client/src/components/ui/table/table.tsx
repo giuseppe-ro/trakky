@@ -43,8 +43,6 @@ export function CustomTable<TData extends object>({
 }: CustomTableProps<TData>) {
   const [showTableBody, setShowTableBody] = useState<boolean>(!filtersOnly);
 
-  const noData = table.getPageCount() === 0;
-
   const activeColumnsKey = `${page}_${StorageKey.ActiveColumns}`;
 
   useEffect(() => {
@@ -127,7 +125,7 @@ export function CustomTable<TData extends object>({
 
   return (
     <div>
-      {tableActionMenu && tableActionMenu}
+      {tableActionMenu}
       <Table className="bg-slate-950 border border-slate-800 overflow-x-scroll">
         <TableHeader className="hover:bg-transparent">
           {table.getHeaderGroups().map((headerGroup) => (
@@ -152,10 +150,9 @@ export function CustomTable<TData extends object>({
                         <div
                           {...{
                             className: 'cursor-pointer select-none',
-                            onClick:
-                              !noData && showTableBody
-                                ? header.column.getToggleSortingHandler()
-                                : () => {},
+                            onClick: showTableBody
+                              ? header.column.getToggleSortingHandler()
+                              : () => {},
                           }}
                         >
                           {flexRender(
@@ -210,7 +207,7 @@ export function CustomTable<TData extends object>({
                 </TableRow>
               );
             })}
-          {!filtersOnly && !noData && canHideRows && (
+          {!filtersOnly && canHideRows && (
             <TableRow className="p-0 m-0" aria-label="Hide Table Button">
               <td colSpan={table.getAllColumns().length} className="p-0 m-0">
                 <Button

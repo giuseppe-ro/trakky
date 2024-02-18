@@ -9,6 +9,7 @@ import { usePaymentsTable } from '@/lib/hooks/table-hooks';
 import { FadeLeft, FadeUp } from '@/components/ui/animations/fade';
 import Dashboards from '@/components/dashboards/dashboards';
 import useDashboard from '@/lib/hooks/use-dashboard';
+import Loading from '@/components/ui/loading';
 
 function DashboardPage() {
   const {
@@ -40,19 +41,21 @@ function DashboardPage() {
         selectedYear={selectedYear}
         onYearChange={setSelectedYear}
       />
-      <FadeLeft>
-        <div className="mt-6 text-center" aria-label="Filters">
-          <SubTitle title="Filters" />
-          <CustomTable table={table} filtersOnly page="dashboard" />
-        </div>
-      </FadeLeft>
-      <FadeUp>
-        <Dashboards
-          paymentOverviews={paymentOverviews}
-          ownersOverview={ownersOverview}
-          expensesBreakdown={expensesBreakdown}
-        />
-      </FadeUp>
+      <Loading loading={payments.length === 0}>
+        <FadeLeft>
+          <div className="mt-6 text-center" aria-label="Filters">
+            <SubTitle title="Filters" />
+            <CustomTable table={table} filtersOnly page="dashboard" />
+          </div>
+        </FadeLeft>
+        <FadeUp>
+          <Dashboards
+            paymentOverviews={paymentOverviews}
+            ownersOverview={ownersOverview}
+            expensesBreakdown={expensesBreakdown}
+          />
+        </FadeUp>
+      </Loading>
     </>
   );
 }

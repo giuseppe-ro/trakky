@@ -19,11 +19,11 @@ import {
   paymentFormDataReducer,
 } from '@/components/ui/table/payment-form-reducer';
 import { Type, Owner, Budget } from '@/models/dtos';
-import Spinner from '@/components/ui/spinner';
 import { GetBudgets } from '@/infrastructure/budget';
 import { ContentResultContainer } from '@/components/ui/containers';
 import { ErrorMessage } from '@/infrastructure/base-api';
 import { GetTypes, AddTypes, DeleteTypes } from '@/infrastructure/types';
+import Loading from '@/components/ui/loading';
 import BudgetActionMenu from './components/budget-action-menu';
 
 function SettingsPage() {
@@ -87,12 +87,12 @@ function SettingsPage() {
     const { signal } = controller;
 
     async function fetchData() {
+      fetchDispatch({ type: FetchActionType.FETCH_START });
+
       await fetchOwners(signal);
       await fetchTypes(signal);
       await refreshData(true, signal);
     }
-
-    fetchDispatch({ type: FetchActionType.FETCH_START });
 
     fetchData()
       .then(() => {
@@ -191,88 +191,83 @@ function SettingsPage() {
   return (
     <>
       <Title title="Settings" />
-
-      <FadeLeft>
-        <div className="flex flex-col mb-4 md:mb-0">
-          <SubTitle title="Backup" {...{ className: 'text-center mt-4' }} />
-          <div className="flex flex-row gap-2">
-            <Button
-              variant="outline"
-              className="w-full"
-              onClick={() => DownloadBackup()}
-              disabled={fetchState.error !== null}
-            >
-              Download Backup
-            </Button>
-            <Button variant="outline" className="w-full" disabled>
-              Upload Backup
-            </Button>
+      <Loading loading={fetchState.loading}>
+        <FadeLeft>
+          <div className="flex flex-col mb-4 md:mb-0">
+            <SubTitle title="Backup" {...{ className: 'text-center mt-4' }} />
+            <div className="flex flex-row gap-2">
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => DownloadBackup()}
+                disabled={fetchState.error !== null}
+              >
+                Download Backup
+              </Button>
+              <Button variant="outline" className="w-full" disabled>
+                Upload Backup
+              </Button>
+            </div>
           </div>
-        </div>
-        <div className="flex flex-col mb-4 md:mb-0">
-          <SubTitle
-            title="Transactions"
-            {...{ className: 'text-center mt-4' }}
-          />
-          <FileUploadItem
-            onUpload={onTransactionsUpload}
-            text="Upload Transactions"
-            disabled={fetchState.error !== null}
-          />
-        </div>
-      </FadeLeft>
-      <FadeUp>
-        <div className="flex flex-col lg:flex-row gap-3 justify-center">
-          <ContentResultContainer
-            loading={fetchState.loading}
-            error={fetchState.error}
-          >
-            <>
-              <div className="flex-grow">
-                <SubTitle
-                  title="Budgets"
-                  {...{ className: 'text-center mt-4' }}
-                />
-                <CustomTable
-                  table={table}
-                  canHideRows
-                  filtersOnly={false}
-                  page="settings"
-                  tableActionMenu={
-                    <BudgetActionMenu
-                      table={table}
-                      budgets={budgets}
-                      onDeleteConfirmed={onDeleteConfirmed}
-                      onRefresh={onRefresh}
-                    />
-                  }
-                />
-              </div>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center flex-grow">
-                <CustomSmallTable
-                  title="Types"
-                  values={fetchState.types}
-                  onAdd={OnTypeAdd}
-                  newValue={newType}
-                  setNew={setNewType}
-                  onDeleteConfirmed={(id) => OnTypeDeleteConfirmed(id)}
-                />
-                <CustomSmallTable
-                  title="Owners"
-                  values={fetchState.owners}
-                  onAdd={() => OnOwnerAdd()}
-                  newValue={newOwner}
-                  setNew={setNewOwner}
-                  onDeleteConfirmed={(id) => OnOwnerDeleteConfirmed(id)}
-                />
-              </div>
-            </>
-          </ContentResultContainer>
-          {fetchState.loading && (
-            <Spinner className="flex flex-row justify-center align-middle my-12" />
-          )}
-        </div>
-      </FadeUp>
+          <div className="flex flex-col mb-4 md:mb-0">
+            <SubTitle
+              title="Transactions"
+              {...{ className: 'text-center mt-4' }}
+            />
+            <FileUploadItem
+              onUpload={onTransactionsUpload}
+              text="Upload Transactions"
+              disabled={fetchState.error !== null}
+            />
+          </div>
+        </FadeLeft>
+        <FadeUp>
+          <div className="flex flex-col lg:flex-row gap-3 justify-center">
+            <ContentResultContainer error={fetchState.error}>
+              <>
+                <div className="flex-grow">
+                  <SubTitle
+                    title="Budgets"
+                    {...{ className: 'text-center mt-4' }}
+                  />
+                  <CustomTable
+                    table={table}
+                    canHideRows
+                    filtersOnly={false}
+                    page="settings"
+                    tableActionMenu={
+                      <BudgetActionMenu
+                        table={table}
+                        budgets={budgets}
+                        onDeleteConfirmed={onDeleteConfirmed}
+                        onRefresh={onRefresh}
+                      />
+                    }
+                  />
+                </div>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center flex-grow">
+                  <CustomSmallTable
+                    title="Types"
+                    values={fetchState.types}
+                    onAdd={OnTypeAdd}
+                    newValue={newType}
+                    setNew={setNewType}
+                    onDeleteConfirmed={(id) => OnTypeDeleteConfirmed(id)}
+                  />
+                  <CustomSmallTable
+                    title="Owners"
+                    values={fetchState.owners}
+                    onAdd={() => OnOwnerAdd()}
+                    newValue={newOwner}
+                    setNew={setNewOwner}
+                    onDeleteConfirmed={(id) => OnOwnerDeleteConfirmed(id)}
+                  />
+                </div>
+              </>
+            </ContentResultContainer>
+          </div>
+        </FadeUp>
+      </Loading>
     </>
   );
 }

@@ -3,7 +3,6 @@
 import React, { useContext, useState } from 'react';
 import { AuthContext, IAuthContext } from 'react-oauth2-code-pkce';
 import { demoMode } from '@/constants';
-import Spinner from '@/components/ui/spinner';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,6 +18,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { Github, LogOut } from 'lucide-react';
+import Loading from '../ui/loading';
 
 interface Links {
   href: string;
@@ -129,11 +129,7 @@ export function MainNav({ children }: React.HTMLAttributes<HTMLElement>) {
           </div>
         </div>
       </div>
-      {loggingOut ? (
-        <Spinner className="flex justify-center align-middle my-12" />
-      ) : (
-        children
-      )}
+      <Loading loading={loggingOut}>{children}</Loading>
     </>
   );
 }

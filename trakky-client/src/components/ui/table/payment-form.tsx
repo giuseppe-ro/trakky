@@ -389,7 +389,7 @@ export function PaymentForm({
               submitted={form.formState.isSubmitted}
               isError={isError}
             />
-            {addedPayments.length > 0 && (
+            {addedPayments.length > 0 && !editValues && (
               <div className="flex flex-col justify-center align-middle text-muted-foreground">
                 <div className="text-center text-sm font-medium mb-1">
                   Added entries:

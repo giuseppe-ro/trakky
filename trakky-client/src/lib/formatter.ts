@@ -61,3 +61,16 @@ export function getPercentageChangeText(
 
   return changePercentage;
 }
+
+export const differenceText = (
+  partialTot: number,
+  ownerBalancesLenght: number,
+  amount: number
+) => {
+  const diff = Math.floor(partialTot / ownerBalancesLenght - amount);
+
+  if (diff === 0 || diff < 0) return 0;
+  if (diff === Number.POSITIVE_INFINITY || diff === Number.NEGATIVE_INFINITY)
+    return 0;
+  return partialTot / ownerBalancesLenght - amount;
+};

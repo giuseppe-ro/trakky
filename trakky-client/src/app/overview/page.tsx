@@ -11,6 +11,7 @@ import PaymentsTable from '@/components/payments/table';
 import Dashboards from '@/components/dashboards/dashboards';
 import Summary from '@/components/summary/summary';
 import useDashboards from '@/lib/hooks/use-dashboard';
+import useSummary from '@/lib/hooks/use-summary';
 
 function OverviewPage() {
   const {
@@ -34,6 +35,11 @@ function OverviewPage() {
     { data: filteredPayments, selectedYear }
   );
 
+  const { totalAmount, partialTotal, ownerBalances } = useSummary(
+    table,
+    selectedYear
+  );
+
   return (
     <>
       <Title title="Overview" />
@@ -44,7 +50,9 @@ function OverviewPage() {
       />
       <Containers>
         <Summary
-          table={table}
+          ownerBalances={ownerBalances}
+          totalAmount={totalAmount}
+          partialTotal={partialTotal}
           totalsPerYear={totalsPerYear}
           selectedYear={selectedYear ?? ''}
         />

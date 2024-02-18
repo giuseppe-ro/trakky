@@ -4,6 +4,7 @@ import { usePaymentsTable } from '@/lib/hooks/table-hooks';
 import { Containers } from '@/components/ui/containers';
 import { FadeUp } from '@/components/ui/animations/fade';
 import { usePaymentData } from '@/lib/hooks/payments-hooks';
+import useSummary from '@/lib/hooks/use-summary';
 import PaymentsTable from './components/payments/table';
 import Summary from './components/summary/summary';
 
@@ -23,6 +24,11 @@ export default function App() {
       refreshData,
     });
 
+  const { totalAmount, partialTotal, ownerBalances } = useSummary(
+    table,
+    selectedYear
+  );
+
   return (
     <>
       <Title title="Expenses" />
@@ -33,7 +39,9 @@ export default function App() {
       />
       <Containers>
         <Summary
-          table={table}
+          ownerBalances={ownerBalances}
+          totalAmount={totalAmount}
+          partialTotal={partialTotal}
           totalsPerYear={totalsPerYear}
           selectedYear={selectedYear ?? ''}
         />

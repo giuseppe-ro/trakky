@@ -10,7 +10,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { cn } from '@/lib/utils';
-import { Filter } from '@/components/ui/table/column-filter';
+import Filter from '@/components/ui/table/column-filter';
 import { colSize } from '@/components/ui/table/columns';
 import {
   DropdownMenu,

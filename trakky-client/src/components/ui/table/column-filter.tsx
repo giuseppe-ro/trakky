@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Column, Table } from '@tanstack/react-table';
-import { useMemo } from 'react';
 import {
   DebouncedInput,
   DebouncedSelect,
@@ -24,7 +23,7 @@ export function Filter<TData>({
 
   const columnFilterValue = column.getFilterValue();
 
-  const sortedUniqueValues = useMemo(() => {
+  const sortedUniqueValues = () => {
     const uniqueValues = column.getFacetedUniqueValues();
 
     if (typeof firstValue === 'number') return [];
@@ -45,7 +44,7 @@ export function Filter<TData>({
     }
 
     return Array.from(column.getFacetedUniqueValues().keys()).sort();
-  }, [column, firstValue]);
+  };
 
   if (typeof firstValue === 'number') {
     return (
@@ -89,7 +88,7 @@ export function Filter<TData>({
       <div className="overflow-auto">
         <div className="flex space-x-0.5">
           <DebouncedSelect
-            options={sortedUniqueValues}
+            options={sortedUniqueValues()}
             value={(columnFilterValue ?? '') as string}
             onChange={(value) => {
               column.setFilterValue(value === 'All' ? '' : value);
@@ -103,14 +102,16 @@ export function Filter<TData>({
   return (
     <>
       <datalist className="bg-slate-900" id={`${column.id}list`}>
-        {sortedUniqueValues.slice(0, 5000).map((value: string) => (
-          <option
-            className="border-slate-900 red"
-            value={value}
-            key={value}
-            aria-label={value}
-          />
-        ))}
+        {sortedUniqueValues()
+          .slice(0, 5000)
+          .map((value: string) => (
+            <option
+              className="border-slate-900 red"
+              value={value}
+              key={value}
+              aria-label={value}
+            />
+          ))}
       </datalist>
       <DebouncedInput
         type="text"

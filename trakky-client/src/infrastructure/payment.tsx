@@ -7,16 +7,16 @@ import {
 } from '@/infrastructure/base-api';
 import { Payment } from '@/models/dtos';
 
-export async function GetPayments(signal?: AbortSignal): Promise<Payment[]> {
+export async function GetPayments(signal?: AbortSignal) {
   const config = makeBaseRequest(Endpoint.Payments, 'GET', signal);
 
-  const { data } = await baseApiCall<Payment[]>({
+  const { data: payments, error } = await baseApiCall<Payment[]>({
     request: config,
     demoModeData: mockPayments,
   });
 
   // TODO: return data and error & handle
-  return data ?? [];
+  return { data: payments ?? [], error };
 }
 
 export async function AddPayments(payments: Payment[], signal?: AbortSignal) {

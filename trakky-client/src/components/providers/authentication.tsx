@@ -6,7 +6,7 @@ import { demoMode, StorageKey } from '@/constants';
 import { clientId } from '@/authConfig';
 import { AppError } from '@/models/app-error';
 
-export function AuthenticationCustomProvider({
+function AuthenticationCustomProvider({
   children,
 }: {
   children: React.ReactNode;

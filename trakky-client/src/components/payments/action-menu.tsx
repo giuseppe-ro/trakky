@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Containers } from '@/components/ui/containers';
 import { DeletePaymentsDialog } from '@/components/ui/table/delete-popup';
 import PaymentForm from '@/components/ui/table/payment-form';
@@ -7,6 +6,7 @@ import { Payment } from '@/models/dtos';
 import { Table } from '@tanstack/react-table';
 
 interface PaymentsTableActionMenuProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   table: Table<any>;
   onRefresh: (
     flushPaymentsBeforeRefresh?: boolean,

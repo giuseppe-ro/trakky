@@ -33,7 +33,7 @@ module.exports = {
     'import/no-extraneous-dependencies': [
       'error',
       {
-        devDependencies: true,
+        'devDependencies': true,
       },
     ],
     'react/jsx-props-no-spreading': 'off',

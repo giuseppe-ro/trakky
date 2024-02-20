@@ -1,18 +1,27 @@
 import { render, screen, waitFor } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 import { afterEach } from 'node:test';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import DashboardPage from './page';
 
 describe('test BudgetToDeleteList rendering', () => {
+  const queryClient = new QueryClient();
+
   afterEach(() => {
     vi.resetAllMocks();
   });
 
-  it('should render title', () => {
+  beforeEach(() => {
     // act
-    render(<DashboardPage />);
+    render(
+      <QueryClientProvider client={queryClient}>
+        <DashboardPage />
+      </QueryClientProvider>
+    );
+  });
 
+  it('should render title', () => {
     // assert
     expect(screen.getByTitle('Dashboards')).toBeVisible();
     expect(screen.getByText('Dashboards').parentElement?.ariaLabel).toBe(
@@ -21,9 +30,6 @@ describe('test BudgetToDeleteList rendering', () => {
   });
 
   it('should render sticky year selection on the top', async () => {
-    // act
-    render(<DashboardPage />);
-
     // assert
     await waitFor(() => {
       expect(screen.getAllByRole('combobox')[0]).toHaveTextContent('2023');
@@ -31,9 +37,6 @@ describe('test BudgetToDeleteList rendering', () => {
   });
 
   it('should render filters without table body', async () => {
-    // act
-    render(<DashboardPage />);
-
     // assert
     await waitFor(() => {
       expect(screen.getByTitle('Filters')).toBeVisible();
@@ -44,9 +47,6 @@ describe('test BudgetToDeleteList rendering', () => {
   });
 
   it('should render expenses, users and breakdown charts', async () => {
-    // act
-    render(<DashboardPage />);
-
     // assert
     // expenses chart
 

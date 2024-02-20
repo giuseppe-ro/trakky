@@ -3,26 +3,26 @@ import YearSelection from '@/components/ui/data-selector';
 import { usePaymentsTable } from '@/lib/hooks/table-hooks';
 import { Containers } from '@/components/ui/containers';
 import { FadeUp } from '@/components/ui/animations/fade';
-import { usePaymentData } from '@/lib/hooks/payments-hooks';
 import useSummary from '@/lib/hooks/use-summary';
 import Loading from '@/components/ui/loading';
-import PaymentsTable from './components/payments/table';
+import { usePaymentData, useYearSelection } from '@/lib/hooks/payments-hooks';
 import Summary from './components/summary/summary';
+import PaymentsTable from './components/payments/table';
 
 export default function App() {
-  const {
+  const { data: payments, refreshData, isLoading, isError } = usePaymentData();
+
+  const { availableYears, selectedYear, setSelectedYear } = useYearSelection({
     payments,
-    availableYears,
-    selectedYear,
-    refreshData,
-    setSelectedYear,
-  } = usePaymentData();
+    isLoading,
+  });
 
   const { totalsPerYear, table, onDeleteConfirmed, onRefresh } =
     usePaymentsTable({
-      data: payments,
+      data: payments ?? [],
       selectedYear,
       refreshData,
+      isLoading,
     });
 
   const { totalAmount, partialTotal, ownerBalances } = useSummary(
@@ -33,12 +33,14 @@ export default function App() {
   return (
     <>
       <Title title="Expenses" />
-      <YearSelection
-        availableYears={availableYears}
-        selectedYear={selectedYear}
-        onYearChange={setSelectedYear}
-      />
-      <Loading loading={payments.length === 0}>
+      <Loading loading={isLoading}>
+        {!isError && (
+          <YearSelection
+            availableYears={availableYears}
+            selectedYear={selectedYear}
+            onYearChange={setSelectedYear}
+          />
+        )}
         <Containers>
           <Summary
             ownerBalances={ownerBalances}

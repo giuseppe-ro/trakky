@@ -10,7 +10,8 @@ import { PageContainer } from '@/components/ui/containers';
 import Toaster from '@/components/ui/toaster';
 import SettingsPage from '@/app/settings/page';
 import { HealthCheckProvider } from '@/components/providers/health-check';
-import { AuthenticationCustomProvider } from '@/components/providers/authentication';
+import AuthenticationCustomProvider from '@/components/providers/authentication';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import ErrorPage from './app/error/page';
 import DashboardPage from './app/dashboards/page';
 import { ThemeProvider } from './components/providers/theme';
@@ -18,6 +19,7 @@ import App from './App';
 import MainNav from './components/navbar/main-nav';
 
 AOS.init({ once: true });
+const queryClient = new QueryClient();
 
 const router = createBrowserRouter([
   {
@@ -44,11 +46,13 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <ThemeProvider>
       <AuthenticationCustomProvider>
         <MainNav>
-          <HealthCheckProvider />
-          <PageContainer>
-            <RouterProvider router={router} />
-            <Toaster />
-          </PageContainer>
+          <QueryClientProvider client={queryClient}>
+            <HealthCheckProvider />
+            <PageContainer>
+              <RouterProvider router={router} />
+              <Toaster />
+            </PageContainer>
+          </QueryClientProvider>
         </MainNav>
       </AuthenticationCustomProvider>
     </ThemeProvider>

@@ -20,7 +20,7 @@ function PaymentsRecap({
 
           return (
             <TableRow
-              key={payment.id}
+              key={`${payment.id}-recap-row`}
               className={`flex max-w-[460px]  ${textColor}`}
             >
               <td className={cn(`${tdStyle} w-[75px] text-left`)}>

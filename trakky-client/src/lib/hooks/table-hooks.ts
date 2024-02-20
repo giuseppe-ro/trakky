@@ -32,16 +32,19 @@ export function usePaymentsTable({
   data,
   selectedYear,
   refreshData,
+  isLoading,
 }: {
   data: Payment[] | null;
   selectedYear: string | null;
-  refreshData(signal?: AbortSignal, flushBeforeRefresh?: boolean): void;
+  refreshData(): void;
+  isLoading: boolean;
 }) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState('');
   const [filteredData, setFilteredData] = useState<Payment[]>([]);
 
   useEffect(() => {
+    if (isLoading) return;
     if (selectedYear === 'All' && data) setFilteredData(data);
     else if (data && selectedYear !== null) {
       setFilteredData(
@@ -52,7 +55,8 @@ export function usePaymentsTable({
         )
       );
     }
-  }, [data, selectedYear]);
+    // eslint-disable-next-line
+  }, [selectedYear, data]);
 
   const totalsPerYear =
     data === null
@@ -125,7 +129,7 @@ export function usePaymentsTable({
         variant: 'warning',
       });
     } else if (deleted) {
-      refreshData(signal, false);
+      refreshData();
       table.resetRowSelection();
       toast({
         title: 'Transactions deleted!',
@@ -139,14 +143,12 @@ export function usePaymentsTable({
     }
   }
 
-  async function onRefresh(
-    flushPaymentsBeforeRefresh: boolean = true,
-    signal?: AbortSignal
-  ) {
-    if (flushPaymentsBeforeRefresh) {
+  async function onRefresh(resetFilters: boolean = true) {
+    if (resetFilters) {
       table.resetColumnFilters();
     }
-    refreshData(signal, flushPaymentsBeforeRefresh);
+
+    refreshData();
   }
 
   function onEdited() {

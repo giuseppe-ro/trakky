@@ -3,6 +3,7 @@ import { SubTitle, Title } from '@/components/ui/text';
 import {
   usePaymentData,
   useFilteredPayments,
+  useYearSelection,
 } from '@/lib/hooks/payments-hooks';
 import YearSelection from '@/components/ui/data-selector';
 import { usePaymentsTable } from '@/lib/hooks/table-hooks';
@@ -12,18 +13,18 @@ import useDashboard from '@/lib/hooks/use-dashboard';
 import Loading from '@/components/ui/loading';
 
 function DashboardPage() {
-  const {
+  const { data: payments, refreshData, isLoading, isError } = usePaymentData();
+
+  const { availableYears, selectedYear, setSelectedYear } = useYearSelection({
     payments,
-    availableYears,
-    selectedYear,
-    refreshData,
-    setSelectedYear,
-  } = usePaymentData();
+    isLoading,
+  });
 
   const { table } = usePaymentsTable({
     data: payments,
     selectedYear,
     refreshData,
+    isLoading,
   });
 
   const filteredPayments = useFilteredPayments(table);
@@ -36,12 +37,14 @@ function DashboardPage() {
   return (
     <>
       <Title title="Dashboards" />
-      <YearSelection
-        availableYears={availableYears}
-        selectedYear={selectedYear}
-        onYearChange={setSelectedYear}
-      />
-      <Loading loading={payments.length === 0}>
+      <Loading loading={isLoading}>
+        {!isError && (
+          <YearSelection
+            availableYears={availableYears}
+            selectedYear={selectedYear}
+            onYearChange={setSelectedYear}
+          />
+        )}
         <FadeLeft>
           <div className="mt-6 text-center" aria-label="Filters">
             <SubTitle title="Filters" />

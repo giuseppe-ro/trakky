@@ -1,11 +1,8 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { demoMode } from '@/constants';
-import axiosRetry from 'axios-retry';
 import { serverUrl } from '@/authConfig';
 import { AppError } from '../models/app-error';
 import { ApiResponse } from '../models/api-response';
-
-axiosRetry(axios, { retries: 3, retryDelay: axiosRetry.exponentialDelay });
 
 export enum ErrorMessage {
   NO_CONNECTION = 'Could not connect to the server.',

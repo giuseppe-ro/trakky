@@ -4,47 +4,52 @@ import { StorageKey } from '@/constants';
 import { Payment } from '@/models/dtos';
 import { getAvailableYears } from '@/components/summary/summaries';
 import { Table } from '@tanstack/react-table';
+import { useQuery } from 'react-query';
 
 export function usePaymentData() {
-  const [payments, setPayments] = useState<Payment[]>([]);
+  const { data, refetch, isLoading, isError, error } = useQuery(
+    'payments',
+    async ({ signal }) => {
+      return GetPayments(signal);
+    }
+  );
+
+  return {
+    data: data?.data ?? [],
+    refreshData: refetch,
+    isLoading,
+    isError,
+    error,
+  };
+}
+
+export const useYearSelection = ({
+  payments,
+  isLoading,
+}: {
+  payments: Payment[];
+  isLoading: boolean;
+}) => {
   const [availableYears, setAvailableYears] = useState<string[]>([]);
   const [selectedYear, setSelectedYear] = useState<string | null>('');
 
-  async function refreshData(
-    signal?: AbortSignal,
-    flushPaymentsBeforeRefresh: boolean = true
-  ) {
-    if (flushPaymentsBeforeRefresh) setPayments([]);
-
-    const data = await GetPayments(signal);
-    setPayments(data);
-    const years = getAvailableYears(data);
-    years.push('All');
-    setAvailableYears(years);
-
-    const storedYear = localStorage.getItem(StorageKey.SelectedYear);
-    if (storedYear && years.includes(storedYear)) {
-      setSelectedYear(storedYear);
-    } else {
-      setSelectedYear(years[0]);
-    }
-  }
-
   useEffect(() => {
-    const controller = new AbortController();
-    const { signal } = controller;
+    if (payments && !isLoading) {
+      const years = getAvailableYears(payments);
+      years.push('All');
+      setAvailableYears(years);
 
-    refreshData(signal).then(() => {});
-  }, []);
+      const storedYear = localStorage.getItem(StorageKey.SelectedYear);
+      if (storedYear && years.includes(storedYear)) {
+        setSelectedYear(storedYear);
+      } else {
+        setSelectedYear(years[0]);
+      }
+    }
+  }, [payments, isLoading]);
 
-  return {
-    payments,
-    availableYears,
-    selectedYear,
-    refreshData,
-    setSelectedYear,
-  };
-}
+  return { availableYears, selectedYear, setSelectedYear };
+};
 
 export const useFilteredPayments = <TData>(table: Table<TData>) => {
   const [filteredPayments, setFilteredPayments] = useState<Payment[]>([]);

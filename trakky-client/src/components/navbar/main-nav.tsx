@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useContext, useState } from 'react';
-import { AuthContext, IAuthContext } from 'react-oauth2-code-pkce';
+import React from 'react';
 import { demoMode } from '@/constants';
+import { useAuth } from 'react-oidc-context';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,6 +18,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { Github, LogOut } from 'lucide-react';
+import getUser from '@/infrastructure/user';
 import Loading from '../ui/loading';
 
 interface Links {
@@ -26,27 +27,24 @@ interface Links {
 }
 
 export function MainNav({ children }: React.HTMLAttributes<HTMLElement>) {
-  const { logOut, loginInProgress, token, tokenData } =
-    useContext<IAuthContext>(AuthContext);
+  const auth = useAuth();
+  const user = getUser();
+
   const userName = demoMode
     ? 'Uncle Scrooge'
-    : tokenData?.preferred_username ?? '';
-
-  const [loggingOut, setLoggingOut] = useState(false);
+    : user?.profile.preferred_username ?? '';
 
   const links: Links[] = [{ href: '/', label: 'Home' }];
 
-  if (token || demoMode) {
+  if (auth.user?.access_token || demoMode) {
     links.push({ href: '/dashboards', label: 'Dashboards' });
     links.push({ href: '/overview', label: 'Overview' });
   }
 
-  const logout = () => {
+  const logout = async () => {
     if (demoMode) return;
-
-    setLoggingOut(true);
     localStorage.clear();
-    logOut();
+    await auth.signoutRedirect();
   };
 
   return (
@@ -76,7 +74,7 @@ export function MainNav({ children }: React.HTMLAttributes<HTMLElement>) {
                       })}
                     </div>
                     <div className="flex flex-row justify-around gap-6">
-                      {((!loginInProgress && token) || demoMode) && (
+                      {(!auth.isLoading || demoMode) && (
                         <DropdownMenu>
                           <DropdownMenuTrigger className="text-sm font-medium text-muted-foreground transition-colors hover:text-slate-600 focus:outline-none">
                             {userName}
@@ -129,7 +127,7 @@ export function MainNav({ children }: React.HTMLAttributes<HTMLElement>) {
           </div>
         </div>
       </div>
-      <Loading loading={loggingOut}>{children}</Loading>
+      <Loading loading={auth.isLoading}>{children}</Loading>
     </>
   );
 }

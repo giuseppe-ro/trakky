@@ -4,7 +4,7 @@ import { demoMode } from '@/constants';
 import { FadeDown } from '@/components/ui/animations/fade';
 import { useQuery } from 'react-query';
 
-export const HealthCheckProvider = memo(() => {
+export const HealthCheck = memo(() => {
   const { data: isDown, isError } = useQuery(
     'serverStatus',
     async ({ signal }) => {
@@ -12,7 +12,7 @@ export const HealthCheckProvider = memo(() => {
     }
   );
 
-  if ((!demoMode && !isDown) || isError) {
+  if ((!demoMode && isDown) || isError) {
     return (
       <div className="sticky top-16 bg-gray-950 z-40">
         <FadeDown className="top-16 z-40">
@@ -39,6 +39,6 @@ export const HealthCheckProvider = memo(() => {
   return null;
 });
 
-HealthCheckProvider.displayName = 'HealthCheckProvider';
+HealthCheck.displayName = 'HealthCheckProvider';
 
-export default HealthCheckProvider;
+export default HealthCheck;

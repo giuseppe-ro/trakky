@@ -30,11 +30,10 @@ module.exports = {
   },
   plugins: ['@typescript-eslint', 'react', 'prettier'],
   rules: {
-    'import/no-extraneous-dependencies': [
-      'error',
-      {
-        'devDependencies': true,
-      },
+    "import/no-extraneous-dependencies": [
+      "error", {
+        "packageDir": "./"
+      }
     ],
     'react/jsx-props-no-spreading': 'off',
     'react/react-in-jsx-scope': 'off',

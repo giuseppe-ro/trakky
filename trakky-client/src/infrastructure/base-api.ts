@@ -1,6 +1,7 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { demoMode } from '@/constants';
 import { serverUrl } from '@/authConfig';
+import getUser from '@/infrastructure/user';
 import { AppError } from '../models/app-error';
 import { ApiResponse } from '../models/api-response';
 
@@ -19,12 +20,15 @@ export const makeBaseRequest = (
   method: string,
   signal?: AbortSignal
 ): AxiosRequestConfig => {
+  const user = getUser();
+
   return {
     url: `${serverUrl}/${endpoint}`,
     method,
     signal,
     headers: {
       'content-type': 'application/json',
+      Authorization: `Bearer ${user?.access_token}`,
     },
   };
 };
@@ -41,12 +45,6 @@ export const baseApiCall = async <T>(options: {
   }
 
   try {
-    const token = localStorage.getItem('ROCP_token')?.replace(/"/g, '');
-    if (token && options.request.headers) {
-      // eslint-disable-next-line no-param-reassign
-      options.request.headers.Authorization = `Bearer ${token}`;
-    }
-
     const response: AxiosResponse = await axios(options.request);
     const { data } = response;
 

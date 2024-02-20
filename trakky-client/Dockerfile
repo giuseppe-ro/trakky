@@ -6,14 +6,14 @@ COPY ./package*.json ./
 RUN npm ci
 
 ARG OPENID_AUTH_CLIENT_ID
-ARG OPENID_WELL_KNOWN_CONFIG_URL
+ARG OPENID_AUTH_AUTHORITY
 ARG SERVER_URL
 
 COPY . .
 
 RUN rm /app/src/authConfig.ts
 RUN echo "export const serverUrl = '$SERVER_URL';" >> /app/src/authConfig.ts
-RUN echo "export const openIdWellKnownUrl = '$OPENID_WELL_KNOWN_CONFIG_URL';" >> /app/src/authConfig.ts
+RUN echo "export const authAuthority = '$OPENID_AUTH_AUTHORITY';" >> /app/src/authConfig.ts
 RUN echo "export const clientId = '$OPENID_AUTH_CLIENT_ID';" >> /app/src/authConfig.ts
 
 

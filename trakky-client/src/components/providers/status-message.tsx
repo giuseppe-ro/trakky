@@ -4,7 +4,7 @@ import { demoMode } from '@/constants';
 import { FadeDown } from '@/components/ui/animations/fade';
 import { useQuery } from 'react-query';
 
-export const HealthCheck = memo(() => {
+export const StatusMessage = memo(() => {
   const { data: isDown, isError } = useQuery(
     'serverStatus',
     async ({ signal }) => {
@@ -39,6 +39,6 @@ export const HealthCheck = memo(() => {
   return null;
 });
 
-HealthCheck.displayName = 'HealthCheckProvider';
+StatusMessage.displayName = 'HealthCheckProvider';
 
-export default HealthCheck;
+export default StatusMessage;

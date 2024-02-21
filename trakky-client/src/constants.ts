@@ -10,7 +10,6 @@ export enum Endpoint {
 }
 
 export enum StorageKey {
-  OpenIdConfig = 'openid_config',
   ShowBudget = 'show_budget',
   ShowMaxBudget = 'show_max_budget',
   SelectedYear = 'selected_year',

@@ -3,7 +3,7 @@ import { CustomTable } from '@/components/ui/table/table';
 import { Table } from '@tanstack/react-table';
 import PaymentsTableActionMenu from './action-menu';
 
-interface PaymnentsTableProps {
+interface PaymentsTableProps {
   table: Table<any>;
   onRefresh: (
     flushPaymentsBeforeRefresh?: boolean,
@@ -16,7 +16,7 @@ export function PaymentsTable({
   table,
   onRefresh,
   onDeleteConfirmed,
-}: PaymnentsTableProps) {
+}: PaymentsTableProps) {
   return (
     <CustomTable
       table={table}

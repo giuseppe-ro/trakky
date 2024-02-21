@@ -1,18 +1,21 @@
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
+import { FadeLeft } from '@/components/ui/animations/fade';
 
 export function Title({ title, ...props }: { title?: string }) {
   return (
-    <Card className="bg-transparent border-none" {...props}>
-      <CardHeader className="bg-transparent">
-        <CardTitle
-          aria-label="Title"
-          title={title}
-          className="flex flex-col items-center w-full justify-center bg-transparent p-0 md:p-6"
-        >
-          <p className="m-6 text-2xl bg-transparent">{title}</p>
-        </CardTitle>
-      </CardHeader>
-    </Card>
+    <FadeLeft>
+      <Card className="bg-transparent border-none" {...props}>
+        <CardHeader className="bg-transparent">
+          <CardTitle
+            aria-label="Title"
+            title={title}
+            className="flex flex-col items-center w-full justify-center bg-transparent p-0 md:p-6"
+          >
+            <p className="m-6 text-2xl bg-transparent">{title}</p>
+          </CardTitle>
+        </CardHeader>
+      </Card>
+    </FadeLeft>
   );
 }
 

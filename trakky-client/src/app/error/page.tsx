@@ -1,7 +1,25 @@
 import { useRouteError, isRouteErrorResponse } from 'react-router-dom';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+import { ReloadIcon } from '@radix-ui/react-icons';
+import { useAuth } from 'react-oidc-context';
 
 export default function ErrorPage() {
   const error = useRouteError();
+
+  const auth = useAuth();
+  window.history.replaceState({}, document.title, window.location.pathname);
+  const hardReload = async () => {
+    if (auth.error) {
+      await auth.removeUser();
+    }
+    window.location.replace('/');
+  };
+
   let errorMessage: string;
   let notFound = false;
 
@@ -11,6 +29,8 @@ export default function ErrorPage() {
       notFound = true;
       errorMessage = 'This page does not exist!';
     }
+  } else if (auth.error) {
+    errorMessage = auth.error.message;
   } else if (error instanceof Error) {
     errorMessage = error.message;
   } else if (typeof error === 'string') {
@@ -20,12 +40,32 @@ export default function ErrorPage() {
   }
 
   return (
-    <div id="error-page">
-      <h1 className="m-6">Oops!</h1>
-      {!notFound && <p>Sorry, an unexpected error has occurred.</p>}
-      <p>
-        <i>{errorMessage}</i>
-      </p>
+    <div className="flex flex-col justify-center align-middle m-6">
+      <div id="error-page" className=" text-red-200">
+        <h1 className="m-6">Oops!</h1>
+        <div className="m-6">
+          {!notFound && <p>Sorry, an unexpected error has occurred.</p>}
+
+          <p>
+            <i>{errorMessage}</i>
+          </p>
+        </div>
+      </div>
+      <div className="flex flex-row align-middle justify-center rounded ">
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger
+              onClick={() => hardReload()}
+              className="rounded bg-green-900 py-2 w-full flex justify-center items-center text-white hover:bg-green-800"
+            >
+              <ReloadIcon />
+            </TooltipTrigger>
+            <TooltipContent className="bg-slate-800 text-white">
+              Reload
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </div>
     </div>
   );
 }

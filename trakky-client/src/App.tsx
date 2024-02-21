@@ -6,8 +6,8 @@ import { FadeUp } from '@/components/ui/animations/fade';
 import useSummary from '@/lib/hooks/use-summary';
 import Loading from '@/components/ui/loading';
 import { usePaymentData, useYearSelection } from '@/lib/hooks/payments-hooks';
-import Summary from './components/summary/summary';
-import PaymentsTable from './components/payments/table';
+import Summary from '@/components/summary/summary';
+import PaymentsTable from '@/components/payments/table';
 
 export default function App() {
   const { data: payments, refreshData, isLoading, isError } = usePaymentData();

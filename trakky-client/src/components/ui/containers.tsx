@@ -1,31 +1,18 @@
-import React from 'react';
 import { demoMode } from '@/constants';
 import { ReloadIcon } from '@radix-ui/react-icons';
 import { useAuth } from 'react-oidc-context';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+import { ReactNode } from 'react';
 import Login from './login';
 import Loading from './loading';
 
-export function PageContainer({
+export function ProtectedContainer({
   children,
   className,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
 }) {
   const auth = useAuth();
-
-  const hardReload = async () => {
-    await auth.removeUser();
-    await auth.revokeTokens();
-    localStorage.clear();
-    window.location.replace('/');
-  };
 
   const containerContent = () => {
     if (demoMode) return children;
@@ -35,36 +22,10 @@ export function PageContainer({
     }
 
     if (auth.error) {
-      return (
-        <div className="p-4 m-4 text-sm text-red-800 rounded-lg bg-slate-900 dark:text-red-500">
-          <div className="flex flex-row justify-between">
-            <div className="flex flex-col">
-              <strong className="font-bold">
-                Error: Unable to authenticate.
-              </strong>
-              <p className="font-bold">
-                Click the reload button to clear the cache and reload the page.
-              </p>
-            </div>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger
-                  onClick={() => hardReload()}
-                  className="rounded w-8 flex justify-center items-center text-muted-foreground"
-                >
-                  <ReloadIcon />
-                </TooltipTrigger>
-                <TooltipContent className="bg-slate-800 text-white">
-                  Hard Reload
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
-        </div>
-      );
+      throw auth.error;
     }
 
-    if (auth.isAuthenticated || demoMode) {
+    if (auth.isAuthenticated) {
       return children;
     }
 
@@ -80,7 +41,7 @@ export function PageContainer({
   );
 }
 
-PageContainer.defaultProps = {
+ProtectedContainer.defaultProps = {
   className: null,
 };
 

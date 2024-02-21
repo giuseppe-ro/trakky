@@ -1,6 +1,3 @@
-'use client';
-
-import React from 'react';
 import { demoMode } from '@/constants';
 import { useAuth } from 'react-oidc-context';
 import {
@@ -19,7 +16,6 @@ import {
 } from '@/components/ui/tooltip';
 import { Github, LogOut } from 'lucide-react';
 import getUser from '@/infrastructure/user';
-import Loading from '../ui/loading';
 
 interface Links {
   href: string;
@@ -127,7 +123,7 @@ export function MainNav({ children }: React.HTMLAttributes<HTMLElement>) {
           </div>
         </div>
       </div>
-      <Loading loading={auth.isLoading}>{children}</Loading>
+      {children}
     </>
   );
 }

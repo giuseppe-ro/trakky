@@ -1,41 +1,111 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
-import Spinner from '@/components/ui/spinner';
 import { RouterProvider as ReactRouterProvider } from 'react-router';
+import NProgress from 'nprogress';
 
-const App = lazy(() => import('@/App'));
-const ErrorPage = lazy(() => import('@/app/error/page'));
-const ExpensesPage = lazy(() => import('@/app/overview/page'));
-const DashboardPage = lazy(() => import('@/app/dashboards/page'));
-const SettingsPage = lazy(() => import('@/app/settings/page'));
+import '@/nprogress/nprogress.css';
+import { LoadingSpinner } from '@/components/ui/loading';
+import { ProtectedContainer } from '@/components/ui/containers';
 
+const App = lazy(
+  () =>
+    new Promise((resolve) => {
+      NProgress.start();
+
+      import('@/App').then((module) => {
+        NProgress.done();
+        resolve(module as never);
+      });
+    })
+);
+
+const ExpensesPage = lazy(
+  () =>
+    new Promise((resolve) => {
+      NProgress.start();
+
+      import('@/app/overview/page').then((module) => {
+        NProgress.done();
+        resolve(module as never);
+      });
+    })
+);
+
+const DashboardPage = lazy(
+  () =>
+    new Promise((resolve) => {
+      NProgress.start();
+
+      import('@/app/dashboards/page').then((module) => {
+        NProgress.done();
+        resolve(module as never);
+      });
+    })
+);
+
+const SettingsPage = lazy(
+  () =>
+    new Promise((resolve) => {
+      NProgress.start();
+
+      import('@/app/settings/page').then((module) => {
+        NProgress.done();
+        resolve(module as never);
+      });
+    })
+);
+
+const ErrorPage = lazy(
+  () =>
+    new Promise((resolve) => {
+      NProgress.start();
+
+      import('@/app/error/page').then((module) => {
+        NProgress.done();
+        resolve(module as never);
+      });
+    })
+);
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    loader: () => ({ message: 'Hello Data Router!' }),
+    element: (
+      <ProtectedContainer>
+        <App />
+      </ProtectedContainer>
+    ),
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: 'overview',
+    element: (
+      <ProtectedContainer>
+        <ExpensesPage />
+      </ProtectedContainer>
+    ),
+  },
+  {
+    path: 'dashboards',
+    element: (
+      <ProtectedContainer>
+        <DashboardPage />
+      </ProtectedContainer>
+    ),
+  },
+  {
+    path: 'settings',
+    element: (
+      <ProtectedContainer>
+        <SettingsPage />
+      </ProtectedContainer>
+    ),
+  },
+]);
 function RouterProvider() {
-  const router = createBrowserRouter([
-    {
-      path: '/',
-      element: <App />,
-      errorElement: <ErrorPage />,
-    },
-    {
-      path: '/overview',
-      element: <ExpensesPage />,
-    },
-    {
-      path: '/dashboards',
-      element: <DashboardPage />,
-    },
-    {
-      path: '/settings',
-      element: <SettingsPage />,
-    },
-  ]);
-
   return (
-    <Suspense
-      fallback={
-        <Spinner className="flex justify-center align-middle m-44 p-2" />
-      }
-    >
+    <Suspense fallback={<LoadingSpinner />}>
       <ReactRouterProvider router={router} />
     </Suspense>
   );

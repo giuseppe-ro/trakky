@@ -4,7 +4,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { GearIcon } from '@radix-ui/react-icons';
@@ -14,8 +13,15 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { Github, LogOut } from 'lucide-react';
+import {
+  BarChart2Icon,
+  Github,
+  HomeIcon,
+  LogOut,
+  MonitorIcon,
+} from 'lucide-react';
 import getUser from '@/infrastructure/user';
+import { useCallback } from 'react';
 
 interface Links {
   href: string;
@@ -35,7 +41,23 @@ export function MainNav({ children }: React.HTMLAttributes<HTMLElement>) {
   if (auth.user?.access_token || demoMode) {
     links.push({ href: '/dashboards', label: 'Dashboards' });
     links.push({ href: '/overview', label: 'Overview' });
+    links.push({ href: '/settings', label: 'Settings' });
   }
+
+  const getTabIcon = useCallback((item: string) => {
+    switch (item) {
+      case 'Home':
+        return <HomeIcon className="h-6 w-6" />;
+      case 'Dashboards':
+        return <BarChart2Icon className="h-6 w-6" />;
+      case 'Overview':
+        return <MonitorIcon className="h-6 w-6" />;
+      case 'Settings':
+        return <GearIcon className="h-6 w-6" />;
+      default:
+        return null;
+    }
+  }, []);
 
   const logout = async () => {
     if (demoMode) return;
@@ -45,85 +67,102 @@ export function MainNav({ children }: React.HTMLAttributes<HTMLElement>) {
 
   return (
     <>
-      <div className="sticky top-0 bg-gray-950 z-50">
-        <div className="flex-col md:flex">
-          <div className="border-b">
-            <div className="flex justify-between items-center w-full">
-              <div className="w-full flex h-16 items-center px-4 mx-6 lg:mx-12">
-                <nav className="w-full">
-                  <div className="flex flex-row justify-between gap-3">
-                    <div className="flex flex-row align-center py-2 gap-2">
-                      {links.map((link) => {
-                        return (
-                          <a
-                            key={link.href}
-                            href={link.href}
-                            className={
-                              window.location.pathname === link.href
-                                ? 'text-sm font-medium text-slate-200 transition-colors focus:outline-none'
-                                : 'text-sm font-medium text-muted-foreground transition-colors hover:text-slate-600 focus:outline-none'
-                            }
-                          >
-                            {link.label}
-                          </a>
-                        );
-                      })}
-                    </div>
-                    <div className="flex flex-row justify-around gap-6">
-                      {(!auth.isLoading || demoMode) && (
-                        <DropdownMenu>
-                          <DropdownMenuTrigger className="text-sm font-medium text-muted-foreground transition-colors hover:text-slate-600 focus:outline-none">
-                            {userName}
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent>
-                            <DropdownMenuItem className="cursor-pointer text-muted-foreground">
-                              <a
-                                className="flex flex-row align-middle"
-                                href="/settings"
-                              >
-                                Settings
-                                <GearIcon className="ml-9 w-4 h-4" />
-                              </a>
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem
-                              className="cursor-pointer w-max text-muted-foreground"
-                              disabled={demoMode}
-                              onClick={logout}
-                            >
-                              <div>Logout</div>
-                              <LogOut className="w-4 h-4 ml-11" />
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      )}
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger className="rounded w-4 flex justify-center items-center hover:text-gray-700 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring ">
-                            <a
-                              href="https://github.com/Joe85gr/trakky"
-                              className="cursor-pointer inline-flex items-center justify-center text-slate-600 hover:text-slate-500 h-8 py-2"
-                              target="_blank"
-                              rel="noreferrer"
-                              aria-label="Source Code"
-                            >
-                              <Github className="h-4 w-4" />
-                            </a>
-                          </TooltipTrigger>
-                          <TooltipContent className="bg-slate-800 text-white">
-                            Source Code
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    </div>
-                  </div>
-                </nav>
+      <nav className="sticky z-50 top-0 border-b bg-gray-950">
+        <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+          <div className="relative flex h-16 items-center justify-between">
+            <div className="flex flex-1 items-center justify-start m-6 sm:items-stretch sm:justify-start">
+              <button
+                type="button"
+                onClick={() => {
+                  window.location.href = '/';
+                }}
+                className="flex flex-shrink-0 items-center"
+              >
+                <div className="flex flex-row sm:hidden">
+                  <img alt="Trakky" src="owl_login.png" className="h-6 w-6" />
+                  <div className="text-gray-300 text-lg ml-2">Trakky</div>
+                </div>
+              </button>
+              <div className="hidden sm:ml-6 sm:block">
+                <div className="flex space-x-4">
+                  {links.map((link) => {
+                    return (
+                      <a
+                        key={link.href}
+                        href={link.href}
+                        className={
+                          window.location.pathname === link.href
+                            ? 'bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium'
+                            : 'text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium'
+                        }
+                      >
+                        {link.label}
+                      </a>
+                    );
+                  })}
+                </div>
               </div>
+            </div>
+            <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+              {(!auth.isLoading || demoMode) && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger className="text-sm font-medium text-muted-foreground transition-colors hover:text-slate-600 focus:outline-none">
+                    {userName}
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem
+                      className="cursor-pointer w-max text-muted-foreground"
+                      disabled={demoMode}
+                      onClick={logout}
+                    >
+                      <div>Logout</div>
+                      <LogOut className="w-4 h-4 ml-11" />
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger className="rounded ml-4  w-4 flex justify-center items-center hover:text-gray-700 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring ">
+                    <a
+                      href="https://github.com/Joe85gr/trakky"
+                      className="cursor-pointer inline-flex items-center justify-center text-slate-600 hover:text-slate-500 h-8 py-2"
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label="Source Code"
+                    >
+                      <Github className="h-4 w-4" />
+                    </a>
+                  </TooltipTrigger>
+                  <TooltipContent className="bg-slate-800 text-white">
+                    Source Code
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
           </div>
         </div>
+      </nav>
+      <div>
+        <nav className="z-50 fixed inset-x-0 bottom-0 border-t-gray-900 sm:hidden bg-gray-800 flex-row items-center justify-around px-8 py-2 visible md:invisible w-full  text-2xl">
+          <div className="flex flex-row justify-around align-middle">
+            {links.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                className={
+                  window.location.pathname === link.href
+                    ? 'bg-gray-900 text-white block rounded-md px-3 py-2 text-base font-medium'
+                    : 'text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium'
+                }
+              >
+                <span>{getTabIcon(link.label)}</span>
+              </a>
+            ))}
+          </div>
+        </nav>
       </div>
-      {children}
+      <div className="mb-20 scroll-mb-20">{children}</div>
     </>
   );
 }

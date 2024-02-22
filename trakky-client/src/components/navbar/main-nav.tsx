@@ -21,14 +21,14 @@ import {
   MonitorIcon,
 } from 'lucide-react';
 import getUser from '@/infrastructure/user';
-import { useCallback } from 'react';
+import { HTMLAttributes } from 'react';
 
 interface Links {
   href: string;
   label: string;
 }
 
-export function MainNav({ children }: React.HTMLAttributes<HTMLElement>) {
+export function MainNav({ children }: HTMLAttributes<HTMLElement>) {
   const auth = useAuth();
   const user = getUser();
 
@@ -38,13 +38,13 @@ export function MainNav({ children }: React.HTMLAttributes<HTMLElement>) {
 
   const links: Links[] = [{ href: '/', label: 'Home' }];
 
-  if (auth.user?.access_token || demoMode) {
+  if (user || demoMode) {
     links.push({ href: '/dashboards', label: 'Dashboards' });
     links.push({ href: '/overview', label: 'Overview' });
     links.push({ href: '/settings', label: 'Settings' });
   }
 
-  const getTabIcon = useCallback((item: string) => {
+  const getTabIcon = (item: string) => {
     switch (item) {
       case 'Home':
         return <HomeIcon className="h-6 w-6" />;
@@ -57,7 +57,7 @@ export function MainNav({ children }: React.HTMLAttributes<HTMLElement>) {
       default:
         return null;
     }
-  }, []);
+  };
 
   const logout = async () => {
     if (demoMode) return;
@@ -143,8 +143,8 @@ export function MainNav({ children }: React.HTMLAttributes<HTMLElement>) {
           </div>
         </div>
       </nav>
-      <div>
-        <nav className="z-50 fixed inset-x-0 bottom-0 border-t-gray-900 sm:hidden bg-gray-800 flex-row items-center justify-around px-8 py-2 visible md:invisible w-full  text-2xl">
+      {links.length > 1 && (
+        <nav className="z-50 fixed  inset-x-0 bottom-0 border-t-gray-900 sm:hidden bg-gray-800 flex-row items-center justify-around px-8 py-2 visible md:invisible w-full  text-2xl">
           <div className="flex flex-row justify-around align-middle">
             {links.map((link) => (
               <a
@@ -161,7 +161,7 @@ export function MainNav({ children }: React.HTMLAttributes<HTMLElement>) {
             ))}
           </div>
         </nav>
-      </div>
+      )}
       <div className="mb-20 scroll-mb-20">{children}</div>
     </>
   );

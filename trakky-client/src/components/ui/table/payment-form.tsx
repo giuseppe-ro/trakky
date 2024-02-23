@@ -20,7 +20,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { cn } from '@/lib/utils';
+import { twMerge } from 'tailwind-merge';
 import { Calendar } from '@/components/ui/calendar';
 import { useEffect, useReducer, useState } from 'react';
 import { Textarea } from '@/components/ui/textarea';
@@ -262,7 +262,7 @@ export function PaymentForm({
                         <Button
                           disabled={form.formState.isSubmitting}
                           variant="outline"
-                          className={cn(
+                          className={twMerge(
                             'w-full justify-start text-left font-normal',
                             !field.value && 'text-muted-foreground'
                           )}
@@ -298,7 +298,7 @@ export function PaymentForm({
                       <Toggle
                         disabled={form.formState.isSubmitting}
                         aria-label="Toggle italic"
-                        className={cn(
+                        className={twMerge(
                           form.formState.errors.amount && `shake-animation`,
                           'rounded-l mr-0 rounded-r-none h-9 border px-3 data-[state=on]:bg-red-500 data-[state=off]:bg-green-500 data-[state=on]:text-white data-[state=off]:text-white'
                         )}
@@ -316,7 +316,7 @@ export function PaymentForm({
                         inputMode="decimal"
                         type="number"
                         step="any"
-                        className={cn(
+                        className={twMerge(
                           form.formState.errors.amount && `shake-animation`,
                           'rounded-l-none h-9 ml-0'
                         )}
@@ -374,7 +374,7 @@ export function PaymentForm({
                       disabled={form.formState.isSubmitting}
                       onChange={field.onChange}
                       value={field.value}
-                      className={cn(
+                      className={twMerge(
                         'pb-0 mb-0',
                         form.formState.errors.description && `shake-animation`
                       )}

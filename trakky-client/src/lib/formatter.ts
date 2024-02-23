@@ -27,6 +27,13 @@ export function firstOfTheMonthDateString(date: Date): Date {
   return new Date(`${year}-${month}-01`);
 }
 
+export function nextMonthDateString(date: Date): Date {
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 2).toString().padStart(2, '0');
+
+  return new Date(`${year}-${month}-01`);
+}
+
 export function convertFilterDateFormat(date: string): string {
   const dateObj = new Date(date);
   const month = (dateObj.getMonth() + 1).toString().padStart(2, '0');

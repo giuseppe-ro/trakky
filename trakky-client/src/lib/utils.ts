@@ -1,10 +1,3 @@
-import { type ClassValue, clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
-
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
-
 function exportName(name: string, format: string) {
   return `${name} Export ${new Date().toLocaleString('en-GB', {
     day: 'numeric',

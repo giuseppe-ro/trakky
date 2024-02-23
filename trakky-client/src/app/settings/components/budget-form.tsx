@@ -19,12 +19,15 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { cn } from '@/lib/utils';
+import { twMerge } from 'tailwind-merge';
 import { Calendar } from '@/components/ui/calendar';
 import React from 'react';
 import { resultToast } from '@/components/ui/use-toast';
 import { AddBudgets, EditBudget } from '@/infrastructure/budget';
-import { firstOfTheMonthDateString } from '@/lib/formatter';
+import {
+  firstOfTheMonthDateString,
+  nextMonthDateString,
+} from '@/lib/formatter';
 import { errorMessage } from '@/components/ui/table/form-error-message';
 import { Budget } from '@/models/dtos';
 import { CalendarIcon } from 'lucide-react';
@@ -54,6 +57,7 @@ export function BudgetForm({
   existingDates,
   editValues,
 }: BudgetFormProps) {
+  const [existing] = React.useState<Date[]>(existingDates);
   const formSchema = z.object({
     date: z.date(),
     budget: z.number().refine((val) => val > 0, {
@@ -70,7 +74,7 @@ export function BudgetForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       date:
-        editValues?.date === undefined
+        editValues?.date === undefined || editValues?.date === null
           ? new Date()
           : new Date(editValues?.date),
       budget: editValues?.budget === undefined ? 0 : Number(editValues?.budget),
@@ -81,11 +85,26 @@ export function BudgetForm({
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsError(false);
+    form.clearErrors();
 
     const budget = values as unknown as Budget;
 
-    if (editValues === undefined) {
-      const budgetExists = existingDates.some(
+    const reset = () => {
+      setTimeout(() => {
+        form.reset({}, { keepValues: true });
+        form.setValue(
+          'date',
+          new Date(nextMonthDateString(new Date(budget.date)))
+        );
+        existing.push(
+          new Date(firstOfTheMonthDateString(new Date(budget.date)))
+        );
+        refresh(true);
+      }, 1000);
+    };
+
+    if (!editValues) {
+      const budgetExists = existing.some(
         (date) =>
           date.getTime() ===
           new Date(firstOfTheMonthDateString(new Date(budget.date))).getTime()
@@ -96,6 +115,7 @@ export function BudgetForm({
           type: 'manual',
           message: 'Budget already exists for this date',
         });
+        reset();
         return;
       }
 
@@ -119,11 +139,7 @@ export function BudgetForm({
       message: 'Transaction saved',
     });
 
-    setTimeout(() => {
-      form.reset({}, { keepValues: true });
-      form.clearErrors();
-      refresh(true);
-    }, 1000);
+    reset();
   }
 
   return (
@@ -138,8 +154,7 @@ export function BudgetForm({
               <div className="grid grid-cols-1">
                 <FormField
                   disabled={
-                    form.formState.isSubmitting ||
-                    form.formState.isSubmitSuccessful
+                    form.formState.isSubmitting || form.formState.isSubmitted
                   }
                   control={form.control}
                   name="date"
@@ -148,7 +163,7 @@ export function BudgetForm({
                       <Popover>
                         <PopoverTrigger
                           asChild
-                          className={cn(
+                          className={twMerge(
                             form.formState.errors.date && `shake-animation`
                           )}
                         >
@@ -158,7 +173,7 @@ export function BudgetForm({
                               form.formState.isSubmitted
                             }
                             variant="outline"
-                            className={cn(
+                            className={twMerge(
                               'w-full justify-start text-left font-normal',
                               !field.value && 'text-muted-foreground'
                             )}
@@ -177,6 +192,10 @@ export function BudgetForm({
                             selected={field.value}
                             onSelect={field.onChange}
                             initialFocus
+                            disabled={
+                              form.formState.isSubmitting ||
+                              form.formState.isSubmitted
+                            }
                           />
                         </PopoverContent>
                       </Popover>
@@ -200,7 +219,7 @@ export function BudgetForm({
                         type="number"
                         step="any"
                         min={0}
-                        className={cn(
+                        className={twMerge(
                           form.formState.errors.budget && `shake-animation`
                         )}
                         {...field}
@@ -225,7 +244,7 @@ export function BudgetForm({
                         type="number"
                         step="any"
                         min={0}
-                        className={cn(
+                        className={twMerge(
                           form.formState.errors.maxBudget && `shake-animation`
                         )}
                         {...field}

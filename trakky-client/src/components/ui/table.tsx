@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import * as React from 'react';
 
-import { cn } from '@/lib/utils';
+import { twMerge } from 'tailwind-merge';
 
 const Table = React.forwardRef<
   HTMLTableElement,
@@ -10,7 +10,7 @@ const Table = React.forwardRef<
   <div className="relative w-full overflow-auto">
     <table
       ref={ref}
-      className={cn('w-full caption-bottom text-sm', className)}
+      className={twMerge('w-full caption-bottom text-sm', className)}
       {...props}
     />
   </div>
@@ -21,7 +21,11 @@ const TableHeader = React.forwardRef<
   HTMLTableSectionElement,
   React.HTMLAttributes<HTMLTableSectionElement>
 >(({ className, ...props }, ref) => (
-  <thead ref={ref} className={cn('[&_tr]:border-b', className)} {...props} />
+  <thead
+    ref={ref}
+    className={twMerge('[&_tr]:border-b', className)}
+    {...props}
+  />
 ));
 TableHeader.displayName = 'TableHeader';
 
@@ -31,7 +35,7 @@ const TableBody = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <tbody
     ref={ref}
-    className={cn('[&_tr:last-child]:border-0', className)}
+    className={twMerge('[&_tr:last-child]:border-0', className)}
     {...props}
   />
 ));
@@ -43,7 +47,10 @@ const TableFooter = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <tfoot
     ref={ref}
-    className={cn('bg-primary font-medium text-primary-foreground', className)}
+    className={twMerge(
+      'bg-primary font-medium text-primary-foreground',
+      className
+    )}
     {...props}
   />
 ));
@@ -55,7 +62,7 @@ const TableRow = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <tr
     ref={ref}
-    className={cn('border-b data-[state=selected]:bg-muted', className)}
+    className={twMerge('border-b data-[state=selected]:bg-muted', className)}
     {...props}
   />
 ));
@@ -67,7 +74,7 @@ const TableHead = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <th
     ref={ref}
-    className={cn(
+    className={twMerge(
       'h-10 text-left align-middle justify-between font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]',
       className
     )}
@@ -82,7 +89,7 @@ const TableCell = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <td
     ref={ref}
-    className={cn(
+    className={twMerge(
       'p-0 align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]',
       className
     )}
@@ -97,7 +104,7 @@ const TableCaption = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <caption
     ref={ref}
-    className={cn('mt-4 text-sm text-muted-foreground', className)}
+    className={twMerge('mt-4 text-sm text-muted-foreground', className)}
     {...props}
   />
 ));

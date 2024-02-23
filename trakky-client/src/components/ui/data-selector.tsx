@@ -1,8 +1,8 @@
 import { Selection } from '@/components/ui/select';
 import { FadeRight } from '@/components/ui/animations/fade';
 import { useEffect } from 'react';
-import { cn } from '@/lib/utils';
 import { demoMode, StorageKey } from '@/constants';
+import { twMerge } from 'tailwind-merge';
 
 function YearSelection({
   availableYears,
@@ -43,7 +43,10 @@ function YearSelection({
   return (
     availableYears.length > 0 && (
       <FadeRight
-        className={cn(`sticky top-20 z-30 px-2 md:px-0`, demoMode && 'top-24')}
+        className={twMerge(
+          `sticky top-20 z-30 px-2 md:px-0`,
+          demoMode && 'top-24'
+        )}
       >
         <Selection
           value={year()}

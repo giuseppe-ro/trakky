@@ -1,7 +1,7 @@
 import { TableRow } from '@/components/ui/table';
 import { formatCurrency } from '@/lib/formatter';
-import { cn } from '@/lib/utils';
 import { Budget } from '@/models/dtos';
+import { twMerge } from 'tailwind-merge';
 
 function BudgetToDeleteList({ entries }: BudgetToDeleteListProps) {
   const tdStyle =
@@ -16,16 +16,16 @@ function BudgetToDeleteList({ entries }: BudgetToDeleteListProps) {
               key={budget.id}
               className="flex w-full border-none align-middle justify-center"
             >
-              <td className={cn(`${tdStyle} text-left`)}>
+              <td className={twMerge(tdStyle, 'text-left')}>
                 {new Date(budget.date).toLocaleString('en-GB', {
                   month: 'numeric',
                   year: 'numeric',
                 })}
               </td>
-              <td className={cn(`${tdStyle} text-right overflow-auto`)}>
+              <td className={twMerge(tdStyle, 'text-right overflow-auto')}>
                 {formatCurrency(budget.budget)}
               </td>
-              <td className={cn(`${tdStyle} text-right overflow-auto`)}>
+              <td className={twMerge(tdStyle, 'text-right overflow-auto')}>
                 {formatCurrency(budget.maxBudget)}
               </td>
             </TableRow>

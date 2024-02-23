@@ -1,4 +1,5 @@
 import { formatCurrency } from '@/lib/formatter';
+import { twMerge } from 'tailwind-merge';
 
 export function AmountSummary({
   label,
@@ -21,9 +22,10 @@ export function AmountSummary({
           {formatCurrency(amount)}
           {difference && (
             <div
-              className={`ml-2 ${
+              className={twMerge(
+                'ml-2',
                 difference >= 0 ? 'text-slate-600' : 'text-red-900'
-              }`}
+              )}
             >
               ({formatCurrency(difference)})
             </div>

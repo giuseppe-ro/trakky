@@ -23,6 +23,8 @@ import {
 import getUser from '@/infrastructure/user';
 import { HTMLAttributes } from 'react';
 
+import { twMerge } from 'tailwind-merge';
+
 interface Links {
   href: string;
   label: string;
@@ -90,11 +92,12 @@ export function MainNav({ children }: HTMLAttributes<HTMLElement>) {
                       <a
                         key={link.href}
                         href={link.href}
-                        className={
+                        className={twMerge(
+                          'rounded-md px-3 py-2 text-sm font-medium',
                           window.location.pathname === link.href
-                            ? 'bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium'
-                            : 'text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium'
-                        }
+                            ? 'bg-gray-900 text-white'
+                            : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                        )}
                       >
                         {link.label}
                       </a>
@@ -150,11 +153,12 @@ export function MainNav({ children }: HTMLAttributes<HTMLElement>) {
               <a
                 key={link.href}
                 href={link.href}
-                className={
+                className={twMerge(
+                  'block rounded-md px-3 py-2 text-base font-medium',
                   window.location.pathname === link.href
-                    ? 'bg-gray-900 text-white block rounded-md px-3 py-2 text-base font-medium'
-                    : 'text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium'
-                }
+                    ? 'bg-gray-900 text-white'
+                    : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                )}
               >
                 <span>{getTabIcon(link.label)}</span>
               </a>

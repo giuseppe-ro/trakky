@@ -35,7 +35,6 @@
     "aos": "^3.0.0-beta.6",
     "axios": "^1.5.1",
     "class-variance-authority": "^0.7.0",
-    "clsx": "^2.0.0",
     "date-fns": "^2.30.0",
     "lucide-react": "^0.331.0",
     "nprogress": "^0.2.0",

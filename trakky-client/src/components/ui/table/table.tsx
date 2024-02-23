@@ -9,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { cn } from '@/lib/utils';
+import { twMerge } from 'tailwind-merge';
 import Filter from '@/components/ui/table/column-filter';
 import { colSize } from '@/components/ui/table/columns';
 import {
@@ -181,7 +181,7 @@ export function CustomTable<TData extends object>({
                 <TableRow
                   key={row.id}
                   onClick={row.getToggleSelectedHandler()}
-                  className={cn(
+                  className={twMerge(
                     'hover:bg-slate-800/50 border border-slate-800',
                     row.getIsSelected() && 'bg-slate-600/50 hover:bg-slate-600'
                   )}
@@ -285,7 +285,7 @@ export function CustomSmallTable({
                 className="w-full justify-center align-middle"
               >
                 <td
-                  className={cn(
+                  className={twMerge(
                     `text-left border-r-0 py-0.5 px-2 font-thin text-xs w-full border overflow-x-scroll scroll-smooth`
                   )}
                 >

@@ -89,7 +89,7 @@ export function BudgetForm({
 
     const budget = values as unknown as Budget;
 
-    const reset = () => {
+    const reset = (timeout: number) => {
       setTimeout(() => {
         form.reset({}, { keepValues: true });
         form.setValue(
@@ -100,7 +100,9 @@ export function BudgetForm({
           new Date(firstOfTheMonthDateString(new Date(budget.date)))
         );
         refresh(true);
-      }, 1000);
+      }, timeout);
+
+      clearTimeout(timeout);
     };
 
     if (!editValues) {
@@ -115,7 +117,7 @@ export function BudgetForm({
           type: 'manual',
           message: 'Budget already exists for this date',
         });
-        reset();
+        // reset(3000);
         return;
       }
 
@@ -139,7 +141,7 @@ export function BudgetForm({
       message: 'Transaction saved',
     });
 
-    reset();
+    reset(1000);
   }
 
   return (
@@ -154,7 +156,8 @@ export function BudgetForm({
               <div className="grid grid-cols-1">
                 <FormField
                   disabled={
-                    form.formState.isSubmitting || form.formState.isSubmitted
+                    form.formState.isSubmitting ||
+                    form.formState.isSubmitSuccessful
                   }
                   control={form.control}
                   name="date"
@@ -170,7 +173,7 @@ export function BudgetForm({
                           <Button
                             disabled={
                               form.formState.isSubmitting ||
-                              form.formState.isSubmitted
+                              form.formState.isSubmitSuccessful
                             }
                             variant="outline"
                             className={twMerge(
@@ -190,11 +193,14 @@ export function BudgetForm({
                           <Calendar
                             mode="single"
                             selected={field.value}
-                            onSelect={field.onChange}
+                            onSelect={(e) => {
+                              form.clearErrors('date');
+                              field.onChange(e);
+                            }}
                             initialFocus
                             disabled={
                               form.formState.isSubmitting ||
-                              form.formState.isSubmitted
+                              form.formState.isSubmitSuccessful
                             }
                           />
                         </PopoverContent>
@@ -213,7 +219,7 @@ export function BudgetForm({
                       <Input
                         disabled={
                           form.formState.isSubmitting ||
-                          form.formState.isSubmitted
+                          form.formState.isSubmitSuccessful
                         }
                         inputMode="decimal"
                         type="number"
@@ -238,7 +244,7 @@ export function BudgetForm({
                       <Input
                         disabled={
                           form.formState.isSubmitting ||
-                          form.formState.isSubmitted
+                          form.formState.isSubmitSuccessful
                         }
                         inputMode="decimal"
                         type="number"

@@ -29,7 +29,7 @@ export function BudgetActionMenu({
         addForm={
           <BudgetForm
             refresh={() => {
-              onRefresh(false);
+              onRefresh(false).then(() => {});
             }}
             existingDates={budgets.map((b) => new Date(b.date))}
             title="Add New Budget"

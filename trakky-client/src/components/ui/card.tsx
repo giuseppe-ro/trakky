@@ -93,7 +93,7 @@ function CardFormFooter({
     <CardFooter className="flex flex-col justify-between">
       <Loading loading={isSubmitting}>
         <Button
-          disabled={demoMode || isSubmitting || submitted}
+          disabled={demoMode || isSubmittedSuccessfully}
           type="submit"
           variant="outline"
           className={twMerge(

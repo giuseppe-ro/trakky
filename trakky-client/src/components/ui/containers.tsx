@@ -1,7 +1,7 @@
 import { demoMode } from '@/constants';
 import { ReloadIcon } from '@radix-ui/react-icons';
-import { useAuth } from 'react-oidc-context';
-import { ReactNode } from 'react';
+import { hasAuthParams, useAuth } from 'react-oidc-context';
+import { ReactNode, useEffect } from 'react';
 import Login from './login';
 import Loading from './loading';
 
@@ -13,6 +13,17 @@ export function ProtectedContainer({
   className?: string;
 }) {
   const auth = useAuth();
+
+  useEffect(() => {
+    if (
+      !hasAuthParams() &&
+      !auth.isAuthenticated &&
+      !auth.activeNavigator &&
+      !auth.isLoading
+    ) {
+      auth.signinRedirect();
+    }
+  }, [auth]);
 
   const containerContent = () => {
     if (demoMode) return children;
@@ -87,7 +98,9 @@ export function Containers({
   children: React.ReactNode;
   className?: string;
 }) {
-  return <div className={`px-2 md:px-0 ${className}`}>{children}</div>;
+  return (
+    <div className={`px-2 md:px-0 mt-1 sm:mt-0 ${className}`}>{children}</div>
+  );
 }
 
 Containers.defaultProps = {

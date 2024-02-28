@@ -216,9 +216,10 @@ export function ExpensesDashboard({ data }: { data: PaymentOverview[] }) {
               <PaymentsOverviewTooltip active={false} payload={[]} label="" />
             }
           />
-          <Bar name="Total" dataKey="total" fill="white" maxBarSize={20}>
+          <Bar name="Total" dataKey="total" fill="white">
             {data.map((entry) => (
               <Cell
+                className="backdrop-blur-lg"
                 cursor="pointer"
                 fill={getColor(entry.total, entry.budget, entry.maxBudget)}
                 key={`cell-${entry.total}`}

@@ -9,10 +9,11 @@ export enum ErrorMessage {
   NO_CONNECTION = 'Could not connect to the server.',
   UNAUTHORIZED = 'Unauthorized.',
   FORBIDDEN = 'Forbidden.',
-  NOT_FOUND = 'Not found.',
+  NOT_FOUND = 'This page does not exist!',
   INTERNAL_SERVER_ERROR = 'Internal server error.',
   BAD_REQUEST = 'Bad request.',
   UNKNOWN_ERROR = 'An unknown error occurred.',
+  FAILED_AUTHENTICATION = 'Unable to authenticate.',
 }
 
 export const makeBaseRequest = (

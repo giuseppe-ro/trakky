@@ -7,6 +7,7 @@ import {
 } from '@/components/ui/tooltip';
 import { ReloadIcon } from '@radix-ui/react-icons';
 import { useAuth } from 'react-oidc-context';
+import { ErrorMessage } from '@/infrastructure/base-api';
 
 export default function ErrorPage() {
   const error = useRouteError();
@@ -20,23 +21,21 @@ export default function ErrorPage() {
     window.location.replace('/');
   };
 
-  let errorMessage: string;
+  let errorMessage = '';
   let notFound = false;
 
-  if (isRouteErrorResponse(error)) {
+  if (auth.error) {
+    errorMessage = ErrorMessage.FAILED_AUTHENTICATION;
+  } else if (isRouteErrorResponse(error)) {
     errorMessage = error.data.message || error.statusText;
     if (errorMessage === 'Not Found') {
       notFound = true;
-      errorMessage = 'This page does not exist!';
+      errorMessage = ErrorMessage.NOT_FOUND;
     }
-  } else if (auth.error) {
-    errorMessage = auth.error.message;
-  } else if (error instanceof Error) {
-    errorMessage = error.message;
-  } else if (typeof error === 'string') {
-    errorMessage = error;
-  } else {
-    errorMessage = 'Unknown error';
+  }
+
+  if (errorMessage === '') {
+    errorMessage = ErrorMessage.INTERNAL_SERVER_ERROR;
   }
 
   return (
@@ -44,7 +43,7 @@ export default function ErrorPage() {
       <div id="error-page" className=" text-red-200">
         <h1 className="m-6">Oops!</h1>
         <div className="m-6">
-          {!notFound && <p>Sorry, an unexpected error has occurred.</p>}
+          {!notFound && <p>Sorry, an unexpected error has occurred:</p>}
 
           <p>
             <i>{errorMessage}</i>

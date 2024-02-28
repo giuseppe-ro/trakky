@@ -16,9 +16,9 @@ export function downloadFile(texts: string, format: string, name: string) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function delayForDemo(promise: any) {
+export async function delay(promise: any, timeout = 5000) {
   await new Promise((resolve) => {
-    setTimeout(resolve, 5000);
+    setTimeout(resolve, timeout);
   });
   return promise;
 }

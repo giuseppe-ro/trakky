@@ -8,10 +8,14 @@ function YearSelection({
   availableYears,
   selectedYear,
   onYearChange,
+  onMonthChange,
+  selectedMonth,
 }: {
-  availableYears: string[];
+  availableYears: Map<string, string[]> | undefined;
   selectedYear: string | null;
+  selectedMonth: string | null;
   onYearChange: (year: string) => void;
+  onMonthChange: (month: string) => void;
 }) {
   const changeYear = (year: string) => {
     localStorage.setItem(StorageKey.SelectedYear, year);
@@ -27,8 +31,33 @@ function YearSelection({
     return selectedYear;
   };
 
+  const changeMonth = (month: string) => {
+    localStorage.setItem(StorageKey.SelectedMonth, month);
+    onMonthChange(month);
+  };
+
+  const month = (): string | null => {
+    let newMonth: string | null;
+
+    const storedMonth = localStorage.getItem(StorageKey.SelectedMonth);
+    if (storedMonth !== null) {
+      newMonth = storedMonth;
+    } else {
+      newMonth = selectedMonth;
+    }
+
+    const availableMonths = availableYears?.get(selectedYear ?? 'All Years');
+
+    if (!availableMonths || !availableMonths.includes(newMonth ?? '')) {
+      return 'All Months';
+    }
+
+    return newMonth;
+  };
+
   useEffect(() => {
     const storedYear = localStorage.getItem(StorageKey.SelectedYear);
+    const storedMonth = localStorage.getItem(StorageKey.SelectedMonth);
 
     if (storedYear) {
       try {
@@ -37,25 +66,54 @@ function YearSelection({
         localStorage.removeItem(StorageKey.SelectedYear);
       }
     }
+
+    if (storedMonth) {
+      if (storedYear && availableYears) {
+        const availableMonths = availableYears?.get(storedYear);
+
+        if (availableMonths && availableMonths.includes(storedMonth)) {
+          try {
+            onMonthChange(storedMonth);
+          } catch (e) {
+            localStorage.removeItem(StorageKey.SelectedMonth);
+          }
+        } else {
+          onMonthChange('All Months');
+          localStorage.setItem(StorageKey.SelectedMonth, 'All Months');
+        }
+      }
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [selectedYear]);
 
   return (
-    availableYears.length > 0 && (
+    selectedYear &&
+    availableYears &&
+    Array.from(availableYears.keys()).length > 0 && (
       <FadeRight
         className={twMerge(
           `sticky top-20 z-30 px-2 md:px-0`,
           demoMode && 'top-24'
         )}
       >
-        <Selection
-          value={year()}
-          onChange={changeYear}
-          options={availableYears}
-          {...{
-            className: 'rounded-md w-full overscroll-contain bg-gray-950 ',
-          }}
-        />
+        <div className="flex gap-x-3 mt-4">
+          <Selection
+            value={year()}
+            onChange={changeYear}
+            options={Array.from(availableYears.keys())}
+            {...{
+              className: 'rounded-md w-full overscroll-contain bg-gray-950 ',
+            }}
+          />
+          <Selection
+            value={month()}
+            onChange={changeMonth}
+            options={availableYears.get(selectedYear) ?? []}
+            {...{
+              className: 'rounded-md w-full overscroll-contain bg-gray-950 ',
+            }}
+          />
+        </div>
       </FadeRight>
     )
   );

@@ -160,7 +160,12 @@ export function MainNav({ children }: HTMLAttributes<HTMLElement>) {
                     : 'text-gray-300 hover:bg-gray-700 hover:text-white'
                 )}
               >
-                <span>{getTabIcon(link.label)}</span>
+                <div className="flex flex-col">
+                  <div className="flex justify-center">
+                    {getTabIcon(link.label)}
+                  </div>
+                  <span className="text-sm">{link.label}</span>
+                </div>
               </a>
             ))}
           </div>

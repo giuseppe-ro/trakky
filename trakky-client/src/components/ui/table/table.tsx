@@ -24,7 +24,8 @@ import { SubTitle } from '@/components/ui/text';
 import { SubmittableInput } from '@/components/ui/input';
 import { DeleteDialog } from '@/components/ui/table/delete-popup';
 import { StorageKey } from '@/constants';
-import { ChevronDownIcon } from 'lucide-react';
+import { ChevronDownIcon, Fuel, Gift, HandCoins, Utensils } from 'lucide-react';
+import { formatStringDate } from '@/lib/formatter';
 
 export interface CustomTableProps<TData> {
   table: TableType<TData>;
@@ -77,46 +78,86 @@ export function CustomTable<TData extends object>({
     }
   };
 
+  const categoryIcon = (category: string) => {
+    if (category === 'General') {
+      return (
+        <Utensils
+          strokeWidth={1}
+          alignmentBaseline="middle"
+          className="text-muted-foreground flex text-sm text-justify mt-1"
+          height="100%"
+        />
+      );
+    }
+
+    if (category === 'Bills') {
+      return (
+        <HandCoins
+          strokeWidth={1}
+          alignmentBaseline="middle"
+          className="text-muted-foreground flex text-sm text-justify mt-1"
+          height="100%"
+        />
+      );
+    }
+
+    if (category === 'Personal') {
+      return (
+        <Gift
+          strokeWidth={1}
+          alignmentBaseline="middle"
+          className="text-muted-foreground flex text-sm text-justify mt-1"
+          height="100%"
+        />
+      );
+    }
+
+    if (category === 'Transport') {
+      return (
+        <Fuel
+          strokeWidth={1}
+          alignmentBaseline="middle"
+          className="text-muted-foreground flex text-sm text-justify mt-1"
+          height="100%"
+        />
+      );
+    }
+
+    return null;
+  };
   const renderFilterCells = (header: Header<TData, unknown>) => {
     if (header.column.getCanFilter())
-      return (
-        <div className="m-0 p-0">
-          <Filter column={header.column} table={table} />
-        </div>
-      );
+      return <Filter column={header.column} table={table} />;
 
     if (header.id === 'edit') {
       return (
-        <>
-          {' '}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <div className="flex flex-row justify-center align-middle">
-                <ChevronDownIcon className="h-4 w-4 cursor-pointer mx-1.5" />
-              </div>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {table
-                .getAllColumns()
-                .filter((column) => column.getCanHide())
-                .map((column) => {
-                  return (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className="capitalize"
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) => {
-                        column.toggleVisibility(value);
-                        saveActiveCols(column.id, value);
-                      }}
-                    >
-                      {column.id}
-                    </DropdownMenuCheckboxItem>
-                  );
-                })}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <div className="flex flex-row justify-center align-middle">
+              <ChevronDownIcon className="h-4 w-4 cursor-pointer mx-1.5" />
+            </div>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {table
+              .getAllColumns()
+              .filter((column) => column.getCanHide() && column.getCanPin())
+              .map((column) => {
+                return (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    className="capitalize"
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(value) => {
+                      column.toggleVisibility(value);
+                      saveActiveCols(column.id, value);
+                    }}
+                  >
+                    {column.id}
+                  </DropdownMenuCheckboxItem>
+                );
+              })}
+          </DropdownMenuContent>
+        </DropdownMenu>
       );
     }
 
@@ -193,13 +234,27 @@ export function CustomTable<TData extends object>({
                 >
                   {row.getVisibleCells().map((cell) => {
                     return (
-                      <td
-                        key={cell.id}
-                        className="px-2 truncate text-xs font-thin md:font-normal md:text-sm"
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
+                      <td key={cell.id} className="h-8 px-2 truncate text-sm">
+                        {cell.id.includes('type') ? (
+                          <div className="flex flex-row align-middle gap-x-2 justify-center">
+                            {categoryIcon(row.getValue('type'))}
+                            <div className="flex flex-col">
+                              {flexRender(
+                                cell.column.columnDef.cell,
+                                cell.getContext()
+                              )}
+                              <div className="text-xxs font-thin text-muted-foreground">
+                                {formatStringDate(row.getValue('date'))}
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="flex flex-row align-middle gap-1">
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}
+                          </div>
                         )}
                       </td>
                     );

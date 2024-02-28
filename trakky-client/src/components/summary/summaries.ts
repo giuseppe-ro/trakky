@@ -1,6 +1,7 @@
-import { Payment, Budget } from '@/models/dtos';
+import { Budget, Payment } from '@/models/dtos';
 import { OwnerOverview } from '@/models/owner-overview';
 import { PaymentOverview } from '@/models/payment-overview';
+import { formatDateMonth } from '@/lib/formatter';
 
 export function getAvailableYears(data: Payment[]) {
   return data
@@ -13,6 +14,29 @@ export function getAvailableYears(data: Payment[]) {
     }, [])
     .sort((a, b) => b - a)
     .map((year) => year?.toString());
+}
+
+export function getYearsAndMonths(data: Payment[]) {
+  const yearMonthMap = new Map<string, string[]>();
+
+  yearMonthMap.set('All Years', ['All Months']);
+
+  data.forEach((payment) => {
+    const date = new Date(payment.date);
+    const year = date.getFullYear().toString();
+    const month = formatDateMonth(payment.date);
+
+    if (!yearMonthMap.has(year)) {
+      yearMonthMap.set(year, ['All Months']);
+    }
+
+    const months = yearMonthMap.get(year);
+    if (months && !months.includes(month)) {
+      months.push(month);
+    }
+  });
+
+  return yearMonthMap;
 }
 
 export function getYearlyPaymentsSummaries(data: Payment[], budgets: Budget[]) {
@@ -154,7 +178,7 @@ export function getExpensesBreakdown(data: Payment[] | null) {
     .map((item) => item.type)
     .filter((value, index, self) => self.indexOf(value) === index);
 
-  const result = types.map((type) => {
+  return types.map((type) => {
     return {
       name: type,
       value: Math.round(
@@ -164,6 +188,4 @@ export function getExpensesBreakdown(data: Payment[] | null) {
       ),
     };
   });
-
-  return result;
 }

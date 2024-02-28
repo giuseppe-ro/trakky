@@ -119,9 +119,16 @@ function Selection({
   options: string[];
   placeholder?: string;
 }) {
+  let defaultValue = value?.toString();
+
+  if (defaultValue && !options.includes(defaultValue)) {
+    defaultValue = options[0]?.toString();
+  }
+
   return (
     <Select
-      defaultValue={value?.toString()}
+      defaultValue={defaultValue}
+      value={defaultValue}
       onValueChange={(e) => onChange(e)}
       {...props}
     >
@@ -138,7 +145,6 @@ function Selection({
         </SelectGroup>
       </SelectContent>
     </Select>
-    // </div>
   );
 }
 

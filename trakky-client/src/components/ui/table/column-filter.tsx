@@ -62,7 +62,7 @@ export function Filter<TData>({
               ])
             }
             placeholder="Min"
-            className="rounded-none w-1/2 placeholder-slate-700 placeholder:text-xs selection:bg-slate-700 focus:bg-slate-700  shadow bg-slate-800 pl-1 focus:outline-none"
+            className="rounded-none w-1/2 placeholder-slate-700 placeholder:text-xs selection:bg-slate-950 focus:bg-slate-700  shadow bg-slate-800 pl-1 focus:outline-none"
           />
           <DebouncedInput
             type="number"
@@ -76,7 +76,7 @@ export function Filter<TData>({
               ])
             }
             placeholder="Max"
-            className="rounded-none w-1/2 placeholder-slate-700 placeholder:text-xs selection:bg-slate-700 focus:bg-slate-700  shadow bg-slate-800 pl-1 focus:outline-none"
+            className="h-6 rounded-none w-1/2 placeholder-slate-700 placeholder:text-xs selection:bg-slate-950 focus:bg-slate-700  shadow bg-slate-800 pl-1 focus:outline-none"
           />
         </div>
       </div>
@@ -93,6 +93,7 @@ export function Filter<TData>({
             onChange={(value) => {
               column.setFilterValue(value === 'All' ? '' : value);
             }}
+            className="h-6"
           />
         </div>
       </div>
@@ -118,7 +119,7 @@ export function Filter<TData>({
         value={(columnFilterValue ?? '') as string}
         onChange={(value) => column.setFilterValue(value)}
         placeholder=""
-        className="rounded-none w-full shadow bg-slate-800 text-slate-400 selection:bg-slate-700 pl-2 focus:bg-slate-700 focus:outline-none"
+        className="h-6 rounded-none w-full shadow bg-slate-800 text-slate-400 selection:bg-slate-950 pl-2 focus:bg-slate-700 focus:outline-none"
         list={`${column.id}list`}
       />
     </>

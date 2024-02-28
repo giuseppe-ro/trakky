@@ -18,7 +18,13 @@ import Loading from '@/components/ui/loading';
 function OverviewPage() {
   const { data: payments, refreshData, isLoading, isError } = usePaymentData();
 
-  const { availableYears, selectedYear, setSelectedYear } = useYearSelection({
+  const {
+    availableYears,
+    selectedYear,
+    setSelectedYear,
+    selectedMonth,
+    setSelectedMonth,
+  } = useYearSelection({
     payments,
     isLoading,
   });
@@ -29,6 +35,7 @@ function OverviewPage() {
       selectedYear,
       refreshData,
       isLoading,
+      selectedMonth,
     });
 
   const filteredPayments = useFilteredPayments(table);
@@ -51,6 +58,8 @@ function OverviewPage() {
             availableYears={availableYears}
             selectedYear={selectedYear}
             onYearChange={setSelectedYear}
+            selectedMonth={selectedMonth}
+            onMonthChange={setSelectedMonth}
           />
         )}
         <Containers>

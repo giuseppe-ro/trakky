@@ -12,7 +12,13 @@ import PaymentsTable from '@/components/payments/table';
 export default function App() {
   const { data: payments, refreshData, isLoading, isError } = usePaymentData();
 
-  const { availableYears, selectedYear, setSelectedYear } = useYearSelection({
+  const {
+    availableYears,
+    selectedYear,
+    setSelectedYear,
+    selectedMonth,
+    setSelectedMonth,
+  } = useYearSelection({
     payments,
     isLoading,
   });
@@ -21,6 +27,7 @@ export default function App() {
     usePaymentsTable({
       data: payments ?? [],
       selectedYear,
+      selectedMonth,
       refreshData,
       isLoading,
     });
@@ -32,15 +39,8 @@ export default function App() {
 
   return (
     <>
-      <Title title="Expenses" />
+      <Title title="Home" />
       <Loading loading={isLoading}>
-        {!isError && (
-          <YearSelection
-            availableYears={availableYears}
-            selectedYear={selectedYear}
-            onYearChange={setSelectedYear}
-          />
-        )}
         <Containers>
           <Summary
             ownerBalances={ownerBalances}
@@ -51,13 +51,20 @@ export default function App() {
           />
         </Containers>
         <FadeUp>
-          <div className="mt-4">
-            <PaymentsTable
-              table={table}
-              onDeleteConfirmed={onDeleteConfirmed}
-              onRefresh={onRefresh}
+          {!isError && (
+            <YearSelection
+              availableYears={availableYears}
+              selectedYear={selectedYear}
+              onYearChange={setSelectedYear}
+              onMonthChange={setSelectedMonth}
+              selectedMonth={selectedMonth}
             />
-          </div>
+          )}
+          <PaymentsTable
+            table={table}
+            onDeleteConfirmed={onDeleteConfirmed}
+            onRefresh={onRefresh}
+          />
         </FadeUp>
       </Loading>
     </>

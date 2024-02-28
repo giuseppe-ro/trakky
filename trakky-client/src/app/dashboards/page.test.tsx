@@ -29,13 +29,6 @@ describe('test BudgetToDeleteList rendering', () => {
     );
   });
 
-  it('should render sticky year selection on the top', async () => {
-    // assert
-    await waitFor(() => {
-      expect(screen.getAllByRole('combobox')[0]).toHaveTextContent('2023');
-    });
-  });
-
   it('should render filters without table body', async () => {
     // assert
     await waitFor(() => {
@@ -68,7 +61,7 @@ describe('test BudgetToDeleteList rendering', () => {
           .getByTitle('Users Dashboard')
           .querySelector('li')
           ?.querySelector('span')?.textContent
-      ).toBe('Goofy');
+      ).toBe('Donald');
 
       // // breakdown chart
       expect(

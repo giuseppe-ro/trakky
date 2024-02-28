@@ -27,15 +27,18 @@ import * as z from 'zod';
 import { DeletePayments, UploadPayments } from '@/infrastructure/payment';
 import { Budget, Payment } from '@/models/dtos';
 import { Total } from '@/models/total';
+import { monthNameToNumber } from '@/lib/formatter';
 
 export function usePaymentsTable({
   data,
   selectedYear,
+  selectedMonth,
   refreshData,
   isLoading,
 }: {
   data: Payment[] | null;
   selectedYear: string | null;
+  selectedMonth: string | null;
   refreshData(): void;
   isLoading: boolean;
 }) {
@@ -45,18 +48,34 @@ export function usePaymentsTable({
 
   useEffect(() => {
     if (isLoading) return;
-    if (selectedYear === 'All' && data) setFilteredData(data);
-    else if (data && selectedYear !== null) {
+
+    if (selectedYear === 'All Years' && data) {
+      setFilteredData(data);
+      return;
+    }
+
+    if (data && selectedYear !== null && selectedMonth !== null) {
+      const year = parseInt(selectedYear ?? '', 10);
+      const month =
+        selectedMonth === 'All Months' || selectedMonth === ''
+          ? null
+          : monthNameToNumber(selectedMonth);
+
       setFilteredData(
-        data.filter(
-          (payment) =>
-            new Date(payment.date).getFullYear() ===
-            parseInt(selectedYear ?? '', 10)
-        )
+        data.filter((payment) => {
+          const paymentYear = new Date(payment.date).getFullYear();
+          if (month === null) {
+            return paymentYear === year;
+          }
+          return (
+            paymentYear === year &&
+            new Date(payment.date).getMonth() + 1 === month
+          );
+        })
       );
     }
     // eslint-disable-next-line
-  }, [selectedYear, data]);
+  }, [selectedYear, selectedMonth, data]);
 
   const totalsPerYear =
     data === null

@@ -108,7 +108,7 @@ export function Summary({
       <Tabs defaultValue="overview" className="space-y-4 animate-fade">
         <TabsContent value="overview" className="space-y-4" tabIndex={-1}>
           <FadeLeft>
-            <div className="flex gap-2 flex-col sm:flex-row sm:gap-4 grow">
+            <div className="flex gap-2 flex-row sm:gap-4 grow">
               <div className="w-[100%] sm:w-[50%]">
                 <SummaryCard
                   title="Total"

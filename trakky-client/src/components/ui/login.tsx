@@ -2,7 +2,7 @@ import { Button } from './button';
 import { Card, CardContent } from './card';
 import { Title } from './text';
 
-export function Login({ login }: { login: () => void }) {
+export function Login({ login }: { login: () => Promise<void> }) {
   return (
     <Card className="flex flex-row justify-center">
       <CardContent className="m-4 px-12 pb-12 lg:px-16 lg:pb-16 border rounded-2xl">

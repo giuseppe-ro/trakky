@@ -14,6 +14,7 @@ function AuthProvider({ children }: { children: ReactNode }) {
     userStore: new WebStorageStateStore({ store: window.localStorage }),
     scope: 'openid email profile',
     automaticSilentRenew: true,
+    validateSubOnSilentRenew: true,
     onSigninCallback: () => {
       window.history.replaceState({}, document.title, window.location.pathname);
     },

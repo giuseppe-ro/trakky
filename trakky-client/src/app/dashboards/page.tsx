@@ -15,7 +15,13 @@ import Loading from '@/components/ui/loading';
 function DashboardPage() {
   const { data: payments, refreshData, isLoading, isError } = usePaymentData();
 
-  const { availableYears, selectedYear, setSelectedYear } = useYearSelection({
+  const {
+    availableYears,
+    selectedYear,
+    setSelectedYear,
+    selectedMonth,
+    setSelectedMonth,
+  } = useYearSelection({
     payments,
     isLoading,
   });
@@ -25,6 +31,7 @@ function DashboardPage() {
     selectedYear,
     refreshData,
     isLoading,
+    selectedMonth,
   });
 
   const filteredPayments = useFilteredPayments(table);
@@ -43,6 +50,8 @@ function DashboardPage() {
             availableYears={availableYears}
             selectedYear={selectedYear}
             onYearChange={setSelectedYear}
+            selectedMonth={selectedMonth}
+            onMonthChange={setSelectedMonth}
           />
         )}
         <FadeLeft>

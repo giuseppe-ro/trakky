@@ -3,7 +3,7 @@ import { FadeLeft } from '@/components/ui/animations/fade';
 
 export function Title({ title, ...props }: { title?: string }) {
   return (
-    <FadeLeft>
+    <FadeLeft className="hidden sm:block">
       <Card className="bg-transparent border-none" {...props}>
         <CardHeader className="bg-transparent">
           <CardTitle

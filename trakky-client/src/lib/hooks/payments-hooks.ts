@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { GetPayments } from '@/infrastructure/payment';
 import { StorageKey } from '@/constants';
 import { Payment } from '@/models/dtos';
-import { getAvailableYears } from '@/components/summary/summaries';
+import { getYearsAndMonths } from '@/components/summary/summaries';
 import { Table } from '@tanstack/react-table';
 import { useQuery } from 'react-query';
 
@@ -30,25 +30,36 @@ export const useYearSelection = ({
   payments: Payment[];
   isLoading: boolean;
 }) => {
-  const [availableYears, setAvailableYears] = useState<string[]>([]);
+  const [availableYears, setAvailableYears] = useState<Map<string, string[]>>();
   const [selectedYear, setSelectedYear] = useState<string | null>('');
+  const [selectedMonth, setSelectedMonth] = useState<string | null>(
+    'All Months'
+  );
 
   useEffect(() => {
     if (payments && !isLoading) {
-      const years = getAvailableYears(payments);
-      years.push('All');
+      const years = getYearsAndMonths(payments);
+
       setAvailableYears(years);
 
       const storedYear = localStorage.getItem(StorageKey.SelectedYear);
-      if (storedYear && years.includes(storedYear)) {
+      // const storedMonth = localStorage.getItem(StorageKey.SelectedMonth);
+      if (storedYear && storedYear in years) {
         setSelectedYear(storedYear);
       } else {
-        setSelectedYear(years[0]);
+        setSelectedYear(Array.from(years.keys())[0]);
       }
     }
+    setSelectedMonth('All Months');
   }, [payments, isLoading]);
 
-  return { availableYears, selectedYear, setSelectedYear };
+  return {
+    availableYears,
+    selectedYear,
+    setSelectedYear,
+    setSelectedMonth,
+    selectedMonth,
+  };
 };
 
 export const useFilteredPayments = <TData>(table: Table<TData>) => {

@@ -11,17 +11,10 @@ export const PaymentColumnDefinition = (
 ): ColumnDef<Payment, number | string>[] => {
   return [
     {
-      accessorKey: 'id',
-      header: 'Id',
-      enableColumnFilter: false,
-      enableGlobalFilter: false,
-      cell: ({ row }) => {
-        return <div className="text-right font-sm">{row.getValue('id')}</div>;
-      },
-    },
-    {
       accessorKey: 'date',
-      header: 'Month',
+      enableHiding: true,
+      enablePinning: false,
+      header: 'date',
       enableColumnFilter: true,
       enableGlobalFilter: false,
       cell: ({ row }) => {
@@ -63,6 +56,15 @@ export const PaymentColumnDefinition = (
       header: 'Description',
       cell: ({ row }) => {
         return <div className="font-sm">{row.getValue('description')}</div>;
+      },
+    },
+    {
+      accessorKey: 'id',
+      header: 'Id',
+      enableColumnFilter: false,
+      enableGlobalFilter: false,
+      cell: ({ row }) => {
+        return <div className="text-right font-sm">{row.getValue('id')}</div>;
       },
     },
     {

@@ -43,7 +43,7 @@ export function useDashboards({
   }, []);
 
   useEffect(() => {
-    if (selectedYear === 'All' && budgets && data) {
+    if (selectedYear === 'All Years' && budgets && data) {
       setFilteredData(data);
       setExpensesBreakdown(getExpensesBreakdown(data));
       setPaymentOverviews(getYearlyPaymentsSummaries(data, budgets));

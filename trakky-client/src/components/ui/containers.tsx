@@ -16,6 +16,7 @@ export function ProtectedContainer({
 
   useEffect(() => {
     if (
+      !demoMode &&
       !hasAuthParams() &&
       !auth.isAuthenticated &&
       !auth.activeNavigator &&

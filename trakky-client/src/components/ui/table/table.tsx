@@ -24,7 +24,15 @@ import { SubTitle } from '@/components/ui/text';
 import { SubmittableInput } from '@/components/ui/input';
 import { DeleteDialog } from '@/components/ui/table/delete-popup';
 import { StorageKey } from '@/constants';
-import { ChevronDownIcon, Fuel, Gift, HandCoins, Utensils } from 'lucide-react';
+import {
+  Apple,
+  ChevronDownIcon,
+  Fuel,
+  Gift,
+  HandCoins,
+  Plane,
+  Utensils,
+} from 'lucide-react';
 import { formatStringDate } from '@/lib/formatter';
 
 export interface CustomTableProps<TData> {
@@ -115,6 +123,28 @@ export function CustomTable<TData extends object>({
     if (category === 'Transport') {
       return (
         <Fuel
+          strokeWidth={1}
+          alignmentBaseline="middle"
+          className="text-muted-foreground flex text-sm text-justify mt-1"
+          height="100%"
+        />
+      );
+    }
+
+    if (category === 'Food') {
+      return (
+        <Apple
+          strokeWidth={1}
+          alignmentBaseline="middle"
+          className="text-muted-foreground flex text-sm text-justify mt-1"
+          height="100%"
+        />
+      );
+    }
+
+    if (category === 'Travel') {
+      return (
+        <Plane
           strokeWidth={1}
           alignmentBaseline="middle"
           className="text-muted-foreground flex text-sm text-justify mt-1"

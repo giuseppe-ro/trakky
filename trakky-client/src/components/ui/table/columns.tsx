@@ -48,7 +48,7 @@ export const PaymentColumnDefinition = (
         const amount = parseFloat(row.getValue('amount'));
         const formatted = formatCurrency(amount);
 
-        return <div className="text-right font-sm">{formatted}</div>;
+        return <div className="text-right w-full font-sm">{formatted}</div>;
       },
     },
     {

@@ -1,9 +1,10 @@
 import { Containers } from '@/components/ui/containers';
-import { DeletePaymentsDialog } from '@/components/ui/table/delete-popup';
+import DeleteDialog from '@/components/ui/table/delete-popup';
 import TableActionMenu from '@/components/ui/table/table-action-menu';
 import { Payment } from '@/models/dtos';
 import { Table } from '@tanstack/react-table';
-import { lazy } from 'react';
+import { lazy, ReactNode } from 'react';
+import PaymentsRecap from '@/components/payments/payments-recap';
 
 const PaymentForm = lazy(() => import('@/components/ui/table/payment-form'));
 
@@ -15,12 +16,14 @@ interface PaymentsTableActionMenuProps {
     signal?: AbortSignal | undefined
   ) => Promise<void>;
   onDeleteConfirmed: () => Promise<void>;
+  children: ReactNode;
 }
 
 export function PaymentsTableActionMenu({
   table,
   onRefresh,
   onDeleteConfirmed,
+  children,
 }: PaymentsTableActionMenuProps) {
   return (
     <Containers className="transition">
@@ -35,14 +38,21 @@ export function PaymentsTableActionMenu({
           />
         }
         deleteForm={
-          <DeletePaymentsDialog
+          <DeleteDialog
             onDeleteConfirmed={onDeleteConfirmed}
-            entries={table
-              .getSelectedRowModel()
-              .rows.map((row) => row.original as Payment)}
+            tooltipText="Delete selected rows"
+            entries={
+              <PaymentsRecap
+                entries={table
+                  .getSelectedRowModel()
+                  .rows.map((row) => row.original as Payment)}
+              />
+            }
           />
         }
-      />
+      >
+        {children}
+      </TableActionMenu>
     </Containers>
   );
 }

@@ -18,14 +18,13 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { ReactNode, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { SubTitle } from '@/components/ui/text';
 import { SubmittableInput } from '@/components/ui/input';
-import { DeleteDialog } from '@/components/ui/table/delete-popup';
+import DeleteDialog from '@/components/ui/table/delete-popup';
 import { StorageKey } from '@/constants';
 import {
-  Apple,
   ChevronDownIcon,
   Fuel,
   Gift,
@@ -39,7 +38,6 @@ export interface CustomTableProps<TData> {
   table: TableType<TData>;
   page: string;
   filtersOnly: boolean;
-  tableActionMenu?: ReactNode;
   canHideRows?: boolean;
 }
 
@@ -47,7 +45,6 @@ export function CustomTable<TData extends object>({
   table,
   filtersOnly,
   page,
-  tableActionMenu,
   canHideRows,
 }: CustomTableProps<TData>) {
   const [showTableBody, setShowTableBody] = useState<boolean>(!filtersOnly);
@@ -133,7 +130,7 @@ export function CustomTable<TData extends object>({
 
     if (category === 'Food') {
       return (
-        <Apple
+        <Utensils
           strokeWidth={1}
           alignmentBaseline="middle"
           className="text-muted-foreground flex text-sm text-justify mt-1"
@@ -196,7 +193,6 @@ export function CustomTable<TData extends object>({
 
   return (
     <div>
-      {tableActionMenu}
       <Table className="bg-slate-950 border border-slate-800 overflow-x-scroll">
         <TableHeader className="hover:bg-transparent">
           {table.getHeaderGroups().map((headerGroup) => (
@@ -312,7 +308,6 @@ export function CustomTable<TData extends object>({
 }
 
 CustomTable.defaultProps = {
-  tableActionMenu: null,
   canHideRows: false,
 };
 

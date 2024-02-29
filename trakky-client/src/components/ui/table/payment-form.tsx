@@ -94,8 +94,8 @@ export function PaymentForm({
         editValues?.date === undefined
           ? new Date()
           : new Date(editValues?.date),
-      owner: editValues?.owner ?? '',
-      type: editValues?.type ?? '',
+      owner: editValues?.owner,
+      type: editValues?.type,
       amount: editValues?.amount ?? 0,
       description: editValues?.description ?? '',
     },
@@ -139,11 +139,6 @@ export function PaymentForm({
         type: FetchActionType.FETCHED_TYPES,
         payload: fetchedTypes,
       });
-
-      if (editValues === null) {
-        form.setValue('owner', fetchedOwners[0]);
-        form.setValue('type', fetchedTypes[0]);
-      }
     };
 
     formData()
@@ -157,6 +152,12 @@ export function PaymentForm({
         });
       });
   }, [editValues, form]);
+
+  useEffect(() => {
+    form.setValue('type', editValues?.type ?? fetchState.types[0]);
+    form.setValue('owner', editValues?.owner ?? fetchState.owners[0]);
+    // eslint-disable-next-line
+  }, [fetchState.types, fetchState.owners]);
 
   function onAmountChange(amount: number) {
     if (amount < 0) {

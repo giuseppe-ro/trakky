@@ -25,148 +25,178 @@ import {
 import { Table } from '@tanstack/react-table';
 import { ExportDropdownMenu } from '@/components/ui/table/download-dropdown';
 
-interface TableActionMenuProps<TData> {
+function TableNavigation<TData>({
+  getState,
+  setPageSize,
+  getPageCount,
+  setPageIndex,
+  getCanPreviousPage,
+  getCanNextPage,
+  nextPage,
+  previousPage,
+}: Table<TData>) {
+  const noData = getState().pagination.pageSize === 0;
+
+  return (
+    <div className="flex justify-between gap-x-3 md:gap-x-3 mb-2 ">
+      <Select
+        disabled={noData}
+        value={getState().pagination.pageSize.toString()}
+        onValueChange={(value) => {
+          setPageSize(Number(value));
+        }}
+      >
+        <SelectTrigger className="h-10 w-[60px] m-0 rounded-md text-xs md:text-sm font-thin md:font-light">
+          <SelectValue placeholder={getState().pagination.pageSize} />
+        </SelectTrigger>
+        <SelectContent
+          side="top"
+          className="bg-slate-900 focus:bg-slate-600 active:bg-slate-600"
+        >
+          {[10, 20, 30, 40, 50].map((pageSize) => (
+            <SelectItem key={pageSize} value={`${pageSize}`}>
+              {pageSize}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+      <div className="flex items-center text-sm font-thin whitespace-nowrap">
+        Page{' '}
+        {!noData &&
+          `${getState().pagination.pageIndex + 1} of 
+            ${getPageCount()}`}
+      </div>
+      <div className="flex justify-between gap-x-2">
+        <div className="flex gap-x-1">
+          <Button
+            variant="outline"
+            className="h-10 w-10 p-0 ml-0"
+            onClick={() => setPageIndex(0)}
+            disabled={!getCanPreviousPage()}
+          >
+            <span className="sr-only">Go to first page</span>
+            <DoubleArrowLeftIcon className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="outline"
+            className="h-10 w-10 p-0"
+            onClick={() => previousPage()}
+            disabled={!getCanPreviousPage()}
+          >
+            <span className="sr-only">Go to previous page</span>
+            <ChevronLeftIcon className="h-4 w-4" />
+          </Button>
+        </div>
+        <div className="flex gap-x-1">
+          <Button
+            variant="outline"
+            className="h-10 w-10 p-0"
+            onClick={() => nextPage()}
+            disabled={!getCanNextPage()}
+          >
+            <span className="sr-only">Go to next page</span>
+            <ChevronRightIcon className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="outline"
+            className="h-10 w-10 p-0"
+            onClick={() => setPageIndex(getPageCount() - 1)}
+            disabled={!getCanNextPage()}
+          >
+            <span className="sr-only">Go to last page</span>
+            <DoubleArrowRightIcon className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+interface TableActionMenuTopProps<TData> {
   table: Table<TData>;
   onRefresh: (flushPaymentsBeforeRefresh?: boolean) => void;
   addForm: ReactNode;
   exportName: string;
   deleteForm: ReactNode;
+  children: ReactNode;
 }
 
-export const TableActionMenu = memo(
-  <TData extends object>(props: TableActionMenuProps<TData>) => {
-    const { table, onRefresh, addForm, deleteForm, exportName } = props;
+const TableActionMenu = memo(
+  <TData extends object>(props: TableActionMenuTopProps<TData>) => {
+    const { table, onRefresh, addForm, deleteForm, exportName, children } =
+      props;
     const noData = table.getState().pagination.pageSize === 0;
 
     return (
-      <div className="flex justify-between items-center">
-        <div className="flex justify-end gap-x-1 md:gap-x-3 mt-2 md:mt-6 mb-2">
-          <PopupDialog
-            trigger={
-              <Button
-                disabled={noData}
-                variant="outline"
-                className="border-green-500/50 h-8 hover:bg-green-500/50"
-              >
-                Add
-              </Button>
-            }
-          >
-            {addForm}
-          </PopupDialog>
-          <div className="flex justify-center">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger
-                  disabled={noData}
-                  onClick={() => onRefresh(true)}
-                  className="rounded w-8 flex justify-center items-center text-white disabled:text-gray-700 hover:text-gray-700 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring "
+      <div>
+        <div className="mt-2">
+          <div className="flex justify-between">
+            <div className="flex gap-x-5 mt-2 mb-2">
+              <div className="order-1">
+                <PopupDialog
+                  trigger={
+                    <Button
+                      disabled={noData}
+                      variant="default"
+                      className="border-green-500/50 bg-green-600 text-white rounded w-20 hover:bg-green-500/50"
+                    >
+                      Add
+                    </Button>
+                  }
                 >
-                  <ReloadIcon />
-                </TooltipTrigger>
-                <TooltipContent className="bg-slate-800 text-white">
-                  Refresh
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
-          <div className="flex justify-center">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger
-                  disabled={noData}
-                  className="rounded w-8 hover:text-gray-700  text-white disabled:text-gray-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring "
-                  onClick={table.getToggleAllPageRowsSelectedHandler()}
-                >
-                  <SelectIcon />
-                </TooltipTrigger>
-                <TooltipContent
-                  tabIndex={-1}
-                  className="bg-slate-800 text-white"
-                >
-                  Select/Unselect visible rows
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
-          <div className="flex justify-center">
-            <ExportDropdownMenu table={table} name={exportName} />
-          </div>
-          <div className="flex justify-center">
-            {(table.getIsSomeRowsSelected() || table.getIsAllRowsSelected()) &&
-              deleteForm}
-          </div>
-        </div>
-        <div className="flex justify-end gap-x-1 md:gap-x-3 mt-2 md:mt-6 mb-2 ">
-          <Select
-            disabled={noData}
-            value={table.getState().pagination.pageSize.toString()}
-            onValueChange={(value) => {
-              table.setPageSize(Number(value));
-            }}
-          >
-            <SelectTrigger className="h-8 w-[60px] m-0 rounded-md text-xs md:text-sm font-thin md:font-light">
-              <SelectValue placeholder={table.getState().pagination.pageSize} />
-            </SelectTrigger>
-            <SelectContent
-              side="top"
-              className="bg-slate-900 focus:bg-slate-600 active:bg-slate-600"
-            >
-              {[10, 20, 30, 40, 50].map((pageSize) => (
-                <SelectItem key={pageSize} value={`${pageSize}`}>
-                  {pageSize}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <div className="flex items-center text-sm font-thin whitespace-nowrap">
-            {!noData &&
-              `${table.getState().pagination.pageIndex + 1} of 
-            ${table.getPageCount()}`}
-          </div>
-          <div className="flex justify-between gap-x-2">
-            <div className="flex gap-x-1">
-              <Button
-                variant="outline"
-                className="h-8 w-8 p-0 hidden md:flex ml-0"
-                onClick={() => table.setPageIndex(0)}
-                disabled={!table.getCanPreviousPage()}
-              >
-                <span className="sr-only">Go to first page</span>
-                <DoubleArrowLeftIcon className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="outline"
-                className="h-8 w-8 p-0"
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-              >
-                <span className="sr-only">Go to previous page</span>
-                <ChevronLeftIcon className="h-4 w-4" />
-              </Button>
+                  {addForm}
+                </PopupDialog>
+              </div>
+              <div className="flex justify-center order-2 sm:order-2">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger
+                      disabled={noData}
+                      onClick={() => onRefresh(true)}
+                      className="rounded flex justify-center items-center text-white disabled:text-gray-700 hover:text-gray-700 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring "
+                    >
+                      <ReloadIcon />
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-slate-800 text-white">
+                      Refresh
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+              <div className="flex justify-center order-3 sm:order-3">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger
+                      disabled={noData}
+                      className="rounded hover:text-gray-700 text-white disabled:text-gray-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring "
+                      onClick={table.getToggleAllPageRowsSelectedHandler()}
+                    >
+                      <SelectIcon />
+                    </TooltipTrigger>
+                    <TooltipContent
+                      tabIndex={-1}
+                      className="bg-slate-800 text-white"
+                    >
+                      Select/Unselect visible rows
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+              <div className="flex justify-center order-4 sm:order-4">
+                <ExportDropdownMenu table={table} name={exportName} />
+              </div>
             </div>
-            <div className="flex gap-x-1">
-              <Button
-                variant="outline"
-                className="h-8 w-8 p-0"
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-              >
-                <span className="sr-only">Go to next page</span>
-                <ChevronRightIcon className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="outline"
-                className="h-8 w-8 p-0 hidden md:flex"
-                onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                disabled={!table.getCanNextPage()}
-              >
-                <span className="sr-only">Go to last page</span>
-                <DoubleArrowRightIcon className="h-4 w-4" />
-              </Button>
+            <div className="gap-x-3 mt-2 mb-2">
+              <div className="flex justify-self-end order-5 sm:order-5">
+                {(table.getIsSomeRowsSelected() ||
+                  table.getIsAllRowsSelected()) &&
+                  deleteForm}
+              </div>
             </div>
           </div>
         </div>
+        {children}
+        <div className="mt-2">{TableNavigation(table)}</div>
       </div>
     );
   }

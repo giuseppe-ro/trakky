@@ -127,6 +127,7 @@ function Selection({
 
   return (
     <Select
+      disabled={options.length < 2}
       defaultValue={defaultValue}
       value={defaultValue}
       onValueChange={(e) => onChange(e)}

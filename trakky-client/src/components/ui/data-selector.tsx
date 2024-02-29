@@ -96,13 +96,14 @@ function YearSelection({
           demoMode && 'top-24'
         )}
       >
-        <div className="flex gap-x-3 mt-4">
+        <div className="flex w-full gap-x-3 mt-4">
           <Selection
             value={year()}
             onChange={changeYear}
             options={Array.from(availableYears.keys())}
             {...{
-              className: 'rounded-md w-full overscroll-contain bg-gray-950 ',
+              className:
+                'rounded-lg w-[50%] min-w-[164px] overscroll-contain bg-gray-950 h-10',
             }}
           />
           <Selection
@@ -110,7 +111,8 @@ function YearSelection({
             onChange={changeMonth}
             options={availableYears.get(selectedYear) ?? []}
             {...{
-              className: 'rounded-md w-full overscroll-contain bg-gray-950 ',
+              className:
+                'rounded-lg w-[50%] min-w-[164px] overscroll-contain bg-gray-950 h-10',
             }}
           />
         </div>

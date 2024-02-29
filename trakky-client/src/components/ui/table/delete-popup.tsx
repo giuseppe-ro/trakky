@@ -14,12 +14,9 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { TrashIcon } from '@radix-ui/react-icons';
 import { ReactNode } from 'react';
-import { Payment } from '@/models/dtos';
-import PaymentsRecap from '@/components/payments/payments-recap';
 
-export function DeleteDialog({
+function DeleteDialog({
   onDeleteConfirmed,
   entries,
   tooltipText,
@@ -34,7 +31,9 @@ export function DeleteDialog({
         <TooltipTrigger tabIndex={-1}>
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <TrashIcon className="hover:text-red-500/50 text-red-500 w-8" />
+              <div className="inline-flex items-center justify-center text-xs md:text-sm font-thin md:font-light focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow h-8 px-4 py-2 border-destructive bg-destructive text-white rounded sm:h-8 w-24 hover:bg-destructive/50">
+                Delete
+              </div>
             </AlertDialogTrigger>
             <AlertDialogContent className="max-h-[450px] overflow-auto ">
               <AlertDialogHeader>
@@ -78,18 +77,4 @@ DeleteDialog.defaultProps = {
   tooltipText: null,
 };
 
-export function DeletePaymentsDialog({
-  onDeleteConfirmed,
-  entries,
-}: {
-  onDeleteConfirmed: () => Promise<void>;
-  entries: Payment[];
-}) {
-  return (
-    <DeleteDialog
-      onDeleteConfirmed={onDeleteConfirmed}
-      tooltipText="Delete selected rows"
-      entries={<PaymentsRecap entries={entries} />}
-    />
-  );
-}
+export default DeleteDialog;

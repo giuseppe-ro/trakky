@@ -230,20 +230,19 @@ function SettingsPage() {
                     title="Budgets"
                     {...{ className: 'text-center mt-4' }}
                   />
-                  <CustomTable
+                  <BudgetActionMenu
                     table={table}
-                    canHideRows
-                    filtersOnly={false}
-                    page="settings"
-                    tableActionMenu={
-                      <BudgetActionMenu
-                        table={table}
-                        budgets={budgets}
-                        onDeleteConfirmed={onDeleteConfirmed}
-                        onRefresh={onRefresh}
-                      />
-                    }
-                  />
+                    budgets={budgets}
+                    onDeleteConfirmed={onDeleteConfirmed}
+                    onRefresh={onRefresh}
+                  >
+                    <CustomTable
+                      table={table}
+                      canHideRows
+                      filtersOnly={false}
+                      page="settings"
+                    />
+                  </BudgetActionMenu>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-3 justify-center flex-grow">
                   <CustomSmallTable

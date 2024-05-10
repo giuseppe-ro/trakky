@@ -75,12 +75,14 @@ export function Summary({
   partialTotal,
   totalsPerYear,
   selectedYear,
+  selectedMonth,
 }: {
   ownerBalances: OwnerBalance[];
   totalAmount: number;
   partialTotal: number;
   totalsPerYear: Total[];
   selectedYear: string;
+  selectedMonth?: string;
 }) {
   const currentDate = new Date();
   const lastYearCurrentMonth = new Date(
@@ -91,16 +93,21 @@ export function Summary({
   const selectedThisYear =
     parseInt(selectedYear, 10) === currentDate.getFullYear();
 
+  const selectedMonthNumber =
+    selectedMonth === '' || selectedMonth === 'All Months'
+      ? 0
+      : new Date(Date.parse(`${selectedMonth} 1, 2012`)).getMonth() + 1;
+
   const previousYearTotal = selectedThisYear
-    ? getTotalForDate(totalsPerYear, lastYearCurrentMonth)
-    : getPreviousYearTotal(totalsPerYear, selectedYear);
+    ? getTotalForDate(totalsPerYear, lastYearCurrentMonth, selectedMonthNumber)
+    : getPreviousYearTotal(totalsPerYear, selectedYear, selectedMonthNumber);
 
   const change = calculatePercentageDiff(totalAmount, previousYearTotal);
   const changePercentage = getPercentageChangeText(
     change,
     selectedThisYear,
-    selectedYear,
-    lastYearCurrentMonth
+    lastYearCurrentMonth,
+    selectedMonth ?? 'All Months'
   );
 
   return (
@@ -169,5 +176,9 @@ export function Summary({
     )
   );
 }
+
+Summary.defaultProps = {
+  selectedMonth: 'All Months',
+};
 
 export default Summary;

@@ -47,7 +47,7 @@ describe('test getTotalForDate', () => {
 
     // expect
     testCases.forEach(({ totals, untilDate }) => {
-      expect(getTotalUntilDate(totals, untilDate)).toBe(0);
+      expect(getTotalUntilDate(totals, untilDate, 0)).toBe(0);
     });
   });
 
@@ -71,7 +71,7 @@ describe('test getTotalForDate', () => {
 
     // assert
     testCases.forEach(({ totals, untilDate, expectedResult }) => {
-      expect(getTotalUntilDate(totals!, untilDate)).toBe(expectedResult);
+      expect(getTotalUntilDate(totals!, untilDate, 0)).toBe(expectedResult);
     });
   });
 
@@ -92,7 +92,7 @@ describe('test getTotalForDate', () => {
 
     // expect
     testCases.forEach(({ totals, untilDate, expectedResult }) => {
-      expect(getTotalUntilDate(totals, untilDate)).toBe(expectedResult);
+      expect(getTotalUntilDate(totals, untilDate, 0)).toBe(expectedResult);
     });
   });
 });
@@ -115,7 +115,7 @@ describe('test getPreviousYearTotal', () => {
 
     // assert
     testCases.forEach(({ totals, year, expectedResult }) => {
-      expect(getPreviousYearTotal(totals, year)).toBe(expectedResult);
+      expect(getPreviousYearTotal(totals, year, 0)).toBe(expectedResult);
     });
   });
 
@@ -136,7 +136,7 @@ describe('test getPreviousYearTotal', () => {
 
     // assert
     testCases.forEach(({ totals, year, expectedResult }) => {
-      expect(getPreviousYearTotal(totals, year)).toBe(expectedResult);
+      expect(getPreviousYearTotal(totals, year, 0)).toBe(expectedResult);
     });
   });
 
@@ -160,7 +160,7 @@ describe('test getPreviousYearTotal', () => {
 
     // assert
     testCases.forEach(({ totals, year, expectedResult }) => {
-      expect(getPreviousYearTotal(totals!, year)).toBe(expectedResult);
+      expect(getPreviousYearTotal(totals!, year, 0)).toBe(expectedResult);
     });
   });
 });

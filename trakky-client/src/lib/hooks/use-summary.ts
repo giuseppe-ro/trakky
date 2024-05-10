@@ -28,11 +28,11 @@ function useSummary(table: Table<any>, selectedYear: string | null) {
       .getFilteredRowModel()
       .rows.map((r) => ({
         amount: parseFloat(r.getValue('amount')),
-        owner: r.getValue('owner'),
+        owner: r.getValue('owner') as string,
       }))
       .forEach((item) => {
         const existingOwnerBalance = balances.find(
-          (balance) => balance.owner === item.owner
+          (balance) => balance.owner.trim() === item.owner.trim()
         );
         if (existingOwnerBalance) {
           existingOwnerBalance.amount += item.amount;

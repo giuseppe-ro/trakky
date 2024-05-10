@@ -44,8 +44,8 @@ export function convertFilterDateFormat(date: string): string {
 export function getPercentageChangeText(
   change: number,
   selectedThisYear: boolean,
-  selectedYear: string,
-  lastYearCurrentMonth: Date
+  lastYearCurrentMonth: Date,
+  selectedMonth: string
 ): string {
   if (change === 0) {
     return '';
@@ -56,27 +56,17 @@ export function getPercentageChangeText(
       ? `+${change}% from previous year`
       : `${change}% from previous year`;
 
-  if (selectedThisYear) {
+  const monthIsSelected = selectedMonth !== 'All Months';
+
+  if (selectedThisYear && !monthIsSelected) {
     const month = lastYearCurrentMonth.toLocaleString('default', {
       month: 'short',
     });
-    const year = lastYearCurrentMonth.getFullYear();
-    changePercentage += ` (up to ${month} ${year})`;
-  } else {
-    changePercentage += ` (${parseInt(selectedYear, 10) - 1})`;
+
+    changePercentage += ` (up to ${month})`;
   }
 
   return changePercentage;
-}
-
-export function getPercentageChangeText2(change: number): string {
-  if (change === 0) {
-    return '';
-  }
-
-  return change > 0
-    ? `+${change}% from previous year`
-    : `${change}% from previous year`;
 }
 
 export const differenceText = (

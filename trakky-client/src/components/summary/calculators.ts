@@ -8,13 +8,27 @@ export function calculatePercentageDiff(current: number, previous: number) {
   return Math.round(((current - previous) / previous) * 100 * 100) / 100;
 }
 
-export function getTotalForDate(totals: Total[], untilDate: Date) {
+export function getTotalForDate(
+  totals: Total[],
+  untilDate: Date,
+  selectedMonth: number
+) {
   const untilDateYear = untilDate.getFullYear();
   return totals
     .filter((total) => {
       if (total.date) {
         const date = new Date(total.date);
-        return date <= untilDate && date.getFullYear() === untilDateYear;
+        const monthIsNotValid = selectedMonth === 0;
+
+        if (monthIsNotValid) {
+          return date <= untilDate && date.getFullYear() === untilDateYear;
+        }
+
+        return (
+          date <= untilDate &&
+          date.getFullYear() === untilDateYear &&
+          date.getMonth() + 1 === selectedMonth
+        );
       }
       return false;
     })
@@ -24,14 +38,25 @@ export function getTotalForDate(totals: Total[], untilDate: Date) {
 
 export function getPreviousYearTotal(
   totalsPerYear: Total[],
-  selectedYear: string
+  selectedYear: string,
+  selectedMonth: number
 ) {
   const numericYear = Number(selectedYear) - 1;
   return totalsPerYear
     .filter((total) => {
+      const monthIsNotValid = selectedMonth === 0;
+
       if (total.date) {
         const totalDate = new Date(total.date);
-        return totalDate.getFullYear() === numericYear;
+
+        if (monthIsNotValid) {
+          return totalDate.getFullYear() === numericYear;
+        }
+
+        return (
+          totalDate.getFullYear() === numericYear &&
+          totalDate.getMonth() + 1 === selectedMonth
+        );
       }
       return false;
     })

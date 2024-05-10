@@ -48,6 +48,7 @@ export default function App() {
             partialTotal={partialTotal}
             totalsPerYear={totalsPerYear}
             selectedYear={selectedYear ?? ''}
+            selectedMonth={selectedMonth ?? ''}
           />
         </Containers>
         <FadeUp>

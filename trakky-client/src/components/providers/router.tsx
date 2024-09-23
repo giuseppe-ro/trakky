@@ -77,30 +77,32 @@ const router = createBrowserRouter([
       </ProtectedContainer>
     ),
     errorElement: <ErrorPage />,
-  },
-  {
-    path: 'overview',
-    element: (
-      <ProtectedContainer>
-        <ExpensesPage />
-      </ProtectedContainer>
-    ),
-  },
-  {
-    path: 'dashboards',
-    element: (
-      <ProtectedContainer>
-        <DashboardPage />
-      </ProtectedContainer>
-    ),
-  },
-  {
-    path: 'settings',
-    element: (
-      <ProtectedContainer>
-        <SettingsPage />
-      </ProtectedContainer>
-    ),
+    children: [
+      {
+        path: 'overview',
+        element: (
+          <ProtectedContainer>
+            <ExpensesPage />
+          </ProtectedContainer>
+        ),
+      },
+      {
+        path: 'dashboards',
+        element: (
+          <ProtectedContainer>
+            <DashboardPage />
+          </ProtectedContainer>
+        ),
+      },
+      {
+        path: 'settings',
+        element: (
+          <ProtectedContainer>
+            <SettingsPage />
+          </ProtectedContainer>
+        ),
+      },
+    ],
   },
 ]);
 function RouterProvider() {

@@ -6,18 +6,7 @@ import NProgress from 'nprogress';
 import '@/nprogress/nprogress.css';
 import { LoadingSpinner } from '@/components/ui/loading';
 import { ProtectedContainer } from '@/components/ui/containers';
-
-const App = lazy(
-  () =>
-    new Promise((resolve) => {
-      NProgress.start();
-
-      import('@/App').then((module) => {
-        NProgress.done();
-        resolve(module as never);
-      });
-    })
-);
+import App from '@/App';
 
 const ExpensesPage = lazy(
   () =>

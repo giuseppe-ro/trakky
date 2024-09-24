@@ -33,12 +33,12 @@ export function ProtectedContainer({
       return <Login login={auth.signinRedirect} />;
     }
 
-    if (auth.error) {
-      throw auth.error;
-    }
-
     if (auth.isAuthenticated) {
       return children;
+    }
+
+    if (auth.error) {
+      throw auth.error;
     }
 
     return <Login login={auth.signinRedirect} />;

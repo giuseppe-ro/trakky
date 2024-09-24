@@ -10,15 +10,16 @@ function PaymentsRecap({
   entries: Payment[];
   limitedSpace?: boolean;
 }) {
-  const tdStyle = 'px-2 text-left border overflow-x-scroll scroll-smooth';
+  const tdStyle =
+    'px-2 text-left border scroll-smooth overflow-scroll no-scrollbar';
   return (
     <table className="flex justify-center align-middle">
-      <tbody className={limitedSpace ? 'overflow-scroll max-h-[130px]' : ''}>
+      <tbody className={limitedSpace ? 'max-h-[130px]' : ''}>
         {entries.map((payment: Payment) => (
           <TableRow
             key={`${payment.id}-recap-row`}
             className={twMerge(
-              'flex max-w-[460px]',
+              'flex max-w-[460px] ',
               payment.amount < 0 ? 'text-red-300' : 'text-green-300'
             )}
           >
@@ -32,12 +33,10 @@ function PaymentsRecap({
             {!limitedSpace && (
               <td className={twMerge('w-[55px]', tdStyle)}>{payment.owner}</td>
             )}
-            <td
-              className={twMerge('text-right w-[80px] overflow-auto', tdStyle)}
-            >
+            <td className={twMerge('text-right w-[80px]', tdStyle)}>
               {formatCurrency(payment.amount)}
             </td>
-            <td className={twMerge('w-[110px] overflow-auto', tdStyle)}>
+            <td className={twMerge('w-[110px]', tdStyle)}>
               {payment.description}
             </td>
           </TableRow>

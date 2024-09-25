@@ -67,20 +67,18 @@ function YearSelection({
       }
     }
 
-    if (storedMonth) {
-      if (storedYear && availableYears) {
-        const availableMonths = availableYears?.get(storedYear);
+    if (storedMonth && storedYear && availableYears) {
+      const availableMonths = availableYears?.get(storedYear);
 
-        if (availableMonths && availableMonths.includes(storedMonth)) {
-          try {
-            onMonthChange(storedMonth);
-          } catch (e) {
-            localStorage.removeItem(StorageKey.SelectedMonth);
-          }
-        } else {
-          onMonthChange('All Months');
-          localStorage.setItem(StorageKey.SelectedMonth, 'All Months');
+      if (availableMonths && availableMonths.includes(storedMonth)) {
+        try {
+          onMonthChange(storedMonth);
+        } catch (e) {
+          localStorage.removeItem(StorageKey.SelectedMonth);
         }
+      } else {
+        onMonthChange('All Months');
+        localStorage.setItem(StorageKey.SelectedMonth, 'All Months');
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

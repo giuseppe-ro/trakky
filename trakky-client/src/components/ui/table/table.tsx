@@ -24,15 +24,9 @@ import { SubTitle } from '@/components/ui/text';
 import { SubmittableInput } from '@/components/ui/input';
 import DeleteDialog from '@/components/ui/table/delete-popup';
 import { StorageKey } from '@/constants';
-import {
-  ChevronDownIcon,
-  Fuel,
-  Gift,
-  HandCoins,
-  Plane,
-  Utensils,
-} from 'lucide-react';
+import { ChevronDownIcon } from 'lucide-react';
 import { formatStringDate } from '@/lib/formatter';
+import { CategoryIcon, DefaultCategoryIcon } from './icons';
 
 export interface CustomTableProps<TData> {
   table: TableType<TData>;
@@ -83,75 +77,6 @@ export function CustomTable<TData extends object>({
     }
   };
 
-  const categoryIcon = (category: string) => {
-    if (category === 'General') {
-      return (
-        <Utensils
-          strokeWidth={1}
-          alignmentBaseline="middle"
-          className="text-muted-foreground flex text-sm text-justify mt-1"
-          height="100%"
-        />
-      );
-    }
-
-    if (category === 'Bills') {
-      return (
-        <HandCoins
-          strokeWidth={1}
-          alignmentBaseline="middle"
-          className="text-muted-foreground flex text-sm text-justify mt-1"
-          height="100%"
-        />
-      );
-    }
-
-    if (category === 'Personal') {
-      return (
-        <Gift
-          strokeWidth={1}
-          alignmentBaseline="middle"
-          className="text-muted-foreground flex text-sm text-justify mt-1"
-          height="100%"
-        />
-      );
-    }
-
-    if (category === 'Transport') {
-      return (
-        <Fuel
-          strokeWidth={1}
-          alignmentBaseline="middle"
-          className="text-muted-foreground flex text-sm text-justify mt-1"
-          height="100%"
-        />
-      );
-    }
-
-    if (category === 'Food') {
-      return (
-        <Utensils
-          strokeWidth={1}
-          alignmentBaseline="middle"
-          className="text-muted-foreground flex text-sm text-justify mt-1"
-          height="100%"
-        />
-      );
-    }
-
-    if (category === 'Travel') {
-      return (
-        <Plane
-          strokeWidth={1}
-          alignmentBaseline="middle"
-          className="text-muted-foreground flex text-sm text-justify mt-1"
-          height="100%"
-        />
-      );
-    }
-
-    return null;
-  };
   const renderFilterCells = (header: Header<TData, unknown>) => {
     if (header.column.getCanFilter())
       return <Filter column={header.column} table={table} />;
@@ -263,7 +188,8 @@ export function CustomTable<TData extends object>({
                       <td key={cell.id} className="h-8 px-2 truncate text-sm">
                         {cell.id.includes('type') ? (
                           <div className="flex flex-row align-middle gap-x-2 justify-center">
-                            {categoryIcon(row.getValue('type'))}
+                            {CategoryIcon[row.getValue('type') as string] ??
+                              DefaultCategoryIcon}
                             <div className="flex flex-col">
                               {flexRender(
                                 cell.column.columnDef.cell,

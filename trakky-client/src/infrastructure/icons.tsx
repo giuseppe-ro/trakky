@@ -1,4 +1,4 @@
-import { mockCategories } from '@/lib/makeData';
+import { mockIcons } from '@/lib/makeData';
 import { baseApiCall, makeBaseRequest } from '@/infrastructure/base-api';
 import { Endpoint } from '@/constants';
 import { Icon } from '@/models/dtos';
@@ -9,7 +9,7 @@ export default async function GetIcons(signal?: AbortSignal) {
 
   const { data, error } = await baseApiCall<Icon[]>({
     request: config,
-    demoModeData: mockCategories,
+    demoModeData: mockIcons,
   });
 
   return { data: data ?? [], error };

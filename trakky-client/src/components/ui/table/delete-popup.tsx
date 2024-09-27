@@ -15,15 +15,18 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { ReactNode } from 'react';
+import { twMerge } from 'tailwind-merge';
 
 function DeleteDialog({
   onDeleteConfirmed,
   entries,
   tooltipText,
+  className,
 }: {
   onDeleteConfirmed: () => Promise<void>;
   entries: ReactNode;
   tooltipText?: string;
+  className?: string;
 }) {
   return (
     <TooltipProvider>
@@ -31,7 +34,12 @@ function DeleteDialog({
         <TooltipTrigger tabIndex={-1}>
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <div className="inline-flex items-center justify-center text-xs md:text-sm font-thin md:font-light focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow h-8 px-4 py-2 border-destructive bg-destructive text-white rounded sm:h-8 w-24 hover:bg-destructive/50">
+              <div
+                className={twMerge(
+                  'inline-flex items-center justify-center text-xs md:text-sm font-thin md:font-light focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow px-4 border-destructive bg-destructive text-white h-8 w-24 hover:bg-destructive/50 my-0 py-0 rounded',
+                  className
+                )}
+              >
                 Delete
               </div>
             </AlertDialogTrigger>
@@ -75,6 +83,7 @@ function DeleteDialog({
 
 DeleteDialog.defaultProps = {
   tooltipText: null,
+  className: null,
 };
 
 export default DeleteDialog;

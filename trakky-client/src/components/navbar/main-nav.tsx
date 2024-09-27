@@ -24,6 +24,7 @@ import getUser from '@/infrastructure/user';
 import { HTMLAttributes } from 'react';
 
 import { twMerge } from 'tailwind-merge';
+import { skipAuth } from '@/authConfig';
 
 interface Links {
   href: string;
@@ -40,7 +41,7 @@ export function MainNav({ children }: HTMLAttributes<HTMLElement>) {
 
   const links: Links[] = [{ href: '/', label: 'Home' }];
 
-  if (user || demoMode) {
+  if (user || skipAuth) {
     links.push({ href: '/dashboards', label: 'Dashboards' });
     links.push({ href: '/overview', label: 'Overview' });
     links.push({ href: '/settings', label: 'Settings' });
@@ -107,7 +108,7 @@ export function MainNav({ children }: HTMLAttributes<HTMLElement>) {
               </div>
             </div>
             <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-              {(!auth.isLoading || demoMode) && (
+              {(skipAuth || !auth.isLoading) && (
                 <DropdownMenu>
                   <DropdownMenuTrigger className="text-sm font-medium text-muted-foreground transition-colors hover:text-slate-600 focus:outline-none">
                     {userName}

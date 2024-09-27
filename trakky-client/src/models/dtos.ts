@@ -24,6 +24,17 @@ export interface Type {
   name: string;
 }
 
+export interface Category {
+  id: number;
+  name: string;
+  iconId: number;
+}
+
+export interface Icon {
+  id: number;
+  name: string;
+}
+
 export interface Backup {
   budgets: Budget[];
   payments: Payment[];

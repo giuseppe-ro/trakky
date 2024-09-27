@@ -18,15 +18,27 @@ import {
   FETCH_INITIAL_STATE,
   paymentFormDataReducer,
 } from '@/components/ui/table/payment-form-reducer';
-import { Type, Owner, Budget } from '@/models/dtos';
+import { Category, Owner, Budget } from '@/models/dtos';
 import { GetBudgets } from '@/infrastructure/budget';
 import { ContentResultContainer } from '@/components/ui/containers';
 import { ErrorMessage } from '@/infrastructure/base-api';
-import { GetTypes, AddTypes, DeleteTypes } from '@/infrastructure/types';
+import {
+  GetCategories,
+  AddCategory,
+  DeleteCategories,
+} from '@/infrastructure/categories';
 import Loading from '@/components/ui/loading';
+import GetIcons from '@/infrastructure/icons';
+import AddComponent from '@/components/ui/add-input';
+import { ChildrenSelection } from '@/components/ui/select';
+import { CategoryIcon, IconIdMap } from '@/components/ui/table/icons';
 import BudgetActionMenu from './components/budget-action-menu';
 
 function SettingsPage() {
+  const [selectedChildValue, setSelectedChildValue] = useState<string>(
+    Object.keys(CategoryIcon)[0]
+  );
+
   const [budgets, setBudgets] = useState<Budget[]>([]);
   async function refreshData(
     flushBeforeRefresh: boolean = true,
@@ -45,7 +57,7 @@ function SettingsPage() {
     data: budgets,
     refreshData,
   });
-  const [newType, setNewType] = useState<string>('');
+  const [newCategory, setNewCategory] = useState<string>('');
   const [newOwner, setNewOwner] = useState<string>('');
   const [fetchState, fetchDispatch] = useReducer(
     paymentFormDataReducer,
@@ -70,16 +82,42 @@ function SettingsPage() {
     });
   };
 
-  const fetchTypes = async (signal?: AbortSignal) => {
+  const fetchCategories = async (signal?: AbortSignal) => {
     if (fetchState.error) return;
 
-    const { data: typesData, error: typesError } = await GetTypes(signal);
-    if (typesError) {
-      fetchDispatch({ type: FetchActionType.FETCH_ERROR, payload: typesError });
+    const { data: categoriesData, error: categoriesError } =
+      await GetCategories(signal);
+
+    if (categoriesError) {
+      fetchDispatch({
+        type: FetchActionType.FETCH_ERROR,
+        payload: categoriesError,
+      });
       return;
     }
 
-    fetchDispatch({ type: FetchActionType.FETCHED_TYPES, payload: typesData });
+    fetchDispatch({
+      type: FetchActionType.FETCHED_CATEGORIES,
+      payload: categoriesData,
+    });
+  };
+
+  const fetchIcons = async (signal?: AbortSignal) => {
+    if (fetchState.error) return;
+
+    const { data: iconData, error: iconError } = await GetIcons(signal);
+    if (iconError) {
+      fetchDispatch({
+        type: FetchActionType.FETCH_ERROR,
+        payload: iconError,
+      });
+      return;
+    }
+
+    fetchDispatch({
+      type: FetchActionType.FETCHED_ICONS,
+      payload: iconData,
+    });
   };
 
   useEffect(() => {
@@ -90,7 +128,8 @@ function SettingsPage() {
       fetchDispatch({ type: FetchActionType.FETCH_START });
 
       await fetchOwners(signal);
-      await fetchTypes(signal);
+      await fetchCategories(signal);
+      await fetchIcons(signal);
       await refreshData(true, signal);
     }
 
@@ -107,17 +146,25 @@ function SettingsPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const OnTypeAdd = async () => {
+  const OnCategoryAdd = async () => {
     if (
-      newType.length === 0 ||
+      newCategory.length === 0 ||
       valueExistsToast(
-        fetchState.types.map((o: Type) => o.name),
-        newType
+        fetchState.categories.map((o: Category) => o.name),
+        newCategory
       )
     )
       return;
-    const success = await AddTypes([{ name: newType } as Type]);
-    await fetchTypes();
+
+    const id = IconIdMap[selectedChildValue];
+
+    const categoryToAdd = {
+      name: newCategory,
+      iconId: id,
+    } as Category;
+
+    const success = await AddCategory(categoryToAdd);
+    await fetchCategories();
     successFailToast({
       success,
       successMessage: 'Type added',
@@ -125,9 +172,9 @@ function SettingsPage() {
     });
   };
 
-  async function OnTypeDeleteConfirmed(id: number) {
-    const success = await DeleteTypes([id]);
-    await fetchTypes();
+  async function OnCategoryDeleteConfirmed(id: number) {
+    const success = await DeleteCategories([id]);
+    await fetchCategories();
     successFailToast({
       success,
       successMessage: 'Type Removed',
@@ -172,9 +219,9 @@ function SettingsPage() {
     });
   };
 
-  const defaultError = "Couldn't download backup!";
-
   async function DownloadBackup() {
+    const defaultError = "Couldn't download backup!";
+
     try {
       const { data, error } = await GetBackup();
 
@@ -222,7 +269,7 @@ function SettingsPage() {
           </div>
         </FadeLeft>
         <FadeUp>
-          <div className="flex flex-col lg:flex-row gap-3 justify-center">
+          <div className="flex flex-col gap-3 justify-center">
             <ContentResultContainer error={fetchState.error}>
               <>
                 <div className="flex-grow">
@@ -247,19 +294,33 @@ function SettingsPage() {
                 <div className="flex flex-col sm:flex-row gap-3 justify-center flex-grow">
                   <CustomSmallTable
                     title="Types"
-                    values={fetchState.types}
-                    onAdd={OnTypeAdd}
-                    newValue={newType}
-                    setNew={setNewType}
-                    onDeleteConfirmed={(id) => OnTypeDeleteConfirmed(id)}
+                    values={fetchState.categories}
+                    onDeleteConfirmed={(id) => OnCategoryDeleteConfirmed(id)}
+                    addComponent={
+                      <AddComponent
+                        onAdd={OnCategoryAdd}
+                        setNew={setNewCategory}
+                        childrenSelection={
+                          <ChildrenSelection
+                            value={selectedChildValue}
+                            onChange={setSelectedChildValue}
+                            options={CategoryIcon}
+                            {...{
+                              className:
+                                'rounded-none focus:ring-slate-900 focus:outline-none focus:shadow-none w-20 overscroll-contain bg-gray-950 h-8',
+                            }}
+                          />
+                        }
+                      />
+                    }
                   />
                   <CustomSmallTable
                     title="Owners"
                     values={fetchState.owners}
-                    onAdd={() => OnOwnerAdd()}
-                    newValue={newOwner}
-                    setNew={setNewOwner}
                     onDeleteConfirmed={(id) => OnOwnerDeleteConfirmed(id)}
+                    addComponent={
+                      <AddComponent onAdd={OnOwnerAdd} setNew={setNewOwner} />
+                    }
                   />
                 </div>
               </>

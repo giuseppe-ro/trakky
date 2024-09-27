@@ -1,5 +1,7 @@
 'use client';
 
+import { GetCategories } from '@/infrastructure/categories';
+import GetIcons from '@/infrastructure/icons';
 import {
   Fuel,
   Gift,
@@ -12,7 +14,7 @@ import {
   HeartIcon,
 } from 'lucide-react';
 
-interface Dictionary<T> {
+export interface Dictionary<T> {
   [Key: string]: T;
 }
 
@@ -25,21 +27,62 @@ function IconWrapper({ IconComponent }: IconProps) {
     <IconComponent
       strokeWidth={1}
       alignmentBaseline="middle"
-      className="text-muted-foreground flex text-sm text-justify mt-1"
+      className="text-muted-foreground h-5 flex text-sm text-justify stroke-2"
       height="100%"
     />
   );
 }
 
+const categoryIconMapping: Dictionary<string> = {};
+
+GetIcons().then((iconsResponse) => {
+  GetCategories().then((categoriesResponse) => {
+    categoriesResponse.data.forEach((category) => {
+      const iconData = iconsResponse.data
+        .filter((icon) => icon.id === category.iconId)
+        .map((aa) => aa.name)[0];
+
+      categoryIconMapping[category.name] = iconData;
+    });
+  });
+});
+
 export const CategoryIcon: Dictionary<JSX.Element> = {
-  General: <IconWrapper IconComponent={Utensils} />,
-  Bills: <IconWrapper IconComponent={HandCoins} />,
-  Home: <IconWrapper IconComponent={HomeIcon} />,
-  Personal: <IconWrapper IconComponent={Gift} />,
-  Transport: <IconWrapper IconComponent={Fuel} />,
-  Froppy: <IconWrapper IconComponent={BabyIcon} />,
-  Travel: <IconWrapper IconComponent={Plane} />,
+  Utensils: <IconWrapper IconComponent={Utensils} />,
+  HandCoins: <IconWrapper IconComponent={HandCoins} />,
+  HomeIcon: <IconWrapper IconComponent={HomeIcon} />,
+  Gift: <IconWrapper IconComponent={Gift} />,
+  Fuel: <IconWrapper IconComponent={Fuel} />,
+  BabyIcon: <IconWrapper IconComponent={BabyIcon} />,
+  Plane: <IconWrapper IconComponent={Plane} />,
   HeartIcon: <IconWrapper IconComponent={HeartIcon} />,
 };
 
-export const DefaultCategoryIcon = <IconWrapper IconComponent={HomeIcon} />;
+export const IconIdMap: Dictionary<number> = {
+  Utensils: 1,
+  HandCoins: 3,
+  HomeIcon: 4,
+  Gift: 5,
+  Fuel: 6,
+  BabyIcon: 7,
+  Plane: 8,
+  HeartIcon: 9,
+};
+
+const DefaultCategoryIcon = <IconWrapper IconComponent={HomeIcon} />;
+
+export function GetCategoryIcon(
+  key: string,
+  show_default: boolean = true,
+  className?: string
+) {
+  const match = CategoryIcon[categoryIconMapping[key]];
+
+  if (match) {
+    return <div className={className}>{match}</div>;
+  }
+
+  if (show_default) {
+    return DefaultCategoryIcon;
+  }
+}

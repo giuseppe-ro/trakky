@@ -73,13 +73,15 @@ export const PaymentColumnDefinition = (
       header: () => null,
       cell: ({ row }) => {
         return (
-          <EditCell id={(row.original as Payment).id}>
-            <PaymentForm
-              editValues={row.original as Payment}
-              refresh={refresh}
-              title="Edit Transaction"
-            />
-          </EditCell>
+          <div>
+            <EditCell id={(row.original as Payment).id}>
+              <PaymentForm
+                editValues={row.original as Payment}
+                refresh={refresh}
+                title="Edit Transaction"
+              />
+            </EditCell>
+          </div>
         );
       },
     },
@@ -150,6 +152,8 @@ export const colSize = (id: string): number | string => {
   switch (id) {
     case 'description':
       return 'auto';
+    case 'select':
+      return 50;
     case 'edit':
       return 40;
     case 'date':

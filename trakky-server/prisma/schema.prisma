@@ -8,6 +8,29 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Budget {
+  id        Int      @id @default(autoincrement())
+  date      DateTime
+  budget    Float
+  maxBudget Float
+}
+
+model Category {
+  id     Int    @id @default(autoincrement())
+  name   String
+  iconId Int
+}
+
+model Icon {
+  id   Int    @id @default(autoincrement())
+  name String @unique(map: "icon_name")
+}
+
+model Owner {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+}
+
 model Payment {
   id          Int      @id @default(autoincrement())
   amount      Float
@@ -17,32 +40,7 @@ model Payment {
   type        String
 }
 
-model Budget {
-  id        Int      @id @default(autoincrement())
-  date      DateTime
-  budget    Float
-  maxBudget Float
-}
-
 model Type {
   id   Int    @id @default(autoincrement())
   name String @unique
-}
-
-model Owner {
-  id   Int    @id @default(autoincrement())
-  name String @unique
-}
-
-model Category {
-  id     Int    @id @default(autoincrement())
-  name   String
-  iconId Int    @unique
-  icon   Icon   @relation(fields: [iconId], references: [id])
-}
-
-model Icon {
-  id       Int       @id @default(autoincrement())
-  name     String
-  Category Category?
 }

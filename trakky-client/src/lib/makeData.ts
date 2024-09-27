@@ -37,6 +37,24 @@ export function mockTypes() {
   ];
 }
 
+export function mockCategories() {
+  return [
+    { id: 1, name: 'Food', iconId: 1 },
+    // { id: 2, name: 'General' },
+    // { id: 3, name: 'Personal' },
+    // { id: 4, name: 'Travel' },
+  ];
+}
+
+export function mockIcons() {
+  return [
+    { id: 1, name: 'Utensils' },
+    { id: 2, name: 'HeartIcon' },
+    { id: 3, name: 'HomeIcon' },
+    { id: 4, name: 'Plane' },
+  ];
+}
+
 export function mockBackup() {
   return {
     payments: mockPayments(),

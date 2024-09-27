@@ -41,8 +41,8 @@ import { ErrorMessage } from '@/infrastructure/base-api';
 import { errorMessage } from '@/components/ui/table/form-error-message';
 import { CalendarIcon, MinusIcon, PlusIcon } from 'lucide-react';
 import { Payment } from '@/models/dtos';
-import { GetTypes } from '@/infrastructure/types';
 import PaymentsRecap from '@/components/payments/payments-recap';
+import { GetCategories } from '@/infrastructure/categories';
 import Loading from '../loading';
 
 const customErrorMap: z.ZodErrorMap = (issue, ctx) => {
@@ -124,20 +124,21 @@ export function PaymentForm({
         payload: fetchedOwners,
       });
 
-      const { data: typesData, error: typesError } = await GetTypes(signal);
-      if (typesError) {
+      const { data: categoriesData, error: categoriesError } =
+        await GetCategories(signal);
+      if (categoriesError) {
         dispatchFetch({
           type: FetchActionType.FETCH_ERROR,
-          payload: typesError.error,
+          payload: categoriesError.error,
         });
         return;
       }
 
-      const fetchedTypes = typesData.map((type) => type.name);
+      const fetchedCategories = categoriesData.map((type) => type.name);
 
       dispatchFetch({
-        type: FetchActionType.FETCHED_TYPES,
-        payload: fetchedTypes,
+        type: FetchActionType.FETCHED_CATEGORIES,
+        payload: fetchedCategories,
       });
     };
 
@@ -154,10 +155,10 @@ export function PaymentForm({
   }, [editValues, form]);
 
   useEffect(() => {
-    form.setValue('type', editValues?.type ?? fetchState.types[0]);
+    form.setValue('type', editValues?.type ?? fetchState.categories[0]);
     form.setValue('owner', editValues?.owner ?? fetchState.owners[0]);
     // eslint-disable-next-line
-  }, [fetchState.types, fetchState.owners]);
+  }, [fetchState.categories, fetchState.owners]);
 
   function onAmountChange(amount: number) {
     if (amount < 0) {
@@ -356,7 +357,7 @@ export function PaymentForm({
                     <Selection
                       value={field.value}
                       onChange={field.onChange}
-                      options={fetchState.types}
+                      options={fetchState.categories}
                       {...{
                         disabled: form.formState.isSubmitting,
                         className: 'rounded-md w-full overscroll-contain mb-4',

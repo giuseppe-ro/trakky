@@ -3,6 +3,8 @@ export const FETCH_INITIAL_STATE = {
   loading: false,
   owners: [],
   types: [],
+  categories: [],
+  icons: [],
   error: null,
 };
 
@@ -10,6 +12,8 @@ export enum FetchActionType {
   FETCH_START = 'FETCH_START',
   FETCHED_OWNERS = 'FETCHED_OWNERS',
   FETCHED_TYPES = 'FETCHED_TYPES',
+  FETCHED_CATEGORIES = 'FETCHED_CATEGORIES',
+  FETCHED_ICONS = 'FETCHED_ICONS',
   FETCH_END = 'FETCH_END',
   FETCH_ERROR = 'FETCH_ERROR',
 }
@@ -30,6 +34,16 @@ export const paymentFormDataReducer = (state: any, action: any) => {
       return {
         ...state,
         types: action.payload,
+      };
+    case 'FETCHED_CATEGORIES':
+      return {
+        ...state,
+        categories: action.payload,
+      };
+    case 'FETCHED_ICONS':
+      return {
+        ...state,
+        icons: action.payload,
       };
     case 'FETCH_END':
       return {

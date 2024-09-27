@@ -4,10 +4,12 @@ import { backupRouter } from "./api/backup";
 import { budgetsRouter } from "./api/budgets";
 import { ownersRouter } from "./api/owners";
 import { typesRouter } from "./api/types";
+import { categoriesRouter } from "./api/categories";
 import cors from 'cors';
 import { openIdAuth } from "./infrastructure/authorisation";
 import { logger } from "./logger";
 import { User } from "./models/user";
+import { iconsRouter } from "./api/icons";
 
 const origins = process.env.ALLOWED_ORIGINS?.split(",") ?? "http://localhost:5173"
 
@@ -38,6 +40,8 @@ apiRouter.use("/payments", openIdAuth, paymentsRouter);
 apiRouter.use("/budgets", openIdAuth, budgetsRouter);
 apiRouter.use("/owners", openIdAuth, ownersRouter)
 apiRouter.use("/types", openIdAuth, typesRouter)
+apiRouter.use("/categories", openIdAuth, categoriesRouter)
+apiRouter.use("/icons", openIdAuth, iconsRouter)
 
 
 app.get('/api/auth', cors(corsOptions), openIdAuth, async (_req, res, _next) => {

@@ -2,18 +2,19 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import  { Request, Response } from "express";
 import { logger } from "../logger";
 import { User } from "../models/user";
+import { skipAuth } from "../constants";
 
 export function baseHandler(res: Response, func: Function, payload: any) {
-  const user = JSON.parse(payload["user"]) as unknown as User;
-  
-  logger.info(`User: ${user.preferred_username} - Executing: ${func.name}`);
+  if (!skipAuth) {
+    const user = JSON.parse(payload["user"]) as unknown as User;
+    logger.info(`User: ${user.preferred_username} - Executing: ${func.name}`);
+  } 
 
   func(payload["data"])
   .then((result: any) => {
     res.send(result);
   })
   .catch((e: Error) => {
-
     if (e instanceof PrismaClientKnownRequestError) { 
       if (e.code === errorCodes.duplicateDataError) {
         res.status(400);

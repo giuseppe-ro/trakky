@@ -3,10 +3,14 @@ import {
   AuthProviderProps,
 } from 'react-oidc-context';
 import { ReactNode } from 'react';
-import { authAuthority, clientId } from '@/authConfig';
+import { authAuthority, clientId, skipAuth } from '@/authConfig';
 import { WebStorageStateStore } from 'oidc-client-ts';
 
 function AuthProvider({ children }: { children: ReactNode }) {
+  if (skipAuth) {
+    return children;
+  }
+
   const oidcConfig: AuthProviderProps = {
     authority: authAuthority,
     client_id: clientId,

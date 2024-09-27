@@ -21,12 +21,12 @@ import {
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { SubTitle } from '@/components/ui/text';
-import { SubmittableInput } from '@/components/ui/input';
 import DeleteDialog from '@/components/ui/table/delete-popup';
 import { StorageKey } from '@/constants';
 import { ChevronDownIcon } from 'lucide-react';
 import { formatStringDate } from '@/lib/formatter';
-import { CategoryIcon, DefaultCategoryIcon } from './icons';
+import { Icon } from '@/models/dtos';
+import { GetCategoryIcon } from './icons';
 
 export interface CustomTableProps<TData> {
   table: TableType<TData>;
@@ -188,8 +188,9 @@ export function CustomTable<TData extends object>({
                       <td key={cell.id} className="h-8 px-2 truncate text-sm">
                         {cell.id.includes('type') ? (
                           <div className="flex flex-row align-middle gap-x-2 justify-center">
-                            {CategoryIcon[row.getValue('type') as string] ??
-                              DefaultCategoryIcon}
+                            <div className="pt-1.5">
+                              {GetCategoryIcon(row.getValue('type'))}
+                            </div>
                             <div className="flex flex-col">
                               {flexRender(
                                 cell.column.columnDef.cell,
@@ -240,25 +241,22 @@ CustomTable.defaultProps = {
 CustomTable.displayName = 'CustomTable';
 interface CustomSmallTableProps {
   title: string;
-  onAdd: () => void;
-  newValue: string;
-  setNew: (value: string) => Promise<void> | void;
   values: SmallTableRow[];
   onDeleteConfirmed: (id: number) => Promise<void>;
+  addComponent?: JSX.Element;
 }
 
 export interface SmallTableRow {
   id: number;
   name: string;
+  icon?: Icon[];
 }
 
 export function CustomSmallTable({
   title,
-  onAdd,
-  newValue,
-  setNew,
   values,
   onDeleteConfirmed,
+  addComponent,
 }: CustomSmallTableProps) {
   return (
     <div className="flex-grow">
@@ -266,45 +264,34 @@ export function CustomSmallTable({
         title={title}
         {...{ className: 'text-center mt-4 mb-0 lg:mb-6' }}
       />
-      <div className="flex my-2 flex-row lg:flex-row justify-around">
-        <Button
-          disabled={newValue.length === 0}
-          onClick={onAdd}
-          type="submit"
-          variant="outline"
-          className="rounded-r-none border-green-500/50 hover:bg-green-500/50"
-        >
-          Add
-        </Button>
-        <SubmittableInput
-          onSubmit={onAdd}
-          onChange={(e) => setNew(e.target.value)}
-          className="rounded-l-none focus-visible:ring-0 h-8 outline-none"
-        />
-      </div>
+      {addComponent}
       <table>
         <tbody>
           {values &&
             values.map((value: SmallTableRow) => (
               <TableRow
                 key={value.id}
-                className="w-full justify-center align-middle"
+                className="w-full justify-center align-middle rounded-r"
               >
                 <td
                   className={twMerge(
                     `text-left border-r-0 py-0.5 px-2 font-thin text-xs w-full border overflow-x-scroll scroll-smooth`
                   )}
                 >
-                  {value.name}
+                  <div className="flex gap-2">
+                    <div>{GetCategoryIcon(value.name, false)}</div>
+                    <div className="content-center">{value.name}</div>
+                  </div>
                 </td>
                 <td
-                  className="m-6 text-left border px-0 overflow-x-scroll scroll-smooth"
+                  className="m-6 text-left border px-0 py-0 overflow-x-scroll scroll-smooth"
                   aria-label="Delete Selected Rows"
                 >
                   <DeleteDialog
                     onDeleteConfirmed={() => onDeleteConfirmed(value.id)}
                     entries={value.name}
                     tooltipText="Delete"
+                    className="rounded-none"
                   />
                 </td>
               </TableRow>
@@ -316,3 +303,7 @@ export function CustomSmallTable({
 }
 
 CustomSmallTable.displayName = 'CustomSmallTable';
+
+CustomSmallTable.defaultProps = {
+  addComponent: null,
+};

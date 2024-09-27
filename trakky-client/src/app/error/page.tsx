@@ -15,7 +15,7 @@ export default function ErrorPage() {
   const auth = useAuth();
   window.history.replaceState({}, document.title, window.location.pathname);
   const hardReload = async () => {
-    if (auth.error) {
+    if (!auth || (auth && auth.error)) {
       await auth.removeUser();
     }
     window.location.replace('/');
@@ -24,7 +24,7 @@ export default function ErrorPage() {
   let errorMessage = '';
   let notFound = false;
 
-  if (auth.error) {
+  if (auth && auth.error) {
     errorMessage = ErrorMessage.FAILED_AUTHENTICATION;
   } else if (isRouteErrorResponse(error)) {
     errorMessage = error.data.message || error.statusText;

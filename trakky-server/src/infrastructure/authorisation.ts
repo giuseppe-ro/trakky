@@ -1,6 +1,7 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { Request, Response } from "express";
 import jwt from 'jsonwebtoken';
+import { skipAuth } from "../constants";
 
 const getUserInfo = (token: string): AxiosRequestConfig => {
     return {
@@ -13,6 +14,10 @@ const getUserInfo = (token: string): AxiosRequestConfig => {
   }
   
 export async function openIdAuth(req: Request, res: Response, next: any) {
+
+  if (skipAuth) {
+    return next();
+  }
 
   try {
     const authHeader = req.headers['authorization']

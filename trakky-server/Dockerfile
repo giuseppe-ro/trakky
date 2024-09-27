@@ -14,7 +14,6 @@ RUN apk add --virtual libssl-dev
 RUN apk add dumb-init
 WORKDIR /usr/src/app
 COPY --chown=node:node --from=build /usr/src/app/dist ./dist
-# COPY --chown=node:node --from=build /usr/src/app/.env .env
 COPY --chown=node:node --from=build /usr/src/app/package.json .
 COPY --chown=node:node --from=build /usr/src/app/package-lock.json .
 RUN npm install --omit=dev

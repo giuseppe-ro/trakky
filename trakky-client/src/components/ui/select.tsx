@@ -4,6 +4,7 @@ import { CaretSortIcon, CheckIcon } from '@radix-ui/react-icons';
 import * as SelectPrimitive from '@radix-ui/react-select';
 
 import { twMerge } from 'tailwind-merge';
+import { Dictionary } from './table/icons';
 
 const Select = SelectPrimitive.Root;
 
@@ -154,6 +155,48 @@ Selection.defaultProps = {
   placeholder: null,
 };
 
+function ChildrenSelection({
+  value,
+  onChange,
+  options,
+  placeholder,
+  ...props
+}: {
+  value?: string | null;
+  onChange: (e: string) => void;
+  options: Dictionary<JSX.Element>;
+  placeholder?: string;
+}) {
+  const defaultValue = value?.toString();
+
+  return (
+    <Select
+      defaultValue={defaultValue}
+      value={defaultValue}
+      onValueChange={onChange}
+      {...props}
+    >
+      <SelectTrigger className="w-full" {...props}>
+        <SelectValue placeholder={value} />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectGroup>
+          {Object.keys(options).map((option) => (
+            <SelectItem key={option} value={option.toString()}>
+              {options[option]}
+            </SelectItem>
+          ))}
+        </SelectGroup>
+      </SelectContent>
+    </Select>
+  );
+}
+
+ChildrenSelection.defaultProps = {
+  value: null,
+  placeholder: null,
+};
+
 export {
   Select,
   SelectGroup,
@@ -163,5 +206,6 @@ export {
   SelectLabel,
   SelectItem,
   SelectSeparator,
+  ChildrenSelection,
   Selection,
 };

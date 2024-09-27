@@ -4,6 +4,8 @@ export enum Endpoint {
   Payments = 'payments',
   Budgets = 'budgets',
   Types = 'types',
+  Categories = 'categories',
+  Icons = 'icons',
   Owners = 'owners',
   Backup = 'backup',
   HealthCheck = 'health-check',

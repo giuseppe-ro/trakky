@@ -78,7 +78,7 @@ export function GetCategoryIcon(
   className?: string
 ) {
   if (Object.keys(categoryIconMapping).length === 0) {
-    SetCategoryIconMapping().then(() => {});
+    SetCategoryIconMapping();
   }
 
   const match = CategoryIcon[categoryIconMapping[key]];

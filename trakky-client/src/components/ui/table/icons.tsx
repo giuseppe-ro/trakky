@@ -33,20 +33,6 @@ function IconWrapper({ IconComponent }: IconProps) {
   );
 }
 
-const categoryIconMapping: Dictionary<string> = {};
-
-GetIcons().then((iconsResponse) => {
-  GetCategories().then((categoriesResponse) => {
-    categoriesResponse.data.forEach((category) => {
-      const iconData = iconsResponse.data
-        .filter((icon) => icon.id === category.iconId)
-        .map((aa) => aa.name)[0];
-
-      categoryIconMapping[category.name] = iconData;
-    });
-  });
-});
-
 export const CategoryIcon: Dictionary<JSX.Element> = {
   Utensils: <IconWrapper IconComponent={Utensils} />,
   HandCoins: <IconWrapper IconComponent={HandCoins} />,
@@ -71,11 +57,30 @@ export const IconIdMap: Dictionary<number> = {
 
 const DefaultCategoryIcon = <IconWrapper IconComponent={HomeIcon} />;
 
+const categoryIconMapping: Dictionary<string> = {};
+
+async function SetCategoryIconMapping() {
+  const iconsResponse = await GetIcons();
+  const categoriesResponse = await GetCategories();
+
+  categoriesResponse.data.forEach((category) => {
+    const iconData = iconsResponse.data
+      .filter((icon) => icon.id === category.iconId)
+      .map((icon) => icon.name)[0];
+
+    categoryIconMapping[category.name] = iconData;
+  });
+}
+
 export function GetCategoryIcon(
   key: string,
   show_default: boolean = true,
   className?: string
 ) {
+  if (Object.keys(categoryIconMapping).length === 0) {
+    SetCategoryIconMapping().then(() => {});
+  }
+
   const match = CategoryIcon[categoryIconMapping[key]];
 
   if (match) {

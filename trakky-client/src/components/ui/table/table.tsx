@@ -26,7 +26,7 @@ import { StorageKey } from '@/constants';
 import { ChevronDownIcon } from 'lucide-react';
 import { formatStringDate } from '@/lib/formatter';
 import { Icon } from '@/models/dtos';
-import { GetCategoryIcon } from './icons';
+import { Dictionary, GetCategoryIcon, GetCategoryIconMapping } from './icons';
 
 export interface CustomTableProps<TData> {
   table: TableType<TData>;
@@ -42,6 +42,7 @@ export function CustomTable<TData extends object>({
   canHideRows,
 }: CustomTableProps<TData>) {
   const [showTableBody, setShowTableBody] = useState<boolean>(!filtersOnly);
+  const [iconMapping, setIconMapping] = useState<Dictionary<string>>();
 
   const activeColumnsKey = `${page}_${StorageKey.ActiveColumns}`;
 
@@ -66,6 +67,12 @@ export function CustomTable<TData extends object>({
       localStorage.setItem(activeColumnsKey, activeColumns);
     }
   }, [activeColumnsKey, table]);
+
+  useEffect(() => {
+    GetCategoryIconMapping().then((mapping) => {
+      setIconMapping(mapping);
+    });
+  }, []);
 
   const saveActiveCols = (col: string, state: boolean) => {
     const storedActiveColumns = localStorage.getItem(activeColumnsKey);
@@ -189,7 +196,11 @@ export function CustomTable<TData extends object>({
                         {cell.id.includes('type') ? (
                           <div className="flex flex-row align-middle gap-x-2 justify-center">
                             <div className="pt-1.5">
-                              {GetCategoryIcon(row.getValue('type'))}
+                              {iconMapping &&
+                                GetCategoryIcon({
+                                  key: row.getValue('type'),
+                                  mapping: iconMapping,
+                                })}
                             </div>
                             <div className="flex flex-col">
                               {flexRender(
@@ -258,6 +269,14 @@ export function CustomSmallTable({
   onDeleteConfirmed,
   addComponent,
 }: CustomSmallTableProps) {
+  const [iconMapping, setIconMapping] = useState<Dictionary<string>>();
+
+  useEffect(() => {
+    GetCategoryIconMapping().then((mapping) => {
+      setIconMapping(mapping);
+    });
+  }, []);
+
   return (
     <div className="flex-grow">
       <SubTitle
@@ -279,7 +298,14 @@ export function CustomSmallTable({
                   )}
                 >
                   <div className="flex gap-2">
-                    <div>{GetCategoryIcon(value.name, false)}</div>
+                    <div>
+                      {iconMapping &&
+                        GetCategoryIcon({
+                          key: value.name,
+                          mapping: iconMapping,
+                          show_default: false,
+                        })}
+                    </div>
                     <div className="content-center">{value.name}</div>
                   </div>
                 </td>

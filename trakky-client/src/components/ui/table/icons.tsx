@@ -57,9 +57,9 @@ export const IconIdMap: Dictionary<number> = {
 
 const DefaultCategoryIcon = <IconWrapper IconComponent={HomeIcon} />;
 
-const categoryIconMapping: Dictionary<string> = {};
+export async function GetCategoryIconMapping() {
+  const mapping: Dictionary<string> = {};
 
-async function SetCategoryIconMapping() {
   const iconsResponse = await GetIcons();
   const categoriesResponse = await GetCategories();
 
@@ -68,20 +68,26 @@ async function SetCategoryIconMapping() {
       .filter((icon) => icon.id === category.iconId)
       .map((icon) => icon.name)[0];
 
-    categoryIconMapping[category.name] = iconData;
+    mapping[category.name] = iconData;
   });
+
+  return mapping;
 }
 
-export function GetCategoryIcon(
-  key: string,
-  show_default: boolean = true,
-  className?: string
-) {
-  if (Object.keys(categoryIconMapping).length === 0) {
-    SetCategoryIconMapping();
-  }
+interface GetCategoryIconProps {
+  key: string;
+  mapping: Dictionary<string>;
+  show_default?: boolean;
+  className?: string;
+}
 
-  const match = CategoryIcon[categoryIconMapping[key]];
+export function GetCategoryIcon({
+  key,
+  mapping,
+  show_default,
+  className,
+}: GetCategoryIconProps) {
+  const match = CategoryIcon[mapping[key]];
 
   if (match) {
     return <div className={className}>{match}</div>;
@@ -91,3 +97,8 @@ export function GetCategoryIcon(
     return DefaultCategoryIcon;
   }
 }
+
+GetCategoryIcon.defaultProps = {
+  show_default: true,
+  className: null,
+};

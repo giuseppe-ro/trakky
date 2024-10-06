@@ -1,7 +1,8 @@
 'use client';
 
-import { GetCategories } from '@/infrastructure/categories';
-import GetIcons from '@/infrastructure/icons';
+import { Endpoint } from '@/constants';
+import { Client, GetIcons } from '@/infrastructure/client-injector';
+import { Category } from '@/models/dtos';
 import {
   Fuel,
   Gift,
@@ -61,9 +62,11 @@ export async function GetCategoryIconMapping() {
   const mapping: Dictionary<string> = {};
 
   const iconsResponse = await GetIcons();
-  const categoriesResponse = await GetCategories();
+  const { data } = await Client.Get(Endpoint.Categories);
 
-  categoriesResponse.data.forEach((category) => {
+  const categoriesResponse = data as Category[];
+
+  categoriesResponse.forEach((category) => {
     const iconData = iconsResponse.data
       .filter((icon) => icon.id === category.iconId)
       .map((icon) => icon.name)[0];

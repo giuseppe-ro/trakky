@@ -7,7 +7,7 @@ import {
 } from '@/components/ui/tooltip';
 import { ReloadIcon } from '@radix-ui/react-icons';
 import { useAuth } from 'react-oidc-context';
-import { ErrorMessage } from '@/infrastructure/base-api';
+import { ErrorMessage } from '@/infrastructure/remote/base';
 
 export default function ErrorPage() {
   const error = useRouteError();

@@ -24,12 +24,7 @@ import { twMerge } from 'tailwind-merge';
 import { Calendar } from '@/components/ui/calendar';
 import { useEffect, useReducer, useState } from 'react';
 import { Textarea } from '@/components/ui/textarea';
-import {
-  AddPayments,
-  EditPayment,
-  DeletePayments,
-} from '@/infrastructure/payment';
-import { GetOwners } from '@/infrastructure/owner';
+import { Client } from '@/infrastructure/client-injector';
 import { resultToast } from '@/components/ui/use-toast';
 import { Toggle } from '@/components/ui/toggle';
 import {
@@ -37,12 +32,12 @@ import {
   paymentFormDataReducer,
   FETCH_INITIAL_STATE,
 } from '@/components/ui/table/payment-form-reducer';
-import { ErrorMessage } from '@/infrastructure/base-api';
+import { ErrorMessage } from '@/infrastructure/remote/base';
 import { errorMessage } from '@/components/ui/table/form-error-message';
 import { CalendarIcon, MinusIcon, PlusIcon } from 'lucide-react';
-import { Payment } from '@/models/dtos';
+import { Category, Owner, Payment } from '@/models/dtos';
 import PaymentsRecap from '@/components/payments/payments-recap';
-import { GetCategories } from '@/infrastructure/categories';
+import { Endpoint } from '@/constants';
 import Loading from '../loading';
 
 const customErrorMap: z.ZodErrorMap = (issue, ctx) => {
@@ -107,7 +102,10 @@ export function PaymentForm({
     const formData = async () => {
       dispatchFetch({ type: FetchActionType.FETCH_START });
 
-      const { data: ownersData, error: ownersError } = await GetOwners(signal);
+      const { data, error: ownersError } = await Client.Get(
+        Endpoint.Owners,
+        signal
+      );
 
       if (ownersError) {
         dispatchFetch({
@@ -116,6 +114,8 @@ export function PaymentForm({
         });
         return;
       }
+
+      const ownersData = data as Owner[];
       const fetchedOwners = ownersData.map((owner) => owner.name);
       fetchedOwners.push('Shared');
 
@@ -124,8 +124,10 @@ export function PaymentForm({
         payload: fetchedOwners,
       });
 
-      const { data: categoriesData, error: categoriesError } =
-        await GetCategories(signal);
+      const { data: catData, error: categoriesError } = await Client.Get(
+        Endpoint.Categories,
+        signal
+      );
       if (categoriesError) {
         dispatchFetch({
           type: FetchActionType.FETCH_ERROR,
@@ -133,6 +135,8 @@ export function PaymentForm({
         });
         return;
       }
+
+      const categoriesData = catData as Category[];
 
       const fetchedCategories = categoriesData.map((type) => type.name);
 
@@ -199,7 +203,9 @@ export function PaymentForm({
     if (payment.owner === 'Shared') {
       payments = splitPayments(payment);
       if (!isNewPayment) {
-        const { data, error } = await DeletePayments([Number(payment.id)]);
+        const { data, error } = await Client.Delete(Endpoint.Payments, [
+          Number(payment.id),
+        ]);
         if (error || !data) {
           errorMessage(setIsError, error?.error);
           return;
@@ -210,13 +216,13 @@ export function PaymentForm({
     }
 
     if (isNewPayment || payment.owner === 'Shared') {
-      const { data, error } = await AddPayments(payments);
+      const { data, error } = await Client.Post(Endpoint.Payments, payments);
       if (error || !data) {
         errorMessage(setIsError, error?.error);
         return;
       }
     } else {
-      const { data, error } = await EditPayment(payment);
+      const { data, error } = await Client.Put(Endpoint.Payments, payment);
       if (error || !data) {
         errorMessage(setIsError, error?.error);
         return;

@@ -21,13 +21,12 @@ import {
   BudgetColumnDefinition,
 } from '@/components/ui/table/columns';
 import { toast } from '@/components/ui/use-toast';
-import { demoMode } from '@/constants';
-import { DeleteBudgets } from '@/infrastructure/budget';
+import { demoMode, Endpoint } from '@/constants';
 import * as z from 'zod';
-import { DeletePayments, UploadPayments } from '@/infrastructure/payment';
 import { Budget, Payment } from '@/models/dtos';
 import { Total } from '@/models/total';
 import { monthNameToNumber } from '@/lib/formatter';
+import { Client } from '@/infrastructure/client-injector';
 
 export function usePaymentsTable({
   data,
@@ -140,14 +139,9 @@ export function usePaymentsTable({
       .getSelectedRowModel()
       .rows.map((row) => row.original.id) as number[];
 
-    const deleted = await DeletePayments(ids, signal);
+    const deleted = await Client.Delete(Endpoint.Payments, ids, signal);
 
-    if (demoMode) {
-      toast({
-        title: 'Data cannot be modified in demo mode!',
-        variant: 'warning',
-      });
-    } else if (deleted) {
+    if (deleted) {
       refreshData();
       table.resetRowSelection();
       toast({
@@ -243,14 +237,9 @@ export function useBudgetsTable({
       .getSelectedRowModel()
       .rows.map((row) => row.original.id) as number[];
 
-    const deleted = await DeleteBudgets(ids, signal);
+    const deleted = await Client.Delete(Endpoint.Budgets, ids, signal);
 
-    if (demoMode) {
-      toast({
-        title: 'Data cannot be modified in demo mode!',
-        variant: 'warning',
-      });
-    } else if (deleted) {
+    if (deleted) {
       refreshData(false);
       table.resetRowSelection();
       toast({
@@ -337,7 +326,7 @@ export async function onTransactionsUpload(
   reader.readAsText(file);
 
   try {
-    const uploadResult = await UploadPayments(file, signal);
+    const uploadResult = await Client.Upload(Endpoint.Payments, file, signal);
 
     if (uploadResult === null) {
       toast({

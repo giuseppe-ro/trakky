@@ -10,28 +10,21 @@ import {
   toast,
   valueExistsToast,
 } from '@/components/ui/use-toast';
-import { AddOwners, DeleteOwners, GetOwners } from '@/infrastructure/owner';
 import { FileUploadItem } from '@/components/ui/table/file-upload';
-import GetBackup from '@/infrastructure/backup';
 import {
   FetchActionType,
   FETCH_INITIAL_STATE,
   paymentFormDataReducer,
 } from '@/components/ui/table/payment-form-reducer';
 import { Category, Owner, Budget } from '@/models/dtos';
-import { GetBudgets } from '@/infrastructure/budget';
 import { ContentResultContainer } from '@/components/ui/containers';
-import { ErrorMessage } from '@/infrastructure/base-api';
-import {
-  GetCategories,
-  AddCategory,
-  DeleteCategories,
-} from '@/infrastructure/categories';
 import Loading from '@/components/ui/loading';
-import GetIcons from '@/infrastructure/icons';
 import AddComponent from '@/components/ui/add-input';
 import { ChildrenSelection } from '@/components/ui/select';
 import { CategoryIcon, IconIdMap } from '@/components/ui/table/icons';
+import { Client, GetBackup, GetIcons } from '@/infrastructure/client-injector';
+import { ErrorMessage } from '@/infrastructure/remote/base';
+import { Endpoint } from '@/constants';
 import BudgetActionMenu from './components/budget-action-menu';
 
 function SettingsPage() {
@@ -46,11 +39,11 @@ function SettingsPage() {
   ) {
     if (flushBeforeRefresh) setBudgets([]);
 
-    const { data, error } = await GetBudgets(signal);
+    const { data, error } = await Client.Get(Endpoint.Budgets, signal);
 
     if (error) throw new Error(error.error);
 
-    setBudgets(data);
+    setBudgets(data as Budget[]);
   }
 
   const { table, onDeleteConfirmed, onRefresh } = useBudgetsTable({
@@ -67,7 +60,10 @@ function SettingsPage() {
   const fetchOwners = async (signal?: AbortSignal) => {
     if (fetchState.error) return;
 
-    const { data: ownersData, error: ownersError } = await GetOwners(signal);
+    const { data: ownersData, error: ownersError } = await Client.Get(
+      Endpoint.Owners,
+      signal
+    );
     if (ownersError) {
       fetchDispatch({
         type: FetchActionType.FETCH_ERROR,
@@ -85,8 +81,10 @@ function SettingsPage() {
   const fetchCategories = async (signal?: AbortSignal) => {
     if (fetchState.error) return;
 
-    const { data: categoriesData, error: categoriesError } =
-      await GetCategories(signal);
+    const { data: categoriesData, error: categoriesError } = await Client.Get(
+      Endpoint.Categories,
+      signal
+    );
 
     if (categoriesError) {
       fetchDispatch({
@@ -102,10 +100,10 @@ function SettingsPage() {
     });
   };
 
-  const fetchIcons = async (signal?: AbortSignal) => {
+  const fetchIcons = async () => {
     if (fetchState.error) return;
 
-    const { data: iconData, error: iconError } = await GetIcons(signal);
+    const { data: iconData, error: iconError } = await GetIcons();
     if (iconError) {
       fetchDispatch({
         type: FetchActionType.FETCH_ERROR,
@@ -129,7 +127,7 @@ function SettingsPage() {
 
       await fetchOwners(signal);
       await fetchCategories(signal);
-      await fetchIcons(signal);
+      await fetchIcons();
       await refreshData(true, signal);
     }
 
@@ -163,7 +161,10 @@ function SettingsPage() {
       iconId: id,
     } as Category;
 
-    const success = await AddCategory(categoryToAdd);
+    const { data: success } = await Client.Post(
+      Endpoint.Categories,
+      categoryToAdd
+    );
     await fetchCategories();
     successFailToast({
       success,
@@ -173,7 +174,7 @@ function SettingsPage() {
   };
 
   async function OnCategoryDeleteConfirmed(id: number) {
-    const success = await DeleteCategories([id]);
+    const { data: success } = await Client.Delete(Endpoint.Categories, [id]);
     await fetchCategories();
     successFailToast({
       success,
@@ -191,7 +192,9 @@ function SettingsPage() {
       )
     )
       return;
-    const success = await AddOwners([{ name: newOwner } as Owner]);
+    const { data: success } = await Client.Post(Endpoint.Owners, [
+      { name: newOwner } as Owner,
+    ]);
     await fetchOwners();
     successFailToast({
       success,
@@ -201,7 +204,7 @@ function SettingsPage() {
   };
 
   const OnOwnerDeleteConfirmed = async (id: number) => {
-    const success = await DeleteOwners([id]);
+    const { data: success } = await Client.Delete(Endpoint.Owners, [id]);
     await fetchOwners();
     successFailToast({
       success,

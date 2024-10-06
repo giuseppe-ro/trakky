@@ -1,4 +1,4 @@
-import { baseApiCall, makeBaseRequest } from '@/infrastructure/base-api';
+import { callApi, makeBaseRequest } from '@/infrastructure/remote/base';
 import { Endpoint } from '@/constants';
 
 interface HealthCheckResponse {
@@ -8,9 +8,8 @@ interface HealthCheckResponse {
 async function serverIsDown(signal?: AbortSignal) {
   const config = makeBaseRequest(Endpoint.HealthCheck, 'GET', signal);
 
-  const { data, error } = await baseApiCall<HealthCheckResponse>({
+  const { data, error } = await callApi<HealthCheckResponse>({
     request: config,
-    demoModeData: () => ({ message: 'OK' }),
   });
 
   return data?.message !== 'OK' || error !== null;

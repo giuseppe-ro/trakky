@@ -6,7 +6,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { GearIcon } from '@radix-ui/react-icons';
+import { GearIcon, ResetIcon } from '@radix-ui/react-icons';
 import {
   Tooltip,
   TooltipContent,
@@ -25,6 +25,7 @@ import { HTMLAttributes } from 'react';
 
 import { twMerge } from 'tailwind-merge';
 import { skipAuth } from '@/authConfig';
+import db from '@/infrastructure/local/db';
 
 interface Links {
   href: string;
@@ -66,6 +67,12 @@ export function MainNav({ children }: HTMLAttributes<HTMLElement>) {
     if (demoMode) return;
     localStorage.clear();
     await auth.signoutRedirect();
+  };
+
+  const resetLocalDb = async () => {
+    await db.delete();
+    await db.open();
+    window.location.reload();
   };
 
   return (
@@ -113,15 +120,28 @@ export function MainNav({ children }: HTMLAttributes<HTMLElement>) {
                   <DropdownMenuTrigger className="text-sm font-medium text-muted-foreground transition-colors hover:text-slate-600 focus:outline-none">
                     {userName}
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent>
+                  <DropdownMenuContent className="flex flex-col justify-between">
                     <DropdownMenuItem
-                      className="cursor-pointer w-max text-muted-foreground"
+                      className="cursor-pointer w-[100%] text-muted-foreground"
                       disabled={demoMode}
                       onClick={logout}
                     >
-                      <div>Logout</div>
-                      <LogOut className="w-4 h-4 ml-11" />
+                      <div className="flex w-[100%] justify-between">
+                        <div>Logout</div>
+                        <LogOut className="w-4 h-4 ml-11" />
+                      </div>
                     </DropdownMenuItem>
+                    {demoMode && (
+                      <DropdownMenuItem
+                        className="cursor-pointer w-[100%] text-muted-foreground"
+                        onClick={resetLocalDb}
+                      >
+                        <div className="flex w-[100%] justify-between">
+                          <div>Reset Demo Data</div>
+                          <ResetIcon className="w-4 h-4 ml-11" />
+                        </div>
+                      </DropdownMenuItem>
+                    )}
                   </DropdownMenuContent>
                 </DropdownMenu>
               )}

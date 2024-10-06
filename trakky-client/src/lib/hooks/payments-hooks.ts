@@ -1,16 +1,24 @@
 import { useEffect, useState } from 'react';
-import { GetPayments } from '@/infrastructure/payment';
-import { StorageKey } from '@/constants';
+import { Endpoint, StorageKey } from '@/constants';
 import { Payment } from '@/models/dtos';
 import { getYearsAndMonths } from '@/components/summary/summaries';
 import { Table } from '@tanstack/react-table';
 import { useQuery } from 'react-query';
+import { Client } from '@/infrastructure/client-injector';
+import { AppError } from '@/models/app-error';
 
 export function usePaymentData() {
   const { data, refetch, isLoading, isError, error } = useQuery(
     'payments',
     async ({ signal }) => {
-      return GetPayments(signal);
+      const payments = (await Client.Get(
+        Endpoint.Payments,
+        signal
+      )) as unknown as {
+        data: Payment[];
+        error: null | AppError;
+      };
+      return payments;
     }
   );
 

@@ -1,4 +1,4 @@
-import { Payment, Budget, Backup } from '@/models/dtos';
+import { Payment, Budget } from '@/models/dtos';
 
 import payments from './mockPayments.json';
 import budgets from './mockBudgets.json';
@@ -55,13 +55,4 @@ export function mockIcons() {
     { id: 5, name: 'Plane' },
     { id: 6, name: 'Gift' },
   ];
-}
-
-export function mockBackup() {
-  return {
-    payments: mockPayments(),
-    budgets: mockBudgets(),
-    owners: mockOwners(),
-    types: mockTypes(),
-  } as unknown as Backup;
 }

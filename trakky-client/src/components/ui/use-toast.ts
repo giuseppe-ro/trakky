@@ -2,7 +2,6 @@
 import * as React from 'react';
 
 import type { ToastActionElement, ToastProps } from '@/components/ui/toast';
-import { demoMode } from '@/constants';
 
 const TOAST_LIMIT = 1;
 const TOAST_REMOVE_DELAY = 2000;
@@ -207,12 +206,7 @@ function successFailToast({
   successMessage: string;
   errorMessage: string;
 }) {
-  if (demoMode) {
-    toast({
-      title: 'Data cannot be modified in demo mode!',
-      variant: 'warning',
-    });
-  } else if (success) {
+  if (success) {
     toast({
       variant: 'success',
       description: successMessage,

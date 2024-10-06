@@ -1,6 +1,7 @@
 import * as matchers from '@testing-library/jest-dom/matchers';
 import { expect, vi } from 'vitest';
 import { ReactNode } from 'react';
+import 'fake-indexeddb/auto';
 
 expect.extend(matchers);
 

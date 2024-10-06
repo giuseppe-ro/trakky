@@ -3,7 +3,6 @@
 import * as React from 'react';
 
 import { Button } from '@/components/ui/button';
-import { demoMode } from '@/constants';
 import { twMerge } from 'tailwind-merge';
 import Loading from './loading';
 
@@ -93,14 +92,12 @@ function CardFormFooter({
     <CardFooter className="flex flex-col justify-between">
       <Loading loading={isSubmitting}>
         <Button
-          disabled={demoMode || isSubmittedSuccessfully}
+          disabled={isSubmittedSuccessfully}
           type="submit"
           variant="outline"
           className={twMerge(
             'w-full border transition-none border-green-500 hover:bg-green-500',
-            isSubmittedSuccessfully &&
-              demoMode &&
-              'border border-yellow-500 bg-yellow-500',
+            isSubmittedSuccessfully && 'border border-yellow-500 bg-yellow-500',
             isError &&
               submitted &&
               'border border-destructive bg-destructive hover:bg-destructive shake-animation'
@@ -112,11 +109,6 @@ function CardFormFooter({
       {isError && (
         <p className="text-sm font-medium text-destructive m-2">
           Error! Could not save changes. Try again.
-        </p>
-      )}
-      {demoMode && (
-        <p className="text-sm font-medium text-destructive m-2">
-          Demo mode. Data cannot be modified.
         </p>
       )}
     </CardFooter>

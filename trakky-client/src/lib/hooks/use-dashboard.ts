@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { GetBudgets } from '@/infrastructure/budget';
 import { Budget, Payment } from '@/models/dtos';
 import {
   getExpensesBreakdown,
@@ -10,6 +9,8 @@ import {
 } from '@/components/summary/summaries';
 import { OwnerOverview } from '@/models/owner-overview';
 import { PaymentOverview } from '@/models/payment-overview';
+import { Client } from '@/infrastructure/client-injector';
+import { Endpoint } from '@/constants';
 
 export function useDashboards({
   data,
@@ -32,11 +33,14 @@ export function useDashboards({
     const { signal } = controller;
 
     const fetchData = async () => {
-      const { data: newData, error } = await GetBudgets(signal);
+      const { data: newData, error } = await Client.Get(
+        Endpoint.Budgets,
+        signal
+      );
 
       if (error) throw new Error(error.error);
 
-      setBudgets(newData);
+      setBudgets(newData as Budget[]);
     };
 
     fetchData().then(() => {});

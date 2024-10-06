@@ -1,9 +1,8 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { demoMode } from '@/constants';
 import { serverUrl } from '@/authConfig';
 import getUser from '@/infrastructure/user';
-import { AppError } from '../models/app-error';
-import { ApiResponse } from '../models/api-response';
+import { ApiResponse } from '@/models/api-response';
+import { AppError } from '@/models/app-error';
 
 export enum ErrorMessage {
   NO_CONNECTION = 'Could not connect to the server.',
@@ -34,17 +33,9 @@ export const makeBaseRequest = (
   };
 };
 
-export const baseApiCall = async <T>(options: {
+export const callApi = async <T>(options: {
   request: AxiosRequestConfig;
-  demoModeData?: () => T;
 }): Promise<ApiResponse<T>> => {
-  if (demoMode && options.demoModeData) {
-    return {
-      data: options.demoModeData(),
-      error: null,
-    };
-  }
-
   try {
     const response: AxiosResponse = await axios(options.request);
     const { data } = response;

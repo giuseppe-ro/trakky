@@ -23,7 +23,6 @@ import { twMerge } from 'tailwind-merge';
 import { Calendar } from '@/components/ui/calendar';
 import React from 'react';
 import { resultToast } from '@/components/ui/use-toast';
-import { AddBudgets, EditBudget } from '@/infrastructure/budget';
 import {
   firstOfTheMonthDateString,
   nextMonthDateString,
@@ -31,6 +30,8 @@ import {
 import { errorMessage } from '@/components/ui/table/form-error-message';
 import { Budget } from '@/models/dtos';
 import { CalendarIcon } from 'lucide-react';
+import { Client } from '@/infrastructure/client-injector';
+import { Endpoint } from '@/constants';
 
 const customErrorMap: z.ZodErrorMap = (issue, ctx) => {
   if (issue.code === z.ZodIssueCode.invalid_type) {
@@ -121,14 +122,14 @@ export function BudgetForm({
         return;
       }
 
-      const { data, error } = await AddBudgets([budget]);
+      const { data, error } = await Client.Post(Endpoint.Budgets, [budget]);
       if (error || !data) {
         errorMessage(setIsError, error?.error);
         return;
       }
     } else {
       budget.id = editValues.id;
-      const { data, error } = await EditBudget(budget);
+      const { data, error } = await Client.Put(Endpoint.Budgets, budget);
 
       if (error || !data) {
         errorMessage(setIsError, error?.error);

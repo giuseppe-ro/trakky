@@ -151,26 +151,31 @@ function SettingsPage() {
         fetchState.categories.map((o: Category) => o.name),
         newCategory
       )
-    )
+    ) {
       return;
+    }
 
     const id = IconIdMap[selectedChildValue];
 
-    const categoryToAdd = {
-      name: newCategory,
-      iconId: id,
-    } as Category;
+    const categoryToAdd = [
+      {
+        name: newCategory,
+        iconId: id,
+      },
+    ] as Category[];
 
     const { data: success } = await Client.Post(
       Endpoint.Categories,
       categoryToAdd
     );
-    await fetchCategories();
+
     successFailToast({
       success,
       successMessage: 'Type added',
       errorMessage: "Couldn't save Type!",
     });
+
+    await fetchCategories();
   };
 
   async function OnCategoryDeleteConfirmed(id: number) {

@@ -1,13 +1,17 @@
 /* eslint-disable class-methods-use-this */
-import { Payment } from '@/models/dtos';
+import { Category, Owner, Payment } from '@/models/dtos';
 import { type EntityTable } from 'dexie';
 import BaseClient from '../client';
-import { dexieAction } from './base';
+import dexieAction from './base';
 import db from './db';
+
+interface Entity {
+  id: number | string;
+}
 
 export default class LocalClient extends BaseClient {
   async Get(endpoint: 'payments' | 'owners' | 'categories') {
-    const table = db[endpoint] as EntityTable<Payment, 'id'>;
+    const table = db[endpoint] as unknown as EntityTable<Entity, 'id'>;
 
     const response = await dexieAction(table.toArray());
     return { data: response, error: null };
@@ -15,11 +19,11 @@ export default class LocalClient extends BaseClient {
 
   async Post(
     endpoint: 'payments' | 'owners' | 'categories',
-    payments: Payment[]
+    data: Payment[] | Category[] | Owner[]
   ) {
-    const table = db[endpoint] as EntityTable<Payment, 'id'>;
+    const table = db[endpoint] as unknown as EntityTable<Entity, 'id'>;
 
-    await dexieAction(table.bulkAdd(payments));
+    await dexieAction(table.bulkAdd(data));
     return { data: true, error: null };
   }
 
@@ -27,17 +31,20 @@ export default class LocalClient extends BaseClient {
     return null;
   }
 
-  async Put(endpoint: 'payments' | 'owners' | 'categories', payment: Payment) {
-    const table = db[endpoint] as EntityTable<Payment, 'id'>;
+  async Put(
+    endpoint: 'payments' | 'owners' | 'categories',
+    payment: Payment[] | Category[] | Owner[]
+  ) {
+    const table = db[endpoint] as unknown as EntityTable<Entity, 'id'>;
 
     await dexieAction(table.put(payment));
     return { data: true, error: null };
   }
 
   async Delete(endpoint: 'payments' | 'owners' | 'categories', ids: number[]) {
-    const table = db[endpoint] as EntityTable<Payment, 'id'>;
+    const table = db[endpoint] as unknown as EntityTable<Entity, 'id'>;
 
-    await dexieAction(table.bulkDelete(ids as unknown as string[]));
+    await dexieAction(table.bulkDelete(ids));
     return { data: true, error: null };
   }
 }

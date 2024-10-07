@@ -28,4 +28,9 @@ db.on('populate', async () => {
   db.categories.bulkAdd(mockCategories());
 });
 
+export const resetLocalDb = async () => {
+  await db.delete();
+  await db.open();
+};
+
 export default db;

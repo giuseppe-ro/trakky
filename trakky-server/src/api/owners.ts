@@ -1,7 +1,6 @@
 import express, { Request, Response } from "express";
 import { baseHandler } from "./base";
 import { addOwners, deleteOwners, getOwners } from "../infrastructure/owners";
-import { Owner } from "@prisma/client";
 
 
 export const ownersRouter = express.Router();

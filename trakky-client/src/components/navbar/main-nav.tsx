@@ -25,7 +25,7 @@ import { HTMLAttributes } from 'react';
 
 import { twMerge } from 'tailwind-merge';
 import { skipAuth } from '@/authConfig';
-import db from '@/infrastructure/local/db';
+import { resetLocalDb } from '@/infrastructure/local/db';
 
 interface Links {
   href: string;
@@ -69,9 +69,8 @@ export function MainNav({ children }: HTMLAttributes<HTMLElement>) {
     await auth.signoutRedirect();
   };
 
-  const resetLocalDb = async () => {
-    await db.delete();
-    await db.open();
+  const resetLocalDatabase = async () => {
+    await resetLocalDb();
     window.location.reload();
   };
 
@@ -134,7 +133,7 @@ export function MainNav({ children }: HTMLAttributes<HTMLElement>) {
                     {demoMode && (
                       <DropdownMenuItem
                         className="cursor-pointer w-[100%] text-muted-foreground"
-                        onClick={resetLocalDb}
+                        onClick={resetLocalDatabase}
                       >
                         <div className="flex w-[100%] justify-between">
                           <div>Reset Demo Data</div>

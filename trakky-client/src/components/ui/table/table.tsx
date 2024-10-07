@@ -275,7 +275,7 @@ export function CustomSmallTable({
     GetCategoryIconMapping().then((mapping) => {
       setIconMapping(mapping);
     });
-  }, []);
+  }, [values]);
 
   return (
     <div className="flex-grow">

@@ -1,4 +1,4 @@
-import { memo, ReactNode } from 'react';
+import { memo, ReactNode, useEffect, useState } from 'react';
 import { PopupDialog } from '@/components/ui/table/popup-dialog';
 import { Button } from '@/components/ui/button';
 import {
@@ -24,6 +24,9 @@ import {
 } from '@/components/ui/select';
 import { Table } from '@tanstack/react-table';
 import { ExportDropdownMenu } from '@/components/ui/table/download-dropdown';
+import { Client } from '@/infrastructure/client-injector';
+import { Endpoint } from '@/constants';
+import { Category } from '@/models/dtos';
 
 function TableNavigation<TData>({
   getState,
@@ -125,7 +128,19 @@ const TableActionMenu = memo(
   <TData extends object>(props: TableActionMenuTopProps<TData>) => {
     const { table, onRefresh, addForm, deleteForm, exportName, children } =
       props;
-    const noData = table.getState().pagination.pageSize === 0;
+
+    const [noCategories, setNoCategories] = useState<boolean>(true);
+    const noData = table.getBottomRows().length === 0;
+
+    useEffect(() => {
+      Client.Get(Endpoint.Categories).then(({ data, error }) => {
+        if (error) {
+          setNoCategories(true);
+          return;
+        }
+        setNoCategories((data as Category[]).length === 0);
+      });
+    });
 
     return (
       <div>
@@ -133,19 +148,31 @@ const TableActionMenu = memo(
           <div className="flex justify-between">
             <div className="flex gap-x-5 mt-2 mb-2">
               <div className="order-1">
-                <PopupDialog
-                  trigger={
-                    <Button
-                      disabled={noData}
-                      variant="default"
-                      className="border-green-500/50 bg-green-600 text-white rounded w-20 hover:bg-green-500/50"
-                    >
-                      Add
-                    </Button>
-                  }
-                >
-                  {addForm}
-                </PopupDialog>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <PopupDialog
+                        trigger={
+                          <Button
+                            disabled={noCategories}
+                            variant="default"
+                            className="border-green-500/50 bg-green-600 text-white rounded w-20 hover:bg-green-500/50"
+                          >
+                            Add
+                          </Button>
+                        }
+                      >
+                        {addForm}
+                      </PopupDialog>
+                    </TooltipTrigger>
+
+                    <TooltipContent className="bg-slate-800 text-white">
+                      {noCategories
+                        ? 'Add at least a new category in settings to add transactions'
+                        : 'Add New Transaction'}
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
               <div className="flex justify-center order-2 sm:order-2">
                 <TooltipProvider>
@@ -182,9 +209,16 @@ const TableActionMenu = memo(
                   </Tooltip>
                 </TooltipProvider>
               </div>
-              <div className="flex justify-center order-4 sm:order-4">
-                <ExportDropdownMenu table={table} name={exportName} />
-              </div>
+              {!noData && (
+                <div className="flex justify-center order-4 sm:order-4">
+                  <ExportDropdownMenu table={table} name={exportName} />
+                </div>
+              )}
+              {/* {noCategories && (
+                <div className="flex self-center text-sm text-orange-300 text-muted order-4 sm:order-4">
+                  Set Categories to add transactions
+                </div>
+              )} */}
             </div>
             <div className="gap-x-3 mt-2 mb-2">
               <div className="flex justify-self-end order-5 sm:order-5">

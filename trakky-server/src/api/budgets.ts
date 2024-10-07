@@ -1,7 +1,6 @@
 import express, { Request, Response } from "express";
 import { baseHandler } from "./base";
 import { addBudgets, deleteBudgets, getBudgets, updateBudget } from "../infrastructure/budgets";
-import { Budget } from "@prisma/client";
 
 
 export const budgetsRouter = express.Router();

@@ -44,7 +44,6 @@ export function MainNav({ children }: HTMLAttributes<HTMLElement>) {
 
   if (user || skipAuth) {
     links.push({ href: '/dashboards', label: 'Dashboards' });
-    links.push({ href: '/overview', label: 'Overview' });
     links.push({ href: '/settings', label: 'Settings' });
   }
 

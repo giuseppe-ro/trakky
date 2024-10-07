@@ -293,7 +293,6 @@ function SettingsPage() {
                   >
                     <CustomTable
                       table={table}
-                      canHideRows
                       filtersOnly={false}
                       page="settings"
                     />

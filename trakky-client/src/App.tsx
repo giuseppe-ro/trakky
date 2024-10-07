@@ -65,7 +65,6 @@ export default function App() {
             table={table}
             onDeleteConfirmed={onDeleteConfirmed}
             onRefresh={onRefresh}
-            canHideRows={false}
           />
         </FadeUp>
       </Loading>

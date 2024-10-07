@@ -8,18 +8,6 @@ import { LoadingSpinner } from '@/components/ui/loading';
 import { ProtectedContainer } from '@/components/ui/containers';
 import App from '@/App';
 
-const ExpensesPage = lazy(
-  () =>
-    new Promise((resolve) => {
-      NProgress.start();
-
-      import('@/app/overview/page').then((module) => {
-        NProgress.done();
-        resolve(module as never);
-      });
-    })
-);
-
 const DashboardPage = lazy(
   () =>
     new Promise((resolve) => {
@@ -63,15 +51,6 @@ const router = createBrowserRouter([
     element: (
       <ProtectedContainer>
         <App />
-      </ProtectedContainer>
-    ),
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: '/overview',
-    element: (
-      <ProtectedContainer>
-        <ExpensesPage />
       </ProtectedContainer>
     ),
     errorElement: <ErrorPage />,

@@ -10,14 +10,12 @@ interface PaymentsTableProps {
     signal?: AbortSignal | undefined
   ) => Promise<void>;
   onDeleteConfirmed: () => Promise<void>;
-  canHideRows?: boolean;
 }
 
 export function PaymentsTable({
   table,
   onRefresh,
   onDeleteConfirmed,
-  canHideRows,
 }: PaymentsTableProps) {
   return (
     <PaymentsTableActionMenu
@@ -25,18 +23,9 @@ export function PaymentsTable({
       onDeleteConfirmed={onDeleteConfirmed}
       onRefresh={onRefresh}
     >
-      <CustomTable
-        table={table}
-        canHideRows={canHideRows}
-        filtersOnly={false}
-        page="overview"
-      />
+      <CustomTable table={table} filtersOnly={false} page="overview" />
     </PaymentsTableActionMenu>
   );
 }
 
 export default PaymentsTable;
-
-PaymentsTable.defaultProps = {
-  canHideRows: true,
-};

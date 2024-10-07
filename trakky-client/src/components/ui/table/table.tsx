@@ -32,14 +32,12 @@ export interface CustomTableProps<TData> {
   table: TableType<TData>;
   page: string;
   filtersOnly: boolean;
-  canHideRows?: boolean;
 }
 
 export function CustomTable<TData extends object>({
   table,
   filtersOnly,
   page,
-  canHideRows,
 }: CustomTableProps<TData>) {
   const [showTableBody, setShowTableBody] = useState<boolean>(!filtersOnly);
   const [iconMapping, setIconMapping] = useState<Dictionary<string>>();
@@ -174,7 +172,6 @@ export function CustomTable<TData extends object>({
         </TableHeader>
         <TableBody>
           {showTableBody &&
-            !filtersOnly &&
             table.getRowModel().rows.map((row) => {
               return (
                 <TableRow
@@ -226,7 +223,7 @@ export function CustomTable<TData extends object>({
                 </TableRow>
               );
             })}
-          {!filtersOnly && canHideRows && (
+          {filtersOnly && (
             <TableRow className="p-0 m-0" aria-label="Hide Table Button">
               <td colSpan={table.getAllColumns().length} className="p-0 m-0">
                 <Button
@@ -244,10 +241,6 @@ export function CustomTable<TData extends object>({
     </div>
   );
 }
-
-CustomTable.defaultProps = {
-  canHideRows: false,
-};
 
 CustomTable.displayName = 'CustomTable';
 interface CustomSmallTableProps {

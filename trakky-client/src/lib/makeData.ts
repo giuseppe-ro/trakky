@@ -51,10 +51,12 @@ export function mockCategories() {
 export function mockIcons() {
   return [
     { id: 1, name: 'Utensils' },
-    { id: 2, name: 'HeartIcon' },
     { id: 3, name: 'HandCoins' },
     { id: 4, name: 'HomeIcon' },
-    { id: 5, name: 'Plane' },
-    { id: 6, name: 'Gift' },
+    { id: 5, name: 'Gift' },
+    { id: 6, name: 'Fuel' },
+    { id: 7, name: 'BabyIcon' },
+    { id: 8, name: 'Plane' },
+    { id: 9, name: 'HeartIcon' },
   ];
 }

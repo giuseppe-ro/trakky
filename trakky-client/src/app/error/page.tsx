@@ -1,11 +1,4 @@
 import { useRouteError, isRouteErrorResponse } from 'react-router-dom';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { ReloadIcon } from '@radix-ui/react-icons';
 import { useAuth } from 'react-oidc-context';
 import { ErrorMessage } from '@/infrastructure/remote/base';
 
@@ -14,18 +7,14 @@ export default function ErrorPage() {
 
   const auth = useAuth();
   window.history.replaceState({}, document.title, window.location.pathname);
-  const hardReload = async () => {
-    if (!auth || (auth && auth.error)) {
-      await auth.removeUser();
-    }
-    window.location.replace('/');
-  };
 
   let errorMessage = '';
   let notFound = false;
 
   if (auth && auth.error) {
-    errorMessage = ErrorMessage.FAILED_AUTHENTICATION;
+    auth.removeUser().then(() => {
+      errorMessage = ErrorMessage.FAILED_AUTHENTICATION;
+    });
   } else if (isRouteErrorResponse(error)) {
     errorMessage = error.data.message || error.statusText;
     if (errorMessage === 'Not Found') {
@@ -49,21 +38,6 @@ export default function ErrorPage() {
             <i>{errorMessage}</i>
           </p>
         </div>
-      </div>
-      <div className="flex flex-row align-middle justify-center rounded ">
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger
-              onClick={() => hardReload()}
-              className="rounded bg-green-900 py-2 w-full flex justify-center items-center text-white hover:bg-green-800"
-            >
-              <ReloadIcon />
-            </TooltipTrigger>
-            <TooltipContent className="bg-slate-800 text-white">
-              Reload
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
       </div>
     </div>
   );

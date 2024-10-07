@@ -16,6 +16,18 @@ export function getAvailableYears(data: Payment[]) {
     .map((year) => year?.toString());
 }
 
+function sortMap(map: Map<string, string[]>): Map<string, string[]> {
+  // Convert map entries to an array and sort it
+  const sortedEntries = Array.from(map.entries())
+    .sort(([a], [b]) => {
+      return a.localeCompare(b); // Sort by year (key)
+    })
+    .reverse();
+
+  // Create a new Map from the sorted entries
+  return new Map(sortedEntries);
+}
+
 export function getYearsAndMonths(data: Payment[]) {
   const yearMonthMap = new Map<string, string[]>();
 
@@ -36,7 +48,7 @@ export function getYearsAndMonths(data: Payment[]) {
     }
   });
 
-  return yearMonthMap;
+  return sortMap(yearMonthMap);
 }
 
 export function getYearlyPaymentsSummaries(data: Payment[], budgets: Budget[]) {

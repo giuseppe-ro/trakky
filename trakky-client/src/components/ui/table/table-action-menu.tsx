@@ -153,13 +153,9 @@ const TableActionMenu = memo(
                     <TooltipTrigger>
                       <PopupDialog
                         trigger={
-                          <Button
-                            disabled={noCategories}
-                            variant="default"
-                            className="border-green-500/50 bg-green-600 text-white rounded w-20 hover:bg-green-500/50"
-                          >
+                          <div className="inline-flex items-center justify-center text-xs md:text-sm font-thin md:font-light transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow h-8 px-4 py-2 border-green-500/50 bg-green-600 text-white rounded w-20 hover:bg-green-500/50">
                             Add
-                          </Button>
+                          </div>
                         }
                       >
                         {addForm}

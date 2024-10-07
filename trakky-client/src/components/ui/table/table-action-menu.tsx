@@ -130,7 +130,7 @@ const TableActionMenu = memo(
       props;
 
     const [noCategories, setNoCategories] = useState<boolean>(true);
-    const noData = table.getBottomRows().length === 0;
+    const noData = table.getCenterRows().length === 0;
 
     useEffect(() => {
       Client.Get(Endpoint.Categories).then(({ data, error }) => {

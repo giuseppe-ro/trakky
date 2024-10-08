@@ -20,17 +20,25 @@ interface CalculatedShareAccordionProps {
 export default function CalculatedShareAccordion({
   balances,
 }: CalculatedShareAccordionProps) {
-  const [debitorBalances, setDebitorBalances] = useState<DebitorBalance[]>();
+  const [debitorBalances, setDebitorBalances] = useState<DebitorBalance[]>([]);
+  const [accordionIsDisabled, setAccordionIsDisabled] = useState<boolean>(true);
 
   useEffect(() => {
     setDebitorBalances(getDebitorBalances(balances));
   }, [balances]);
 
+  useEffect(() => {
+    setAccordionIsDisabled(debitorBalances.length === 0);
+  }, [debitorBalances]);
+
   return (
     <Accordion type="single" collapsible>
       <AccordionItem value="item-1">
-        <AccordionTrigger className="border-b justify-center gap-2 pb-2 text-sm bg-transparent text-slate-500">
-          Show Debits
+        <AccordionTrigger
+          className="justify-center gap-2 pb-2 text-sm bg-transparent text-slate-500"
+          disabled={accordionIsDisabled}
+        >
+          {accordionIsDisabled ? 'No Debits To Show' : 'Show Debits'}
         </AccordionTrigger>
         <AccordionContent>
           {debitorBalances?.map((debitor) => {

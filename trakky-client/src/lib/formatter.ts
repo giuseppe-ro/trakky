@@ -131,22 +131,24 @@ export const getDebitorBalances = (balances: OwnerBalance[]) => {
     total += balance.amount;
   });
 
-  const sharePerPerson = Math.round((total * 100) / balances.length) / 100;
+  total = Math.floor(total);
+
+  const sharePerPerson = Math.floor(total / balances.length);
 
   balances.forEach((balance) => {
     if (balance.amount > sharePerPerson) {
-      creditors[balance.owner] = balance.amount - sharePerPerson;
+      creditors[balance.owner] = Math.floor(balance.amount) - sharePerPerson;
     }
 
     if (balance.amount < sharePerPerson) {
-      debitors[balance.owner] = sharePerPerson - balance.amount;
+      debitors[balance.owner] = sharePerPerson - Math.floor(balance.amount);
     }
   });
 
   for (const debitor in debitors) {
     const debitorBalance: DebitorBalance = { name: debitor, owed: [] };
 
-    while (debitors[debitor] > 0) {
+    while (debitors[debitor] > 1) {
       let debitPaid: number = 0;
 
       for (const creditor in creditors) {

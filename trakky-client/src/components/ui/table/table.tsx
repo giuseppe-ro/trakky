@@ -24,9 +24,9 @@ import { SubTitle } from '@/components/ui/text';
 import DeleteDialog from '@/components/ui/table/delete-popup';
 import { StorageKey } from '@/constants';
 import { ChevronDownIcon } from 'lucide-react';
-import { formatStringDate } from '@/lib/formatter';
 import { Icon } from '@/models/dtos';
 import { Dictionary, GetCategoryIcon, GetCategoryIconMapping } from './icons';
+import renderCell from './cell';
 
 export interface CustomTableProps<TData> {
   table: TableType<TData>;
@@ -83,10 +83,7 @@ export function CustomTable<TData extends object>({
   };
 
   const renderFilterCells = (header: Header<TData, unknown>) => {
-    if (header.column.getCanFilter())
-      return <Filter column={header.column} table={table} />;
-
-    if (header.id === 'edit') {
+    if (header.id === 'edit' && !filtersOnly) {
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -118,6 +115,9 @@ export function CustomTable<TData extends object>({
       );
     }
 
+    if (header.column.getCanFilter())
+      return <Filter column={header.column} table={table} />;
+
     return null;
   };
 
@@ -128,7 +128,8 @@ export function CustomTable<TData extends object>({
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="border border-slate-800">
               {headerGroup.headers.map((header) => {
-                return (
+                const disableEditColumn = filtersOnly && header.id === 'edit';
+                return disableEditColumn ? null : (
                   <TableHead
                     className="h-full border border-slate-800 text-center text-xs md:text-sm"
                     key={header.id}
@@ -188,35 +189,9 @@ export function CustomTable<TData extends object>({
                   }}
                 >
                   {row.getVisibleCells().map((cell) => {
-                    return (
+                    return cell.column.id === 'edit' && filtersOnly ? null : (
                       <td key={cell.id} className="h-8 px-2 truncate text-sm">
-                        {cell.id.includes('type') ? (
-                          <div className="flex flex-row align-middle gap-x-2 justify-center">
-                            <div className="pt-1.5">
-                              {iconMapping &&
-                                GetCategoryIcon({
-                                  key: row.getValue('type'),
-                                  mapping: iconMapping,
-                                })}
-                            </div>
-                            <div className="flex flex-col">
-                              {flexRender(
-                                cell.column.columnDef.cell,
-                                cell.getContext()
-                              )}
-                              <div className="text-xxs font-thin text-muted-foreground">
-                                {formatStringDate(row.getValue('date'))}
-                              </div>
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="flex flex-row align-middle gap-1">
-                            {flexRender(
-                              cell.column.columnDef.cell,
-                              cell.getContext()
-                            )}
-                          </div>
-                        )}
+                        {renderCell(row, cell, iconMapping, filtersOnly)}
                       </td>
                     );
                   })}

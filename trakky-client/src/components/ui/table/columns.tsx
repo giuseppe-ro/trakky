@@ -158,7 +158,7 @@ export const colSize = (id: string): number | string => {
       return 40;
     case 'date':
       return 90;
-    case 'type' || 'owner' || 'id':
+    case 'owner' || 'id':
       return 80;
     case 'amount':
       return 115;

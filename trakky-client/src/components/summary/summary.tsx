@@ -4,11 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { FadeLeft } from '@/components/ui/animations/fade';
 import React from 'react';
-import {
-  differenceText,
-  formatCurrency,
-  getPercentageChangeText,
-} from '@/lib/formatter';
+import { formatCurrency, getPercentageChangeText } from '@/lib/formatter';
 import { Total } from '@/models/total';
 import AnimatedNumber from 'animated-number-react';
 import { OwnerBalance } from '@/models/owner-balance';
@@ -25,7 +21,7 @@ interface SummaryCardProps {
   children?: React.ReactNode;
 }
 
-function AnimateNumber({
+export function AnimateNumber({
   amount,
   formatter,
 }: {
@@ -44,7 +40,7 @@ function SummaryCard({
   children,
 }: SummaryCardProps) {
   return (
-    <Card className="border rounded-xl p-1 md:p-4 h-[130px] md:h-[150px]">
+    <Card className="border rounded-xl p-1 md:p-4 h-[130px] md:h-[150px] overflow-scroll">
       <CardHeader className="flex flex-row items-center justify-between space-y-0">
         <CardTitle className="text-sm font-medium text-muted-foreground">
           {title}
@@ -126,11 +122,6 @@ export function Summary({
               <div className="w-[100%] sm:w-[50%]">
                 <SummaryCard title="Partial Total" amount={partialTotal}>
                   {ownerBalances.map((balance: OwnerBalance) => {
-                    const difference = differenceText(
-                      partialTotal,
-                      ownerBalances.length,
-                      balance.amount
-                    );
                     return (
                       <div
                         className="text-sm text-left"
@@ -154,14 +145,7 @@ export function Summary({
                             <span
                               className="ml-2 text-slate-600 hidden xs:flex"
                               key={`${balance.amount}-difference`}
-                            >
-                              {difference > 0 && (
-                                <AnimateNumber
-                                  amount={-difference}
-                                  formatter={formatCurrency}
-                                />
-                              )}
-                            </span>
+                            />
                           </div>
                         </div>
                       </div>

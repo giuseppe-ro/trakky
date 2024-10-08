@@ -24,7 +24,7 @@ import { ChildrenSelection } from '@/components/ui/select';
 import { CategoryIcon, IconIdMap } from '@/components/ui/table/icons';
 import { Client, GetBackup, GetIcons } from '@/infrastructure/client-injector';
 import { ErrorMessage } from '@/infrastructure/remote/base';
-import { Endpoint } from '@/constants';
+import { demoMode, Endpoint } from '@/constants';
 import BudgetActionMenu from './components/budget-action-menu';
 
 function SettingsPage() {
@@ -272,7 +272,7 @@ function SettingsPage() {
             <FileUploadItem
               onUpload={onTransactionsUpload}
               text="Upload Transactions"
-              disabled={fetchState.error !== null}
+              disabled={demoMode || fetchState.error !== null}
             />
           </div>
         </FadeLeft>

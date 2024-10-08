@@ -8,6 +8,7 @@ import Loading from '@/components/ui/loading';
 import { usePaymentData, useYearSelection } from '@/lib/hooks/payments-hooks';
 import Summary from '@/components/summary/summary';
 import PaymentsTable from '@/components/payments/table';
+import CalculatedShareAccordion from './components/summary/calculated-share';
 
 export default function App() {
   const { data: payments, refreshData, isLoading, isError } = usePaymentData();
@@ -51,6 +52,12 @@ export default function App() {
             selectedMonth={selectedMonth ?? ''}
           />
         </Containers>
+        <Containers className="pt-5">
+          {ownerBalances && (
+            <CalculatedShareAccordion balances={ownerBalances} />
+          )}
+        </Containers>
+        <div />
         <FadeUp>
           {!isError && (
             <YearSelection

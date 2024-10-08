@@ -1,3 +1,7 @@
+/* eslint-disable guard-for-in */
+
+import { OwnerBalance } from '@/models/owner-balance';
+
 export function formatCurrency(total: number) {
   return new Intl.NumberFormat('en-GB', {
     style: 'currency',
@@ -27,9 +31,18 @@ export function firstOfTheMonthDateString(date: Date): Date {
   return new Date(`${year}-${month}-01`);
 }
 
+const isDecember = (date: Date) => date.getMonth() + 1 === 12;
+
 export function nextMonthDateString(date: Date): Date {
-  const year = date.getFullYear();
-  const month = (date.getMonth() + 2).toString().padStart(2, '0');
+  let year = date.getFullYear();
+  let month: string;
+
+  if (isDecember(date)) {
+    year += 1;
+    month = '1';
+  } else {
+    month = (date.getMonth() + 2).toString().padStart(2, '0');
+  }
 
   return new Date(`${year}-${month}-01`);
 }
@@ -69,19 +82,6 @@ export function getPercentageChangeText(
   return changePercentage;
 }
 
-export const differenceText = (
-  partialTot: number,
-  ownerBalancesLenght: number,
-  amount: number
-) => {
-  const diff = Math.floor(partialTot / ownerBalancesLenght - amount);
-
-  if (diff === 0 || diff < 0) return 0;
-  if (diff === Number.POSITIVE_INFINITY || diff === Number.NEGATIVE_INFINITY)
-    return 0;
-  return partialTot / ownerBalancesLenght - amount;
-};
-
 export const monthNameToNumber = (monthName: string): number => {
   const monthsMap: { [key: string]: number } = {
     January: 1,
@@ -99,4 +99,76 @@ export const monthNameToNumber = (monthName: string): number => {
   };
 
   return monthsMap[monthName];
+};
+
+/* eslint-disable no-restricted-syntax */
+interface Dictionary<T> {
+  [Key: string]: T;
+}
+
+interface Balance {
+  amount: number;
+}
+
+interface OwedBalance extends Balance {
+  to: string;
+}
+
+export interface DebitorBalance {
+  name: string;
+  owed: OwedBalance[];
+}
+
+export const getDebitorBalances = (balances: OwnerBalance[]) => {
+  balances.sort((a, b) => a.amount - b.amount).reverse();
+
+  let total: number = 0;
+  const creditors: Dictionary<number> = {};
+  const debitors: Dictionary<number> = {};
+  const debitorBalances: DebitorBalance[] = [];
+
+  balances.forEach((balance) => {
+    total += balance.amount;
+  });
+
+  const sharePerPerson = Math.round((total * 100) / balances.length) / 100;
+
+  balances.forEach((balance) => {
+    if (balance.amount > sharePerPerson) {
+      creditors[balance.owner] = balance.amount - sharePerPerson;
+    }
+
+    if (balance.amount < sharePerPerson) {
+      debitors[balance.owner] = sharePerPerson - balance.amount;
+    }
+  });
+
+  for (const debitor in debitors) {
+    const debitorBalance: DebitorBalance = { name: debitor, owed: [] };
+
+    while (debitors[debitor] > 0) {
+      let debitPaid: number = 0;
+
+      for (const creditor in creditors) {
+        if (creditors[creditor] >= debitors[debitor]) {
+          debitPaid = debitors[debitor];
+          creditors[creditor] -= debitPaid;
+        } else {
+          debitPaid = creditors[creditor];
+          creditors[creditor] = 0;
+        }
+
+        debitors[debitor] -= debitPaid;
+
+        if (debitPaid === debitors[debitor]) {
+          break;
+        }
+
+        debitorBalance.owed.push({ to: creditor, amount: debitPaid });
+      }
+      debitorBalances.push(debitorBalance);
+    }
+  }
+
+  return debitorBalances;
 };

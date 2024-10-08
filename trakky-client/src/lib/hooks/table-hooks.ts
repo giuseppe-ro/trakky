@@ -280,7 +280,7 @@ export async function onTransactionsUpload(
   if (demoMode) {
     toast({
       variant: 'warning',
-      title: 'Data cannot be modified in demo mode!',
+      title: 'Transactions cannot be uploaded in demo mode!',
     });
     return;
   }

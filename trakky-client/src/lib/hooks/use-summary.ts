@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import { OwnerBalance } from '@/models/owner-balance';
 import { Table } from '@tanstack/react-table';
+import { Dictionary } from '@/components/ui/table/icons';
 
 // eslint-disable-next-line
 function useSummary(table: Table<any>, selectedYear: string | null) {
   const [totalAmount, setTotalAmount] = useState<number>(0);
   const [partialTotal, setPartialTotal] = useState<number>(0);
-  const [ownerBalances, setOwnerBalances] = useState<OwnerBalance[]>([]);
+  const [balances, setBalances] = useState<Dictionary<number>>();
 
   const amountPartialSum = table
     .getFilteredRowModel()
@@ -22,7 +22,7 @@ function useSummary(table: Table<any>, selectedYear: string | null) {
     setTotalAmount(amountSum);
     setPartialTotal(amountPartialSum);
 
-    const balances: OwnerBalance[] = [];
+    const balancesDict: Dictionary<number> = {};
 
     table
       .getFilteredRowModel()
@@ -31,31 +31,20 @@ function useSummary(table: Table<any>, selectedYear: string | null) {
         owner: r.getValue('owner') as string,
       }))
       .forEach((item) => {
-        const existingOwnerBalance = balances.find(
-          (balance) => balance.owner.trim() === item.owner.trim()
-        );
-        if (existingOwnerBalance) {
-          existingOwnerBalance.amount += item.amount;
-        } else {
-          balances.push({
-            owner: item.owner as string,
-            amount: item.amount,
-          });
+        if (!(item.owner in balancesDict)) {
+          balancesDict[item.owner] = 0;
         }
+        balancesDict[item.owner] += item.amount;
       });
 
-    const sort = (a: OwnerBalance, b: OwnerBalance) => {
-      return a.owner.localeCompare(b.owner);
-    };
-
-    setOwnerBalances(balances.sort(sort));
+    setBalances(balancesDict);
     // eslint-disable-next-line
   }, [selectedYear, amountPartialSum]);
 
   return {
     totalAmount,
     partialTotal,
-    ownerBalances,
+    balances,
   };
 }
 

@@ -1,7 +1,5 @@
 /* eslint-disable guard-for-in */
 
-import { OwnerBalance } from '@/models/owner-balance';
-
 export function formatCurrency(total: number) {
   return new Intl.NumberFormat('en-GB', {
     style: 'currency',
@@ -119,29 +117,42 @@ export interface DebitorBalance {
   owed: OwedBalance[];
 }
 
-export const getDebitorBalances = (balances: OwnerBalance[]) => {
-  balances.sort((a, b) => a.amount - b.amount).reverse();
+export interface Share {
+  amount: number;
+  debitorBalances: DebitorBalance[];
+}
+
+export function allMatches<T>(dictionary: Dictionary<T>, value: T) {
+  return Object.values(dictionary).every((e) => e === value);
+}
+
+export const getDebitorBalances = (balances: Dictionary<number>) => {
+  const items = Object.keys(balances).map((key) => {
+    return { owner: key, amount: balances[key] };
+  });
+
+  items.sort((a, b) => a.amount - b.amount).reverse();
 
   let total: number = 0;
   const creditors: Dictionary<number> = {};
   const debitors: Dictionary<number> = {};
   const debitorBalances: DebitorBalance[] = [];
 
-  balances.forEach((balance) => {
+  items.forEach((balance) => {
     total += balance.amount;
   });
 
   total = Math.floor(total);
 
-  const sharePerPerson = Math.floor(total / balances.length);
+  const share = Math.floor(total / items.length);
 
-  balances.forEach((balance) => {
-    if (balance.amount > sharePerPerson) {
-      creditors[balance.owner] = Math.floor(balance.amount) - sharePerPerson;
+  items.forEach((balance) => {
+    if (balance.amount > share) {
+      creditors[balance.owner] = Math.floor(balance.amount) - share;
     }
 
-    if (balance.amount < sharePerPerson) {
-      debitors[balance.owner] = sharePerPerson - Math.floor(balance.amount);
+    if (balance.amount < share) {
+      debitors[balance.owner] = share - Math.floor(balance.amount);
     }
   });
 
@@ -166,11 +177,13 @@ export const getDebitorBalances = (balances: OwnerBalance[]) => {
           break;
         }
 
-        debitorBalance.owed.push({ to: creditor, amount: debitPaid });
+        if (debitPaid > 0) {
+          debitorBalance.owed.push({ to: creditor, amount: debitPaid });
+        }
       }
       debitorBalances.push(debitorBalance);
     }
   }
 
-  return debitorBalances;
+  return { amount: share, debitorBalances } as unknown as Share;
 };

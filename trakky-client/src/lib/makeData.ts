@@ -25,6 +25,7 @@ export function mockOwners() {
   return [
     { id: 1, name: 'Donald' },
     { id: 2, name: 'Goofy' },
+    { id: 3, name: 'Mickey' },
   ];
 }
 

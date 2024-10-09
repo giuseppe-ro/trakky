@@ -14,7 +14,7 @@ const db = new Dexie('trakky-demo') as Dexie & {
   categories: EntityTable<Category, 'id'>;
 };
 
-db.version(3).stores({
+db.version(4).stores({
   payments: '++id, amount, type, owner, description, date',
   owners: '++id, name',
   budgets: '++id, date, budget, maxBudget',

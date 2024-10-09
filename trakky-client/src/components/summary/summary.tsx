@@ -7,12 +7,12 @@ import React from 'react';
 import { formatCurrency, getPercentageChangeText } from '@/lib/formatter';
 import { Total } from '@/models/total';
 import AnimatedNumber from 'animated-number-react';
-import { OwnerBalance } from '@/models/owner-balance';
 import {
   getTotalForDate,
   getPreviousYearTotal,
   calculatePercentageDiff,
 } from './calculators';
+import { Dictionary } from '../ui/table/icons';
 
 interface SummaryCardProps {
   title: string;
@@ -66,14 +66,14 @@ SummaryCard.defaultProps = {
 };
 
 export function Summary({
-  ownerBalances,
+  balances,
   totalAmount,
   partialTotal,
   totalsPerYear,
   selectedYear,
   selectedMonth,
 }: {
-  ownerBalances: OwnerBalance[];
+  balances: Dictionary<number> | undefined;
   totalAmount: number;
   partialTotal: number;
   totalsPerYear: Total[];
@@ -121,36 +121,28 @@ export function Summary({
               </div>
               <div className="w-[100%] sm:w-[50%]">
                 <SummaryCard title="Partial Total" amount={partialTotal}>
-                  {ownerBalances.map((balance: OwnerBalance) => {
-                    return (
-                      <div
-                        className="text-sm text-left"
-                        key={`${balance.amount}-accordion`}
-                      >
-                        <div className="flex" key={`${balance.amount}-wrapper`}>
-                          <div
-                            className="mr-2 min-w-[60px] text-muted-foreground font-bold"
-                            key={`${balance.amount}-owner`}
-                          >
-                            {balance.owner}:
-                          </div>
-                          <div
-                            className="flex text-muted-foreground"
-                            key={`${balance.amount}-amount`}
-                          >
-                            <AnimateNumber
-                              amount={balance.amount}
-                              formatter={formatCurrency}
-                            />
-                            <span
-                              className="ml-2 text-slate-600 hidden xs:flex"
-                              key={`${balance.amount}-difference`}
-                            />
+                  {balances &&
+                    Object.keys(balances).map((balance) => {
+                      return (
+                        <div
+                          className="text-sm text-left"
+                          key={`${balance}-accordion`}
+                        >
+                          <div className="flex">
+                            <div className="mr-2 min-w-[60px] text-muted-foreground font-bold">
+                              {balance}:
+                            </div>
+                            <div className="flex text-muted-foreground">
+                              <AnimateNumber
+                                amount={balances[balance]}
+                                formatter={formatCurrency}
+                              />
+                              <span className="ml-2 text-slate-600 hidden xs:flex" />
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
                 </SummaryCard>
               </div>
             </div>

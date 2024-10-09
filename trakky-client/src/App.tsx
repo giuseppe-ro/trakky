@@ -33,7 +33,7 @@ export default function App() {
       isLoading,
     });
 
-  const { totalAmount, partialTotal, ownerBalances } = useSummary(
+  const { totalAmount, partialTotal, balances } = useSummary(
     table,
     selectedYear
   );
@@ -44,7 +44,7 @@ export default function App() {
       <Loading loading={isLoading}>
         <Containers>
           <Summary
-            ownerBalances={ownerBalances}
+            balances={balances}
             totalAmount={totalAmount}
             partialTotal={partialTotal}
             totalsPerYear={totalsPerYear}
@@ -53,9 +53,7 @@ export default function App() {
           />
         </Containers>
         <Containers className="pt-5">
-          {ownerBalances && (
-            <CalculatedShareAccordion balances={ownerBalances} />
-          )}
+          {balances && <CalculatedShareAccordion balances={balances} />}
         </Containers>
         <div />
         <FadeUp>

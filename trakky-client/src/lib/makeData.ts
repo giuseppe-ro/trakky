@@ -42,10 +42,10 @@ export function mockTypes() {
 export function mockCategories() {
   return [
     { id: 1, name: 'Food', iconId: 1 },
-    { id: 2, name: 'Travel', iconId: 5 },
-    { id: 3, name: 'General', iconId: 4 },
-    { id: 4, name: 'Personal', iconId: 6 },
-    { id: 5, name: 'House', iconId: 2 },
+    { id: 2, name: 'Travel', iconId: 8 },
+    { id: 3, name: 'General', iconId: 3 },
+    { id: 4, name: 'Personal', iconId: 5 },
+    { id: 5, name: 'House', iconId: 4 },
   ];
 }
 

@@ -54,7 +54,7 @@ function TableNavigation<TData>({
         </SelectTrigger>
         <SelectContent
           side="top"
-          className="bg-slate-900 focus:bg-slate-600 active:bg-slate-600"
+          className="bg-primary-foreground focus:bg-muted-foreground"
         >
           {[10, 20, 30, 40, 50].map((pageSize) => (
             <SelectItem key={pageSize} value={`${pageSize}`}>
@@ -153,7 +153,7 @@ const TableActionMenu = memo(
                     <TooltipTrigger>
                       <PopupDialog
                         trigger={
-                          <div className="inline-flex items-center justify-center text-xs md:text-sm font-thin md:font-light transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow h-8 px-4 py-2 border-green-500/50 bg-green-600 text-white rounded w-20 hover:bg-green-500/50">
+                          <div className="inline-flex items-center justify-center text-xs md:text-sm font-thin md:font-light transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow h-8 px-4 py-2 border-green-500/50 bg-green-600 text-primary rounded w-20 hover:bg-green-500/50 outline-none">
                             Add
                           </div>
                         }
@@ -162,7 +162,7 @@ const TableActionMenu = memo(
                       </PopupDialog>
                     </TooltipTrigger>
 
-                    <TooltipContent className="bg-slate-800 text-white">
+                    <TooltipContent className="bg-secondary text-primary">
                       {noCategories
                         ? 'Add at least a new category in settings to add transactions'
                         : 'Add New Transaction'}
@@ -176,11 +176,11 @@ const TableActionMenu = memo(
                     <TooltipTrigger
                       disabled={noData}
                       onClick={() => onRefresh(true)}
-                      className="rounded flex justify-center items-center text-white disabled:text-gray-700 hover:text-gray-700 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring "
+                      className="rounded flex justify-center hover:text-muted-foreground disabled:text-muted  items-center text-primary focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring "
                     >
                       <ReloadIcon />
                     </TooltipTrigger>
-                    <TooltipContent className="bg-slate-800 text-white">
+                    <TooltipContent className="bg-secondary text-primary">
                       Refresh
                     </TooltipContent>
                   </Tooltip>
@@ -191,14 +191,14 @@ const TableActionMenu = memo(
                   <Tooltip>
                     <TooltipTrigger
                       disabled={noData}
-                      className="rounded hover:text-gray-700 text-white disabled:text-gray-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring "
+                      className="rounded hover:text-muted-foreground text-primary disabled:text-muted focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring "
                       onClick={table.getToggleAllPageRowsSelectedHandler()}
                     >
                       <SelectIcon />
                     </TooltipTrigger>
                     <TooltipContent
                       tabIndex={-1}
-                      className="bg-slate-800 text-white"
+                      className="bg-secondary text-primary"
                     >
                       Select/Unselect visible rows
                     </TooltipContent>
@@ -210,11 +210,6 @@ const TableActionMenu = memo(
                   <ExportDropdownMenu table={table} name={exportName} />
                 </div>
               )}
-              {/* {noCategories && (
-                <div className="flex self-center text-sm text-orange-300 text-muted order-4 sm:order-4">
-                  Set Categories to add transactions
-                </div>
-              )} */}
             </div>
             <div className="gap-x-3 mt-2 mb-2">
               <div className="flex justify-self-end order-5 sm:order-5">

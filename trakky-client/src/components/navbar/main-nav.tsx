@@ -75,8 +75,8 @@ export function MainNav({ children }: HTMLAttributes<HTMLElement>) {
 
   return (
     <>
-      <nav className="sticky z-50 top-0 border-b bg-gray-950">
-        <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+      <nav className="sticky z-50 top-0 border-b bg-secondary">
+        <div className="mx-auto max-w-7xl min-w-[300px] px-2">
           <div className="relative flex h-16 items-center justify-between">
             <div className="flex flex-1 items-center justify-start m-6 sm:items-stretch sm:justify-start">
               <button
@@ -86,9 +86,9 @@ export function MainNav({ children }: HTMLAttributes<HTMLElement>) {
                 }}
                 className="flex flex-shrink-0 items-center"
               >
-                <div className="flex flex-row sm:hidden">
+                <div className="flex flex-row sm:ml-0">
                   <img alt="Trakky" src="owl_login.png" className="h-6 w-6" />
-                  <div className="text-gray-300 text-lg ml-2">Trakky</div>
+                  <div className="text-primary text-lg ml-2">Trakky</div>
                 </div>
               </button>
               <div className="hidden sm:ml-6 sm:block">
@@ -99,10 +99,10 @@ export function MainNav({ children }: HTMLAttributes<HTMLElement>) {
                         key={link.href}
                         href={link.href}
                         className={twMerge(
-                          'rounded-md px-3 py-2 text-sm font-medium',
+                          'rounded-md px-3 py-2 text-sm font-medium focus:outline-primary-foreground',
                           window.location.pathname === link.href
-                            ? 'bg-gray-900 text-white'
-                            : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                            ? 'bg-primary-foreground text-primary'
+                            : 'text-muted-foreground hover:bg-primary-foreground hover:text-primary'
                         )}
                       >
                         {link.label}
@@ -115,7 +115,7 @@ export function MainNav({ children }: HTMLAttributes<HTMLElement>) {
             <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
               {(skipAuth || !auth.isLoading) && (
                 <DropdownMenu>
-                  <DropdownMenuTrigger className="text-sm font-medium text-muted-foreground transition-colors hover:text-slate-600 focus:outline-none">
+                  <DropdownMenuTrigger className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary-foreground focus:outline-none">
                     {userName}
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="flex flex-col justify-between">
@@ -145,10 +145,10 @@ export function MainNav({ children }: HTMLAttributes<HTMLElement>) {
               )}
               <TooltipProvider>
                 <Tooltip>
-                  <TooltipTrigger className="rounded ml-4  w-4 flex justify-center items-center hover:text-gray-700 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring ">
+                  <TooltipTrigger className="rounded ml-4 w-4 flex justify-center items-center focus-visible:outline-none focus-visible:ring-[0px]">
                     <a
                       href="https://github.com/Joe85gr/trakky"
-                      className="cursor-pointer inline-flex items-center justify-center text-slate-600 hover:text-slate-500 h-8 py-2"
+                      className="cursor-pointer inline-flex items-center justify-center text-muted-foreground hover:text-primary-foreground h-8 py-2"
                       target="_blank"
                       rel="noreferrer"
                       aria-label="Source Code"
@@ -156,7 +156,7 @@ export function MainNav({ children }: HTMLAttributes<HTMLElement>) {
                       <Github className="h-4 w-4" />
                     </a>
                   </TooltipTrigger>
-                  <TooltipContent className="bg-slate-800 text-white">
+                  <TooltipContent className="bg-primary-foreground text-primary">
                     Source Code
                   </TooltipContent>
                 </Tooltip>
@@ -166,7 +166,7 @@ export function MainNav({ children }: HTMLAttributes<HTMLElement>) {
         </div>
       </nav>
       {links.length > 1 && (
-        <nav className="z-50 fixed  inset-x-0 bottom-0 border-t-gray-900 sm:hidden bg-gray-800 flex-row items-center justify-around px-8 py-2 visible md:invisible w-full  text-2xl">
+        <nav className="z-50 fixed inset-x-0 bottom-0 sm:hidden bg-secondary flex-row items-center justify-around px-8 py-2 visible md:invisible w-full text-2xl">
           <div className="flex flex-row justify-around align-middle">
             {links.map((link) => (
               <a
@@ -175,8 +175,8 @@ export function MainNav({ children }: HTMLAttributes<HTMLElement>) {
                 className={twMerge(
                   'block rounded-md px-3 py-2 text-base font-medium',
                   window.location.pathname === link.href
-                    ? 'bg-gray-900 text-white'
-                    : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                    ? 'bg-primary-foreground text-primary'
+                    : 'text-muted-foreground hover:bg-primary-foreground hover:text-primary'
                 )}
               >
                 <div className="flex flex-col">

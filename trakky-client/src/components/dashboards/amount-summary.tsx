@@ -24,7 +24,7 @@ export function AmountSummary({
             <div
               className={twMerge(
                 'ml-2',
-                difference >= 0 ? 'text-slate-600' : 'text-red-900'
+                difference >= 0 ? 'text-muted-foreground' : 'text-red-900'
               )}
             >
               ({formatCurrency(difference)})

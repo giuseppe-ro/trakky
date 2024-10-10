@@ -36,7 +36,7 @@ function DeleteDialog({
             <AlertDialogTrigger asChild>
               <div
                 className={twMerge(
-                  'inline-flex items-center justify-center text-xs md:text-sm font-thin md:font-light focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow px-4 border-destructive bg-destructive text-white h-8 w-24 hover:bg-destructive/50 my-0 py-0 rounded',
+                  'inline-flex items-center justify-center text-xs md:text-sm font-thin md:font-light focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow px-4 border-destructive bg-destructive text-primary h-8 w-24 hover:bg-destructive/50 my-0 py-0 rounded',
                   className
                 )}
               >
@@ -45,7 +45,7 @@ function DeleteDialog({
             </AlertDialogTrigger>
             <AlertDialogContent className="max-h-[450px] overflow-auto ">
               <AlertDialogHeader>
-                <div className="sticky top-0 z-50 bg-gray-950">
+                <div className="sticky top-0 z-50">
                   <AlertDialogTitle>
                     Are you sure? This action cannot be undone.
                     <p className="text-sm mb-2 text-muted-foreground pb-2">
@@ -62,7 +62,7 @@ function DeleteDialog({
                   Cancel
                 </AlertDialogCancel>
                 <AlertDialogAction
-                  className="bg-red-500 mx-6 mt-6 hover:bg-red-600 text-white "
+                  className="bg-red-500 mx-6 mt-6 hover:bg-red-600 text-primary"
                   onClick={() => {
                     onDeleteConfirmed().then(() => {});
                   }}
@@ -73,7 +73,7 @@ function DeleteDialog({
             </AlertDialogContent>
           </AlertDialog>
         </TooltipTrigger>
-        <TooltipContent className="bg-red-500/50 text-white">
+        <TooltipContent className="bg-red-500/50 text-primary">
           {tooltipText}
         </TooltipContent>
       </Tooltip>

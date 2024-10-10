@@ -138,7 +138,7 @@ export function ExportDropdownMenu<TData>({
             </DropdownMenuContent>
           </DropdownMenu>
         </TooltipTrigger>
-        <TooltipContent className="bg-slate-800 text-white">
+        <TooltipContent className="bg-secondary text-primary">
           Export
         </TooltipContent>
       </Tooltip>

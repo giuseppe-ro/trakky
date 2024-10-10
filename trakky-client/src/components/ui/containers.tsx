@@ -69,7 +69,7 @@ export function ContentResultContainer({
   if (error !== null) {
     return (
       <div
-        className="p-4 m-4 text-sm text-red-800 rounded-lg bg-slate-900 dark:text-red-500"
+        className="p-4 m-4 text-sm text-red-800 rounded-lg bg-secondary-foreground dark:text-red-500 "
         role="alert"
       >
         <div className="flex flex-row justify-center align-middle gap-3">

@@ -10,8 +10,15 @@ export function PopupDialog({
 }) {
   return (
     <Dialog>
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] p-2">{children}</DialogContent>
+      <DialogTrigger
+        className="outline-none focus-visible:outline-none"
+        asChild
+      >
+        {trigger}
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px] p-2 focus-visible:outline-none">
+        {children}
+      </DialogContent>
     </Dialog>
   );
 }

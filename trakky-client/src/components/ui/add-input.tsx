@@ -26,7 +26,7 @@ export default function AddComponent({
       <SubmittableInput
         onSubmit={onAdd}
         onChange={(e) => setNew(e.target.value)}
-        className="rounded-l-none focus-visible:ring-0 h-8 outline-none"
+        className="rounded-l-none focus-visible:ring-0 focus-visible:outline-none h-8 outline-none"
       />
     </div>
   );

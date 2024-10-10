@@ -52,10 +52,8 @@ function OverviewTooltip({
 }) {
   return (
     <div>
-      <div className="bg-slate-950 border border-slate-400 rounded-t-md">
-        <p className="text-slate-300 rounded-t-md font-bold pb-2 bg-slate-800">
-          {label}
-        </p>
+      <div className="bg-primary-foreground border border-secondary rounded-t-md">
+        <p className="text-primary rounded-t-md font-bold pb-2">{label}</p>
         <div className="p-2">{children}</div>
       </div>
     </div>

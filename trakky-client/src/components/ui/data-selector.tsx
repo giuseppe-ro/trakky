@@ -101,7 +101,7 @@ function YearSelection({
             options={Array.from(availableYears.keys())}
             {...{
               className:
-                'rounded-lg w-[50%] min-w-[164px] overscroll-contain bg-gray-950 h-10',
+                'rounded-lg w-[50%] min-w-[164px] overscroll-contain bg-secondary h-10',
             }}
           />
           <Selection
@@ -110,7 +110,7 @@ function YearSelection({
             options={availableYears.get(selectedYear) ?? []}
             {...{
               className:
-                'rounded-lg w-[50%] min-w-[164px] overscroll-contain bg-gray-950 h-10',
+                'rounded-lg w-[50%] min-w-[164px] overscroll-contain bg-secondary h-10',
             }}
           />
         </div>

@@ -31,7 +31,7 @@ export function SubTitle({ title, ...props }: { title?: string }) {
           title={title}
           className="flex flex-col items-center w-full justify-center bg-transparent p-0 md:p-6"
         >
-          <p className="w-full px-5 pt-0 text-sm bg-transparent text-slate-500">
+          <p className="w-full px-5 pt-0 text-sm bg-transparent text-muted-foreground">
             {title}
           </p>
         </CardTitle>

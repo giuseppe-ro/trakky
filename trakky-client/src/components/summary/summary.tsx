@@ -122,22 +122,22 @@ export function Summary({
               <div className="w-[100%] sm:w-[50%]">
                 <SummaryCard title="Partial Total" amount={partialTotal}>
                   {balances &&
-                    Object.keys(balances).map((balance) => {
+                    Object.keys(balances).map((user) => {
                       return (
                         <div
                           className="text-sm text-left"
-                          key={`${balance}-accordion`}
+                          key={`${user}-accordion`}
                         >
                           <div className="flex">
-                            <div className="mr-2 min-w-[60px] text-muted-foreground font-bold">
-                              {balance}:
+                            <div className="mr-2 w-[80px] overflow-x-scroll no-scrollbar text-muted-foreground">
+                              {user}:
                             </div>
                             <div className="flex text-muted-foreground">
                               <AnimateNumber
-                                amount={balances[balance]}
+                                amount={balances[user]}
                                 formatter={formatCurrency}
                               />
-                              <span className="ml-2 text-slate-600 hidden xs:flex" />
+                              <span className="ml-2 hidden xs:flex" />
                             </div>
                           </div>
                         </div>

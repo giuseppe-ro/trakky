@@ -19,7 +19,7 @@ export function Login({ login }: { login: () => Promise<void> }) {
           <Button
             variant="outline"
             onClick={() => login()}
-            className="border-green-700 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+            className="border-green-700 hover:bg-green-700 text-primary font-bold py-2 px-4 rounded"
           >
             Login
           </Button>

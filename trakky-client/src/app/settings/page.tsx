@@ -314,7 +314,7 @@ function SettingsPage() {
                             options={CategoryIcon}
                             {...{
                               className:
-                                'rounded-none focus:ring-slate-900 focus:outline-none focus:shadow-none w-20 overscroll-contain bg-gray-950 h-8',
+                                'rounded-none focus:outline-none focus:shadow-none w-20 overscroll-contain h-8 bg-secondary',
                             }}
                           />
                         }

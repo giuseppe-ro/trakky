@@ -14,9 +14,9 @@ export const StatusMessage = memo(() => {
 
   if ((!demoMode && isDown) || isError) {
     return (
-      <div className="sticky top-16 bg-gray-950 z-40">
+      <div className="sticky top-16 z-40">
         <FadeDown className="top-16 z-40">
-          <div className="bg-yellow-600 w-full text-white text-xs md:text-base text-center">
+          <div className="bg-yellow-600 w-full text-primary text-xs md:text-base text-center">
             The server is down or not reachable.
           </div>
         </FadeDown>
@@ -26,9 +26,9 @@ export const StatusMessage = memo(() => {
 
   if (demoMode) {
     return (
-      <div className="sticky top-16 bg-gray-950 z-40">
+      <div className="sticky top-16 z-40">
         <FadeDown className="top-16 z-40">
-          <div className="flex flex-row justify-center align-middle bg-yellow-600 w-full text-white text-xs md:text-base text-center">
+          <div className="flex flex-row justify-center align-middle bg-yellow-600 w-full text-primary text-xs md:text-base text-center">
             Demo mode.
           </div>
         </FadeDown>

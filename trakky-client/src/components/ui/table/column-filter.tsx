@@ -62,7 +62,7 @@ export function Filter<TData>({
               ])
             }
             placeholder="Min"
-            className="rounded-none w-1/2 placeholder-slate-700 placeholder:text-xs selection:bg-slate-950 focus:bg-slate-700  shadow bg-slate-800 pl-1 focus:outline-none"
+            className="rounded-none font-thin w-1/2 placeholder:text-xs focus:bg-secondary shadow bg-primary-foreground pl-1 focus:outline-none"
           />
           <DebouncedInput
             type="number"
@@ -76,7 +76,7 @@ export function Filter<TData>({
               ])
             }
             placeholder="Max"
-            className="h-6 rounded-none w-1/2 placeholder-slate-700 placeholder:text-xs selection:bg-slate-950 focus:bg-slate-700  shadow bg-slate-800 pl-1 focus:outline-none"
+            className="rounded-none font-thin w-1/2 placeholder:text-xs focus:bg-secondary shadow bg-primary-foreground pl-1 focus:outline-none"
           />
         </div>
       </div>
@@ -102,16 +102,11 @@ export function Filter<TData>({
 
   return (
     <>
-      <datalist className="bg-slate-900" id={`${column.id}list`}>
+      <datalist id={`${column.id}list`}>
         {sortedUniqueValues()
           .slice(0, 5000)
           .map((value: string) => (
-            <option
-              className="border-slate-900 red"
-              value={value}
-              key={value}
-              aria-label={value}
-            />
+            <option value={value} key={value} aria-label={value} />
           ))}
       </datalist>
       <DebouncedInput
@@ -119,7 +114,7 @@ export function Filter<TData>({
         value={(columnFilterValue ?? '') as string}
         onChange={(value) => column.setFilterValue(value)}
         placeholder=""
-        className="h-6 rounded-none w-full shadow bg-slate-800 text-slate-400 selection:bg-slate-950 pl-2 focus:bg-slate-700 focus:outline-none"
+        className="h-6 rounded-none w-full shadow focus:bg-secondary bg-primary-foreground font-thin text-primary/50 selection:bg-primary-foreground pl-2 focus:outline-none"
         list={`${column.id}list`}
       />
     </>

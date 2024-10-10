@@ -131,7 +131,7 @@ export default function CalculatedShareAccordion({
   return (
     <Accordion type="single" collapsible>
       <AccordionItem value="item-1">
-        <AccordionTrigger className="justify-center gap-2 pb-2 text-sm bg-transparent text-slate-500">
+        <AccordionTrigger className="justify-center gap-2 pb-2 text-sm bg-transparent text-muted-foreground">
           Share Expenses
         </AccordionTrigger>
         <AccordionContent className="pb-0">

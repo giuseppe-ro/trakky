@@ -308,7 +308,7 @@ export function PaymentForm({
                         aria-label="Toggle italic"
                         className={twMerge(
                           form.formState.errors.amount && `shake-animation`,
-                          'rounded-l mr-0 rounded-r-none h-9 border px-3 data-[state=on]:bg-red-500 data-[state=off]:bg-green-500 data-[state=on]:text-white data-[state=off]:text-white'
+                          'rounded-l mr-0 rounded-r-none h-9 border px-3 data-[state=on]:bg-red-500 data-[state=off]:bg-green-500 data-[state=on]:text-primary data-[state=off]:text-primary'
                         )}
                         onClick={() => setAmountIsNegative(!amountIsNegative)}
                         pressed={amountIsNegative}

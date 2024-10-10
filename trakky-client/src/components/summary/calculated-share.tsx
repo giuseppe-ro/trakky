@@ -134,7 +134,7 @@ export default function CalculatedShareAccordion({
         <AccordionTrigger className="justify-center gap-2 pb-2 text-sm bg-transparent text-slate-500">
           Share Expenses
         </AccordionTrigger>
-        <AccordionContent className="pb-2">
+        <AccordionContent className="pb-0">
           <div>
             <div className="flex flex-row gap-2 justify-start mx-1 my-4">
               <span className="min-w-[90px] text-muted-foreground font-bold">

@@ -1,5 +1,5 @@
 import { TableRow } from '@/components/ui/table';
-import { formatCurrency } from '@/lib/formatter';
+import { formatCurrency } from '@/lib/text-formatter';
 import { Budget } from '@/models/dtos';
 import { twMerge } from 'tailwind-merge';
 

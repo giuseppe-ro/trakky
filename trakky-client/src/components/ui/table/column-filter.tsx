@@ -8,7 +8,7 @@ import {
   convertFilterDateFormat,
   formatDateMonth,
   isValidDate,
-} from '@/lib/formatter';
+} from '@/lib/text-formatter';
 
 export function Filter<TData>({
   column,

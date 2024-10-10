@@ -17,7 +17,7 @@ import {
   YAxis,
 } from 'recharts';
 import React, { useCallback, useState } from 'react';
-import { formatCurrency } from '@/lib/formatter';
+import { formatCurrency } from '@/lib/text-formatter';
 import Checkbox from '@/components/ui/checkbox';
 import { StorageKey } from '@/constants';
 import { OwnerOverview } from '@/models/owner-overview';

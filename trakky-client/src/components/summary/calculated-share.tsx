@@ -1,10 +1,4 @@
 import {
-  allMatches,
-  formatCurrency,
-  getDebitorBalances,
-  Share,
-} from '@/lib/formatter';
-import {
   Accordion,
   AccordionContent,
   AccordionTrigger,
@@ -12,8 +6,11 @@ import {
 } from '@/components/ui/accordion';
 import { useEffect, useState } from 'react';
 import { Client } from '@/infrastructure/client-injector';
-import { Endpoint } from '@/constants';
+import { Endpoint, StorageKey } from '@/constants';
 import { Owner } from '@/models/dtos';
+import { Share } from '@/models/share';
+import getDebitorBalances from '@/lib/calculators';
+import { formatCurrency } from '@/lib/text-formatter';
 import Checkbox from '../ui/checkbox';
 import { AnimateNumber } from './summary';
 import { Dictionary } from '../ui/table/icons';
@@ -27,12 +24,8 @@ export default function CalculatedShareAccordion({
 }: CalculatedShareAccordionProps) {
   const [share, setShare] = useState<Share>();
   const [accordionIsDisabled, setAccordionIsDisabled] = useState<boolean>(true);
-  const [usersWithoutTransactions, setUsersWithoutTransactions] =
-    useState<boolean>(false);
   const [owners, setOwners] = useState<Owner[]>([]);
-
-  const [showUsers, setShowUsers] = useState<Dictionary<boolean>>({});
-  const [showAllUsers, setShowAllUsers] = useState<boolean>(true);
+  const [checkBoxStates, setCheckboxStates] = useState<Dictionary<boolean>>({});
 
   useEffect(() => {
     setShare(getDebitorBalances(balances));
@@ -43,25 +36,19 @@ export default function CalculatedShareAccordion({
     Client.Get(Endpoint.Owners, signal).then(({ data }) => {
       const users = data as Owner[];
       setOwners(users);
+
+      if (checkBoxStates && Object.keys(checkBoxStates).length === 0) {
+        const checkBoxes: Dictionary<boolean> = {};
+        users.forEach((owner) => {
+          checkBoxes[owner.name] = true;
+        });
+
+        checkBoxes.All = true;
+
+        setCheckboxStates(checkBoxes);
+      }
     });
-  }, [balances]);
-
-  useEffect(() => {
-    const users: Dictionary<boolean> = {};
-
-    if (Object.keys(showUsers).length === 0) {
-      owners.forEach((owner) => {
-        users[owner.name] = true;
-      });
-    }
-
-    setShowUsers(users);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [owners]);
-
-  useEffect(() => {
-    setUsersWithoutTransactions(owners.length !== Object.keys(balances).length);
-  }, [owners, balances]);
+  }, [balances, checkBoxStates]);
 
   useEffect(() => {
     setAccordionIsDisabled(share?.debitorBalances.length === 0);
@@ -70,7 +57,7 @@ export default function CalculatedShareAccordion({
   useEffect(() => {
     const newBalances: Dictionary<number> = {};
 
-    if (showAllUsers) {
+    if (checkBoxStates.All) {
       Object.keys(balances).forEach((balance) => {
         newBalances[balance] = balances[balance];
       });
@@ -81,52 +68,71 @@ export default function CalculatedShareAccordion({
         }
       });
     } else {
-      Object.keys(showUsers).forEach((user) => {
-        if (showUsers[user] === true) {
+      Object.keys(checkBoxStates).forEach((user) => {
+        if (checkBoxStates[user] === true) {
           newBalances[user] = balances[user] ?? 0;
         }
       });
     }
 
     setShare(getDebitorBalances(newBalances));
-  }, [showAllUsers, balances, owners, showUsers]);
+  }, [balances, owners, checkBoxStates]);
+
+  async function setAllCheckBoxes() {
+    const users: Dictionary<boolean> = {};
+
+    const newState = !checkBoxStates.All;
+
+    Object.keys(checkBoxStates).forEach((user) => {
+      users[user] = newState;
+    });
+
+    setCheckboxStates(users);
+
+    localStorage.setItem(StorageKey.ShowedUserShares, JSON.stringify(users));
+  }
+
+  function allCheckboxesOn(dictionary: Dictionary<boolean>, newState: boolean) {
+    return (
+      newState === true && Object.values(dictionary).every((e) => e === true)
+    );
+  }
 
   async function setCheckBox(key: string) {
     const users: Dictionary<boolean> = {};
 
-    Object.keys(showUsers).forEach((user) => {
-      users[user] = showUsers[user];
+    Object.keys(checkBoxStates).forEach((user) => {
+      users[user] = checkBoxStates[user];
     });
 
-    if (key === 'All') {
-      Object.keys(showUsers).forEach((user) => {
-        users[user] = !showAllUsers;
-      });
-      setShowAllUsers(!showAllUsers);
-    } else {
-      const newState = !users[key];
-      users[key] = newState;
+    const newState = !users[key];
 
-      if (newState === true && allMatches(users, newState)) {
-        setShowAllUsers(newState);
-      } else {
-        setShowAllUsers(false);
+    users[key] = newState;
+
+    const usersState: Dictionary<boolean> = {};
+
+    Object.keys(users).forEach((user) => {
+      if (user !== 'All') {
+        usersState[user] = users[user];
       }
+    });
+
+    if (allCheckboxesOn(usersState, newState)) {
+      users.All = true;
+    } else {
+      users.All = false;
     }
 
-    setShowUsers(users);
+    setCheckboxStates(users);
+
+    localStorage.setItem(StorageKey.ShowedUserShares, JSON.stringify(users));
   }
 
   return (
     <Accordion type="single" collapsible>
       <AccordionItem value="item-1">
-        <AccordionTrigger
-          className="justify-center gap-2 pb-2 text-sm bg-transparent text-slate-500"
-          disabled={accordionIsDisabled && !usersWithoutTransactions}
-        >
-          {accordionIsDisabled && !usersWithoutTransactions
-            ? 'No Expenses To Share'
-            : 'Share Expenses'}
+        <AccordionTrigger className="justify-center gap-2 pb-2 text-sm bg-transparent text-slate-500">
+          Share Expenses
         </AccordionTrigger>
         <AccordionContent className="pb-2">
           <div>
@@ -141,9 +147,9 @@ export default function CalculatedShareAccordion({
                 >
                   <Checkbox
                     id="include-all"
-                    checked={showAllUsers}
+                    checked={checkBoxStates.All}
                     onClick={() => {
-                      setCheckBox('All');
+                      setAllCheckBoxes();
                     }}
                   />
                   All
@@ -156,7 +162,7 @@ export default function CalculatedShareAccordion({
                     >
                       <Checkbox
                         id="include-all"
-                        checked={showUsers[owner.name]}
+                        checked={checkBoxStates[owner.name]}
                         onClick={() => {
                           setCheckBox(owner.name);
                         }}
@@ -167,10 +173,10 @@ export default function CalculatedShareAccordion({
                 })}
               </div>
             </div>
-            {share && !accordionIsDisabled && !usersWithoutTransactions && (
+            {share && (
               <div className="flex flex-row gap-2 justify-start mx-1 my-4">
                 <span className="min-w-[90px] text-muted-foreground font-bold">
-                  Share Per Person:
+                  Share Per User:
                 </span>
                 <div className="flex flex-row align-middle gap-2 text-xs font-thin text-muted-foreground">
                   <AnimateNumber
@@ -180,12 +186,21 @@ export default function CalculatedShareAccordion({
                 </div>
               </div>
             )}
+            {accordionIsDisabled && (
+              <div className="flex flex-row gap-2 justify-start mx-1 my-4">
+                <span className="min-w-[90px] text-muted-foreground">
+                  No outstanding debits
+                </span>
+              </div>
+            )}
             {share?.debitorBalances.map((debitor) => {
               return debitor.owed.map((owed) => {
                 return (
                   <div className="flex m-1" key={`${debitor}-${owed.to}-debit`}>
-                    <div className="min-w-[100px] text-muted-foreground font-bold">
-                      {debitor.name}:
+                    <div className="w-[100px] ">
+                      <div className="w-[90px] overflow-x-scroll h-5 text-muted-foreground text-nowrap font-bold no-scrollbar">
+                        {debitor.name}
+                      </div>
                     </div>
                     <div className="flex text-muted-foreground">
                       Owes

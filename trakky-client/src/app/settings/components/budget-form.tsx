@@ -26,7 +26,7 @@ import { resultToast } from '@/components/ui/use-toast';
 import {
   firstOfTheMonthDateString,
   nextMonthDateString,
-} from '@/lib/formatter';
+} from '@/lib/text-formatter';
 import { errorMessage } from '@/components/ui/table/form-error-message';
 import { Budget } from '@/models/dtos';
 import { CalendarIcon } from 'lucide-react';

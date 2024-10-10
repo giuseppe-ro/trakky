@@ -1,6 +1,6 @@
 import { Payment } from '@/models/dtos';
 import { TableRow } from '@/components/ui/table';
-import { formatCurrency } from '@/lib/formatter';
+import { formatCurrency } from '@/lib/text-formatter';
 import { twMerge } from 'tailwind-merge';
 
 function PaymentsRecap({

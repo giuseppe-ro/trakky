@@ -1,4 +1,4 @@
-import { formatCurrency } from '@/lib/formatter';
+import { formatCurrency } from '@/lib/text-formatter';
 import { twMerge } from 'tailwind-merge';
 
 export function AmountSummary({

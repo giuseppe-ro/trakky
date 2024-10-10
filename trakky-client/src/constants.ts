@@ -20,4 +20,5 @@ export enum StorageKey {
   SelectedYear = 'selected_year',
   SelectedMonth = 'selected_month',
   ActiveColumns = 'active_columns',
+  ShowedUserShares = 'showed_user_shares',
 }

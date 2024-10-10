@@ -1,7 +1,7 @@
 import { Budget, Payment } from '@/models/dtos';
 import { OwnerOverview } from '@/models/owner-overview';
 import { PaymentOverview } from '@/models/payment-overview';
-import { formatDateMonth } from '@/lib/formatter';
+import { formatDateMonth } from '@/lib/text-formatter';
 
 export function getAvailableYears(data: Payment[]) {
   return data

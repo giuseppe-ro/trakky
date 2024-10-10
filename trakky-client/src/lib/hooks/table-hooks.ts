@@ -25,7 +25,7 @@ import { demoMode, Endpoint } from '@/constants';
 import * as z from 'zod';
 import { Budget, Payment } from '@/models/dtos';
 import { Total } from '@/models/total';
-import { monthNameToNumber } from '@/lib/formatter';
+import { monthNameToNumber } from '@/lib/text-formatter';
 import { Client } from '@/infrastructure/client-injector';
 
 export function usePaymentsTable({

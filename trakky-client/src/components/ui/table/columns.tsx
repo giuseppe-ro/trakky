@@ -1,5 +1,5 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { formatCurrency, formatStringDate } from '@/lib/formatter';
+import { formatCurrency, formatStringDate } from '@/lib/text-formatter';
 import { fuzzySort } from '@/lib/filters';
 import { EditCell } from '@/components/ui/table/edit-cell';
 import { PaymentForm } from '@/components/ui/table/payment-form';

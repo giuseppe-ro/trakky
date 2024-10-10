@@ -1,4 +1,4 @@
-import { formatStringDate } from '@/lib/formatter';
+import { formatStringDate } from '@/lib/text-formatter';
 import { Row, Cell, flexRender } from '@tanstack/react-table';
 import { Dictionary, GetCategoryIcon } from './icons';
 

@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { FadeLeft } from '@/components/ui/animations/fade';
 import React from 'react';
-import { formatCurrency, getPercentageChangeText } from '@/lib/formatter';
+import { formatCurrency, getPercentageChangeText } from '@/lib/text-formatter';
 import { Total } from '@/models/total';
 import AnimatedNumber from 'animated-number-react';
 import {

@@ -99,9 +99,9 @@ export function MainNav({ children }: HTMLAttributes<HTMLElement>) {
                         key={link.href}
                         href={link.href}
                         className={twMerge(
-                          'rounded-md px-3 py-2 text-sm font-medium focus:outline-primary-foreground',
+                          'rounded-md px-4 py-4 text-sm font-medium focus:outline-primary-foreground',
                           window.location.pathname === link.href
-                            ? 'bg-primary-foreground text-primary'
+                            ? 'bg-primary-foreground text-primary shadow shadow-primary-foreground'
                             : 'text-muted-foreground hover:bg-primary-foreground hover:text-primary'
                         )}
                       >
@@ -166,7 +166,7 @@ export function MainNav({ children }: HTMLAttributes<HTMLElement>) {
         </div>
       </nav>
       {links.length > 1 && (
-        <nav className="z-50 fixed border-2 inset-x-0 bottom-0 sm:hidden bg-secondary flex-row items-center justify-around visible md:invisible w-full text-2xl">
+        <nav className="z-50 fixed inset-x-0 bottom-0 sm:hidden bg-secondary flex-row items-center justify-around visible md:invisible w-full text-2xl">
           <div className="flex flex-row justify-center align-middle">
             {links.map((link) => (
               <a
@@ -175,7 +175,7 @@ export function MainNav({ children }: HTMLAttributes<HTMLElement>) {
                 className={twMerge(
                   'block px-3 py-2 text-base w-full font-medium',
                   window.location.pathname === link.href
-                    ? 'bg-primary-foreground text-primary'
+                    ? 'bg-primary-foreground text-primary border-x border-t border-secondary-foreground/30'
                     : 'text-muted-foreground/50'
                 )}
               >

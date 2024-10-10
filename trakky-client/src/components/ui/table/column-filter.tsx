@@ -62,7 +62,7 @@ export function Filter<TData>({
               ])
             }
             placeholder="Min"
-            className="rounded-none font-thin w-1/2 placeholder:text-xs focus:bg-secondary shadow bg-primary-foreground pl-1 focus:outline-none"
+            className="h-6 rounded-none font-thin w-1/2 placeholder:text-xs focus:bg-secondary shadow bg-primary-foreground pl-1 focus:outline-none"
           />
           <DebouncedInput
             type="number"
@@ -76,7 +76,7 @@ export function Filter<TData>({
               ])
             }
             placeholder="Max"
-            className="rounded-none font-thin w-1/2 placeholder:text-xs focus:bg-secondary shadow bg-primary-foreground pl-1 focus:outline-none"
+            className="h-6 rounded-none font-thin w-1/2 placeholder:text-xs focus:bg-secondary shadow bg-primary-foreground pl-1 focus:outline-none"
           />
         </div>
       </div>
@@ -85,7 +85,7 @@ export function Filter<TData>({
 
   if (isValidDate(firstValue)) {
     return (
-      <div className="overflow-auto">
+      <div className="">
         <div className="flex space-x-0.5">
           <DebouncedSelect
             options={sortedUniqueValues()}

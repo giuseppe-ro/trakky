@@ -137,7 +137,7 @@ export default function CalculatedShareAccordion({
         <AccordionContent className="pb-0">
           <div>
             <div className="flex flex-row gap-2 justify-start mx-1 my-4">
-              <span className="min-w-[90px] text-muted-foreground font-bold">
+              <span className="min-w-[100px] text-muted-foreground">
                 Calculate For:
               </span>
               <div className="flex flex-row align-middle gap-2 text-xs font-thin text-muted-foreground">
@@ -176,7 +176,7 @@ export default function CalculatedShareAccordion({
             {share && (
               <>
                 <div className="flex flex-row gap-2 justify-start mx-1 mt-4">
-                  <span className="w-[100px] text-muted-foreground font-bold">
+                  <span className="w-[100px] text-muted-foreground">
                     Total:
                   </span>
                   <div className="flex flex-row align-middle gap-2 text-xs font-thin text-muted-foreground">
@@ -187,7 +187,7 @@ export default function CalculatedShareAccordion({
                   </div>
                 </div>
                 <div className="flex flex-row gap-2 justify-start mx-1 mb-4">
-                  <span className="w-[100px] text-muted-foreground font-bold">
+                  <span className="w-[100px] text-muted-foreground">
                     Share Per User:
                   </span>
                   <div className="flex flex-row align-middle gap-2 text-xs font-thin text-muted-foreground">
@@ -210,15 +210,15 @@ export default function CalculatedShareAccordion({
               return debitor.owed.map((owed) => {
                 return (
                   <div
-                    className="flex ml-1 border-t gap-2"
+                    className="flex ml-1 border-t gap-2 "
                     key={`${debitor}-${owed.to}-debit`}
                   >
-                    <div className="w-[100px]">
-                      <div className="w-[100px] overflow-x-scroll h-5 text-muted-foreground text-nowrap font-bold no-scrollbar">
+                    <div className="w-[100px] ">
+                      <div className="w-[100px] overflow-x-scroll text-yellow-600 h-5 text-muted-foreground text-nowrap no-scrollbar">
                         {debitor.name}
                       </div>
                     </div>
-                    <div className="flex text-muted-foreground text-xs font-thin">
+                    <div className="flex text-yellow-600 text-muted-foreground text-xs font-thin">
                       Owes
                       <div className="mx-1">
                         <AnimateNumber

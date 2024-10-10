@@ -178,7 +178,7 @@ export function CustomTable<TData extends object>({
                   key={row.id}
                   onClick={row.getToggleSelectedHandler()}
                   className={twMerge(
-                    'hover:bg-muted-foreground/40 border overflow-x-scroll hover:animate-pulse',
+                    'hover:bg-muted-foreground/40 border overflow-x-scroll hover:sm:animate-pulse',
                     row.getIsSelected() &&
                       'bg-muted-foreground/50 hover:bg-muted-foreground/40 hover:animate-none'
                   )}

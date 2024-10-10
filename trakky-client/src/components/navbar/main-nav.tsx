@@ -145,7 +145,7 @@ export function MainNav({ children }: HTMLAttributes<HTMLElement>) {
               )}
               <TooltipProvider>
                 <Tooltip>
-                  <TooltipTrigger className="rounded ml-4 w-4 flex justify-center items-center focus-visible:outline-none focus-visible:ring-[0px]">
+                  <TooltipTrigger className="rounded ml-4 w-4 flex justify-center items-center focus-visible:outline-none focus-visible:ring-[0px] mr-2 sm:mr-4">
                     <a
                       href="https://github.com/Joe85gr/trakky"
                       className="cursor-pointer inline-flex items-center justify-center text-muted-foreground hover:text-primary-foreground h-8 py-2"
@@ -168,15 +168,18 @@ export function MainNav({ children }: HTMLAttributes<HTMLElement>) {
       {links.length > 1 && (
         <nav className="z-50 fixed inset-x-0 bottom-0 sm:hidden bg-secondary flex-row items-center justify-around visible md:invisible w-full text-2xl">
           <div className="flex flex-row justify-center align-middle">
-            {links.map((link) => (
+            {links.map((link, index) => (
               <a
                 key={link.href}
                 href={link.href}
                 className={twMerge(
                   'block px-3 py-2 text-base w-full font-medium',
+                  'rounded-t-md',
+                  index === 0 && 'rounded-s-none',
+                  index === links.length - 1 && 'rounded-e-none',
                   window.location.pathname === link.href
                     ? 'bg-primary-foreground text-primary border-x border-t border-secondary-foreground/30'
-                    : 'text-muted-foreground/50'
+                    : 'text-muted-foreground/50 hover:bg-primary-foreground/50'
                 )}
               >
                 <div className="flex flex-col">

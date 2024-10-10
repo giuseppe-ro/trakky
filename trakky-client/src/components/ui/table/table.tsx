@@ -180,7 +180,7 @@ export function CustomTable<TData extends object>({
                   className={twMerge(
                     'hover:bg-muted-foreground/40 border overflow-x-scroll hover:animate-pulse',
                     row.getIsSelected() &&
-                      'bg-muted-foreground/50 hover:bg-muted-foreground/40'
+                      'bg-muted-foreground/50 hover:bg-muted-foreground/40 hover:animate-none'
                   )}
                   {...{
                     style: {

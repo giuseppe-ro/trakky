@@ -209,13 +209,16 @@ export default function CalculatedShareAccordion({
             {share?.debitorBalances.map((debitor) => {
               return debitor.owed.map((owed) => {
                 return (
-                  <div className="flex m-1" key={`${debitor}-${owed.to}-debit`}>
-                    <div className="w-[100px] ">
-                      <div className="w-[90px] overflow-x-scroll h-5 text-muted-foreground text-nowrap font-bold no-scrollbar">
+                  <div
+                    className="flex mx-1 border-b gap-2"
+                    key={`${debitor}-${owed.to}-debit`}
+                  >
+                    <div className="w-[100px]">
+                      <div className="w-[100px] overflow-x-scroll h-5 text-muted-foreground text-nowrap font-bold no-scrollbar">
                         {debitor.name}
                       </div>
                     </div>
-                    <div className="flex text-muted-foreground">
+                    <div className="flex text-muted-foreground text-xs font-thin">
                       Owes
                       <div className="mx-1">
                         <AnimateNumber

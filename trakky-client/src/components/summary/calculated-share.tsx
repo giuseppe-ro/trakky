@@ -210,7 +210,7 @@ export default function CalculatedShareAccordion({
               return debitor.owed.map((owed) => {
                 return (
                   <div
-                    className="flex mx-1 border-b gap-2"
+                    className="flex ml-1 border-t gap-2"
                     key={`${debitor}-${owed.to}-debit`}
                   >
                     <div className="w-[100px]">

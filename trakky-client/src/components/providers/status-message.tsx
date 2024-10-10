@@ -26,8 +26,8 @@ export const StatusMessage = memo(() => {
 
   if (demoMode) {
     return (
-      <div className="sticky top-16 z-40">
-        <FadeDown className="top-16 z-40">
+      <div className="sticky top-8 sm:top-16 z-40">
+        <FadeDown className="top-8 sm:top-16 z-40">
           <div className="flex flex-row justify-center align-middle bg-yellow-600 w-full text-primary text-xs md:text-base text-center">
             Demo mode.
           </div>

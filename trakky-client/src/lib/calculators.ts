@@ -61,7 +61,11 @@ export const getDebitorBalances = (balances: Dictionary<number>) => {
     }
   }
 
-  return { amount: share, debitorBalances } as unknown as Share;
+  return {
+    totalAmount: total,
+    shareAmount: share,
+    debitorBalances,
+  } as unknown as Share;
 };
 
 export default getDebitorBalances;

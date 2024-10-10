@@ -1,6 +1,7 @@
 import { DebitorBalance } from './debitor-balance';
 
 export interface Share {
-  amount: number;
+  totalAmount: number;
+  shareAmount: number;
   debitorBalances: DebitorBalance[];
 }

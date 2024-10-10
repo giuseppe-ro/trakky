@@ -174,17 +174,30 @@ export default function CalculatedShareAccordion({
               </div>
             </div>
             {share && (
-              <div className="flex flex-row gap-2 justify-start mx-1 my-4">
-                <span className="min-w-[90px] text-muted-foreground font-bold">
-                  Share Per User:
-                </span>
-                <div className="flex flex-row align-middle gap-2 text-xs font-thin text-muted-foreground">
-                  <AnimateNumber
-                    amount={share.amount}
-                    formatter={formatCurrency}
-                  />
+              <>
+                <div className="flex flex-row gap-2 justify-start mx-1 mt-4">
+                  <span className="w-[100px] text-muted-foreground font-bold">
+                    Total:
+                  </span>
+                  <div className="flex flex-row align-middle gap-2 text-xs font-thin text-muted-foreground">
+                    <AnimateNumber
+                      amount={share.totalAmount}
+                      formatter={formatCurrency}
+                    />
+                  </div>
                 </div>
-              </div>
+                <div className="flex flex-row gap-2 justify-start mx-1 mb-4">
+                  <span className="w-[100px] text-muted-foreground font-bold">
+                    Share Per User:
+                  </span>
+                  <div className="flex flex-row align-middle gap-2 text-xs font-thin text-muted-foreground">
+                    <AnimateNumber
+                      amount={share.shareAmount}
+                      formatter={formatCurrency}
+                    />
+                  </div>
+                </div>
+              </>
             )}
             {accordionIsDisabled && (
               <div className="flex flex-row gap-2 justify-start mx-1 my-4">

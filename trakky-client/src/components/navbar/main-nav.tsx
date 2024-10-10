@@ -76,9 +76,9 @@ export function MainNav({ children }: HTMLAttributes<HTMLElement>) {
   return (
     <>
       <nav className="sticky z-50 top-0 border-b bg-secondary">
-        <div className="mx-auto max-w-7xl min-w-[300px] px-2">
-          <div className="relative flex h-16 items-center justify-between">
-            <div className="flex flex-1 items-center justify-start m-6 sm:items-stretch sm:justify-start">
+        <div className="mx-auto max-w-7xl min-w-[300px] px-0 sm:px-2">
+          <div className="relative flex h-8 sm:h-16 items-center justify-between">
+            <div className="flex flex-1 items-center justify-center m-6 sm:items-stretch sm:justify-start">
               <button
                 type="button"
                 onClick={() => {
@@ -86,7 +86,7 @@ export function MainNav({ children }: HTMLAttributes<HTMLElement>) {
                 }}
                 className="flex flex-shrink-0 items-center"
               >
-                <div className="flex flex-row sm:ml-0">
+                <div className="flex flex-row items-center sm:ml-0">
                   <img alt="Trakky" src="owl_login.png" className="h-6 w-6" />
                   <div className="text-primary text-lg ml-2">Trakky</div>
                 </div>
@@ -166,24 +166,24 @@ export function MainNav({ children }: HTMLAttributes<HTMLElement>) {
         </div>
       </nav>
       {links.length > 1 && (
-        <nav className="z-50 fixed inset-x-0 bottom-0 sm:hidden bg-secondary flex-row items-center justify-around px-8 py-2 visible md:invisible w-full text-2xl">
-          <div className="flex flex-row justify-around align-middle">
+        <nav className="z-50 fixed border-2 inset-x-0 bottom-0 sm:hidden bg-secondary flex-row items-center justify-around visible md:invisible w-full text-2xl">
+          <div className="flex flex-row justify-center align-middle">
             {links.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
                 className={twMerge(
-                  'block rounded-md px-3 py-2 text-base font-medium',
+                  'block px-3 py-2 text-base w-full font-medium',
                   window.location.pathname === link.href
                     ? 'bg-primary-foreground text-primary'
-                    : 'text-muted-foreground hover:bg-primary-foreground hover:text-primary'
+                    : 'text-muted-foreground/50'
                 )}
               >
                 <div className="flex flex-col">
                   <div className="flex justify-center">
                     {getTabIcon(link.label)}
                   </div>
-                  <span className="text-sm">{link.label}</span>
+                  <span className="text-sm text-center">{link.label}</span>
                 </div>
               </a>
             ))}

@@ -123,7 +123,7 @@ export function CustomTable<TData extends object>({
 
   return (
     <div>
-      <Table className="overflow-x-scroll">
+      <Table>
         <TableHeader className="hover:bg-transparent">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
@@ -138,7 +138,7 @@ export function CustomTable<TData extends object>({
                       style: {
                         width: colSize(header.id),
                         maxWidth: colSize(header.id),
-                        overflow: 'auto',
+                        overflow: 'hidden',
                       },
                     }}
                   >
@@ -178,13 +178,13 @@ export function CustomTable<TData extends object>({
                   key={row.id}
                   onClick={row.getToggleSelectedHandler()}
                   className={twMerge(
-                    'hover:bg-muted-foreground/50 border',
+                    'hover:bg-muted-foreground/40 border overflow-x-scroll hover:animate-pulse',
                     row.getIsSelected() &&
-                      'bg-muted-foreground/20 hover:bg-muted-foreground/30'
+                      'bg-muted-foreground/50 hover:bg-muted-foreground/40'
                   )}
                   {...{
                     style: {
-                      overflow: 'auto',
+                      overflowX: 'auto',
                     },
                   }}
                 >

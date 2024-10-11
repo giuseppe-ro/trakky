@@ -49,7 +49,7 @@ function TableNavigation<TData>({
           setPageSize(Number(value));
         }}
       >
-        <SelectTrigger className="h-12 md:h-10 w-16 md:w-[60px] m-0 rounded-md text-xs md:text-sm font-thin md:font-light">
+        <SelectTrigger className="h-12 md:h-10 min-w-12 w-16 md:w-[60px] m-0 rounded-md text-xs md:text-sm font-thin md:font-light">
           <SelectValue placeholder={getState().pagination.pageSize} />
         </SelectTrigger>
         <SelectContent
@@ -73,7 +73,7 @@ function TableNavigation<TData>({
         <div className="flex gap-x-1">
           <Button
             variant="outline"
-            className="p-0 ml-0 h-12 md:h-10 w-16 sm:w-10"
+            className="p-0 ml-0 h-12 md:h-10 w-14 sm:w-10"
             onClick={() => setPageIndex(0)}
             disabled={!getCanPreviousPage()}
           >
@@ -82,7 +82,7 @@ function TableNavigation<TData>({
           </Button>
           <Button
             variant="outline"
-            className="p-0 ml-0 h-12 md:h-10 w-16 sm:w-10"
+            className="p-0 ml-0 h-12 md:h-10 w-12 sm:w-10"
             onClick={() => previousPage()}
             disabled={!getCanPreviousPage()}
           >
@@ -93,7 +93,7 @@ function TableNavigation<TData>({
         <div className="flex gap-x-1">
           <Button
             variant="outline"
-            className="p-0 ml-0 h-12 md:h-10 w-16 sm:w-10"
+            className="p-0 ml-0 h-12 md:h-10 w-12 sm:w-10"
             onClick={() => nextPage()}
             disabled={!getCanNextPage()}
           >
@@ -102,7 +102,7 @@ function TableNavigation<TData>({
           </Button>
           <Button
             variant="outline"
-            className="ml-0 h-12 md:h-10 w-16 sm:w-10"
+            className="ml-0 h-12 md:h-10 w-14 sm:w-10"
             onClick={() => setPageIndex(getPageCount() - 1)}
             disabled={!getCanNextPage()}
           >

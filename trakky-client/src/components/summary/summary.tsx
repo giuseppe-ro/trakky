@@ -3,7 +3,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { FadeLeft } from '@/components/ui/animations/fade';
-import React from 'react';
 import { formatCurrency, getPercentageChangeText } from '@/lib/text-formatter';
 import { Total } from '@/models/total';
 import AnimatedNumber from 'animated-number-react';
@@ -12,13 +11,11 @@ import {
   getPreviousYearTotal,
   calculatePercentageDiff,
 } from './calculators';
-import { Dictionary } from '../ui/table/icons';
 
 interface SummaryCardProps {
   title: string;
   amount?: number;
   contentSubText?: string;
-  children?: React.ReactNode;
 }
 
 export function AnimateNumber({
@@ -33,14 +30,9 @@ export function AnimateNumber({
   return <AnimatedNumber value={amount} formatValue={formatter} />;
 }
 
-function SummaryCard({
-  title,
-  amount,
-  contentSubText,
-  children,
-}: SummaryCardProps) {
+function SummaryCard({ title, amount, contentSubText }: SummaryCardProps) {
   return (
-    <Card className="border rounded-xl p-1 md:p-4 h-[130px] md:h-[150px] overflow-scroll">
+    <Card className="border rounded-xl p-1 md:p-4 h-28 md:h-36 overflow-y-scroll no-scrollbar">
       <CardHeader className="flex flex-row items-center justify-between space-y-0">
         <CardTitle className="text-sm font-medium text-muted-foreground">
           {title}
@@ -50,10 +42,7 @@ function SummaryCard({
         <div className="text-xl md:text-2xl font-bold">
           <AnimateNumber amount={amount} formatter={formatCurrency} />
         </div>
-        <div className="text-xs text-muted-foreground">
-          {contentSubText}
-          {children}
-        </div>
+        <div className="text-xs text-muted-foreground">{contentSubText}</div>
       </CardContent>
     </Card>
   );
@@ -62,18 +51,15 @@ function SummaryCard({
 SummaryCard.defaultProps = {
   amount: null,
   contentSubText: '',
-  children: null,
 };
 
 export function Summary({
-  balances,
   totalAmount,
   partialTotal,
   totalsPerYear,
   selectedYear,
   selectedMonth,
 }: {
-  balances: Dictionary<number> | undefined;
   totalAmount: number;
   partialTotal: number;
   totalsPerYear: Total[];
@@ -111,7 +97,7 @@ export function Summary({
       <Tabs defaultValue="overview" className="space-y-4 animate-fade">
         <TabsContent value="overview" className="space-y-4" tabIndex={-1}>
           <FadeLeft>
-            <div className="flex gap-2 flex-row sm:gap-4 grow">
+            <div className="flex gap-3 flex-row sm:gap-3 grow">
               <div className="w-[100%] sm:w-[50%]">
                 <SummaryCard
                   title="Total"
@@ -120,30 +106,7 @@ export function Summary({
                 />
               </div>
               <div className="w-[100%] sm:w-[50%]">
-                <SummaryCard title="Partial Total" amount={partialTotal}>
-                  {balances &&
-                    Object.keys(balances).map((user) => {
-                      return (
-                        <div
-                          className="text-sm text-left"
-                          key={`${user}-accordion`}
-                        >
-                          <div className="flex">
-                            <div className="mr-2 w-[80px] overflow-x-scroll no-scrollbar text-muted-foreground">
-                              {user}:
-                            </div>
-                            <div className="flex text-muted-foreground">
-                              <AnimateNumber
-                                amount={balances[user]}
-                                formatter={formatCurrency}
-                              />
-                              <span className="ml-2 hidden xs:flex" />
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                </SummaryCard>
+                <SummaryCard title="Partial Total" amount={partialTotal} />
               </div>
             </div>
           </FadeLeft>

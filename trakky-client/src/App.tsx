@@ -44,7 +44,6 @@ export default function App() {
       <Loading loading={isLoading}>
         <Containers>
           <Summary
-            balances={balances}
             totalAmount={totalAmount}
             partialTotal={partialTotal}
             totalsPerYear={totalsPerYear}
@@ -52,19 +51,21 @@ export default function App() {
             selectedMonth={selectedMonth ?? ''}
           />
         </Containers>
-        <Containers className="pt-5">
+        <Containers className="pt-2">
           {balances && <CalculatedShareAccordion balances={balances} />}
         </Containers>
         <div />
         <FadeUp>
           {!isError && (
-            <YearSelection
-              availableYears={availableYears}
-              selectedYear={selectedYear}
-              onYearChange={setSelectedYear}
-              onMonthChange={setSelectedMonth}
-              selectedMonth={selectedMonth}
-            />
+            <div className="mt-4">
+              <YearSelection
+                availableYears={availableYears}
+                selectedYear={selectedYear}
+                onYearChange={setSelectedYear}
+                onMonthChange={setSelectedMonth}
+                selectedMonth={selectedMonth}
+              />
+            </div>
           )}
           <PaymentsTable
             table={table}

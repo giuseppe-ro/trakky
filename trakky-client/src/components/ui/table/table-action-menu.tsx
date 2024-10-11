@@ -49,7 +49,7 @@ function TableNavigation<TData>({
           setPageSize(Number(value));
         }}
       >
-        <SelectTrigger className="h-10 w-[60px] m-0 rounded-md text-xs md:text-sm font-thin md:font-light">
+        <SelectTrigger className="h-12 md:h-10 w-16 md:w-[60px] m-0 rounded-md text-xs md:text-sm font-thin md:font-light">
           <SelectValue placeholder={getState().pagination.pageSize} />
         </SelectTrigger>
         <SelectContent
@@ -73,7 +73,7 @@ function TableNavigation<TData>({
         <div className="flex gap-x-1">
           <Button
             variant="outline"
-            className="h-10 w-10 p-0 ml-0"
+            className="p-0 ml-0 h-12 md:h-10 w-16 sm:w-10"
             onClick={() => setPageIndex(0)}
             disabled={!getCanPreviousPage()}
           >
@@ -82,7 +82,7 @@ function TableNavigation<TData>({
           </Button>
           <Button
             variant="outline"
-            className="h-10 w-10 p-0"
+            className="p-0 ml-0 h-12 md:h-10 w-16 sm:w-10"
             onClick={() => previousPage()}
             disabled={!getCanPreviousPage()}
           >
@@ -93,7 +93,7 @@ function TableNavigation<TData>({
         <div className="flex gap-x-1">
           <Button
             variant="outline"
-            className="h-10 w-10 p-0"
+            className="p-0 ml-0 h-12 md:h-10 w-16 sm:w-10"
             onClick={() => nextPage()}
             disabled={!getCanNextPage()}
           >
@@ -102,7 +102,7 @@ function TableNavigation<TData>({
           </Button>
           <Button
             variant="outline"
-            className="h-10 w-10 p-0"
+            className="ml-0 h-12 md:h-10 w-16 sm:w-10"
             onClick={() => setPageIndex(getPageCount() - 1)}
             disabled={!getCanNextPage()}
           >
@@ -153,7 +153,7 @@ const TableActionMenu = memo(
                     <TooltipTrigger>
                       <PopupDialog
                         trigger={
-                          <div className="inline-flex items-center justify-center text-xs md:text-sm font-thin md:font-light transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow h-8 px-4 py-2 border-green-500/50 bg-green-600 text-primary rounded w-20 hover:bg-green-500/50 outline-none">
+                          <div className="inline-flex items-center justify-center text-sm font-light transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow h-8 px-4 py-2 border-green-500/50 bg-green-600 text-primary rounded w-20 hover:bg-green-500/50 outline-none">
                             Add
                           </div>
                         }

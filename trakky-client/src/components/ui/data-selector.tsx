@@ -94,7 +94,7 @@ function YearSelection({
           demoMode && 'top-24'
         )}
       >
-        <div className="flex w-full gap-x-3 mt-4">
+        <div className="flex w-full gap-x-3 mt-10 sm:mt-0">
           <Selection
             value={year()}
             onChange={changeYear}

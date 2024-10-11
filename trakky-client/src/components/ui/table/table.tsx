@@ -131,7 +131,7 @@ export function CustomTable<TData extends object>({
                 const disableEditColumn = filtersOnly && header.id === 'edit';
                 return disableEditColumn ? null : (
                   <TableHead
-                    className="h-full border border-primary-foreground text-center text-xs md:text-sm"
+                    className="h-full border text-center text-xs md:text-sm"
                     key={header.id}
                     {...{
                       colSpan: header.colSpan,
@@ -170,7 +170,7 @@ export function CustomTable<TData extends object>({
             </TableRow>
           ))}
         </TableHeader>
-        <TableBody>
+        <TableBody className="border">
           {showTableBody &&
             table.getRowModel().rows.map((row) => {
               return (
@@ -178,7 +178,7 @@ export function CustomTable<TData extends object>({
                   key={row.id}
                   onClick={row.getToggleSelectedHandler()}
                   className={twMerge(
-                    'hover:bg-muted-foreground/40 border overflow-x-scroll hover:sm:animate-pulse',
+                    'sm:hover:bg-muted-foreground/40 border overflow-x-scroll hover:sm:animate-pulse',
                     row.getIsSelected() &&
                       'bg-muted-foreground/50 hover:bg-muted-foreground/40 hover:animate-none'
                   )}

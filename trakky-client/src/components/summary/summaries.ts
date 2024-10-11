@@ -28,12 +28,15 @@ function sortMap(map: Map<string, string[]>): Map<string, string[]> {
   return new Map(sortedEntries);
 }
 
+const sortDate = (a: Payment, b: Payment) =>
+  Date.parse(b.date) - Date.parse(a.date);
+
 export function getYearsAndMonths(data: Payment[]) {
   const yearMonthMap = new Map<string, string[]>();
 
   yearMonthMap.set('All Years', ['All Months']);
 
-  data.forEach((payment) => {
+  data.sort(sortDate).forEach((payment) => {
     const date = new Date(payment.date);
     const year = date.getFullYear().toString();
     const month = formatDateMonth(payment.date);

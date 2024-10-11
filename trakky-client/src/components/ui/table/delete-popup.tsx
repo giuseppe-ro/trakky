@@ -36,7 +36,7 @@ function DeleteDialog({
             <AlertDialogTrigger asChild>
               <div
                 className={twMerge(
-                  'inline-flex items-center justify-center text-xs md:text-sm font-thin md:font-light focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow px-4 border-destructive bg-destructive text-primary h-8 w-24 hover:bg-destructive/50 my-0 py-0 rounded',
+                  'inline-flex items-center justify-center text-sm font-light focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow px-4 border-destructive bg-destructive text-primary h-8 w-24 hover:bg-destructive/50 my-0 py-0 rounded',
                   className
                 )}
               >

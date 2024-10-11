@@ -61,7 +61,7 @@ describe('test BudgetToDeleteList rendering', () => {
           .getByTitle('Users Dashboard')
           .querySelector('li')
           ?.querySelector('span')?.textContent
-      ).toBe('Donald');
+      ).toBe('Goofy');
 
       // // breakdown chart
       expect(

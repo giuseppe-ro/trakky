@@ -138,7 +138,7 @@ function Selection({
         <SelectValue placeholder="" />
       </SelectTrigger>
       <SelectContent>
-        <SelectGroup>
+        <SelectGroup className="max-h-48">
           {options.map((option) => (
             <SelectItem key={option} value={option.toString()}>
               {option}

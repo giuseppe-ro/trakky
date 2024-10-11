@@ -99,7 +99,7 @@ export function MainNav({ children }: HTMLAttributes<HTMLElement>) {
                         key={link.href}
                         href={link.href}
                         className={twMerge(
-                          'rounded-md px-4 py-4 text-sm font-medium focus:outline-primary-foreground',
+                          'rounded-md px-4 py-4 text-sm font-medium transition-all focus:outline-primary-foreground',
                           window.location.pathname === link.href
                             ? 'bg-primary-foreground text-primary shadow shadow-primary-foreground'
                             : 'text-muted-foreground hover:bg-primary-foreground hover:text-primary'
@@ -115,7 +115,7 @@ export function MainNav({ children }: HTMLAttributes<HTMLElement>) {
             <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
               {(skipAuth || !auth.isLoading) && (
                 <DropdownMenu>
-                  <DropdownMenuTrigger className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary-foreground focus:outline-none">
+                  <DropdownMenuTrigger className="text-sm font-medium text-muted-foreground transition-colors hover:text-muted-foreground/50 focus:outline-none">
                     {userName}
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="flex flex-col justify-between">
@@ -148,12 +148,12 @@ export function MainNav({ children }: HTMLAttributes<HTMLElement>) {
                   <TooltipTrigger className="rounded ml-4 w-4 flex justify-center items-center focus-visible:outline-none focus-visible:ring-[0px] mr-2 sm:mr-4">
                     <a
                       href="https://github.com/Joe85gr/trakky"
-                      className="cursor-pointer inline-flex items-center justify-center text-muted-foreground hover:text-primary-foreground h-8 py-2"
+                      className="cursor-pointer inline-flex items-center justify-center text-muted-foreground hover:text-muted-foreground/50 h-8 py-2"
                       target="_blank"
                       rel="noreferrer"
                       aria-label="Source Code"
                     >
-                      <Github className="h-4 w-4" />
+                      <Github className="h-4 w-4 transition-all" />
                     </a>
                   </TooltipTrigger>
                   <TooltipContent className="bg-primary-foreground text-primary">
@@ -175,8 +175,8 @@ export function MainNav({ children }: HTMLAttributes<HTMLElement>) {
                 className={twMerge(
                   'block px-3 py-2 text-base w-full font-medium',
                   'rounded-t-md',
-                  index === 0 && 'rounded-s-none',
-                  index === links.length - 1 && 'rounded-e-none',
+                  index === 0 && 'rounded-tl-none',
+                  index === links.length - 1 && 'rounded-tr-none',
                   window.location.pathname === link.href
                     ? 'bg-primary-foreground text-primary border-x border-t border-secondary-foreground/30'
                     : 'text-muted-foreground/50 hover:bg-primary-foreground/50'

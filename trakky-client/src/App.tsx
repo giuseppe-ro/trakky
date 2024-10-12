@@ -51,22 +51,20 @@ export default function App() {
             selectedMonth={selectedMonth ?? ''}
           />
         </Containers>
+        {!isError && (
+          <YearSelection
+            availableYears={availableYears}
+            selectedYear={selectedYear}
+            onYearChange={setSelectedYear}
+            onMonthChange={setSelectedMonth}
+            selectedMonth={selectedMonth}
+          />
+        )}
         <Containers className="pt-2">
           {balances && <CalculatedShareAccordion balances={balances} />}
         </Containers>
         <div />
         <FadeUp>
-          {!isError && (
-            <div className="mt-4">
-              <YearSelection
-                availableYears={availableYears}
-                selectedYear={selectedYear}
-                onYearChange={setSelectedYear}
-                onMonthChange={setSelectedMonth}
-                selectedMonth={selectedMonth}
-              />
-            </div>
-          )}
           <PaymentsTable
             table={table}
             onDeleteConfirmed={onDeleteConfirmed}

@@ -8,14 +8,6 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  DoubleArrowLeftIcon,
-  DoubleArrowRightIcon,
-  ReloadIcon,
-} from '@radix-ui/react-icons';
-import { SelectIcon } from '@radix-ui/react-select';
-import {
   Select,
   SelectContent,
   SelectItem,
@@ -27,6 +19,14 @@ import { ExportDropdownMenu } from '@/components/ui/table/download-dropdown';
 import { Client } from '@/infrastructure/client-injector';
 import { Endpoint } from '@/constants';
 import { Category } from '@/models/dtos';
+import {
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
+  RotateCcw,
+} from 'lucide-react';
 
 function TableNavigation<TData>({
   getState,
@@ -49,7 +49,7 @@ function TableNavigation<TData>({
           setPageSize(Number(value));
         }}
       >
-        <SelectTrigger className="h-12 md:h-10 min-w-12 w-16 md:w-[60px] m-0 rounded-md text-xs md:text-sm font-thin md:font-light">
+        <SelectTrigger className="h-12 md:h-10 min-w-12 w-16 md:w-[60px] m-0 rounded-md text-base md:text-sm font-light">
           <SelectValue placeholder={getState().pagination.pageSize} />
         </SelectTrigger>
         <SelectContent
@@ -63,7 +63,7 @@ function TableNavigation<TData>({
           ))}
         </SelectContent>
       </Select>
-      <div className="flex items-center text-sm font-thin whitespace-nowrap">
+      <div className="flex items-center text-base md:text-sm font-light whitespace-nowrap">
         Page{' '}
         {!noData &&
           `${getState().pagination.pageIndex + 1} of 
@@ -73,41 +73,41 @@ function TableNavigation<TData>({
         <div className="flex gap-x-1">
           <Button
             variant="outline"
-            className="p-0 ml-0 h-12 md:h-10 w-14 sm:w-10"
+            className="p-0 ml-0 h-12 md:h-10 w-14 sm:w-16 rounded-none rounded-l"
             onClick={() => setPageIndex(0)}
             disabled={!getCanPreviousPage()}
           >
             <span className="sr-only">Go to first page</span>
-            <DoubleArrowLeftIcon className="h-4 w-4" />
+            <ChevronsLeft />
           </Button>
           <Button
             variant="outline"
-            className="p-0 ml-0 h-12 md:h-10 w-12 sm:w-10"
+            className="p-0 ml-0 h-12 md:h-10 w-12 sm:w-10 rounded-none rounded-l"
             onClick={() => previousPage()}
             disabled={!getCanPreviousPage()}
           >
             <span className="sr-only">Go to previous page</span>
-            <ChevronLeftIcon className="h-4 w-4" />
+            <ChevronLeft />
           </Button>
         </div>
         <div className="flex gap-x-1">
           <Button
             variant="outline"
-            className="p-0 ml-0 h-12 md:h-10 w-12 sm:w-10"
+            className="p-0 ml-0 h-12 md:h-10 w-12 sm:w-10 rounded-none rounded-r"
             onClick={() => nextPage()}
             disabled={!getCanNextPage()}
           >
             <span className="sr-only">Go to next page</span>
-            <ChevronRightIcon className="h-4 w-4" />
+            <ChevronRight />
           </Button>
           <Button
             variant="outline"
-            className="ml-0 h-12 md:h-10 w-14 sm:w-10"
+            className="ml-0 h-12 md:h-10 w-14 sm:w-16 rounded-none rounded-r"
             onClick={() => setPageIndex(getPageCount() - 1)}
             disabled={!getCanNextPage()}
           >
             <span className="sr-only">Go to last page</span>
-            <DoubleArrowRightIcon className="h-4 w-4" />
+            <ChevronsRight />
           </Button>
         </div>
       </div>
@@ -146,14 +146,14 @@ const TableActionMenu = memo(
       <div>
         <div className="mt-2">
           <div className="flex justify-between">
-            <div className="flex gap-x-5 mt-2 mb-2">
+            <div className="flex gap-x-3 sm:gap-x-5 mt-2">
               <div className="order-1">
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger>
                       <PopupDialog
                         trigger={
-                          <div className="inline-flex items-center justify-center text-sm font-light transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow h-8 px-4 py-2 border-green-500/50 bg-green-600 text-primary rounded w-20 hover:bg-green-500/50 outline-none">
+                          <div className="inline-flex h-10 items-center justify-center text-base sm:text-xs sm:font-light transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow px-4 py-2 border-green-500/50 bg-green-600 text-primary rounded w-20 hover:bg-green-500/50 outline-none">
                             Add
                           </div>
                         }
@@ -176,9 +176,9 @@ const TableActionMenu = memo(
                     <TooltipTrigger
                       disabled={noData}
                       onClick={() => onRefresh(true)}
-                      className="rounded flex justify-center hover:text-muted-foreground disabled:text-muted  items-center text-primary focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring "
+                      className="rounded px-4 sm:px-0 text-yellow-600 flex justify-center hover:text-muted-foreground disabled:text-muted  items-center focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring "
                     >
-                      <ReloadIcon />
+                      <RotateCcw width={30} />
                     </TooltipTrigger>
                     <TooltipContent className="bg-secondary text-primary">
                       Refresh
@@ -191,10 +191,10 @@ const TableActionMenu = memo(
                   <Tooltip>
                     <TooltipTrigger
                       disabled={noData}
-                      className="rounded hover:text-muted-foreground text-primary disabled:text-muted focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring "
+                      className="rounded px-4 sm:px-0 text-muted-foreground sm:text-primary hover:text-muted-foreground disabled:text-muted focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring "
                       onClick={table.getToggleAllPageRowsSelectedHandler()}
                     >
-                      <SelectIcon />
+                      <ChevronDown />
                     </TooltipTrigger>
                     <TooltipContent
                       tabIndex={-1}

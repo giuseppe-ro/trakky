@@ -39,10 +39,21 @@ export function CustomTable<TData extends object>({
   filtersOnly,
   page,
 }: CustomTableProps<TData>) {
+  const [atLeastOneColumnIsVisible, setAtLeastOneColumnIsVisible] =
+    useState<boolean>(!filtersOnly);
   const [showTableBody, setShowTableBody] = useState<boolean>(!filtersOnly);
   const [iconMapping, setIconMapping] = useState<Dictionary<string>>();
 
   const activeColumnsKey = `${page}_${StorageKey.ActiveColumns}`;
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    const availableColumns = table
+      .getAllColumns()
+      .filter((column) => column.getIsVisible()).length;
+
+    setAtLeastOneColumnIsVisible(availableColumns > 1);
+  });
 
   useEffect(() => {
     const storedActiveColumns = localStorage.getItem(activeColumnsKey);
@@ -82,6 +93,10 @@ export function CustomTable<TData extends object>({
     }
   };
 
+  const availableColumns = table
+    .getAllColumns()
+    .filter((column) => column.getCanHide() && column.getCanPin());
+
   const renderFilterCells = (header: Header<TData, unknown>) => {
     if (header.id === 'edit' && !filtersOnly) {
       return (
@@ -92,31 +107,32 @@ export function CustomTable<TData extends object>({
             </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide() && column.getCanPin())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) => {
-                      column.toggleVisibility(value);
-                      saveActiveCols(column.id, value);
-                    }}
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
+            {availableColumns.map((column) => {
+              return (
+                <DropdownMenuCheckboxItem
+                  key={column.id}
+                  className="capitalize"
+                  checked={column.getIsVisible()}
+                  onCheckedChange={(value) => {
+                    column.toggleVisibility(value);
+                    saveActiveCols(column.id, value);
+                  }}
+                >
+                  {column.id}
+                </DropdownMenuCheckboxItem>
+              );
+            })}
           </DropdownMenuContent>
         </DropdownMenu>
       );
     }
 
     if (header.column.getCanFilter())
-      return <Filter column={header.column} table={table} />;
+      return (
+        <div className="pt-2">
+          <Filter column={header.column} table={table} />
+        </div>
+      );
 
     return null;
   };
@@ -131,13 +147,15 @@ export function CustomTable<TData extends object>({
                 const disableEditColumn = filtersOnly && header.id === 'edit';
                 return disableEditColumn ? null : (
                   <TableHead
-                    className="h-full border text-center text-xs md:text-sm"
+                    className="h-full border  text-center text-xs md:text-sm"
                     key={header.id}
                     {...{
                       colSpan: header.colSpan,
                       style: {
                         width: colSize(header.id),
                         maxWidth: colSize(header.id),
+                        fontSize: 14,
+                        paddingTop: 10,
                         overflow: 'hidden',
                       },
                     }}
@@ -146,7 +164,8 @@ export function CustomTable<TData extends object>({
                       <>
                         <div
                           {...{
-                            className: 'cursor-pointer select-none',
+                            className:
+                              'cursor-pointer select-none text-base sm:text-sm',
                             onClick: showTableBody
                               ? header.column.getToggleSortingHandler()
                               : () => {},
@@ -172,13 +191,14 @@ export function CustomTable<TData extends object>({
         </TableHeader>
         <TableBody className="border">
           {showTableBody &&
+            atLeastOneColumnIsVisible &&
             table.getRowModel().rows.map((row) => {
               return (
                 <TableRow
                   key={row.id}
                   onClick={row.getToggleSelectedHandler()}
                   className={twMerge(
-                    'sm:hover:bg-muted-foreground/40 border overflow-x-scroll hover:sm:animate-pulse',
+                    'sm:hover:bg-muted-foreground/40 h-12 sm:h-10 border overflow-x-scroll hover:sm:animate-pulse',
                     row.getIsSelected() &&
                       'bg-muted-foreground/50 hover:bg-muted-foreground/40 hover:animate-none'
                   )}

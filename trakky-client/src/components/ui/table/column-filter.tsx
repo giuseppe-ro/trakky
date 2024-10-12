@@ -48,60 +48,50 @@ export function Filter<TData>({
 
   if (typeof firstValue === 'number') {
     return (
-      <div>
-        <div className="flex space-x-0.5">
-          <DebouncedInput
-            type="number"
-            min={Number(column.getFacetedMinMaxValues()?.[0] ?? '')}
-            max={Number(column.getFacetedMinMaxValues()?.[1] ?? '')}
-            value={(columnFilterValue as [number, number])?.[0] ?? ''}
-            onChange={(value) =>
-              column.setFilterValue((old: [number, number]) => [
-                value,
-                old?.[1],
-              ])
-            }
-            placeholder="Min"
-            className="h-6 rounded-none font-thin w-[100%] sm:w-1/2 placeholder:text-xs focus:bg-secondary shadow bg-primary-foreground pl-1 focus:outline-none"
-          />
-          <DebouncedInput
-            type="number"
-            min={Number(column.getFacetedMinMaxValues()?.[0] ?? '')}
-            max={Number(column.getFacetedMinMaxValues()?.[1] ?? '')}
-            value={(columnFilterValue as [number, number])?.[1] ?? ''}
-            onChange={(value) =>
-              column.setFilterValue((old: [number, number]) => [
-                old?.[0],
-                value,
-              ])
-            }
-            placeholder="Max"
-            className="hidden sm:flex h-6 rounded-none font-thin w-1/2 placeholder:text-xs focus:bg-secondary shadow bg-primary-foreground pl-1 focus:outline-none"
-          />
-        </div>
+      <div className="flex space-x-0.5">
+        <DebouncedInput
+          type="number"
+          min={Number(column.getFacetedMinMaxValues()?.[0] ?? '')}
+          max={Number(column.getFacetedMinMaxValues()?.[1] ?? '')}
+          value={(columnFilterValue as [number, number])?.[0] ?? ''}
+          onChange={(value) =>
+            column.setFilterValue((old: [number, number]) => [value, old?.[1]])
+          }
+          placeholder="Min"
+          className="h-6 text-center sm:text-left rounded-none font-thin w-[100%] sm:w-1/2 placeholder:text-xs focus:bg-secondary shadow bg-primary-foreground pl-1 focus:outline-none"
+        />
+        <DebouncedInput
+          type="number"
+          min={Number(column.getFacetedMinMaxValues()?.[0] ?? '')}
+          max={Number(column.getFacetedMinMaxValues()?.[1] ?? '')}
+          value={(columnFilterValue as [number, number])?.[1] ?? ''}
+          onChange={(value) =>
+            column.setFilterValue((old: [number, number]) => [old?.[0], value])
+          }
+          placeholder="Max"
+          className="hidden sm:flex h-6 rounded-none font-thin w-1/2 placeholder:text-xs focus:bg-secondary shadow bg-primary-foreground pl-1 focus:outline-none"
+        />
       </div>
     );
   }
 
   if (isValidDate(firstValue)) {
     return (
-      <div className="">
-        <div className="flex space-x-0.5">
-          <DebouncedSelect
-            options={sortedUniqueValues()}
-            value={(columnFilterValue ?? '') as string}
-            onChange={(value) => {
-              column.setFilterValue(value === 'All' ? '' : value);
-            }}
-            className="h-6"
-          />
-        </div>
+      <div className="flex space-x-0.5">
+        <DebouncedSelect
+          options={sortedUniqueValues()}
+          value={(columnFilterValue ?? '') as string}
+          onChange={(value) => {
+            column.setFilterValue(value === 'All' ? '' : value);
+          }}
+          className="h-6"
+        />
       </div>
     );
   }
 
   return (
-    <>
+    <div>
       <datalist id={`${column.id}list`}>
         {sortedUniqueValues()
           .slice(0, 5000)
@@ -117,7 +107,7 @@ export function Filter<TData>({
         className="h-6 rounded-none w-full shadow focus:bg-secondary bg-primary-foreground font-thin text-primary/50 selection:bg-primary-foreground pl-2 focus:outline-none"
         list={`${column.id}list`}
       />
-    </>
+    </div>
   );
 }
 

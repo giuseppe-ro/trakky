@@ -28,8 +28,7 @@ function IconWrapper({ IconComponent }: IconProps) {
     <IconComponent
       strokeWidth={1}
       alignmentBaseline="middle"
-      className="text-muted-foreground h-5 flex text-sm text-justify stroke-2"
-      height="100%"
+      className="text-muted-foreground h-8 w-6 flex text-sm text-justify stroke-2"
     />
   );
 }

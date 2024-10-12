@@ -7,7 +7,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { DownloadIcon } from '@radix-ui/react-icons';
 import { Row, Table } from '@tanstack/react-table';
 import Label from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -20,6 +19,7 @@ import {
 } from '@/components/ui/tooltip';
 import { downloadFile } from '@/lib/utils';
 import { Payment } from '@/models/dtos';
+import { ArrowDownToLine } from 'lucide-react';
 
 function RadioGroupFormat({ id, label }: { id: string; label: string }) {
   return (
@@ -92,11 +92,11 @@ export function ExportDropdownMenu<TData>({
         <TooltipTrigger
           disabled={noData}
           tabIndex={-1}
-          className="rounded text-green-500 hover:text-green-500/50 disabled:text-green-500/50  focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring "
+          className="rounded text-green-500 px-4 sm:px-0 h-12 sm:h-8 hover:text-green-500/50 disabled:text-green-500/50  focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring "
         >
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <DownloadIcon className="rounded h-5 w-5 cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring " />
+              <ArrowDownToLine />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-36">
               <DropdownMenuLabel>

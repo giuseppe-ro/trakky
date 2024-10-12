@@ -18,11 +18,12 @@ export function EditCell({
           type="submit"
           key={id}
           variant="outline"
-          className="bg-transparent hover:bg-transparent p-0 mx-1 my-0 h-5 border-none hover:text-green-500"
+          className="bg-transparent hover:bg-transparent p-0 mx-1 my-0 border-none hover:text-green-500"
         >
           <FilePenLine
-            width={16}
-            height={16}
+            display="flex"
+            width={28}
+            // height={24}
             className="hover:text-green-500 text-green-500/50"
           />
         </Button>

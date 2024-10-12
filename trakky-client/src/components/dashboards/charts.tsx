@@ -52,7 +52,7 @@ function OverviewTooltip({
 }) {
   return (
     <div>
-      <div className="bg-primary-foreground border border-secondary rounded-t-md">
+      <div className="hidden sm:block bg-primary-foreground border border-secondary rounded-t-md">
         <p className="text-primary rounded-t-md font-bold pb-2">{label}</p>
         <div className="p-2">{children}</div>
       </div>

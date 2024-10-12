@@ -28,11 +28,14 @@ function Dashboards({
       <div className="mt-6 text-center mr-4 lg:mx-0">
         <div className="lg:grid gap-4 lg:grid-cols-2">
           <div className="mt-4 sm:mt-0" title="Expenses Dashboard">
-            <SubTitle title="Expenses" />
+            <SubTitle title="Expenses" {...{ className: 'ml-16' }} />
             <ExpensesDashboard data={paymentOverviews} />
           </div>
-          <div className="mt-4 sm:mt-0" title="Users Dashboard">
-            <SubTitle title="Users Comparison" {...{ className: 'mb-4' }} />
+          <div className="mt-4 md:mt-0" title="Users Dashboard">
+            <SubTitle
+              title="Users Comparison"
+              {...{ className: 'mb-4 ml-16' }}
+            />
             <UsersDashboard data={ownersOverview} />
           </div>
         </div>

@@ -14,8 +14,8 @@ function renderCell<TData>(
 
   if (cell.id.includes('type')) {
     return (
-      <div className="flex flex-row align-middle gap-x-2 justify-center">
-        <div className="pt-1.5">
+      <div className="flex flex-row align-middle gap-x-2 justify-start">
+        <div>
           {iconMapping &&
             GetCategoryIcon({
               key: row.getValue('type'),

@@ -32,9 +32,9 @@ export function AnimateNumber({
 
 function SummaryCard({ title, amount, contentSubText }: SummaryCardProps) {
   return (
-    <Card className="border rounded-xl p-1 md:p-4 h-28 md:h-36 overflow-y-scroll no-scrollbar">
+    <Card className="rounded-xl text-center md:p-4 overflow-y-scroll no-scrollbar">
       <CardHeader className="flex flex-row items-center justify-between space-y-0">
-        <CardTitle className="text-sm font-medium text-muted-foreground">
+        <CardTitle className="text-sm w-full text-center font-medium text-muted-foreground">
           {title}
         </CardTitle>
       </CardHeader>
@@ -42,7 +42,9 @@ function SummaryCard({ title, amount, contentSubText }: SummaryCardProps) {
         <div className="text-xl md:text-2xl font-bold">
           <AnimateNumber amount={amount} formatter={formatCurrency} />
         </div>
-        <div className="text-xs text-muted-foreground">{contentSubText}</div>
+        <div className="text-xs font-light text-muted-foreground">
+          {contentSubText}
+        </div>
       </CardContent>
     </Card>
   );
@@ -97,7 +99,7 @@ export function Summary({
       <Tabs defaultValue="overview" className="space-y-4 animate-fade">
         <TabsContent value="overview" className="space-y-4" tabIndex={-1}>
           <FadeLeft>
-            <div className="flex gap-3 flex-row sm:gap-3 grow">
+            <div className="flex gap-3 flex-row sm:gap-3 grow mt-2 sm:mt-0">
               <div className="w-[100%] sm:w-[50%]">
                 <SummaryCard
                   title="Total"

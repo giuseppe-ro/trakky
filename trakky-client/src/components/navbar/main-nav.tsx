@@ -174,12 +174,12 @@ export function MainNav({ children }: HTMLAttributes<HTMLElement>) {
                 href={link.href}
                 className={twMerge(
                   'block px-3 py-2 text-base w-full font-medium',
-                  'rounded-t-md',
-                  index === 0 && 'rounded-tl-none',
-                  index === links.length - 1 && 'rounded-tr-none',
                   window.location.pathname === link.href
-                    ? 'bg-primary-foreground text-primary border-x border-t border-secondary-foreground/30'
-                    : 'text-muted-foreground/50 hover:bg-primary-foreground/50'
+                    ? 'bg-primary-foreground text-primary border border-b-0 border-secondary-foreground/30'
+                    : 'text-muted-foreground/50 hover:bg-primary-foreground/50',
+                  'rounded-t-md',
+                  index === 0 && 'rounded-tl-none border-l-0',
+                  index === links.length - 1 && 'rounded-tr-none border-r-0'
                 )}
               >
                 <div className="flex flex-col">

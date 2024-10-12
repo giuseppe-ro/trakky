@@ -18,7 +18,7 @@ export default function AddComponent({
         onClick={onAdd}
         type="submit"
         variant="outline"
-        className="rounded-r-none border-green-500/50 hover:bg-green-500/50"
+        className="rounded-r-none text-base sm:text-xs h-10 border-green-500/50 hover:bg-green-500/50"
       >
         Add
       </Button>
@@ -26,7 +26,7 @@ export default function AddComponent({
       <SubmittableInput
         onSubmit={onAdd}
         onChange={(e) => setNew(e.target.value)}
-        className="rounded-l-none focus-visible:ring-0 focus-visible:outline-none h-8 outline-none"
+        className="rounded-l-none focus-visible:ring-0 focus-visible:outline-none h-10 outline-none"
       />
     </div>
   );

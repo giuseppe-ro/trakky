@@ -171,16 +171,16 @@ const TableActionMenu = memo(
                     </Tooltip>
                   </TooltipProvider>
                 </div>
-                <div className="order-2 gap-x-2 flex flex-row">
+                <div className="order-2 ml-2 gap-x-2 flex flex-row">
                   <div className="flex">
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger
                           disabled={noData}
                           onClick={() => onRefresh(true)}
-                          className="rounded px-2 text-yellow-600 flex justify-center hover:text-muted-foreground disabled:text-muted  items-center focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring "
+                          className="rounded px-2 text-yellow-500 flex justify-center hover:text-yellow-800 disabled:text-muted  items-center focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring "
                         >
-                          <RotateCcw width={30} />
+                          <RotateCcw />
                         </TooltipTrigger>
                         <TooltipContent className="bg-secondary text-primary">
                           Refresh
@@ -193,7 +193,7 @@ const TableActionMenu = memo(
                       <Tooltip>
                         <TooltipTrigger
                           disabled={noData}
-                          className="rounded text-muted-foreground sm:text-primary hover:text-muted-foreground disabled:text-muted focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring "
+                          className="rounded text-gray-300 sm:text-primary hover:text-gray-500 disabled:text-muted focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring "
                           onClick={table.getToggleAllPageRowsSelectedHandler()}
                         >
                           <ChevronDown />

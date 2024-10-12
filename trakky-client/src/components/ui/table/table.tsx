@@ -129,7 +129,7 @@ export function CustomTable<TData extends object>({
 
     if (header.column.getCanFilter())
       return (
-        <div className="pt-2">
+        <div className="pt-1">
           <Filter column={header.column} table={table} />
         </div>
       );
@@ -147,7 +147,7 @@ export function CustomTable<TData extends object>({
                 const disableEditColumn = filtersOnly && header.id === 'edit';
                 return disableEditColumn ? null : (
                   <TableHead
-                    className="h-full border  text-center text-xs md:text-sm"
+                    className="h-full border text-center text-xs md:text-sm"
                     key={header.id}
                     {...{
                       colSpan: header.colSpan,
@@ -155,7 +155,7 @@ export function CustomTable<TData extends object>({
                         maxWidth: maxColSize(header.id),
                         minWidth: minColSize(header.id),
                         fontSize: 14,
-                        paddingTop: 10,
+                        paddingTop: 5,
                         overflow: 'hidden',
                       },
                     }}
@@ -164,8 +164,7 @@ export function CustomTable<TData extends object>({
                       <>
                         <div
                           {...{
-                            className:
-                              'cursor-pointer select-none text-base sm:text-sm',
+                            className: 'cursor-pointer select-none text-base',
                             onClick: showTableBody
                               ? header.column.getToggleSortingHandler()
                               : () => {},

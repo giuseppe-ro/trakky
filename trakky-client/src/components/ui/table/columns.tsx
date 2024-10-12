@@ -25,6 +25,7 @@ export const PaymentColumnDefinition = (
     },
     {
       accessorKey: 'type',
+      enableHiding: false,
       header: 'Type',
       filterFn: 'fuzzy',
       sortingFn: fuzzySort,
@@ -34,6 +35,7 @@ export const PaymentColumnDefinition = (
     },
     {
       accessorKey: 'owner',
+      enableHiding: false,
       header: 'User',
       filterFn: 'fuzzy',
       sortingFn: fuzzySort,
@@ -43,6 +45,7 @@ export const PaymentColumnDefinition = (
     },
     {
       accessorKey: 'amount',
+      enableHiding: false,
       header: 'Amount',
       cell: ({ row }) => {
         const amount = parseFloat(row.getValue('amount'));
@@ -53,6 +56,8 @@ export const PaymentColumnDefinition = (
     },
     {
       accessorKey: 'description',
+      enableHiding: true,
+      enableGlobalFilter: false,
       header: 'Description',
       cell: ({ row }) => {
         return <div className="font-sm">{row.getValue('description')}</div>;
@@ -61,7 +66,6 @@ export const PaymentColumnDefinition = (
     {
       accessorKey: 'id',
       header: 'Id',
-      enableColumnFilter: false,
       enableGlobalFilter: false,
       cell: ({ row }) => {
         return <div className="text-right font-sm">{row.getValue('id')}</div>;
@@ -73,7 +77,7 @@ export const PaymentColumnDefinition = (
       header: () => null,
       cell: ({ row }) => {
         return (
-          <div>
+          <div className="flex w-full justify-end">
             <EditCell id={(row.original as Payment).id}>
               <PaymentForm
                 editValues={row.original as Payment}
@@ -150,19 +154,39 @@ export const BudgetColumnDefinition = (
 
 export const colSize = (id: string): number | string => {
   switch (id) {
-    case 'description':
-      return 'auto';
     case 'select':
       return 50;
     case 'edit':
       return 40;
     case 'date':
       return 90;
-    case 'owner' || 'id':
-      return 80;
     case 'amount':
       return 115;
     default:
       return 100;
+  }
+};
+
+export const maxColSize = (id: string): number | string => {
+  switch (id) {
+    case 'select':
+      return 50;
+    case 'edit':
+      return 40;
+    default:
+      return 1000;
+  }
+};
+
+export const minColSize = (id: string): number | string => {
+  switch (id) {
+    case 'owner':
+      return 50;
+    case 'amount':
+      return 100;
+    case 'edit':
+      return 40;
+    default:
+      return 10;
   }
 };

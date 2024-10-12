@@ -46,13 +46,15 @@ function DashboardPage() {
       <Title title="Dashboards" />
       <Loading loading={isLoading}>
         {!isError && (
-          <YearSelection
-            availableYears={availableYears}
-            selectedYear={selectedYear}
-            onYearChange={setSelectedYear}
-            selectedMonth={selectedMonth}
-            onMonthChange={setSelectedMonth}
-          />
+          <div className="sticky top-20 z-30 md:px-0 mt-8">
+            <YearSelection
+              availableYears={availableYears}
+              selectedYear={selectedYear}
+              onYearChange={setSelectedYear}
+              selectedMonth={selectedMonth}
+              onMonthChange={setSelectedMonth}
+            />
+          </div>
         )}
         <FadeLeft>
           <div className="mt-6 text-center" aria-label="Filters">

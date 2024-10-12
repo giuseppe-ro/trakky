@@ -20,12 +20,7 @@ export function EditCell({
           variant="outline"
           className="bg-transparent hover:bg-transparent p-0 mx-1 my-0 border-none hover:text-green-500"
         >
-          <FilePenLine
-            display="flex"
-            width={28}
-            // height={24}
-            className="hover:text-green-500 text-green-500/50"
-          />
+          <FilePenLine className=" hover:text-green-500 text-green-500/50" />
         </Button>
       }
     >

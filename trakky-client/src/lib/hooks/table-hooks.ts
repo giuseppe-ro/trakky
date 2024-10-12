@@ -159,6 +159,7 @@ export function usePaymentsTable({
   async function onRefresh(resetFilters: boolean = true) {
     if (resetFilters) {
       table.resetColumnFilters();
+      table.resetRowSelection();
     }
 
     refreshData();
@@ -256,6 +257,7 @@ export function useBudgetsTable({
 
   async function onRefresh(flushBeforeRefresh: boolean = true) {
     table.resetColumnFilters();
+    table.resetRowSelection();
     refreshData(flushBeforeRefresh);
   }
 

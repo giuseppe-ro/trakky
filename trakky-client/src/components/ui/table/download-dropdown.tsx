@@ -92,7 +92,7 @@ export function ExportDropdownMenu<TData>({
         <TooltipTrigger
           disabled={noData}
           tabIndex={-1}
-          className="rounded text-green-500 px-4 sm:px-0 h-12 sm:h-8 hover:text-green-500/50 disabled:text-green-500/50  focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring "
+          className="rounded text-green-500 px-4 hover:text-green-500/50 disabled:text-green-500/50  focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring "
         >
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

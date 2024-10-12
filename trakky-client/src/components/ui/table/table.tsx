@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/table';
 import { twMerge } from 'tailwind-merge';
 import Filter from '@/components/ui/table/column-filter';
-import { colSize } from '@/components/ui/table/columns';
+import { maxColSize, minColSize } from '@/components/ui/table/columns';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -46,15 +46,6 @@ export function CustomTable<TData extends object>({
 
   const activeColumnsKey = `${page}_${StorageKey.ActiveColumns}`;
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => {
-    const availableColumns = table
-      .getAllColumns()
-      .filter((column) => column.getIsVisible()).length;
-
-    setAtLeastOneColumnIsVisible(availableColumns > 1);
-  });
-
   useEffect(() => {
     const storedActiveColumns = localStorage.getItem(activeColumnsKey);
 
@@ -76,6 +67,15 @@ export function CustomTable<TData extends object>({
       localStorage.setItem(activeColumnsKey, activeColumns);
     }
   }, [activeColumnsKey, table]);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    const availableColumns = table
+      .getAllColumns()
+      .filter((column) => column.getIsVisible()).length;
+
+    setAtLeastOneColumnIsVisible(availableColumns > 1);
+  });
 
   useEffect(() => {
     GetCategoryIconMapping().then((mapping) => {
@@ -152,8 +152,8 @@ export function CustomTable<TData extends object>({
                     {...{
                       colSpan: header.colSpan,
                       style: {
-                        width: colSize(header.id),
-                        maxWidth: colSize(header.id),
+                        maxWidth: maxColSize(header.id),
+                        minWidth: minColSize(header.id),
                         fontSize: 14,
                         paddingTop: 10,
                         overflow: 'hidden',

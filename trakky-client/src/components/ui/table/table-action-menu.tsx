@@ -145,73 +145,77 @@ const TableActionMenu = memo(
     return (
       <div>
         <div className="mt-2">
-          <div className="flex justify-between">
-            <div className="flex gap-x-3 sm:gap-x-5 mt-2">
-              <div className="order-1">
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <PopupDialog
-                        trigger={
-                          <div className="inline-flex h-10 items-center justify-center text-base sm:text-xs sm:font-light transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow px-4 py-2 border-green-500/50 bg-green-600 text-primary rounded w-20 hover:bg-green-500/50 outline-none">
-                            Add
-                          </div>
-                        }
-                      >
-                        {addForm}
-                      </PopupDialog>
-                    </TooltipTrigger>
+          <div className="flex justify-between mb-2 mt-4">
+            <div className="flex gap-x-3 sm:gap-x-5">
+              <div className="flex gap-x-2 flex-row">
+                <div className="order-1">
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <PopupDialog
+                          trigger={
+                            <div className="inline-flex h-10 items-center justify-center text-base sm:text-xs sm:font-light transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow px-4 py-2 border-green-500/50 bg-green-600 text-primary rounded w-20 hover:bg-green-500/50 outline-none">
+                              Add
+                            </div>
+                          }
+                        >
+                          {addForm}
+                        </PopupDialog>
+                      </TooltipTrigger>
 
-                    <TooltipContent className="bg-secondary text-primary">
-                      {noCategories
-                        ? 'Add at least a new category in settings to add transactions'
-                        : 'Add New Transaction'}
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
-              <div className="flex justify-center order-2 sm:order-2">
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger
-                      disabled={noData}
-                      onClick={() => onRefresh(true)}
-                      className="rounded px-4 sm:px-0 text-yellow-600 flex justify-center hover:text-muted-foreground disabled:text-muted  items-center focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring "
-                    >
-                      <RotateCcw width={30} />
-                    </TooltipTrigger>
-                    <TooltipContent className="bg-secondary text-primary">
-                      Refresh
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
-              <div className="flex justify-center order-3 sm:order-3">
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger
-                      disabled={noData}
-                      className="rounded px-4 sm:px-0 text-muted-foreground sm:text-primary hover:text-muted-foreground disabled:text-muted focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring "
-                      onClick={table.getToggleAllPageRowsSelectedHandler()}
-                    >
-                      <ChevronDown />
-                    </TooltipTrigger>
-                    <TooltipContent
-                      tabIndex={-1}
-                      className="bg-secondary text-primary"
-                    >
-                      Select/Unselect visible rows
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
-              {!noData && (
-                <div className="flex justify-center order-4 sm:order-4">
-                  <ExportDropdownMenu table={table} name={exportName} />
+                      <TooltipContent className="bg-secondary text-primary">
+                        {noCategories
+                          ? 'Add at least a new category in settings to add transactions'
+                          : 'Add New Transaction'}
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </div>
-              )}
+                <div className="order-2 gap-x-2 flex flex-row">
+                  <div className="flex">
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger
+                          disabled={noData}
+                          onClick={() => onRefresh(true)}
+                          className="rounded px-2 text-yellow-600 flex justify-center hover:text-muted-foreground disabled:text-muted  items-center focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring "
+                        >
+                          <RotateCcw width={30} />
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-secondary text-primary">
+                          Refresh
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </div>
+                  <div className="flex justify-center order-3 sm:order-3">
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger
+                          disabled={noData}
+                          className="rounded text-muted-foreground sm:text-primary hover:text-muted-foreground disabled:text-muted focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring "
+                          onClick={table.getToggleAllPageRowsSelectedHandler()}
+                        >
+                          <ChevronDown />
+                        </TooltipTrigger>
+                        <TooltipContent
+                          tabIndex={-1}
+                          className="bg-secondary text-primary"
+                        >
+                          Select/Unselect visible rows
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </div>
+                  {!noData && (
+                    <div className="flex justify-center order-4 sm:order-4">
+                      <ExportDropdownMenu table={table} name={exportName} />
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
-            <div className="gap-x-3 mt-2 mb-2">
+            <div className="gap-x-3">
               <div className="flex justify-self-end order-5 sm:order-5">
                 {(table.getIsSomeRowsSelected() ||
                   table.getIsAllRowsSelected()) &&

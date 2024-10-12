@@ -17,7 +17,7 @@ const AccordionItem = React.forwardRef<
   <AccordionPrimitive.Item
     ref={ref}
     className={twMerge(
-      'border-b border-x rounded-b-lg hover:border-primary',
+      'border-b border-x rounded-b-lg data-[state=closed]:hover:border-primary transition-all',
       className
     )}
     {...props}

@@ -145,7 +145,7 @@ export default function CalculatedShareAccordion({
                 <Button
                   variant="outline"
                   className={twMerge(
-                    'text-base font-normal h-10',
+                    'text-base font-normal h-9',
                     checkBoxStates.All
                       ? 'bg-button-checkbox hover:bg-button-checkbox text-primary hover:text-primary hover:font-bold'
                       : 'bg-background hover:bg-background text-muted-foreground/50 hover:text-muted-foreground'
@@ -162,7 +162,7 @@ export default function CalculatedShareAccordion({
                       key={owner.id}
                       variant="outline"
                       className={twMerge(
-                        'text-base font-normal h-10',
+                        'text-base font-normal h-9',
                         checkBoxStates[owner.name]
                           ? 'bg-button-checkbox hover:bg-button-checkbox text-primary hover:text-primary hover:font-bold'
                           : 'bg-background hover:bg-background text-muted-foreground/50 hover:text-muted-foreground'

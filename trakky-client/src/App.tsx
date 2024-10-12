@@ -1,4 +1,3 @@
-import { Title } from '@/components/ui/text';
 import YearSelection from '@/components/ui/data-selector';
 import { usePaymentsTable } from '@/lib/hooks/table-hooks';
 import { Containers } from '@/components/ui/containers';
@@ -8,7 +7,9 @@ import Loading from '@/components/ui/loading';
 import { usePaymentData, useYearSelection } from '@/lib/hooks/payments-hooks';
 import Summary from '@/components/summary/summary';
 import PaymentsTable from '@/components/payments/table';
+import { twMerge } from 'tailwind-merge';
 import CalculatedShareAccordion from './components/summary/calculated-share';
+import { demoMode } from './constants';
 
 export default function App() {
   const { data: payments, refreshData, isLoading, isError } = usePaymentData();
@@ -39,19 +40,19 @@ export default function App() {
   );
 
   return (
-    <>
-      <Title title="Home" />
-      <Loading loading={isLoading}>
-        <Containers>
-          <Summary
-            totalAmount={totalAmount}
-            partialTotal={partialTotal}
-            totalsPerYear={totalsPerYear}
-            selectedYear={selectedYear ?? ''}
-            selectedMonth={selectedMonth ?? ''}
-          />
-        </Containers>
-        {!isError && (
+    <Loading loading={isLoading}>
+      <Containers>
+        <Summary
+          totalAmount={totalAmount}
+          partialTotal={partialTotal}
+          totalsPerYear={totalsPerYear}
+          selectedYear={selectedYear ?? ''}
+          selectedMonth={selectedMonth ?? ''}
+          {...{ className: twMerge(demoMode ? 'mt-4' : 'mt-2') }}
+        />
+      </Containers>
+      {!isError && (
+        <div className="sticky top-12 sm:top-24 z-30 mx-2 sm:mx-0">
           <YearSelection
             availableYears={availableYears}
             selectedYear={selectedYear}
@@ -59,19 +60,19 @@ export default function App() {
             onMonthChange={setSelectedMonth}
             selectedMonth={selectedMonth}
           />
-        )}
-        <Containers className="pt-2">
-          {balances && <CalculatedShareAccordion balances={balances} />}
-        </Containers>
-        <div />
-        <FadeUp>
-          <PaymentsTable
-            table={table}
-            onDeleteConfirmed={onDeleteConfirmed}
-            onRefresh={onRefresh}
-          />
-        </FadeUp>
-      </Loading>
-    </>
+        </div>
+      )}
+      <Containers className="pt-2">
+        {balances && <CalculatedShareAccordion balances={balances} />}
+      </Containers>
+      <div />
+      <FadeUp>
+        <PaymentsTable
+          table={table}
+          onDeleteConfirmed={onDeleteConfirmed}
+          onRefresh={onRefresh}
+        />
+      </FadeUp>
+    </Loading>
   );
 }

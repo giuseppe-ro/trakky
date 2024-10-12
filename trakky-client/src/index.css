@@ -20,6 +20,14 @@
     --primary: 210 40% 98%;
     --primary-foreground: 222.2 47.4% 11.2%;
 
+    --primary-button: 222.2 84% 4.9%;
+    --primary-button-foreground:  210 40% 98%;
+
+    --primary-checkbox: 200, 94.52%, 14.31%;
+
+    --primary-select: 222.2 84% 4.9%;
+    --primary-select-foreground:  210 40% 98%;
+
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
 
@@ -43,7 +51,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-primary;
   }
 
   /* Chrome, Safari, Edge, Opera */

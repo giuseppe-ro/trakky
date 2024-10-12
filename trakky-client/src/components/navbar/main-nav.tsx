@@ -101,7 +101,7 @@ export function MainNav({ children }: HTMLAttributes<HTMLElement>) {
                         className={twMerge(
                           'rounded-md px-4 py-4 text-sm font-medium transition-all focus:outline-primary-foreground',
                           window.location.pathname === link.href
-                            ? 'bg-primary-foreground text-primary shadow shadow-primary-foreground'
+                            ? 'bg-background text-primary'
                             : 'text-muted-foreground hover:bg-primary-foreground hover:text-primary'
                         )}
                       >

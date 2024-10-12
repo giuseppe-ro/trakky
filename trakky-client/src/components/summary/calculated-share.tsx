@@ -11,9 +11,10 @@ import { Owner } from '@/models/dtos';
 import { Share } from '@/models/share';
 import getDebitorBalances from '@/lib/calculators';
 import { formatCurrency } from '@/lib/text-formatter';
-import Checkbox from '../ui/checkbox';
+import { twMerge } from 'tailwind-merge';
 import { AnimateNumber } from './summary';
 import { Dictionary } from '../ui/table/icons';
+import { Button } from '../ui/button';
 
 interface CalculatedShareAccordionProps {
   balances: Dictionary<number>;
@@ -129,57 +130,60 @@ export default function CalculatedShareAccordion({
   }
 
   return (
-    <Accordion type="single" collapsible>
+    <Accordion type="single" collapsible className="mt-4">
       <AccordionItem value="item-1">
-        <AccordionTrigger className="justify-center gap-2 pb-2 text-sm bg-transparent text-muted-foreground">
+        <AccordionTrigger className="justify-center gap-2 pb-2 text-sm bg-transparent">
           Share Expenses
         </AccordionTrigger>
-        <AccordionContent className="pb-0">
+        <AccordionContent className="p-2 pb-1">
           <div>
-            <div className="flex flex-row gap-2 justify-start mx-1 my-4">
-              <span className="min-w-[100px] text-muted-foreground">
+            <div className="flex flex-row gap-2 justify-start mx-1 my-4 align-middle">
+              <span className="self-center min-w-[120px] text-base text-muted-foreground align-middle h-full">
                 Calculate For:
               </span>
-              <div className="flex flex-row align-middle gap-2 text-xs font-thin text-muted-foreground">
-                <div
-                  key="all"
-                  className="flex flex-row align-middle gap-1 text-xs font-thin text-muted-foreground"
+              <div className="flex flex-row flex-wrap align-middle gap-2">
+                <Button
+                  variant="outline"
+                  className={twMerge(
+                    'text-base font-normal h-10',
+                    checkBoxStates.All
+                      ? 'bg-button-checkbox hover:bg-button-checkbox text-primary hover:text-primary hover:font-bold'
+                      : 'bg-background hover:bg-background text-muted-foreground/50 hover:text-muted-foreground'
+                  )}
+                  onClick={() => {
+                    setAllCheckBoxes();
+                  }}
                 >
-                  <Checkbox
-                    id="include-all"
-                    checked={checkBoxStates.All}
-                    onClick={() => {
-                      setAllCheckBoxes();
-                    }}
-                  />
                   All
-                </div>
+                </Button>
                 {owners.map((owner) => {
                   return (
-                    <div
+                    <Button
                       key={owner.id}
-                      className="flex flex-row align-middle gap-1 text-xs font-thin text-muted-foreground"
+                      variant="outline"
+                      className={twMerge(
+                        'text-base font-normal h-10',
+                        checkBoxStates[owner.name]
+                          ? 'bg-button-checkbox hover:bg-button-checkbox text-primary hover:text-primary hover:font-bold'
+                          : 'bg-background hover:bg-background text-muted-foreground/50 hover:text-muted-foreground'
+                      )}
+                      onClick={() => {
+                        setCheckBox(owner.name);
+                      }}
                     >
-                      <Checkbox
-                        id="include-all"
-                        checked={checkBoxStates[owner.name]}
-                        onClick={() => {
-                          setCheckBox(owner.name);
-                        }}
-                      />
                       {owner.name}
-                    </div>
+                    </Button>
                   );
                 })}
               </div>
             </div>
-            {share && (
+            {share && !accordionIsDisabled && (
               <>
                 <div className="flex flex-row gap-2 justify-start mx-1 mt-4">
-                  <span className="w-[100px] text-muted-foreground">
+                  <span className="min-w-[120px] text-base text-muted-foreground">
                     Total:
                   </span>
-                  <div className="flex flex-row align-middle gap-2 text-xs font-thin text-muted-foreground">
+                  <div className="flex flex-row align-middle gap-2 text-base font-thin text-muted-foreground">
                     <AnimateNumber
                       amount={share.totalAmount}
                       formatter={formatCurrency}
@@ -187,10 +191,10 @@ export default function CalculatedShareAccordion({
                   </div>
                 </div>
                 <div className="flex flex-row gap-2 justify-start mx-1 mb-4">
-                  <span className="w-[100px] text-muted-foreground">
+                  <span className="min-w-[120px] text-base text-muted-foreground">
                     Share Per User:
                   </span>
-                  <div className="flex flex-row align-middle gap-2 text-xs font-thin text-muted-foreground">
+                  <div className="flex flex-row align-middle gap-2 text-base font-thin text-muted-foreground">
                     <AnimateNumber
                       amount={share.shareAmount}
                       formatter={formatCurrency}
@@ -213,14 +217,14 @@ export default function CalculatedShareAccordion({
                     className="flex ml-1 border-t gap-2 "
                     key={`${debitor}-${owed.to}-debit`}
                   >
-                    <div className="w-[100px] ">
-                      <div className="w-[100px] overflow-x-scroll text-yellow-600 h-5 text-muted-foreground text-nowrap no-scrollbar">
-                        {debitor.name}
+                    <div className="w-[120px] ">
+                      <div className="min-w-[120px] text-base overflow-x-scroll text-yellow-600 h-5 text-muted-foreground text-nowrap no-scrollbar">
+                        {debitor.name}:
                       </div>
                     </div>
-                    <div className="flex text-yellow-600 text-muted-foreground text-xs font-thin">
+                    <div className="flex text-yellow-600 text-base text-muted-foreground font-thin">
                       Owes
-                      <div className="mx-1">
+                      <div className="mx-1 font-medium">
                         <AnimateNumber
                           amount={owed.amount}
                           formatter={formatCurrency}

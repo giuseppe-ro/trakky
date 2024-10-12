@@ -49,13 +49,10 @@ function TableNavigation<TData>({
           setPageSize(Number(value));
         }}
       >
-        <SelectTrigger className="h-12 md:h-10 min-w-12 w-16 md:w-[60px] m-0 rounded-md text-base md:text-sm font-light">
+        <SelectTrigger className="h-12 md:h-10 bg-select-primary min-w-12 w-16 md:w-[60px] m-0 rounded-md text-base md:text-sm font-light">
           <SelectValue placeholder={getState().pagination.pageSize} />
         </SelectTrigger>
-        <SelectContent
-          side="top"
-          className="bg-primary-foreground focus:bg-muted-foreground"
-        >
+        <SelectContent side="top">
           {[10, 20, 30, 40, 50].map((pageSize) => (
             <SelectItem key={pageSize} value={`${pageSize}`}>
               {pageSize}
@@ -73,7 +70,7 @@ function TableNavigation<TData>({
         <div className="flex gap-x-1">
           <Button
             variant="outline"
-            className="p-0 ml-0 h-12 md:h-10 w-14 sm:w-16 rounded-none rounded-l"
+            className="p-0 ml-0 h-12 bg-button-primary md:h-10 w-14 sm:w-16 rounded-none rounded-l"
             onClick={() => setPageIndex(0)}
             disabled={!getCanPreviousPage()}
           >
@@ -82,7 +79,7 @@ function TableNavigation<TData>({
           </Button>
           <Button
             variant="outline"
-            className="p-0 ml-0 h-12 md:h-10 w-12 sm:w-10 rounded-none rounded-l"
+            className="p-0 ml-0 h-12 bg-button-primary md:h-10 w-12 sm:w-10 rounded-none rounded-l"
             onClick={() => previousPage()}
             disabled={!getCanPreviousPage()}
           >
@@ -93,7 +90,7 @@ function TableNavigation<TData>({
         <div className="flex gap-x-1">
           <Button
             variant="outline"
-            className="p-0 ml-0 h-12 md:h-10 w-12 sm:w-10 rounded-none rounded-r"
+            className="p-0 ml-0 h-12 bg-button-primary md:h-10 w-12 sm:w-10 rounded-none rounded-r"
             onClick={() => nextPage()}
             disabled={!getCanNextPage()}
           >
@@ -102,7 +99,7 @@ function TableNavigation<TData>({
           </Button>
           <Button
             variant="outline"
-            className="ml-0 h-12 md:h-10 w-14 sm:w-16 rounded-none rounded-r"
+            className="ml-0 h-12 bg-button-primary md:h-10 w-14 sm:w-16 rounded-none rounded-r"
             onClick={() => setPageIndex(getPageCount() - 1)}
             disabled={!getCanNextPage()}
           >
@@ -154,7 +151,7 @@ const TableActionMenu = memo(
                       <TooltipTrigger>
                         <PopupDialog
                           trigger={
-                            <div className="inline-flex h-10 items-center justify-center text-base sm:text-xs sm:font-light transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow px-4 py-2 border-green-500/50 bg-green-600 text-primary rounded w-20 hover:bg-green-500/50 outline-none">
+                            <div className="inline-flex h-10 text-base text-white sm:text-xs sm:font-light items-center justify-center transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow px-4 py-2 border-green-500/50 bg-green-600 text-primary rounded w-20 hover:bg-green-500/50 outline-none">
                               Add
                             </div>
                           }

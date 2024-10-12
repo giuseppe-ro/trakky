@@ -1,8 +1,7 @@
 import { Selection } from '@/components/ui/select';
 import { FadeRight } from '@/components/ui/animations/fade';
 import { useEffect } from 'react';
-import { demoMode, StorageKey } from '@/constants';
-import { twMerge } from 'tailwind-merge';
+import { StorageKey } from '@/constants';
 
 function YearSelection({
   availableYears,
@@ -88,12 +87,7 @@ function YearSelection({
     selectedYear &&
     availableYears &&
     Array.from(availableYears.keys()).length > 0 && (
-      <FadeRight
-        className={twMerge(
-          `sticky top-20 z-30 px-2 md:px-0`,
-          demoMode && 'top-24'
-        )}
-      >
+      <FadeRight className="sticky top-20 z-30">
         <div className="flex w-full gap-x-3 mt-0">
           <Selection
             value={year()}
@@ -101,7 +95,7 @@ function YearSelection({
             options={Array.from(availableYears.keys())}
             {...{
               className:
-                'rounded-md w-[50%] min-w-[164px] border border-secondary-foreground/10 overscroll-contain bg-primary-foreground hover:bg-secondary h-10',
+                'rounded-md w-[50%] text-base sm:text-sm p-4 sm:p-2 min-w-[164px] border overscroll-contain bg-select-primary hover:bg-select-foreground h-10',
             }}
           />
           <Selection
@@ -110,7 +104,7 @@ function YearSelection({
             options={availableYears.get(selectedYear) ?? []}
             {...{
               className:
-                'rounded-md w-[50%] min-w-[164px] border border-secondary-foreground/10 overscroll-contain bg-primary-foreground hover:bg-secondary h-10',
+                'rounded-md w-[50%] text-base sm:text-sm p-4 sm:p-2 min-w-[164px] border overscroll-contain bg-select-primary hover:bg-select-foreground h-10',
             }}
           />
         </div>

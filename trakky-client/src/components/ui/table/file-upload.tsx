@@ -36,7 +36,7 @@ export function FileUploadItem({
       <Button
         disabled={disabled}
         variant="outline"
-        className={`w-full ${className}`}
+        className={`w-full ${className} h-10 text-base sm:text-xs sm:font-light `}
         onClick={handleClick}
       >
         {text}

@@ -1,5 +1,5 @@
 import { CustomTable } from '@/components/ui/table/table';
-import { SubTitle, Title } from '@/components/ui/text';
+import { SubTitle } from '@/components/ui/text';
 import {
   usePaymentData,
   useFilteredPayments,
@@ -42,35 +42,32 @@ function DashboardPage() {
   });
 
   return (
-    <>
-      <Title title="Dashboards" />
-      <Loading loading={isLoading}>
-        {!isError && (
-          <div className="sticky top-20 z-30 md:px-0 mt-8">
-            <YearSelection
-              availableYears={availableYears}
-              selectedYear={selectedYear}
-              onYearChange={setSelectedYear}
-              selectedMonth={selectedMonth}
-              onMonthChange={setSelectedMonth}
-            />
-          </div>
-        )}
-        <FadeLeft>
-          <div className="mt-6 text-center" aria-label="Filters">
-            <SubTitle title="Filters" />
-            <CustomTable table={table} filtersOnly page="dashboard" />
-          </div>
-        </FadeLeft>
-        <FadeUp>
-          <Dashboards
-            paymentOverviews={paymentOverviews}
-            ownersOverview={ownersOverview}
-            expensesBreakdown={expensesBreakdown}
+    <Loading loading={isLoading}>
+      {!isError && (
+        <div className="sticky top-20 z-30 md:px-0 mt-8">
+          <YearSelection
+            availableYears={availableYears}
+            selectedYear={selectedYear}
+            onYearChange={setSelectedYear}
+            selectedMonth={selectedMonth}
+            onMonthChange={setSelectedMonth}
           />
-        </FadeUp>
-      </Loading>
-    </>
+        </div>
+      )}
+      <FadeLeft>
+        <div className="mt-6 text-center" aria-label="Filters">
+          <SubTitle title="Filters" />
+          <CustomTable table={table} filtersOnly page="dashboard" />
+        </div>
+      </FadeLeft>
+      <FadeUp>
+        <Dashboards
+          paymentOverviews={paymentOverviews}
+          ownersOverview={ownersOverview}
+          expensesBreakdown={expensesBreakdown}
+        />
+      </FadeUp>
+    </Loading>
   );
 }
 

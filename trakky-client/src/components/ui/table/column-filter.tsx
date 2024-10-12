@@ -58,7 +58,7 @@ export function Filter<TData>({
             column.setFilterValue((old: [number, number]) => [value, old?.[1]])
           }
           placeholder="Min"
-          className="h-6 text-center sm:text-left rounded-none font-thin w-[100%] sm:w-1/2 placeholder:text-xs focus:bg-secondary shadow bg-primary-foreground pl-1 focus:outline-none"
+          className="h-6 text-center sm:text-left rounded-none font-thin w-[100%] sm:w-1/2 placeholder:text-xs shadow bg-secondary pl-1 focus:outline-none"
         />
         <DebouncedInput
           type="number"
@@ -69,7 +69,7 @@ export function Filter<TData>({
             column.setFilterValue((old: [number, number]) => [old?.[0], value])
           }
           placeholder="Max"
-          className="hidden sm:flex h-6 rounded-none font-thin w-1/2 placeholder:text-xs focus:bg-secondary shadow bg-primary-foreground pl-1 focus:outline-none"
+          className="hidden sm:flex h-6 rounded-none font-thin w-1/2 placeholder:text-xs shadow bg-secondary pl-1 focus:outline-none"
         />
       </div>
     );
@@ -104,7 +104,7 @@ export function Filter<TData>({
         value={(columnFilterValue ?? '') as string}
         onChange={(value) => column.setFilterValue(value)}
         placeholder=""
-        className="h-6 rounded-none w-full shadow focus:bg-secondary bg-primary-foreground font-thin text-primary/50 selection:bg-primary-foreground pl-2 focus:outline-none"
+        className="h-6 rounded-none w-full shadow bg-secondary font-thin text-primary/50 selection:bg-primary-foreground pl-2 focus:outline-none"
         list={`${column.id}list`}
       />
     </div>

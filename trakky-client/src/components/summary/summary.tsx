@@ -61,6 +61,7 @@ export function Summary({
   totalsPerYear,
   selectedYear,
   selectedMonth,
+  ...props
 }: {
   totalAmount: number;
   partialTotal: number;
@@ -96,7 +97,11 @@ export function Summary({
 
   return (
     totalAmount > 0 && (
-      <Tabs defaultValue="overview" className="space-y-4 animate-fade">
+      <Tabs
+        defaultValue="overview"
+        className="space-y-4 animate-fade"
+        {...props}
+      >
         <TabsContent value="overview" className="space-y-4" tabIndex={-1}>
           <FadeLeft>
             <div className="flex gap-3 flex-row sm:gap-3 grow mt-2 sm:mt-0">

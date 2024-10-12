@@ -18,7 +18,7 @@ export default function AddComponent({
         onClick={onAdd}
         type="submit"
         variant="outline"
-        className="rounded-r-none text-base sm:text-xs h-10 border-green-500/50 hover:bg-green-500/50"
+        className="rounded-r-none text-white text-base sm:text-xs h-10 border-green-500/50 hover:bg-green-500/50"
       >
         Add
       </Button>

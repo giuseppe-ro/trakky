@@ -21,14 +21,6 @@ describe('test BudgetToDeleteList rendering', () => {
     );
   });
 
-  it('should render title', () => {
-    // assert
-    expect(screen.getByTitle('Dashboards')).toBeVisible();
-    expect(screen.getByText('Dashboards').parentElement?.ariaLabel).toBe(
-      'Title'
-    );
-  });
-
   it('should render filters without table body', async () => {
     // assert
     await waitFor(() => {

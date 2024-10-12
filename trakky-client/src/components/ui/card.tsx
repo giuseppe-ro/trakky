@@ -12,7 +12,7 @@ const Card = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={twMerge('bg-card text-card-foreground shadow', className)}
+    className={twMerge('text-card-foreground shadow', className)}
     {...props}
   />
 ));

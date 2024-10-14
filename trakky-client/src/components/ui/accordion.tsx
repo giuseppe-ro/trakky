@@ -17,7 +17,7 @@ const AccordionItem = React.forwardRef<
   <AccordionPrimitive.Item
     ref={ref}
     className={twMerge(
-      'border-b border-x rounded-b-lg data-[state=closed]:hover:border-primary transition-all',
+      'border-b border-x border-secondary rounded-b-lg data-[state=closed]:hover:border-primary/50 transition-colors duration-500 data-[state=closed]:hover:duration-100',
       className
     )}
     {...props}
@@ -33,7 +33,7 @@ const AccordionTrigger = React.forwardRef<
     <AccordionPrimitive.Trigger
       ref={ref}
       className={twMerge(
-        'flex flex-1 items-center justify-between font-medium transition-all [&[data-state=open]>svg]:rotate-180',
+        'flex flex-1 items-center justify-between font-medium transition-all [&[data-state=open]>svg]:rotate-180 data-[state=open]:hover:underline',
         className
       )}
       {...props}

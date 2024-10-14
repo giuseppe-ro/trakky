@@ -68,7 +68,9 @@ export const PaymentColumnDefinition = (
       header: 'Id',
       enableGlobalFilter: false,
       cell: ({ row }) => {
-        return <div className="text-right font-sm">{row.getValue('id')}</div>;
+        return (
+          <div className="w-full text-right font-sm">{row.getValue('id')}</div>
+        );
       },
     },
     {
@@ -154,39 +156,24 @@ export const BudgetColumnDefinition = (
 
 export const colSize = (id: string): number | string => {
   switch (id) {
-    case 'select':
-      return 50;
-    case 'edit':
-      return 40;
-    case 'date':
-      return 90;
     case 'amount':
-      return 115;
-    default:
       return 100;
+    case 'edit':
+      return 50;
+    case 'type':
+      return 100;
+    case 'id':
+      return 100;
+    default:
+      return 'auto';
   }
 };
 
 export const maxColSize = (id: string): number | string => {
   switch (id) {
-    case 'select':
-      return 50;
-    case 'edit':
-      return 40;
-    default:
-      return 1000;
-  }
-};
-
-export const minColSize = (id: string): number | string => {
-  switch (id) {
     case 'owner':
-      return 50;
-    case 'amount':
-      return 100;
-    case 'edit':
-      return 40;
+      return 60;
     default:
-      return 10;
+      return 'auto';
   }
 };

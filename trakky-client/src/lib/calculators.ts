@@ -32,33 +32,38 @@ export const getDebitorBalances = (balances: Dictionary<number>) => {
     }
   });
 
+  let index = 0;
+
   for (const debitor in debitors) {
     const debitorBalance: DebitorBalance = { name: debitor, owed: [] };
 
-    while (debitors[debitor] > 1) {
-      let debitPaid: number = 0;
+    let debitPaid: number = 0;
 
-      for (const creditor in creditors) {
-        if (creditors[creditor] >= debitors[debitor]) {
-          debitPaid = debitors[debitor];
-          creditors[creditor] -= debitPaid;
-        } else {
-          debitPaid = creditors[creditor];
-          creditors[creditor] = 0;
-        }
-
-        debitors[debitor] -= debitPaid;
-
-        if (debitPaid === debitors[debitor]) {
-          break;
-        }
-
-        if (debitPaid > 0) {
-          debitorBalance.owed.push({ to: creditor, amount: debitPaid });
-        }
+    for (const creditor in creditors) {
+      if (creditors[creditor] >= debitors[debitor]) {
+        debitPaid = debitors[debitor];
+        creditors[creditor] -= debitPaid;
+      } else {
+        debitPaid = creditors[creditor];
+        creditors[creditor] = 0;
       }
-      debitorBalances.push(debitorBalance);
+
+      debitors[debitor] -= debitPaid;
+
+      if (debitPaid > 0) {
+        index += 1;
+        debitorBalance.owed.push({
+          to: creditor,
+          amount: debitPaid,
+          id: index,
+        });
+      }
+
+      if (debitPaid === debitors[debitor]) {
+        break;
+      }
     }
+    debitorBalances.push(debitorBalance);
   }
 
   return {

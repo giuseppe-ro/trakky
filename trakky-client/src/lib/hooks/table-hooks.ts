@@ -142,7 +142,6 @@ export function usePaymentsTable({
     const deleted = await Client.Delete(Endpoint.Payments, ids, signal);
 
     if (deleted) {
-      refreshData();
       table.resetRowSelection();
       toast({
         title: 'Transactions deleted!',
@@ -154,6 +153,8 @@ export function usePaymentsTable({
         className: 'bg-red-500',
       });
     }
+
+    refreshData();
   }
 
   async function onRefresh(resetFilters: boolean = true) {

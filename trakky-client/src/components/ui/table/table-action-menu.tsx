@@ -60,7 +60,7 @@ function TableNavigation<TData>({
           ))}
         </SelectContent>
       </Select>
-      <div className="flex items-center text-base md:text-sm font-light whitespace-nowrap">
+      <div className="flex items-center text-sm font-thin whitespace-nowrap">
         Page{' '}
         {!noData &&
           `${getState().pagination.pageIndex + 1} of 
@@ -151,7 +151,7 @@ const TableActionMenu = memo(
                       <TooltipTrigger>
                         <PopupDialog
                           trigger={
-                            <div className="inline-flex h-10 text-base text-white sm:text-xs sm:font-light items-center justify-center transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow px-4 py-2 border-green-500/50 bg-green-600 text-primary rounded w-20 hover:bg-green-500/50 outline-none">
+                            <div className="inline-flex h-8 text-base text-white sm:text-xs sm:font-light items-center justify-center transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow px-4 py-2 border-green-500/50 bg-green-600 text-primary rounded w-20 hover:bg-green-500/50 outline-none">
                               Add
                             </div>
                           }
@@ -173,14 +173,19 @@ const TableActionMenu = memo(
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger
-                          disabled={noData}
+                          disabled={
+                            noData ||
+                            (table.getPreFilteredRowModel().rows.length ===
+                              table.getFilteredRowModel().rows.length &&
+                              !table.getIsSomeRowsSelected())
+                          }
                           onClick={() => onRefresh(true)}
                           className="rounded px-2 text-yellow-500 flex justify-center hover:text-yellow-800 disabled:text-muted  items-center focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring "
                         >
                           <RotateCcw />
                         </TooltipTrigger>
                         <TooltipContent className="bg-secondary text-primary">
-                          Refresh
+                          Clear filters and selection
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>

@@ -312,7 +312,7 @@ function SettingsPage() {
                           options={CategoryIcon}
                           {...{
                             className:
-                              'rounded-none focus:outline-none focus:ring-0 focus:shadow-none w-20 overscroll-contain h-10  bg-secondary',
+                              'rounded-none focus:outline-none focus:ring-0 hover:border-primary/50 focus:shadow-none w-20 overscroll-contain h-8  bg-primary-foreground border',
                           }}
                         />
                       }

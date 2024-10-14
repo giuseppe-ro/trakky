@@ -2,7 +2,6 @@
 
 import * as z from 'zod';
 import { useForm } from 'react-hook-form';
-import { format } from 'date-fns';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, FormField, Field } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -38,6 +37,7 @@ import { CalendarIcon, MinusIcon, PlusIcon } from 'lucide-react';
 import { Category, Owner, Payment } from '@/models/dtos';
 import PaymentsRecap from '@/components/payments/payments-recap';
 import { Endpoint } from '@/constants';
+import { format } from 'date-fns';
 import Loading from '../loading';
 
 const customErrorMap: z.ZodErrorMap = (issue, ctx) => {
@@ -86,9 +86,7 @@ export function PaymentForm({
     defaultValues: {
       id: editValues?.id === undefined ? undefined : Number(editValues?.id),
       date:
-        editValues?.date === undefined
-          ? new Date()
-          : new Date(editValues?.date),
+        editValues?.date === undefined ? undefined : new Date(editValues?.date),
       owner: editValues?.owner,
       type: editValues?.type,
       amount: editValues?.amount ?? 0,
@@ -271,15 +269,17 @@ export function PaymentForm({
                           disabled={form.formState.isSubmitting}
                           variant="outline"
                           className={twMerge(
+                            form.formState.errors.date && `shake-animation`,
                             'w-full justify-start text-left font-normal',
                             !field.value && 'text-muted-foreground'
                           )}
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" />
+
                           {field.value ? (
                             format(field.value, 'PPP')
                           ) : (
-                            <span>Pick a date</span>
+                            <span>Select a date</span>
                           )}
                         </Button>
                       </PopoverTrigger>

@@ -63,7 +63,9 @@ export default function App() {
         </div>
       )}
       <Containers className="pt-2">
-        {balances && <CalculatedShareAccordion balances={balances} />}
+        {balances && (
+          <CalculatedShareAccordion balances={balances} onRefresh={onRefresh} />
+        )}
       </Containers>
       <div />
       <FadeUp>

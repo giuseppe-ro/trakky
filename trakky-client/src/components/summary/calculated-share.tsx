@@ -10,18 +10,23 @@ import { Endpoint, StorageKey } from '@/constants';
 import { Owner } from '@/models/dtos';
 import { Share } from '@/models/share';
 import getDebitorBalances from '@/lib/calculators';
-import { formatCurrency } from '@/lib/text-formatter';
+import { formatAmount } from '@/lib/text-formatter';
 import { twMerge } from 'tailwind-merge';
+import { DebitorBalance, OwedBalance } from '@/models/debitor-balance';
 import { AnimateNumber } from './summary';
 import { Dictionary } from '../ui/table/icons';
 import { Button } from '../ui/button';
+import PayDebitDialog from '../ui/table/pay-debit-popup';
+import DebitOverview from './debit-overview';
 
 interface CalculatedShareAccordionProps {
   balances: Dictionary<number>;
+  onRefresh: () => void;
 }
 
 export default function CalculatedShareAccordion({
   balances,
+  onRefresh,
 }: CalculatedShareAccordionProps) {
   const [share, setShare] = useState<Share>();
   const [accordionIsDisabled, setAccordionIsDisabled] = useState<boolean>(true);
@@ -79,6 +84,38 @@ export default function CalculatedShareAccordion({
     setShare(getDebitorBalances(newBalances));
   }, [balances, owners, checkBoxStates]);
 
+  async function onConfirm(id: number) {
+    if (!share) return;
+
+    const newBalances: DebitorBalance[] = [];
+
+    share.debitorBalances.forEach((debitor) => {
+      const newBalance: OwedBalance[] = [];
+      debitor.owed.forEach((owed) => {
+        if (owed.id !== id) {
+          newBalance.push(owed);
+        }
+      });
+
+      if (newBalance.length > 0) {
+        newBalances.push({
+          owed: newBalance,
+          name: debitor.name,
+        });
+      }
+    });
+
+    const newShare: Share = {
+      totalAmount: share.totalAmount,
+      shareAmount: share.shareAmount,
+      debitorBalances: newBalances,
+    };
+
+    setShare(newShare);
+
+    onRefresh();
+  }
+
   async function setAllCheckBoxes() {
     const users: Dictionary<boolean> = {};
 
@@ -129,13 +166,21 @@ export default function CalculatedShareAccordion({
     localStorage.setItem(StorageKey.ShowedUserShares, JSON.stringify(users));
   }
 
+  const checkboxStyle = (isChecked: boolean) =>
+    twMerge(
+      'text-base font-normal h-9 transition-colors duration-300',
+      isChecked
+        ? 'bg-button-checkbox hover:bg-button-checkbox text-primary hover:text-primary hover:font-bold'
+        : 'bg-background hover:bg-background text-muted-foreground/50 hover:text-muted-foreground'
+    );
+
   return (
     <Accordion type="single" collapsible className="mt-4">
       <AccordionItem value="item-1">
         <AccordionTrigger className="justify-center gap-2 pb-2 text-sm bg-transparent">
           Share Expenses
         </AccordionTrigger>
-        <AccordionContent className="p-2 pb-1">
+        <AccordionContent className="p-2">
           <div>
             <div className="flex flex-row gap-2 justify-start mx-1 my-4 align-middle">
               <span className="self-center min-w-[120px] text-base text-muted-foreground align-middle h-full">
@@ -144,12 +189,7 @@ export default function CalculatedShareAccordion({
               <div className="flex flex-row flex-wrap align-middle gap-2">
                 <Button
                   variant="outline"
-                  className={twMerge(
-                    'text-base font-normal h-9',
-                    checkBoxStates.All
-                      ? 'bg-button-checkbox hover:bg-button-checkbox text-primary hover:text-primary hover:font-bold'
-                      : 'bg-background hover:bg-background text-muted-foreground/50 hover:text-muted-foreground'
-                  )}
+                  className={checkboxStyle(checkBoxStates.All)}
                   onClick={() => {
                     setAllCheckBoxes();
                   }}
@@ -161,12 +201,7 @@ export default function CalculatedShareAccordion({
                     <Button
                       key={owner.id}
                       variant="outline"
-                      className={twMerge(
-                        'text-base font-normal h-9',
-                        checkBoxStates[owner.name]
-                          ? 'bg-button-checkbox hover:bg-button-checkbox text-primary hover:text-primary hover:font-bold'
-                          : 'bg-background hover:bg-background text-muted-foreground/50 hover:text-muted-foreground'
-                      )}
+                      className={checkboxStyle(checkBoxStates[owner.name])}
                       onClick={() => {
                         setCheckBox(owner.name);
                       }}
@@ -179,26 +214,32 @@ export default function CalculatedShareAccordion({
             </div>
             {share && !accordionIsDisabled && (
               <>
-                <div className="flex flex-row gap-2 justify-start mx-1 mt-4">
-                  <span className="min-w-[120px] text-base text-muted-foreground">
+                <div className="flex flex-row gap-2 mx-1">
+                  <span className="min-w-[140px] text-base text-muted-foreground">
                     Total:
                   </span>
-                  <div className="flex flex-row align-middle gap-2 text-base font-thin text-muted-foreground">
-                    <AnimateNumber
-                      amount={share.totalAmount}
-                      formatter={formatCurrency}
-                    />
+                  <div className="flex flex-row w-32 align-middle justify-between gap-2 text-base font-thin text-muted-foreground">
+                    <div>£</div>
+                    <div className="">
+                      <AnimateNumber
+                        amount={share.totalAmount}
+                        formatter={formatAmount}
+                      />
+                    </div>
                   </div>
                 </div>
-                <div className="flex flex-row gap-2 justify-start mx-1 mb-4">
-                  <span className="min-w-[120px] text-base text-muted-foreground">
+                <div className="flex flex-row gap-2 mx-1 mb-4">
+                  <span className="min-w-[140px] text-base text-muted-foreground">
                     Share Per User:
                   </span>
-                  <div className="flex flex-row align-middle gap-2 text-base font-thin text-muted-foreground">
-                    <AnimateNumber
-                      amount={share.shareAmount}
-                      formatter={formatCurrency}
-                    />
+                  <div className="flex flex-row w-32 align-middle justify-between gap-2 text-base font-thin text-muted-foreground">
+                    <div>£</div>
+                    <div className="">
+                      <AnimateNumber
+                        amount={share.shareAmount}
+                        formatter={formatAmount}
+                      />
+                    </div>
                   </div>
                 </div>
               </>
@@ -210,29 +251,32 @@ export default function CalculatedShareAccordion({
                 </span>
               </div>
             )}
-            {share?.debitorBalances.map((debitor) => {
-              return debitor.owed.map((owed) => {
+            {share?.debitorBalances.map((debitor, debitorIndex) => {
+              const isLastDebitor =
+                share.debitorBalances.length - 1 === debitorIndex;
+              const maxDigits =
+                share.debitorBalances[0].owed[0].toString().length;
+              return debitor.owed.map((owed, owedIndex) => {
+                const isLastTransaction = debitor.owed.length - 1 === owedIndex;
+
                 return (
-                  <div
-                    className="flex ml-1 border-t gap-2 "
-                    key={`${debitor}-${owed.to}-debit`}
+                  <DebitOverview
+                    key={`${debitor.name}-${owed.to}-debit`}
+                    maxDigits={maxDigits}
+                    debitorName={debitor.name}
+                    owed={owed}
                   >
-                    <div className="w-[120px] ">
-                      <div className="min-w-[120px] text-base overflow-x-scroll text-yellow-600 h-5 text-muted-foreground text-nowrap no-scrollbar">
-                        {debitor.name}:
-                      </div>
-                    </div>
-                    <div className="flex text-yellow-600 text-base text-muted-foreground font-thin">
-                      Owes
-                      <div className="mx-1 font-medium">
-                        <AnimateNumber
-                          amount={owed.amount}
-                          formatter={formatCurrency}
-                        />
-                      </div>
-                      to {owed.to}
-                    </div>
-                  </div>
+                    <PayDebitDialog
+                      owed={owed}
+                      onConfirm={() => onConfirm(owed.id)}
+                      debitorName={debitor.name}
+                      tooltipText="Clear Debit"
+                      className={twMerge(
+                        'rounded-none',
+                        isLastDebitor && isLastTransaction && 'rounded-br'
+                      )}
+                    />
+                  </DebitOverview>
                 );
               });
             })}

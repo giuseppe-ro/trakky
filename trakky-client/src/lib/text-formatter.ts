@@ -2,6 +2,13 @@ export function formatCurrency(total: number) {
   return new Intl.NumberFormat('en-GB', {
     style: 'currency',
     currency: 'GBP',
+    minimumFractionDigits: 2,
+  }).format(total);
+}
+
+export function formatAmount(total: number) {
+  return new Intl.NumberFormat('en-GB', {
+    minimumFractionDigits: 2,
   }).format(total);
 }
 

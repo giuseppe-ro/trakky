@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/table';
 import { twMerge } from 'tailwind-merge';
 import Filter from '@/components/ui/table/column-filter';
-import { maxColSize, minColSize } from '@/components/ui/table/columns';
+import { maxColSize, colSize } from '@/components/ui/table/columns';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -152,8 +152,9 @@ export function CustomTable<TData extends object>({
                     {...{
                       colSpan: header.colSpan,
                       style: {
-                        maxWidth: maxColSize(header.id),
-                        minWidth: minColSize(header.id),
+                        width: header.id === 'edit' ? 40 : colSize(header.id),
+                        maxWidth:
+                          header.id === 'edit' ? 40 : maxColSize(header.id),
                         fontSize: 14,
                         paddingTop: 5,
                         overflow: 'hidden',
@@ -197,9 +198,10 @@ export function CustomTable<TData extends object>({
                   key={row.id}
                   onClick={row.getToggleSelectedHandler()}
                   className={twMerge(
-                    'sm:hover:bg-muted-foreground/40 h-12 sm:h-10 border overflow-x-scroll hover:sm:animate-pulse',
+                    'sm:hover:bg-muted-foreground/40 h-11 sm:h-10 border overflow-x-scroll',
                     row.getIsSelected() &&
-                      'bg-muted-foreground/50 hover:bg-muted-foreground/40 hover:animate-none'
+                      'bg-muted-foreground/50 hover:bg-muted-foreground/40',
+                    !row.getIsSelected() && 'hover:sm:animate-pulse'
                   )}
                   {...{
                     style: {
@@ -209,7 +211,10 @@ export function CustomTable<TData extends object>({
                 >
                   {row.getVisibleCells().map((cell) => {
                     return cell.column.id === 'edit' && filtersOnly ? null : (
-                      <td key={cell.id} className="h-8 px-2 truncate text-sm">
+                      <td
+                        key={cell.id}
+                        className="h-8 px-2 truncate text-sm font-extralight"
+                      >
                         {renderCell(row, cell, iconMapping, filtersOnly)}
                       </td>
                     );
@@ -281,7 +286,7 @@ export function CustomSmallTable({
               >
                 <td
                   className={twMerge(
-                    `text-left border-r-0 py-0.5 px-2 font-thin text-xs w-full border overflow-x-scroll scroll-smooth`
+                    `text-left border-r-0 px-2 font-thin text-xs w-full border overflow-x-scroll scroll-smooth`
                   )}
                 >
                   <div className="flex gap-2">

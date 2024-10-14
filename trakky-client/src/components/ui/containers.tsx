@@ -100,7 +100,7 @@ export function Containers({
   className?: string;
 }) {
   return (
-    <div className={`px-2 md:px-0 mt-1 sm:mt-0 ${className}`}>{children}</div>
+    <div className={`px-1 md:px-0 mt-1 sm:mt-0 ${className}`}>{children}</div>
   );
 }
 

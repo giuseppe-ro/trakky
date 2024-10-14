@@ -8,7 +8,6 @@ import { usePaymentData, useYearSelection } from '@/lib/hooks/payments-hooks';
 import Summary from '@/components/summary/summary';
 import PaymentsTable from '@/components/payments/table';
 import { twMerge } from 'tailwind-merge';
-import CalculatedShareAccordion from './components/summary/calculated-share';
 import { demoMode } from './constants';
 
 export default function App() {
@@ -34,10 +33,7 @@ export default function App() {
       isLoading,
     });
 
-  const { totalAmount, partialTotal, balances } = useSummary(
-    table,
-    selectedYear
-  );
+  const { totalAmount, partialTotal } = useSummary(table, selectedYear);
 
   return (
     <Loading loading={isLoading}>
@@ -62,11 +58,6 @@ export default function App() {
           />
         </div>
       )}
-      <Containers className="pt-2">
-        {balances && (
-          <CalculatedShareAccordion balances={balances} onRefresh={onRefresh} />
-        )}
-      </Containers>
       <div />
       <FadeUp>
         <PaymentsTable

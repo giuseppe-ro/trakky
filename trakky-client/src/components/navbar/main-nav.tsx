@@ -6,7 +6,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { GearIcon, ResetIcon } from '@radix-ui/react-icons';
+import { ResetIcon } from '@radix-ui/react-icons';
 import {
   Tooltip,
   TooltipContent,
@@ -14,11 +14,12 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import {
-  BarChart2Icon,
+  Cog,
   Github,
   HomeIcon,
   LogOut,
-  MonitorIcon,
+  BarChart2,
+  HandCoins,
 } from 'lucide-react';
 import getUser from '@/infrastructure/user';
 import { HTMLAttributes } from 'react';
@@ -44,6 +45,7 @@ export function MainNav({ children }: HTMLAttributes<HTMLElement>) {
 
   if (user || skipAuth) {
     links.push({ href: '/dashboards', label: 'Dashboards' });
+    links.push({ href: '/shared', label: 'Shared' });
     links.push({ href: '/settings', label: 'Settings' });
   }
 
@@ -52,11 +54,11 @@ export function MainNav({ children }: HTMLAttributes<HTMLElement>) {
       case 'Home':
         return <HomeIcon className="h-6 w-6" />;
       case 'Dashboards':
-        return <BarChart2Icon className="h-6 w-6" />;
-      case 'Overview':
-        return <MonitorIcon className="h-6 w-6" />;
+        return <BarChart2 className="h-6 w-6" />;
+      case 'Shared':
+        return <HandCoins className="h-6 w-6" />;
       case 'Settings':
-        return <GearIcon className="h-6 w-6" />;
+        return <Cog className="h-6 w-6" />;
       default:
         return null;
     }

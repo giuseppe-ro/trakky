@@ -320,7 +320,7 @@ function SettingsPage() {
                   }
                 />
                 <CustomSmallTable
-                  title="Owners"
+                  title="Users"
                   values={fetchState.owners}
                   onDeleteConfirmed={(id) => OnOwnerDeleteConfirmed(id)}
                   addComponent={

@@ -7,6 +7,7 @@ import '@/nprogress/nprogress.css';
 import { LoadingSpinner } from '@/components/ui/loading';
 import { ProtectedContainer } from '@/components/ui/containers';
 import App from '@/App';
+import SharePage from '@/app/shared/Page';
 
 const DashboardPage = lazy(
   () =>
@@ -60,6 +61,15 @@ const router = createBrowserRouter([
     element: (
       <ProtectedContainer>
         <DashboardPage />
+      </ProtectedContainer>
+    ),
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: '/shared',
+    element: (
+      <ProtectedContainer>
+        <SharePage />
       </ProtectedContainer>
     ),
     errorElement: <ErrorPage />,

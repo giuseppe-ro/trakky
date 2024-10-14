@@ -87,7 +87,7 @@ function YearSelection({
     selectedYear &&
     availableYears &&
     Array.from(availableYears.keys()).length > 0 && (
-      <FadeRight className="sticky top-20 z-30">
+      <FadeRight>
         <div className="flex w-full gap-x-3 mt-0">
           <Selection
             value={year()}

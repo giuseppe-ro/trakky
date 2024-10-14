@@ -62,4 +62,28 @@ const AccordionContent = React.forwardRef<
 
 AccordionContent.displayName = AccordionPrimitive.Content.displayName;
 
-export { Accordion, AccordionItem, AccordionTrigger, AccordionContent };
+interface CustomAccordionProps {
+  children: JSX.Element;
+  triggerText: string;
+}
+
+function CustomAccordion({ triggerText, children }: CustomAccordionProps) {
+  return (
+    <Accordion type="single" collapsible className="mt-4">
+      <AccordionItem value="item-1">
+        <AccordionTrigger className="justify-center gap-2 pb-2 text-sm bg-transparent">
+          {triggerText}
+        </AccordionTrigger>
+        <AccordionContent className="p-2">{children}</AccordionContent>
+      </AccordionItem>
+    </Accordion>
+  );
+}
+
+export {
+  Accordion,
+  CustomAccordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+};

@@ -63,7 +63,10 @@ export const getDebitorBalances = (balances: Dictionary<number>) => {
         break;
       }
     }
-    debitorBalances.push(debitorBalance);
+
+    if (debitorBalance.owed.length > 0) {
+      debitorBalances.push(debitorBalance);
+    }
   }
 
   return {

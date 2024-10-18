@@ -31,6 +31,9 @@ module.exports = {
   		}
   	},
   	extend: {
+		transitionProperty: {
+			'width': 'width'
+		},
   		screens: {
   			portrait: {
   				raw: '(orientation: portrait)'

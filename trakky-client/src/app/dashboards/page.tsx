@@ -8,9 +8,10 @@ import {
 import YearSelection from '@/components/ui/data-selector';
 import { usePaymentsTable } from '@/lib/hooks/table-hooks';
 import { FadeLeft, FadeUp } from '@/components/ui/animations/fade';
-import Dashboards from '@/components/dashboards/dashboards';
 import useDashboard from '@/lib/hooks/use-dashboard';
 import Loading from '@/components/ui/loading';
+import { PageContainer } from '@/components/ui/containers';
+import Dashboards from './components/dashboards';
 
 function DashboardPage() {
   const { data: payments, refreshData, isLoading, isError } = usePaymentData();
@@ -43,30 +44,32 @@ function DashboardPage() {
 
   return (
     <Loading loading={isLoading}>
-      {!isError && (
-        <div className="sticky top-20 z-30 md:px-0 mt-8">
-          <YearSelection
-            availableYears={availableYears}
-            selectedYear={selectedYear}
-            onYearChange={setSelectedYear}
-            selectedMonth={selectedMonth}
-            onMonthChange={setSelectedMonth}
+      <PageContainer>
+        <FadeLeft>
+          <div className="mt-6 text-center" aria-label="Filters">
+            <SubTitle title="Filters" />
+            {!isError && (
+              <div className="my-1">
+                <YearSelection
+                  availableYears={availableYears}
+                  selectedYear={selectedYear}
+                  onYearChange={setSelectedYear}
+                  selectedMonth={selectedMonth}
+                  onMonthChange={setSelectedMonth}
+                />
+              </div>
+            )}
+            <CustomTable table={table} filtersOnly page="dashboard" />
+          </div>
+        </FadeLeft>
+        <FadeUp>
+          <Dashboards
+            paymentOverviews={paymentOverviews}
+            ownersOverview={ownersOverview}
+            expensesBreakdown={expensesBreakdown}
           />
-        </div>
-      )}
-      <FadeLeft>
-        <div className="mt-6 text-center" aria-label="Filters">
-          <SubTitle title="Filters" />
-          <CustomTable table={table} filtersOnly page="dashboard" />
-        </div>
-      </FadeLeft>
-      <FadeUp>
-        <Dashboards
-          paymentOverviews={paymentOverviews}
-          ownersOverview={ownersOverview}
-          expensesBreakdown={expensesBreakdown}
-        />
-      </FadeUp>
+        </FadeUp>
+      </PageContainer>
     </Loading>
   );
 }

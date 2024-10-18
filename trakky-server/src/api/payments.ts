@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import { addPayments, deletePayments, getPayments, updatePayment } from "../infrastructure/payments";
+import { post, del, get, put } from "../infrastructure/payments";
 import { baseHandler } from "./base";
 import * as z from "zod";
 import fs from 'fs';
@@ -25,19 +25,19 @@ const upload = multer({ dest: os.tmpdir() });
 
 
 paymentsRouter.get("/", (req: Request, res: Response) => {
-  return baseHandler(res, getPayments, req.body);
+  return baseHandler(res, get, req.body);
 });
 
 paymentsRouter.post("/", (req: Request, res: Response) => {
-  return baseHandler(res, addPayments, req.body);
+  return baseHandler(res, post, req.body);
 });
 
 paymentsRouter.put("/", (req: Request, res: Response) => {
-  return baseHandler(res, updatePayment, req.body);
+  return baseHandler(res, put, req.body);
 });
 
 paymentsRouter.delete("/", (req: Request, res: Response) => {
-  return baseHandler(res, deletePayments, req.body);
+  return baseHandler(res, del, req.body);
 });
 
 paymentsRouter.post("/upload", upload.single('file'), (req: Request, res: Response) => {
@@ -57,7 +57,7 @@ paymentsRouter.post("/upload", upload.single('file'), (req: Request, res: Respon
           const payments = paymentsSchema.parse(JSON.parse(data));
           console.log("File parsed: ", payments)
 
-          return baseHandler(res, addPayments, {data: payments, user: req.headers["user"]});
+          return baseHandler(res, post, {data: payments, user: req.headers["user"]});
 
       } catch (err) {
           console.log("Err")

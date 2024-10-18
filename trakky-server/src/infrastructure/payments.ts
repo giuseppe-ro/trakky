@@ -1,9 +1,8 @@
-import { Payment, PrismaClient } from "@prisma/client";
+import { Payment } from "@prisma/client";
 import { logger } from "../logger";
+import prisma from "./client";
 
-const prisma = new PrismaClient();
-
-export async function getPayments() {
+export async function get() {
   const response = await prisma.payment.findMany({
     orderBy: [
       {
@@ -15,14 +14,14 @@ export async function getPayments() {
   return response;
 }
 
-export async function addPayments(payment: Payment[]) {
+export async function post(payment: Payment[]) {
 
   return  await prisma.payment.createMany({
     data: payment,
   });
 }
 
-export async function updatePayment(payment: Payment) {
+export async function put(payment: Payment) {
 
   try {
 
@@ -42,7 +41,7 @@ export async function updatePayment(payment: Payment) {
   return null;
 }
 
-export async function deletePayments(paymentIds: number[]) {
+export async function del(paymentIds: number[]) {
   const response = await prisma.payment.deleteMany({
     where: {
       id: { in: paymentIds },

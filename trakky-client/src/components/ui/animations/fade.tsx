@@ -56,7 +56,6 @@ export function FadeRight({
       data-aos-easing="ease-out-cubic"
       data-aos-duration="500"
       data-aos-delay="100"
-      className="sticky top-20 z-50"
       {...props}
     >
       {children}

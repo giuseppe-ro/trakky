@@ -7,9 +7,21 @@ export interface Payment {
   date: string;
 }
 
+export interface PaymentToShare extends Payment {
+  toShare: boolean;
+  ownerIds?: number[];
+}
+
 export interface Owner {
   id: number;
   name: string;
+}
+
+export interface SharedExpenses {
+  Id?: number;
+  PaymentId: number;
+  OwnerId: number;
+  Complete: boolean;
 }
 
 export interface Budget {

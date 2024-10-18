@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { twMerge } from 'tailwind-merge';
 
 export interface FileUploadButtonProps {
   onUpload: (file: File, signal?: AbortSignal | undefined) => Promise<void>;
@@ -35,8 +36,8 @@ export function FileUploadItem({
     <>
       <Button
         disabled={disabled}
-        variant="outline"
-        className={`w-full ${className} h-10 text-base sm:text-xs sm:font-light `}
+        variant="outline_variant"
+        className={twMerge(className, 'h-10')}
         onClick={handleClick}
       >
         {text}

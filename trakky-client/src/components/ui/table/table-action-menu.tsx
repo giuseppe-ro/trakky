@@ -28,7 +28,7 @@ import {
   RotateCcw,
 } from 'lucide-react';
 
-function TableNavigation<TData>({
+export function TableNavigation<TData>({
   getState,
   setPageSize,
   getPageCount,
@@ -227,7 +227,6 @@ const TableActionMenu = memo(
           </div>
         </div>
         {children}
-        <div className="mt-2">{TableNavigation(table)}</div>
       </div>
     );
   }

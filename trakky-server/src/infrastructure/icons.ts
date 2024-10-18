@@ -1,7 +1,5 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "./client";
 
-const prisma = new PrismaClient();
-
-export async function getIcons() {
+export async function get() {
   return await prisma.icon.findMany();
 }

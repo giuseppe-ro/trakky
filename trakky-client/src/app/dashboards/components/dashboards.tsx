@@ -1,11 +1,7 @@
-import {
-  ExpensesDashboard,
-  UsersDashboard,
-  ExpensesPieChart,
-} from '@/components/dashboards/charts';
 import { SubTitle } from '@/components/ui/text';
 import { PaymentOverview } from '@/models/payment-overview';
 import { OwnerOverview } from '@/models/owner-overview';
+import { ExpensesDashboard, ExpensesPieChart, UsersDashboard } from './charts';
 
 interface DashboardsProps {
   paymentOverviews: PaymentOverview[];

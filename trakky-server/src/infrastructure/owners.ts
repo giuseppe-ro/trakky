@@ -1,12 +1,11 @@
-import { Owner, PrismaClient } from "@prisma/client";
+import { Owner } from "@prisma/client";
+import prisma from "./client";
 
-const prisma = new PrismaClient();
-
-export async function getOwners() {
+export async function get() {
   return await prisma.owner.findMany();
 }
 
-export async function addOwners(owner: Owner[]) {
+export async function post(owner: Owner[]) {
   const response = await prisma.owner.createMany({
     data: owner,
   });
@@ -16,7 +15,7 @@ export async function addOwners(owner: Owner[]) {
   return response;
 }
 
-export async function deleteOwners(ids: number[]) {
+export async function del(ids: number[]) {
   const response = await prisma.owner.deleteMany({
     where: {
       id: { in: ids },

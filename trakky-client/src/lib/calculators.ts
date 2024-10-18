@@ -1,5 +1,3 @@
-/* eslint-disable guard-for-in */
-/* eslint-disable no-restricted-syntax */
 import { Dictionary } from '@/components/ui/table/icons';
 import { DebitorBalance } from '@/models/debitor-balance';
 import { Share } from '@/models/share';
@@ -34,12 +32,16 @@ export const getDebitorBalances = (balances: Dictionary<number>) => {
 
   let index = 0;
 
-  for (const debitor in debitors) {
+  Object.keys(debitors).forEach((debitor) => {
     const debitorBalance: DebitorBalance = { name: debitor, owed: [] };
 
     let debitPaid: number = 0;
 
-    for (const creditor in creditors) {
+    Object.keys(creditors).forEach((creditor) => {
+      if (debitPaid === debitors[debitor]) {
+        return;
+      }
+
       if (creditors[creditor] >= debitors[debitor]) {
         debitPaid = debitors[debitor];
         creditors[creditor] -= debitPaid;
@@ -58,16 +60,12 @@ export const getDebitorBalances = (balances: Dictionary<number>) => {
           id: index,
         });
       }
-
-      if (debitPaid === debitors[debitor]) {
-        break;
-      }
-    }
+    });
 
     if (debitorBalance.owed.length > 0) {
       debitorBalances.push(debitorBalance);
     }
-  }
+  });
 
   return {
     totalAmount: total,

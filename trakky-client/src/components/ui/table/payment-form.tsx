@@ -3,10 +3,7 @@
 import * as z from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormField, Field } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Selection } from '@/components/ui/select';
+import { Form } from '@/components/ui/form';
 import {
   Card,
   CardContent,
@@ -14,18 +11,9 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
-import { twMerge } from 'tailwind-merge';
-import { Calendar } from '@/components/ui/calendar';
 import { useEffect, useReducer, useState } from 'react';
-import { Textarea } from '@/components/ui/textarea';
 import { Client } from '@/infrastructure/client-injector';
 import { resultToast } from '@/components/ui/use-toast';
-import { Toggle } from '@/components/ui/toggle';
 import {
   FetchActionType,
   paymentFormDataReducer,
@@ -33,12 +21,16 @@ import {
 } from '@/components/ui/table/payment-form-reducer';
 import { ErrorMessage } from '@/infrastructure/remote/base';
 import { errorMessage } from '@/components/ui/table/form-error-message';
-import { CalendarIcon, MinusIcon, PlusIcon } from 'lucide-react';
 import { Category, Owner, Payment } from '@/models/dtos';
 import PaymentsRecap from '@/components/payments/payments-recap';
 import { Endpoint } from '@/constants';
-import { format } from 'date-fns';
 import Loading from '../loading';
+import {
+  CalendarField,
+  NumericField,
+  SelectionField,
+  TextInputField,
+} from './form-fields';
 
 const customErrorMap: z.ZodErrorMap = (issue, ctx) => {
   if (issue.code === z.ZodIssueCode.invalid_type) {
@@ -60,6 +52,7 @@ const formSchema = z.object({
     message: 'cannot be 0',
   }),
   description: z.string().refine((val) => val.length <= 50 && val.length > 0),
+  toShare: z.boolean().optional(),
 });
 
 export function PaymentForm({
@@ -112,7 +105,6 @@ export function PaymentForm({
         });
         return;
       }
-
       const ownersData = data as Owner[];
       const fetchedOwners = ownersData.map((owner) => owner.name);
       fetchedOwners.push('Shared');
@@ -135,7 +127,6 @@ export function PaymentForm({
       }
 
       const categoriesData = catData as Category[];
-
       const fetchedCategories = categoriesData.map((type) => type.name);
 
       dispatchFetch({
@@ -162,14 +153,6 @@ export function PaymentForm({
     // eslint-disable-next-line
   }, [fetchState.categories, fetchState.owners]);
 
-  function onAmountChange(amount: number) {
-    if (amount < 0) {
-      setAmountIsNegative(true);
-    }
-
-    form.setValue('amount', amount);
-  }
-
   const splitPayments = (payment: Payment) => {
     return fetchState.owners
       .filter((owner: string) => owner !== 'Shared')
@@ -187,6 +170,7 @@ export function PaymentForm({
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsError(false);
+
     const payment = values as unknown as Payment;
 
     if (amountIsNegative) {
@@ -226,7 +210,6 @@ export function PaymentForm({
         return;
       }
     }
-
     setAddedPayments(addedPayments.concat(payments));
 
     resultToast({
@@ -258,137 +241,38 @@ export function PaymentForm({
         <CardContent className="border-none">
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="grid grid-cols-1">
-              <FormField
-                control={form.control}
-                name="date"
-                render={({ field }) => (
-                  <Field name="Date">
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button
-                          disabled={form.formState.isSubmitting}
-                          variant="outline"
-                          className={twMerge(
-                            form.formState.errors.date && `shake-animation`,
-                            'w-full justify-start text-left font-normal',
-                            !field.value && 'text-muted-foreground'
-                          )}
-                        >
-                          <CalendarIcon className="mr-2 h-4 w-4" />
-
-                          {field.value ? (
-                            format(field.value, 'PPP')
-                          ) : (
-                            <span>Select a date</span>
-                          )}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={field.onChange}
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
-                  </Field>
-                )}
-              />
+              <CalendarField form={form} name="date" title="Date" />
             </div>
-            <div>
-              <FormField
-                control={form.control}
-                name="amount"
-                render={({ field }) => (
-                  <Field name="Amount">
-                    <div className="flex flex-row">
-                      <Toggle
-                        disabled={form.formState.isSubmitting}
-                        aria-label="Toggle italic"
-                        className={twMerge(
-                          form.formState.errors.amount && `shake-animation`,
-                          'rounded-l mr-0 rounded-r-none h-9 border px-3 data-[state=on]:bg-red-500 data-[state=off]:bg-green-500 data-[state=on]:text-primary data-[state=off]:text-primary'
-                        )}
-                        onClick={() => setAmountIsNegative(!amountIsNegative)}
-                        pressed={amountIsNegative}
-                      >
-                        {amountIsNegative ? (
-                          <MinusIcon className="h-4 w-2.5" />
-                        ) : (
-                          <PlusIcon className="h-4 w-2.5" />
-                        )}
-                      </Toggle>
-                      <Input
-                        disabled={form.formState.isSubmitting}
-                        inputMode="decimal"
-                        type="number"
-                        step="any"
-                        className={twMerge(
-                          form.formState.errors.amount && `shake-animation`,
-                          'rounded-l-none h-9 ml-0'
-                        )}
-                        {...field}
-                        onChange={(n) => {
-                          onAmountChange(n.target.valueAsNumber);
-                        }}
-                      />
-                    </div>
-                  </Field>
-                )}
-              />
+            <div className="flex flex-row">
+              <div className="w-[100%] justify-center transition-all duration-200 ease-out">
+                <NumericField
+                  form={form}
+                  name="amount"
+                  title="Amount"
+                  setAmountIsNegative={setAmountIsNegative}
+                  amountIsNegative={amountIsNegative}
+                />
+              </div>
             </div>
             <div className="grid grid-cols-2 gap-2">
-              <FormField
-                control={form.control}
+              <SelectionField
                 name="owner"
-                render={({ field }) => (
-                  <Field name="Owner">
-                    <Selection
-                      value={field.value}
-                      onChange={field.onChange}
-                      options={fetchState.owners}
-                      {...{
-                        disabled: form.formState.isSubmitting,
-                        className: 'rounded-md w-full overscroll-contain mb-4',
-                      }}
-                    />
-                  </Field>
-                )}
+                title="Owner"
+                form={form}
+                options={fetchState.owners}
               />
-              <FormField
+              <SelectionField
                 name="type"
-                render={({ field }) => (
-                  <Field name="Type">
-                    <Selection
-                      value={field.value}
-                      onChange={field.onChange}
-                      options={fetchState.categories}
-                      {...{
-                        disabled: form.formState.isSubmitting,
-                        className: 'rounded-md w-full overscroll-contain mb-4',
-                      }}
-                    />
-                  </Field>
-                )}
+                title="Type"
+                form={form}
+                options={fetchState.categories}
               />
             </div>
             <div>
-              <FormField
+              <TextInputField
+                form={form}
                 name="description"
-                render={({ field }) => (
-                  <Field name="Description">
-                    <Textarea
-                      disabled={form.formState.isSubmitting}
-                      onChange={field.onChange}
-                      value={field.value}
-                      className={twMerge(
-                        'pb-0 mb-0',
-                        form.formState.errors.description && `shake-animation`
-                      )}
-                    />
-                  </Field>
-                )}
+                title="Description"
               />
             </div>
             <CardFormFooter

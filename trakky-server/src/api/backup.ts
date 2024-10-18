@@ -1,8 +1,8 @@
-import express, { Express, Request, Response } from "express";
-import { getPayments } from "../infrastructure/payments";
-import { getBudgets } from "../infrastructure/budgets";
-import { getOwners } from "../infrastructure/owners";
-import { getTypes } from "../infrastructure/types";
+import express, { Request, Response } from "express";
+import { get as getPayments } from "../infrastructure/payments";
+import { get as getBudgets} from "../infrastructure/budgets";
+import { get as getOwners} from "../infrastructure/owners";
+import { get as getTypes} from "../infrastructure/types";
 import { baseHandler } from "./base";
 
 async function getBackup() {

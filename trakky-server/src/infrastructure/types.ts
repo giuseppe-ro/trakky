@@ -1,12 +1,11 @@
-import { Type, PrismaClient } from "@prisma/client";
+import { Type } from "@prisma/client";
+import prisma from "./client";
 
-const prisma = new PrismaClient();
-
-export async function getTypes() {
+export async function get() {
   return await prisma.type.findMany();
 }
 
-export async function addTypes(type: Type[]) {
+export async function post(type: Type[]) {
   const response = await prisma.type.createMany({
     data: type,
   });
@@ -16,7 +15,7 @@ export async function addTypes(type: Type[]) {
   return response;
 }
 
-export async function deleteTypes(ids: number[]) {
+export async function del(ids: number[]) {
   const response = await prisma.type.deleteMany({
     where: {
       id: { in: ids },

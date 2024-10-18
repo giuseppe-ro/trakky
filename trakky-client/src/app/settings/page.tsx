@@ -17,7 +17,10 @@ import {
   paymentFormDataReducer,
 } from '@/components/ui/table/payment-form-reducer';
 import { Category, Owner, Budget } from '@/models/dtos';
-import { ContentResultContainer } from '@/components/ui/containers';
+import {
+  ContentResultContainer,
+  PageContainer,
+} from '@/components/ui/containers';
 import Loading from '@/components/ui/loading';
 import AddComponent from '@/components/ui/add-input';
 import { ChildrenSelection } from '@/components/ui/select';
@@ -227,7 +230,7 @@ function SettingsPage() {
     });
   };
 
-  async function DownloadBackup() {
+  const DownloadBackup = async () => {
     const defaultError = "Couldn't download backup!";
 
     try {
@@ -241,97 +244,95 @@ function SettingsPage() {
     } catch (e) {
       errorToast(defaultError);
     }
-  }
+  };
 
   return (
     <Loading loading={fetchState.loading}>
-      <FadeLeft>
-        <div className="flex flex-col mb-4 md:mb-0">
-          <SubTitle title="Backup" {...{ className: 'text-center mt-4' }} />
-          <div className="flex flex-row gap-2">
-            <Button
-              variant="outline"
-              className="w-full h-10 text-base sm:text-xs sm:font-light "
-              onClick={() => DownloadBackup()}
-              disabled={fetchState.error !== null}
-            >
-              Download Backup
-            </Button>
-            <Button
-              variant="outline"
-              className="w-full h-10 text-base sm:text-xs sm:font-light"
-              disabled
-            >
-              Upload Backup
-            </Button>
+      <PageContainer>
+        <FadeLeft>
+          <div className="flex flex-col mb-4 md:mb-0">
+            <SubTitle title="Backup" {...{ className: 'text-center mt-4' }} />
+            <div className="flex flex-row gap-2">
+              <Button
+                variant="outline_variant"
+                className="h-10"
+                onClick={DownloadBackup}
+                disabled={fetchState.error !== null}
+              >
+                Download Backup
+              </Button>
+              <Button variant="outline_variant" className="h-10" disabled>
+                Upload Backup
+              </Button>
+            </div>
           </div>
-        </div>
-        <div className="flex flex-col mb-4 md:mb-0">
-          <FileUploadItem
-            onUpload={onTransactionsUpload}
-            text="Upload Transactions"
-            disabled={demoMode || fetchState.error !== null}
-          />
-        </div>
-      </FadeLeft>
-      <FadeUp>
-        <div className="flex flex-col gap-3 justify-center">
-          <ContentResultContainer error={fetchState.error}>
-            <>
-              <div className="flex-grow">
-                <SubTitle
-                  title="Budgets"
-                  {...{ className: 'text-center mt-4' }}
-                />
-                <BudgetActionMenu
-                  table={table}
-                  budgets={budgets}
-                  onDeleteConfirmed={onDeleteConfirmed}
-                  onRefresh={onRefresh}
-                >
-                  <CustomTable
-                    table={table}
-                    filtersOnly={false}
-                    page="settings"
+          <div className="flex flex-col mb-4 md:mb-0">
+            <FileUploadItem
+              onUpload={onTransactionsUpload}
+              text="Upload Transactions"
+              disabled={demoMode || fetchState.error !== null}
+            />
+          </div>
+        </FadeLeft>
+        <FadeUp>
+          <div className="flex flex-col gap-3 justify-center">
+            <ContentResultContainer error={fetchState.error}>
+              <>
+                <div className="flex-grow">
+                  <SubTitle
+                    title="Budgets"
+                    {...{ className: 'text-center mt-4' }}
                   />
-                </BudgetActionMenu>
-              </div>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center flex-grow">
-                <CustomSmallTable
-                  title="Types"
-                  values={fetchState.categories}
-                  onDeleteConfirmed={(id) => OnCategoryDeleteConfirmed(id)}
-                  addComponent={
-                    <AddComponent
-                      onAdd={OnCategoryAdd}
-                      setNew={setNewCategory}
-                      childrenSelection={
-                        <ChildrenSelection
-                          value={selectedChildValue}
-                          onChange={setSelectedChildValue}
-                          options={CategoryIcon}
-                          {...{
-                            className:
-                              'rounded-none focus:outline-none focus:ring-0 hover:border-primary/50 focus:shadow-none w-20 overscroll-contain h-8  bg-primary-foreground border',
-                          }}
-                        />
-                      }
+                  <BudgetActionMenu
+                    table={table}
+                    budgets={budgets}
+                    onDeleteConfirmed={onDeleteConfirmed}
+                    onRefresh={onRefresh}
+                  >
+                    <CustomTable
+                      table={table}
+                      filtersOnly={false}
+                      page="settings"
                     />
-                  }
-                />
-                <CustomSmallTable
-                  title="Users"
-                  values={fetchState.owners}
-                  onDeleteConfirmed={(id) => OnOwnerDeleteConfirmed(id)}
-                  addComponent={
-                    <AddComponent onAdd={OnOwnerAdd} setNew={setNewOwner} />
-                  }
-                />
-              </div>
-            </>
-          </ContentResultContainer>
-        </div>
-      </FadeUp>
+                  </BudgetActionMenu>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center flex-grow">
+                  <CustomSmallTable
+                    title="Types"
+                    values={fetchState.categories}
+                    onDeleteConfirmed={(id) => OnCategoryDeleteConfirmed(id)}
+                    addComponent={
+                      <AddComponent
+                        onAdd={OnCategoryAdd}
+                        setNew={setNewCategory}
+                        childrenSelection={
+                          <ChildrenSelection
+                            value={selectedChildValue}
+                            onChange={setSelectedChildValue}
+                            options={CategoryIcon}
+                            {...{
+                              className:
+                                'rounded-none focus:outline-none focus:ring-0 hover:border-primary/50 focus:shadow-none w-20 overscroll-contain h-8  bg-primary-foreground border',
+                            }}
+                          />
+                        }
+                      />
+                    }
+                  />
+                  <CustomSmallTable
+                    title="Users"
+                    values={fetchState.owners}
+                    onDeleteConfirmed={(id) => OnOwnerDeleteConfirmed(id)}
+                    addComponent={
+                      <AddComponent onAdd={OnOwnerAdd} setNew={setNewOwner} />
+                    }
+                  />
+                </div>
+              </>
+            </ContentResultContainer>
+          </div>
+        </FadeUp>
+      </PageContainer>
     </Loading>
   );
 }

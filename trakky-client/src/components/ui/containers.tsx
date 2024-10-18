@@ -92,18 +92,19 @@ export function ContentResultContainer({
   return children;
 }
 
-export function Containers({
-  children,
-  className,
-}: {
+interface PageContainerProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
-  className?: string;
-}) {
-  return (
-    <div className={`px-1 md:px-0 mt-1 sm:mt-0 ${className}`}>{children}</div>
-  );
 }
 
-Containers.defaultProps = {
-  className: null,
-};
+export function PageContainer({ children, ...props }: PageContainerProps) {
+  return (
+    <div className="flex justify-center">
+      <div
+        className="px-1 w-full sm:max-w-[600px] md:max-w-[700px] mx-1"
+        {...props}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}

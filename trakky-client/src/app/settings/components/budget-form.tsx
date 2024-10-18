@@ -2,11 +2,8 @@
 
 import * as z from 'zod';
 import { useForm } from 'react-hook-form';
-import { format } from 'date-fns';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, Field, FormField } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import { Form } from '@/components/ui/form';
 import {
   Card,
   CardContent,
@@ -14,13 +11,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
-import { twMerge } from 'tailwind-merge';
-import { Calendar } from '@/components/ui/calendar';
 import React from 'react';
 import { resultToast } from '@/components/ui/use-toast';
 import {
@@ -29,9 +19,9 @@ import {
 } from '@/lib/text-formatter';
 import { errorMessage } from '@/components/ui/table/form-error-message';
 import { Budget } from '@/models/dtos';
-import { CalendarIcon } from 'lucide-react';
 import { Client } from '@/infrastructure/client-injector';
 import { Endpoint } from '@/constants';
+import { CalendarField, NumericField } from '@/components/ui/table/form-fields';
 
 const customErrorMap: z.ZodErrorMap = (issue, ctx) => {
   if (issue.code === z.ZodIssueCode.invalid_type) {
@@ -155,112 +145,20 @@ export function BudgetForm({
           <CardContent className="border-none">
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <div className="grid grid-cols-1">
-                <FormField
-                  disabled={
-                    form.formState.isSubmitting ||
-                    form.formState.isSubmitSuccessful
-                  }
-                  control={form.control}
-                  name="date"
-                  render={({ field }) => (
-                    <Field name="Date">
-                      <Popover>
-                        <PopoverTrigger
-                          asChild
-                          className={twMerge(
-                            form.formState.errors.date && `shake-animation`
-                          )}
-                        >
-                          <Button
-                            disabled={
-                              form.formState.isSubmitting ||
-                              form.formState.isSubmitSuccessful
-                            }
-                            variant="outline"
-                            className={twMerge(
-                              'w-full justify-start text-left font-normal',
-                              !field.value && 'text-muted-foreground'
-                            )}
-                          >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {field.value ? (
-                              format(field.value, 'PPP')
-                            ) : (
-                              <span>Select a date</span>
-                            )}
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={(e) => {
-                              form.clearErrors('date');
-                              field.onChange(e);
-                            }}
-                            initialFocus
-                            disabled={
-                              form.formState.isSubmitting ||
-                              form.formState.isSubmitSuccessful
-                            }
-                          />
-                        </PopoverContent>
-                      </Popover>
-                    </Field>
-                  )}
-                />
+                <CalendarField form={form} name="date" title="Date" />
               </div>
-
               <div className="grid grid-cols-2 gap-2">
-                <FormField
-                  control={form.control}
+                <NumericField
+                  form={form}
                   name="budget"
-                  render={({ field }) => (
-                    <Field name="Budget">
-                      <Input
-                        disabled={
-                          form.formState.isSubmitting ||
-                          form.formState.isSubmitSuccessful
-                        }
-                        inputMode="decimal"
-                        type="number"
-                        step="any"
-                        min={0}
-                        className={twMerge(
-                          form.formState.errors.budget && `shake-animation`
-                        )}
-                        {...field}
-                        onChange={(n) => {
-                          field.onChange(n.target.valueAsNumber);
-                        }}
-                      />
-                    </Field>
-                  )}
+                  title="Budget"
+                  {...{ inputMode: 'decimal' }}
                 />
-                <FormField
-                  control={form.control}
+                <NumericField
+                  form={form}
                   name="maxBudget"
-                  render={({ field }) => (
-                    <Field name="Max Budget">
-                      <Input
-                        disabled={
-                          form.formState.isSubmitting ||
-                          form.formState.isSubmitSuccessful
-                        }
-                        inputMode="decimal"
-                        type="number"
-                        step="any"
-                        min={0}
-                        className={twMerge(
-                          form.formState.errors.maxBudget && `shake-animation`
-                        )}
-                        {...field}
-                        onChange={(n) => {
-                          field.onChange(n.target.valueAsNumber);
-                        }}
-                      />
-                    </Field>
-                  )}
+                  title="Max Budget"
+                  {...{ inputMode: 'decimal' }}
                 />
               </div>
               <CardFormFooter

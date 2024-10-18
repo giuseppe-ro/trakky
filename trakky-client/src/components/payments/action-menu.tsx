@@ -1,4 +1,3 @@
-import { Containers } from '@/components/ui/containers';
 import DeleteDialog from '@/components/ui/table/delete-popup';
 import TableActionMenu from '@/components/ui/table/table-action-menu';
 import { Payment } from '@/models/dtos';
@@ -26,34 +25,32 @@ export function PaymentsTableActionMenu({
   children,
 }: PaymentsTableActionMenuProps) {
   return (
-    <Containers className="transition">
-      <TableActionMenu
-        exportName="Payments"
-        table={table}
-        onRefresh={onRefresh}
-        addForm={
-          <PaymentForm
-            refresh={() => onRefresh(false)}
-            title="Add New Transaction"
-          />
-        }
-        deleteForm={
-          <DeleteDialog
-            onDeleteConfirmed={onDeleteConfirmed}
-            tooltipText="Delete selected rows"
-            entries={
-              <PaymentsRecap
-                entries={table
-                  .getSelectedRowModel()
-                  .rows.map((row) => row.original as Payment)}
-              />
-            }
-          />
-        }
-      >
-        {children}
-      </TableActionMenu>
-    </Containers>
+    <TableActionMenu
+      exportName="Payments"
+      table={table}
+      onRefresh={onRefresh}
+      addForm={
+        <PaymentForm
+          refresh={() => onRefresh(false)}
+          title="Add New Transaction"
+        />
+      }
+      deleteForm={
+        <DeleteDialog
+          onDeleteConfirmed={onDeleteConfirmed}
+          tooltipText="Delete selected rows"
+          entries={
+            <PaymentsRecap
+              entries={table
+                .getSelectedRowModel()
+                .rows.map((row) => row.original as Payment)}
+            />
+          }
+        />
+      }
+    >
+      {children}
+    </TableActionMenu>
   );
 }
 

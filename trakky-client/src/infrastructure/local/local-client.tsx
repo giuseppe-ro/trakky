@@ -23,8 +23,8 @@ export default class LocalClient extends BaseClient {
   ) {
     const table = db[endpoint] as unknown as EntityTable<Entity, 'id'>;
 
-    await dexieAction(table.bulkAdd(data));
-    return { data: true, error: null };
+    const response = await dexieAction(table.bulkAdd(data));
+    return { data: !!response, error: null };
   }
 
   async Upload(): Promise<null | string> {
@@ -37,8 +37,8 @@ export default class LocalClient extends BaseClient {
   ) {
     const table = db[endpoint] as unknown as EntityTable<Entity, 'id'>;
 
-    await dexieAction(table.put(payment));
-    return { data: true, error: null };
+    const response = await dexieAction(table.put(payment));
+    return { data: !!response, error: null };
   }
 
   async Delete(endpoint: 'payments' | 'owners' | 'categories', ids: number[]) {

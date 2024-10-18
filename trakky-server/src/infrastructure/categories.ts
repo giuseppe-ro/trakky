@@ -1,12 +1,11 @@
-import { Category, PrismaClient } from "@prisma/client";
+import { Category } from "@prisma/client";
+import prisma from "./client";
 
-const prisma = new PrismaClient();
-
-export async function getCategories() {
+export async function get() {
   return await prisma.category.findMany();
 }
 
-export async function addCategories(categories: Category[]) {
+export async function post(categories: Category[]) {
     const response = await prisma.category.createMany({
       data: categories
     });
@@ -14,7 +13,7 @@ export async function addCategories(categories: Category[]) {
     return response;
 }
 
-export async function deleteCategories(ids: number[]) {
+export async function del(ids: number[]) {
   const response = await prisma.category.deleteMany({
     where: {
       id: { in: ids },

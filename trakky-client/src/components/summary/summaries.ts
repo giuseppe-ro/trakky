@@ -3,19 +3,6 @@ import { OwnerOverview } from '@/models/owner-overview';
 import { PaymentOverview } from '@/models/payment-overview';
 import { formatDateMonth } from '@/lib/text-formatter';
 
-export function getAvailableYears(data: Payment[]) {
-  return data
-    .reduce((acc: number[], payment) => {
-      const year = new Date(payment.date).getFullYear();
-      if (!acc.includes(year)) {
-        acc.push(year);
-      }
-      return acc;
-    }, [])
-    .sort((a, b) => b - a)
-    .map((year) => year?.toString());
-}
-
 function sortMap(map: Map<string, string[]>): Map<string, string[]> {
   // Convert map entries to an array and sort it
   const sortedEntries = Array.from(map.entries())

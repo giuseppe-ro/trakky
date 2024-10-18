@@ -1,6 +1,5 @@
 import YearSelection from '@/components/ui/data-selector';
 import { usePaymentsTable } from '@/lib/hooks/table-hooks';
-import { Containers } from '@/components/ui/containers';
 import { FadeUp } from '@/components/ui/animations/fade';
 import useSummary from '@/lib/hooks/use-summary';
 import Loading from '@/components/ui/loading';
@@ -9,6 +8,7 @@ import Summary from '@/components/summary/summary';
 import PaymentsTable from '@/components/payments/table';
 import { twMerge } from 'tailwind-merge';
 import { demoMode } from './constants';
+import { PageContainer } from './components/ui/containers';
 
 export default function App() {
   const { data: payments, refreshData, isLoading, isError } = usePaymentData();
@@ -37,7 +37,7 @@ export default function App() {
 
   return (
     <Loading loading={isLoading}>
-      <Containers>
+      <PageContainer>
         <Summary
           totalAmount={totalAmount}
           partialTotal={partialTotal}
@@ -46,9 +46,7 @@ export default function App() {
           selectedMonth={selectedMonth ?? ''}
           {...{ className: twMerge(demoMode ? 'mt-4' : 'mt-2') }}
         />
-      </Containers>
-      {!isError && (
-        <div className="sticky top-12 sm:top-24 z-30 mx-2 sm:mx-0">
+        {!isError && (
           <YearSelection
             availableYears={availableYears}
             selectedYear={selectedYear}
@@ -56,16 +54,16 @@ export default function App() {
             onMonthChange={setSelectedMonth}
             selectedMonth={selectedMonth}
           />
-        </div>
-      )}
-      <div />
-      <FadeUp>
-        <PaymentsTable
-          table={table}
-          onDeleteConfirmed={onDeleteConfirmed}
-          onRefresh={onRefresh}
-        />
-      </FadeUp>
+        )}
+        <div />
+        <FadeUp>
+          <PaymentsTable
+            table={table}
+            onDeleteConfirmed={onDeleteConfirmed}
+            onRefresh={onRefresh}
+          />
+        </FadeUp>
+      </PageContainer>
     </Loading>
   );
 }

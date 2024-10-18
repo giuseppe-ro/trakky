@@ -19,28 +19,46 @@ model Category {
   id     Int    @id @default(autoincrement())
   name   String
   iconId Int
+  Icon   Icon   @relation(fields: [iconId], references: [id], onUpdate: Restrict, map: "Category_ibfk_1")
+
+  @@index([iconId], map: "iconId")
 }
 
 model Icon {
-  id   Int    @id @default(autoincrement())
-  name String @unique(map: "icon_name")
+  id       Int        @id @default(autoincrement())
+  name     String     @unique(map: "icon_name")
+  Category Category[]
 }
 
 model Owner {
-  id   Int    @id @default(autoincrement())
-  name String @unique
+  id             Int              @id @default(autoincrement())
+  name           String           @unique
+  SharedExpenses SharedExpenses[]
 }
 
 model Payment {
-  id          Int      @id @default(autoincrement())
-  amount      Float
-  description String
-  date        DateTime
-  owner       String
-  type        String
+  id             Int              @id @default(autoincrement())
+  amount         Float
+  description    String
+  date           DateTime
+  owner          String
+  type           String
+  SharedExpenses SharedExpenses[]
 }
 
 model Type {
   id   Int    @id @default(autoincrement())
   name String @unique
+}
+
+model SharedExpenses {
+  Id        Int     @id @default(autoincrement())
+  PaymentId Int
+  OwnerId   Int
+  Complete  Bytes   @db.Binary(1)
+  Payment   Payment @relation(fields: [PaymentId], references: [id], onUpdate: Restrict, map: "SharedExpenses_ibfk_1")
+  Owner     Owner   @relation(fields: [OwnerId], references: [id], onUpdate: Restrict, map: "SharedExpenses_ibfk_2")
+
+  @@index([OwnerId], map: "OwnerId")
+  @@index([PaymentId], map: "PaymentId")
 }

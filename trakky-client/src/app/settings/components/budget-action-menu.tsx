@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Containers } from '@/components/ui/containers';
 import DeleteDialog from '@/components/ui/table/delete-popup';
 import TableActionMenu from '@/components/ui/table/table-action-menu';
 import { Table } from '@tanstack/react-table';
@@ -24,34 +23,32 @@ export function BudgetActionMenu({
   children,
 }: BudgetActionMenuProps) {
   return (
-    <Containers className="transition">
-      <TableActionMenu
-        exportName="Budgets"
-        table={table}
-        onRefresh={onRefresh}
-        addForm={
-          <BudgetForm
-            refresh={() => {
-              onRefresh(false).then(() => {});
-            }}
-            existingDates={budgets.map((b) => new Date(b.date))}
-            title="Add New Budget"
-          />
-        }
-        deleteForm={
-          <DeleteDialog
-            onDeleteConfirmed={onDeleteConfirmed}
-            entries={BudgetToDeleteList({
-              entries: table
-                .getSelectedRowModel()
-                .rows.map((row) => row.original),
-            })}
-          />
-        }
-      >
-        {children}
-      </TableActionMenu>
-    </Containers>
+    <TableActionMenu
+      exportName="Budgets"
+      table={table}
+      onRefresh={onRefresh}
+      addForm={
+        <BudgetForm
+          refresh={() => {
+            onRefresh(false).then(() => {});
+          }}
+          existingDates={budgets.map((b) => new Date(b.date))}
+          title="Add New Budget"
+        />
+      }
+      deleteForm={
+        <DeleteDialog
+          onDeleteConfirmed={onDeleteConfirmed}
+          entries={BudgetToDeleteList({
+            entries: table
+              .getSelectedRowModel()
+              .rows.map((row) => row.original),
+          })}
+        />
+      }
+    >
+      {children}
+    </TableActionMenu>
   );
 }
 

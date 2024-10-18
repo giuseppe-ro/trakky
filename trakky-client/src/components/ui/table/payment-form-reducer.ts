@@ -11,6 +11,7 @@ export const FETCH_INITIAL_STATE = {
 export enum FetchActionType {
   FETCH_START = 'FETCH_START',
   FETCHED_OWNERS = 'FETCHED_OWNERS',
+  FETCHED_SHARED_EXPENSES = 'FETCHED_SHARED_EXPENSES',
   FETCHED_TYPES = 'FETCHED_TYPES',
   FETCHED_CATEGORIES = 'FETCHED_CATEGORIES',
   FETCHED_ICONS = 'FETCHED_ICONS',
@@ -29,6 +30,11 @@ export const paymentFormDataReducer = (state: any, action: any) => {
       return {
         ...state,
         owners: action.payload,
+      };
+    case 'FETCHED_SHARED_EXPENSES':
+      return {
+        ...state,
+        types: action.payload,
       };
     case 'FETCHED_TYPES':
       return {

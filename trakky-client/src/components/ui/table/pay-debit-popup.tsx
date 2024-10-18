@@ -20,34 +20,28 @@ import { OwedBalance } from '@/models/debitor-balance';
 import PaymentsRecap from '@/components/payments/payments-recap';
 import { useEffect, useState } from 'react';
 import { Payment } from '@/models/dtos';
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from '@radix-ui/react-popover';
-import { CalendarIcon } from 'lucide-react';
-import { format } from 'date-fns';
 import { Client } from '@/infrastructure/client-injector';
 import { Endpoint } from '@/constants';
-import { Button } from '../button';
-import { Calendar } from '../calendar';
 import { resultToast } from '../use-toast';
 
-function PayDebitDialog({
-  debitorName,
-  owed,
-  tooltipText,
-  onConfirm,
-  className,
-}: {
+interface PayDebitDialogProps {
+  date: Date;
   debitorName: string;
   owed: OwedBalance;
   onConfirm: () => Promise<void>;
   tooltipText?: string;
   className?: string;
-}) {
+}
+
+function PayDebitDialog({
+  date,
+  debitorName,
+  owed,
+  tooltipText,
+  onConfirm,
+  className,
+}: PayDebitDialogProps) {
   const [entries, setEntries] = useState<Payment[]>();
-  const [date, setDate] = useState<Date>();
   const [isError, setIsError] = useState(false);
 
   useEffect(() => {
@@ -110,63 +104,30 @@ function PayDebitDialog({
                 <div className="sticky top-0 z-40">
                   <AlertDialogTitle>
                     <div className="text-center">Clear debit?</div>
-
-                    <div className="flex justify-center my-4">
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button variant="outline">
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {date ? (
-                              format(date, 'PPP')
-                            ) : (
-                              <span>Select a date</span>
-                            )}
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            className="bg-popover border rounded-lg"
-                            mode="single"
-                            selected={date}
-                            onSelect={setDate}
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
-                    </div>
                     <p
                       className={twMerge(
-                        'text-sm mb-2 text-muted-foreground pb-2',
+                        'text-sm mb-2 mt-12 text-muted-foreground pb-2',
                         !date && 'text-yellow-500 pt-5 text-center'
                       )}
                     >
-                      {date
-                        ? 'This will create the below entries:'
-                        : 'Select the date to create the new entries for.'}
+                      This will create the below entries:
                     </p>
                   </AlertDialogTitle>
                   {entries && <PaymentsRecap entries={entries} />}
                 </div>
               </AlertDialogHeader>
               <AlertDialogFooter className="z-10">
-                <AlertDialogCancel
-                  className="mx-6 mb-6"
-                  onClick={() => {
-                    setDate(undefined);
-                  }}
-                >
+                <AlertDialogCancel className="mx-6 mb-6">
                   Cancel
                 </AlertDialogCancel>
-                {date && (
-                  <AlertDialogAction
-                    className="bg-green-500 mx-6 mt-6 hover:bg-green-600 text-primary"
-                    onClick={() => {
-                      onConfirmed().then(() => {});
-                    }}
-                  >
-                    Continue
-                  </AlertDialogAction>
-                )}
+                <AlertDialogAction
+                  className="bg-green-500 mx-6 mt-6 hover:bg-green-600 text-primary"
+                  onClick={() => {
+                    onConfirmed().then(() => {});
+                  }}
+                >
+                  Continue
+                </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>

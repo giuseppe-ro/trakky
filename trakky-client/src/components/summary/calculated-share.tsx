@@ -16,11 +16,15 @@ import DebitOverview from './debit-overview';
 interface CalculatedShareAccordionProps {
   balances: Dictionary<number>;
   onRefresh: () => void;
+  showPayDebitButton: boolean;
+  date: Date | null;
 }
 
 export default function CalculatedShareAccordion({
   balances,
   onRefresh,
+  showPayDebitButton,
+  date,
 }: CalculatedShareAccordionProps) {
   const [share, setShare] = useState<Share>();
   const [accordionIsDisabled, setAccordionIsDisabled] = useState<boolean>(true);
@@ -170,39 +174,41 @@ export default function CalculatedShareAccordion({
 
   return (
     <div>
-      <div className="flex flex-row gap-2 justify-start mx-1 my-4 align-middle">
-        <span className="self-center min-w-[120px] text-base text-muted-foreground align-middle h-full">
-          Calculate For:
-        </span>
-        <div className="flex flex-row flex-wrap align-middle gap-2">
-          <Button
-            variant="outline"
-            className={checkboxStyle(checkBoxStates.All)}
-            onClick={() => {
-              setAllCheckBoxes();
-            }}
-          >
-            All
-          </Button>
-          {owners.map((owner) => {
-            return (
-              <Button
-                key={owner.id}
-                variant="outline"
-                className={checkboxStyle(checkBoxStates[owner.name])}
-                onClick={() => {
-                  setCheckBox(owner.name);
-                }}
-              >
-                {owner.name}
-              </Button>
-            );
-          })}
+      {balances.lenght > 0 && (
+        <div className="flex flex-row gap-2 justify-start mx-1 my-4 align-middle">
+          <span className="self-center min-w-[120px] text-base text-muted-foreground align-middle h-full">
+            Calculate For:
+          </span>
+          <div className="flex flex-row flex-wrap align-middle gap-2">
+            <Button
+              variant="outline"
+              className={checkboxStyle(checkBoxStates.All)}
+              onClick={() => {
+                setAllCheckBoxes();
+              }}
+            >
+              All
+            </Button>
+            {owners.map((owner) => {
+              return (
+                <Button
+                  key={owner.id}
+                  variant="outline"
+                  className={checkboxStyle(checkBoxStates[owner.name])}
+                  onClick={() => {
+                    setCheckBox(owner.name);
+                  }}
+                >
+                  {owner.name}
+                </Button>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      )}
       {share && (
         <>
-          <div className="flex flex-row gap-2 mx-1">
+          <div className="flex flex-row gap-2 mt-4 mx-1">
             <span className="min-w-[140px] text-base text-muted-foreground">
               Total Amount:
             </span>
@@ -252,20 +258,30 @@ export default function CalculatedShareAccordion({
               debitorName={debitor.name}
               owed={owed}
             >
-              <PayDebitDialog
-                owed={owed}
-                onConfirm={() => onConfirm(owed.id)}
-                debitorName={debitor.name}
-                tooltipText="Clear Debit"
-                className={twMerge(
-                  'rounded-none',
-                  isLastDebitor && isLastTransaction && 'rounded-br'
-                )}
-              />
+              {showPayDebitButton && date ? (
+                <PayDebitDialog
+                  date={date}
+                  owed={owed}
+                  onConfirm={() => onConfirm(owed.id)}
+                  debitorName={debitor.name}
+                  tooltipText="Clear Debit"
+                  className={twMerge(
+                    'rounded-none',
+                    isLastDebitor && isLastTransaction && 'rounded-br'
+                  )}
+                />
+              ) : (
+                <div />
+              )}
             </DebitOverview>
           );
         });
       })}
+      {!showPayDebitButton && (
+        <div className="flex flex-row mt-2 mx-1 justify-center text-accent">
+          Select month to clear debits for
+        </div>
+      )}
     </div>
   );
 }

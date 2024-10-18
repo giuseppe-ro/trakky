@@ -1,8 +1,7 @@
-import { Budget, PrismaClient } from "@prisma/client";
+import { Budget } from "@prisma/client";
+import prisma from "./client";
 
-const prisma = new PrismaClient();
-
-export async function getBudgets() {
+export async function get() {
   const response = await prisma.budget.findMany({
     orderBy: [
       {
@@ -14,7 +13,7 @@ export async function getBudgets() {
   return response;
 }
 
-export async function addBudgets(budgets: Budget[]) {
+export async function post(budgets: Budget[]) {
   const response = await prisma.budget.createMany({
     data: budgets
   });
@@ -22,7 +21,7 @@ export async function addBudgets(budgets: Budget[]) {
   return response;
 }
 
-export async function updateBudget(budget: Budget) {
+export async function put(budget: Budget) {
 
   const response = await prisma.budget.update({
     where: { id: budget.id },
@@ -34,7 +33,7 @@ export async function updateBudget(budget: Budget) {
   return response;
 }
 
-export async function deleteBudgets(budgetIds: number[]) {
+export async function del(budgetIds: number[]) {
   const response = await prisma.budget.deleteMany({
     where: {
       id: { in: budgetIds },

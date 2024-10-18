@@ -27,6 +27,7 @@ import { ChevronDownIcon } from 'lucide-react';
 import { Icon } from '@/models/dtos';
 import { Dictionary, GetCategoryIcon, GetCategoryIconMapping } from './icons';
 import renderCell from './cell';
+import { TableNavigation } from './table-action-menu';
 
 export interface CustomTableProps<TData> {
   table: TableType<TData>;
@@ -237,6 +238,7 @@ export function CustomTable<TData extends object>({
           )}
         </TableBody>
       </Table>
+      {showTableBody && <div className="mt-2">{TableNavigation(table)}</div>}
     </div>
   );
 }

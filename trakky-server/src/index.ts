@@ -10,6 +10,7 @@ import { openIdAuth } from "./infrastructure/authorisation";
 import { logger } from "./logger";
 import { User } from "./models/user";
 import { iconsRouter } from "./api/icons";
+import { sharedExpensesRouter } from "./api/sharedExpenses";
 
 const origins = process.env.ALLOWED_ORIGINS?.split(",") ?? "http://localhost:5173"
 
@@ -37,6 +38,7 @@ app.use("/api", apiRouter);
 
 apiRouter.use("/backup", openIdAuth, backupRouter);
 apiRouter.use("/payments", openIdAuth, paymentsRouter);
+apiRouter.use("/sharedExpenses", openIdAuth, sharedExpensesRouter);
 apiRouter.use("/budgets", openIdAuth, budgetsRouter);
 apiRouter.use("/owners", openIdAuth, ownersRouter)
 apiRouter.use("/types", openIdAuth, typesRouter)

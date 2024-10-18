@@ -82,7 +82,7 @@ export function SingleButtonFilter({
   return (
     <FilterContainer title={title}>
       <>
-        {entries.map((name) => {
+        {entries.sort().map((name) => {
           return (
             <CheckBoxButton
               key={name}

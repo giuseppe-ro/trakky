@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Client } from '@/infrastructure/client-injector';
-import { Endpoint, StorageKey } from '@/constants';
+import { Endpoint } from '@/constants';
 import { Owner } from '@/models/dtos';
 import { Share } from '@/models/share';
 import getDebitorBalances from '@/lib/calculators';
@@ -9,7 +9,6 @@ import { twMerge } from 'tailwind-merge';
 import { DebitorBalance, OwedBalance } from '@/models/debitor-balance';
 import { AnimateNumber } from './summary';
 import { Dictionary } from '../ui/table/icons';
-import { Button } from '../ui/button';
 import PayDebitDialog from '../ui/table/pay-debit-popup';
 import DebitOverview from './debit-overview';
 
@@ -18,6 +17,8 @@ interface CalculatedShareAccordionProps {
   onRefresh: () => void;
   showPayDebitButton: boolean;
   date: Date | null;
+  checkBoxStates: Dictionary<boolean>;
+  setCheckboxStates: (states: Dictionary<boolean>) => void;
 }
 
 export default function CalculatedShareAccordion({
@@ -25,11 +26,12 @@ export default function CalculatedShareAccordion({
   onRefresh,
   showPayDebitButton,
   date,
+  checkBoxStates,
+  setCheckboxStates,
 }: CalculatedShareAccordionProps) {
   const [share, setShare] = useState<Share>();
   const [accordionIsDisabled, setAccordionIsDisabled] = useState<boolean>(true);
   const [owners, setOwners] = useState<Owner[]>([]);
-  const [checkBoxStates, setCheckboxStates] = useState<Dictionary<boolean>>({});
 
   useEffect(() => {
     setShare(getDebitorBalances(balances));
@@ -52,6 +54,7 @@ export default function CalculatedShareAccordion({
         setCheckboxStates(checkBoxes);
       }
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [balances, checkBoxStates]);
 
   useEffect(() => {
@@ -114,98 +117,8 @@ export default function CalculatedShareAccordion({
     onRefresh();
   }
 
-  async function setAllCheckBoxes() {
-    const users: Dictionary<boolean> = {};
-
-    const newState = !checkBoxStates.All;
-
-    Object.keys(checkBoxStates).forEach((user) => {
-      users[user] = newState;
-    });
-
-    setCheckboxStates(users);
-
-    localStorage.setItem(StorageKey.ShowedUserShares, JSON.stringify(users));
-  }
-
-  function allCheckboxesOn(dictionary: Dictionary<boolean>, newState: boolean) {
-    return (
-      newState === true && Object.values(dictionary).every((e) => e === true)
-    );
-  }
-
-  async function setCheckBox(key: string) {
-    const users: Dictionary<boolean> = {};
-
-    Object.keys(checkBoxStates).forEach((user) => {
-      users[user] = checkBoxStates[user];
-    });
-
-    const newState = !users[key];
-
-    users[key] = newState;
-
-    const usersState: Dictionary<boolean> = {};
-
-    Object.keys(users).forEach((user) => {
-      if (user !== 'All') {
-        usersState[user] = users[user];
-      }
-    });
-
-    if (allCheckboxesOn(usersState, newState)) {
-      users.All = true;
-    } else {
-      users.All = false;
-    }
-
-    setCheckboxStates(users);
-
-    localStorage.setItem(StorageKey.ShowedUserShares, JSON.stringify(users));
-  }
-
-  const checkboxStyle = (isChecked: boolean) =>
-    twMerge(
-      'text-base font-normal h-9 transition-colors duration-300',
-      isChecked
-        ? 'bg-button-checkbox hover:bg-button-checkbox text-primary hover:text-primary hover:font-bold'
-        : 'bg-background hover:bg-background text-muted-foreground/50 hover:text-muted-foreground'
-    );
-
   return (
     <div>
-      {balances.lenght > 0 && (
-        <div className="flex flex-row gap-2 justify-start mx-1 my-4 align-middle">
-          <span className="self-center min-w-[120px] text-base text-muted-foreground align-middle h-full">
-            Calculate For:
-          </span>
-          <div className="flex flex-row flex-wrap align-middle gap-2">
-            <Button
-              variant="outline"
-              className={checkboxStyle(checkBoxStates.All)}
-              onClick={() => {
-                setAllCheckBoxes();
-              }}
-            >
-              All
-            </Button>
-            {owners.map((owner) => {
-              return (
-                <Button
-                  key={owner.id}
-                  variant="outline"
-                  className={checkboxStyle(checkBoxStates[owner.name])}
-                  onClick={() => {
-                    setCheckBox(owner.name);
-                  }}
-                >
-                  {owner.name}
-                </Button>
-              );
-            })}
-          </div>
-        </div>
-      )}
       {share && (
         <>
           <div className="flex flex-row gap-2 mt-4 mx-1">

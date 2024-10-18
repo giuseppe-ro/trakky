@@ -45,6 +45,7 @@ function useSummary(table: Table<any>, selectedYear: string | null) {
     totalAmount,
     partialTotal,
     balances,
+    setBalances,
   };
 }
 

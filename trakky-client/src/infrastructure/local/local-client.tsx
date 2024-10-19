@@ -22,8 +22,8 @@ export default class LocalClient extends BaseClient {
     data: Payment[] | Category[] | Owner[]
   ) {
     const table = db[endpoint] as unknown as EntityTable<Entity, 'id'>;
-
     const response = await dexieAction(table.bulkAdd(data));
+
     return { data: !!response, error: null };
   }
 

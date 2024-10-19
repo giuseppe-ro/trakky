@@ -45,7 +45,7 @@ export function MainNav({ children }: HTMLAttributes<HTMLElement>) {
 
   if (user || skipAuth) {
     links.push({ href: '/dashboards', label: 'Dashboards' });
-    links.push({ href: '/shared', label: 'Shared' });
+    links.push({ href: '/split', label: 'Split' });
     links.push({ href: '/settings', label: 'Settings' });
   }
 
@@ -55,7 +55,7 @@ export function MainNav({ children }: HTMLAttributes<HTMLElement>) {
         return <HomeIcon className="h-6 w-6" />;
       case 'Dashboards':
         return <BarChart2 className="h-6 w-6" />;
-      case 'Shared':
+      case 'Split':
         return <HandCoins className="h-6 w-6" />;
       case 'Settings':
         return <Cog className="h-6 w-6" />;

@@ -28,6 +28,7 @@ interface PayDebitDialogProps {
   date: Date;
   debitorName: string;
   owed: OwedBalance;
+  category: string;
   onConfirm: () => Promise<void>;
   tooltipText?: string;
   className?: string;
@@ -37,6 +38,7 @@ function PayDebitDialog({
   date,
   debitorName,
   owed,
+  category,
   tooltipText,
   onConfirm,
   className,
@@ -50,7 +52,7 @@ function PayDebitDialog({
 
     payments.push({
       amount: -owed.amount,
-      type: 'General',
+      type: category,
       owner: owed.to,
       description: 'Expenses Share',
       date: localDate ?? '',
@@ -58,30 +60,31 @@ function PayDebitDialog({
 
     payments.push({
       amount: owed.amount,
-      type: 'General',
+      type: category,
       owner: debitorName,
       description: 'Expenses Share',
       date: localDate ?? '',
     });
 
     setEntries(payments);
-  }, [owed, debitorName, date]);
+  }, [owed, debitorName, date, category]);
 
-  async function onConfirmed() {
+  function onConfirmed() {
     setIsError(false);
 
-    const { data, error } = await Client.Post(Endpoint.Payments, entries);
-    if (error || !data) {
-      errorMessage(setIsError, error?.error);
-      return;
-    }
+    Client.Post(Endpoint.Payments, entries).then(({ data, error }) => {
+      if (error || !data) {
+        errorMessage(setIsError, error?.error);
+        return;
+      }
 
-    resultToast({
-      isError: isError ?? false,
-      message: 'Transaction saved',
+      resultToast({
+        isError: isError ?? false,
+        message: 'Transaction saved',
+      });
     });
 
-    await onConfirm();
+    onConfirm().then(() => {});
   }
 
   return (
@@ -122,9 +125,7 @@ function PayDebitDialog({
                 </AlertDialogCancel>
                 <AlertDialogAction
                   className="bg-green-500 mx-6 mt-6 hover:bg-green-600 text-primary"
-                  onClick={() => {
-                    onConfirmed().then(() => {});
-                  }}
+                  onClick={() => onConfirmed()}
                 >
                   Continue
                 </AlertDialogAction>

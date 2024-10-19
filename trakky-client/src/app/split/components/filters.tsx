@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Dictionary } from '@/components/ui/table/icons';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 
 interface SharedExpensesFiltersProps
@@ -65,30 +65,50 @@ export function SingleButtonFilter({
   checkBoxStates,
   setCheckboxStates,
 }: SharedExpensesFiltersProps) {
-  async function setOnlyOneCheckBox(key: string) {
-    const states: Dictionary<boolean> = {};
+  const [checkBoxes, setCheckboxes] = useState<Dictionary<boolean>>({});
 
-    const currentState = checkBoxStates[key];
+  useEffect(() => {
+    const states: Dictionary<boolean> = {
+      All: true,
+    };
+
+    entries.forEach((entry) => {
+      states[entry] = true;
+    });
+
+    setCheckboxes(states);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  async function setSingleState(key: string) {
+    const states: Dictionary<boolean> = {};
 
     Object.keys(checkBoxStates).forEach((state) => {
       states[state] = false;
     });
 
-    states[key] = !currentState;
+    states[key] = true;
 
     setCheckboxStates(states);
+    setCheckboxes(states);
   }
 
   return (
     <FilterContainer title={title}>
       <>
+        <CheckBoxButton
+          key="All"
+          name="All"
+          checkBoxStates={checkBoxes}
+          setCheckBox={() => setSingleState('All')}
+        />
         {entries.sort().map((name) => {
           return (
             <CheckBoxButton
               key={name}
               name={name}
-              checkBoxStates={checkBoxStates}
-              setCheckBox={() => setOnlyOneCheckBox(name)}
+              checkBoxStates={checkBoxes}
+              setCheckBox={() => setSingleState(name)}
             />
           );
         })}
@@ -103,25 +123,13 @@ export function MultyButtonFilters({
   checkBoxStates,
   setCheckboxStates,
 }: SharedExpensesFiltersProps) {
-  async function setAllCheckBoxes() {
-    const states: Dictionary<boolean> = {};
-
-    const newState = !checkBoxStates.All;
-
-    Object.keys(checkBoxStates).forEach((state) => {
-      states[state] = newState;
-    });
-
-    setCheckboxStates(states);
-  }
-
-  function allCheckboxesOn(dictionary: Dictionary<boolean>, newState: boolean) {
+  function allStatesAreOn(dictionary: Dictionary<boolean>, newState: boolean) {
     return (
       newState === true && Object.values(dictionary).every((e) => e === true)
     );
   }
 
-  function setCheckBox(key: string) {
+  function setState(key: string) {
     const states: Dictionary<boolean> = {};
 
     Object.keys(checkBoxStates).forEach((state) => {
@@ -140,11 +148,23 @@ export function MultyButtonFilters({
       }
     });
 
-    if (allCheckboxesOn(usersState, newState)) {
+    if (allStatesAreOn(usersState, newState)) {
       states.All = true;
     } else {
       states.All = false;
     }
+
+    setCheckboxStates(states);
+  }
+
+  async function setStates() {
+    const states: Dictionary<boolean> = {};
+
+    const newState = !checkBoxStates.All;
+
+    Object.keys(checkBoxStates).forEach((state) => {
+      states[state] = newState;
+    });
 
     setCheckboxStates(states);
   }
@@ -156,15 +176,15 @@ export function MultyButtonFilters({
           key="All"
           name="All"
           checkBoxStates={checkBoxStates}
-          setCheckBox={() => setAllCheckBoxes()}
+          setCheckBox={() => setStates()}
         />
-        {entries.map((name) => {
+        {entries.sort().map((name) => {
           return (
             <CheckBoxButton
               key={name}
               name={name}
               checkBoxStates={checkBoxStates}
-              setCheckBox={() => setCheckBox(name)}
+              setCheckBox={() => setState(name)}
             />
           );
         })}

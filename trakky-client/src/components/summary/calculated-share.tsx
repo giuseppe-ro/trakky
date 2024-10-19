@@ -11,10 +11,12 @@ import { AnimateNumber } from './summary';
 import { Dictionary } from '../ui/table/icons';
 import PayDebitDialog from '../ui/table/pay-debit-popup';
 import DebitOverview from './debit-overview';
+import { FadeRight } from '../ui/animations/fade';
 
 interface CalculatedShareAccordionProps {
   balances: Dictionary<number>;
-  onRefresh: () => void;
+  selectedCategory: string;
+  onDebitCleared: () => void;
   showPayDebitButton: boolean;
   date: Date | null;
   checkBoxStates: Dictionary<boolean>;
@@ -23,7 +25,8 @@ interface CalculatedShareAccordionProps {
 
 export default function CalculatedShareAccordion({
   balances,
-  onRefresh,
+  selectedCategory,
+  onDebitCleared,
   showPayDebitButton,
   date,
   checkBoxStates,
@@ -114,7 +117,7 @@ export default function CalculatedShareAccordion({
 
     setShare(newShare);
 
-    onRefresh();
+    onDebitCleared();
   }
 
   return (
@@ -165,34 +168,41 @@ export default function CalculatedShareAccordion({
           const isLastTransaction = debitor.owed.length - 1 === owedIndex;
 
           return (
-            <DebitOverview
-              key={`${debitor.name}-${owed.to}-debit`}
-              maxDigits={maxDigits}
-              debitorName={debitor.name}
-              owed={owed}
-            >
-              {showPayDebitButton && date ? (
-                <PayDebitDialog
-                  date={date}
-                  owed={owed}
-                  onConfirm={() => onConfirm(owed.id)}
-                  debitorName={debitor.name}
-                  tooltipText="Clear Debit"
-                  className={twMerge(
-                    'rounded-none',
-                    isLastDebitor && isLastTransaction && 'rounded-br'
-                  )}
-                />
-              ) : (
-                <div />
-              )}
-            </DebitOverview>
+            <FadeRight key={`${debitor.name}-${owed.to}-debit`}>
+              <DebitOverview
+                maxDigits={maxDigits}
+                debitorName={debitor.name}
+                owed={owed}
+              >
+                {selectedCategory &&
+                selectedCategory !== 'All' &&
+                showPayDebitButton &&
+                date ? (
+                  <PayDebitDialog
+                    date={date}
+                    owed={owed}
+                    category={selectedCategory}
+                    onConfirm={() => onConfirm(owed.id)}
+                    debitorName={debitor.name}
+                    tooltipText="Clear Debit"
+                    className={twMerge(
+                      'rounded-none',
+                      isLastDebitor && isLastTransaction && 'rounded-br'
+                    )}
+                  />
+                ) : (
+                  <div />
+                )}
+              </DebitOverview>
+            </FadeRight>
           );
         });
       })}
-      {!showPayDebitButton && (
+      {(!showPayDebitButton ||
+        !selectedCategory ||
+        selectedCategory === 'All') && (
         <div className="flex flex-row mt-2 mx-1 justify-center text-accent">
-          Select month to clear debits for
+          Select valid month and category to clear debits
         </div>
       )}
     </div>

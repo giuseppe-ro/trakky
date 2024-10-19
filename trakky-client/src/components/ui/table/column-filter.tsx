@@ -104,7 +104,7 @@ export function Filter<TData>({
         value={(columnFilterValue ?? '') as string}
         onChange={(value) => column.setFilterValue(value)}
         placeholder=""
-        className="h-6 rounded-none w-full shadow bg-secondary font-thin text-primary/50 selection:bg-primary-foreground pl-2 focus:outline-none"
+        className="h-6 rounded-none w-full shadow bg-secondary font-thin text-primary/50 selection:bg-primary-foreground px-2 focus:outline-none"
         list={`${column.id}list`}
       />
     </div>

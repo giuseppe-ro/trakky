@@ -19,7 +19,10 @@ export default function DebitOverview({
 }: DebitOverviewProps) {
   return (
     <div
-      className="flex ml-1 border-t gap-2 align-middle justify-between overflow-y-hidden no-scrollbar"
+      className={twMerge(
+        'flex ml-1 border-t gap-10 align-middle overflow-y-hidden no-scrollbar',
+        children && 'justify-between gap-4'
+      )}
       {...props}
     >
       <div className="min-w-[60px] overflow-x-scroll">

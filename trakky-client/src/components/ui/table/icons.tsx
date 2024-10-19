@@ -79,7 +79,7 @@ export async function GetCategoryIconMapping() {
 interface GetCategoryIconProps {
   key: string;
   mapping: Dictionary<string>;
-  show_default?: boolean;
+  show_default: boolean;
   className?: string;
 }
 
@@ -101,6 +101,5 @@ export function GetCategoryIcon({
 }
 
 GetCategoryIcon.defaultProps = {
-  show_default: true,
   className: null,
 };

@@ -20,6 +20,7 @@ function renderCell<TData>(
             GetCategoryIcon({
               key: row.getValue('type'),
               mapping: iconMapping,
+              show_default: true,
             })}
         </div>
         <div className="flex flex-col">

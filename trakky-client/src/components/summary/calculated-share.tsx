@@ -190,9 +190,7 @@ export default function CalculatedShareAccordion({
                       isLastDebitor && isLastTransaction && 'rounded-br'
                     )}
                   />
-                ) : (
-                  <div />
-                )}
+                ) : undefined}
               </DebitOverview>
             </FadeRight>
           );

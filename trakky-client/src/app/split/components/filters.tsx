@@ -49,10 +49,10 @@ interface FilterContainerProps {
 function FilterContainer({ title, children }: FilterContainerProps) {
   return (
     <div className="flex flex-row gap-2 justify-start mx-1 my-4 align-middle">
-      <span className="self-center min-w-[20%] max-w-[25%] text-nowrap no-scrollbar text-base text-muted-foreground align-middle text-left h-full overflow-x-scroll">
+      <span className="self-center min-w-[110px] text-nowrap no-scrollbar text-base text-muted-foreground align-middle text-left h-full overflow-x-scroll">
         {title}
       </span>
-      <div className="flex flex-row flex-wrap align-middle gap-2">
+      <div className="flex flex-row flex-wrap overflow-x-scroll no-scrollbar align-middle gap-2">
         {children}
       </div>
     </div>

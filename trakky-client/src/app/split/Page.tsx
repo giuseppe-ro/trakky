@@ -103,40 +103,40 @@ export default function SplitPage() {
   return (
     <Loading loading={isLoading}>
       <PageContainer>
-        <div className="mt-12 text-center" aria-label="Split">
-          <SubTitle title="Split Payments" />
-          {!isError && (
-            <div className="my-1">
-              <YearSelection
-                availableYears={availableYears}
-                selectedYear={selectedYear}
-                onYearChange={setSelectedYear}
-                onMonthChange={setSelectedMonth}
-                selectedMonth={selectedMonth}
+        <FadeUp>
+          <div className="mt-12 text-center" aria-label="Split">
+            <SubTitle title="Split Payments" />
+            {!isError && (
+              <div className="my-1">
+                <YearSelection
+                  availableYears={availableYears}
+                  selectedYear={selectedYear}
+                  onYearChange={setSelectedYear}
+                  onMonthChange={setSelectedMonth}
+                  selectedMonth={selectedMonth}
+                />
+              </div>
+            )}
+            <div>
+              <MultyButtonFilters
+                title="Split Between:"
+                checkBoxStates={selectedUsers}
+                setCheckboxStates={setSelectedUsers}
+                entries={owners.map((owner) => owner.name)}
               />
             </div>
-          )}
-          <div>
-            <MultyButtonFilters
-              title="Split Between:"
-              checkBoxStates={selectedUsers}
-              setCheckboxStates={setSelectedUsers}
-              entries={owners.map((owner) => owner.name)}
-            />
+            <div>
+              <SingleButtonFilter
+                title="For Categories:"
+                checkBoxStates={selectedCategories}
+                setCheckboxStates={setSelectedCategories}
+                entries={Array.from(
+                  table.getColumn('type')?.getFacetedUniqueValues().keys() || []
+                )}
+              />
+            </div>
           </div>
-          <div>
-            <SingleButtonFilter
-              title="For Categories:"
-              checkBoxStates={selectedCategories}
-              setCheckboxStates={setSelectedCategories}
-              entries={Array.from(
-                table.getColumn('type')?.getFacetedUniqueValues().keys() || []
-              )}
-            />
-          </div>
-        </div>
-        <div />
-        <FadeUp>
+          <div />
           {balances && (
             <CalculatedShareAccordion
               selectedCategory={currentCategory}

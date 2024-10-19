@@ -8,7 +8,7 @@ interface DebitOverviewProps {
   debitorName: string;
   owed: OwedBalance;
   maxDigits: number;
-  children?: JSX.Element;
+  children?: JSX.Element | undefined;
 }
 
 export default function DebitOverview({
@@ -28,7 +28,7 @@ export default function DebitOverview({
           {debitorName}:
         </div>
       </div>
-      <div className="flex text-yellow-600 gap-4 text-base text-muted-foreground font-thin">
+      <div className="flex text-yellow-600 gap-2 sm:gap-4 text-base text-muted-foreground font-thin">
         <div>Owes</div>
         <div>
           <MoveRight />
@@ -48,7 +48,9 @@ export default function DebitOverview({
         <div>
           <MoveRight />
         </div>
-        <div className="w-16 overflow-x-scroll"> {owed.to}</div>
+        <div className={twMerge('w-16 overflow-x-scroll', children && 'w-fit')}>
+          {owed.to}
+        </div>
       </div>
       {children}
     </div>
@@ -56,5 +58,5 @@ export default function DebitOverview({
 }
 
 DebitOverview.defaultProps = {
-  children: null,
+  children: undefined,
 };

@@ -1,4 +1,3 @@
-import { MoveRight } from 'lucide-react';
 import { twMerge } from 'tailwind-merge';
 import { formatAmount } from '@/lib/text-formatter';
 import { OwedBalance } from '@/models/debitor-balance';
@@ -29,10 +28,7 @@ export default function DebitOverview({
         </div>
       </div>
       <div className="flex text-yellow-600 gap-2 sm:gap-4 text-base text-muted-foreground font-thin">
-        <div>Owes</div>
-        <div>
-          <MoveRight />
-        </div>
+        <div>Pay</div>
         <div
           className={twMerge(
             `min-w-[${maxDigits * 6}px]`,
@@ -45,9 +41,7 @@ export default function DebitOverview({
             <AnimateNumber amount={owed.amount} formatter={formatAmount} />
           </div>
         </div>
-        <div>
-          <MoveRight />
-        </div>
+        <div>to</div>
         <div className={twMerge('w-16 overflow-x-scroll', children && 'w-fit')}>
           {owed.to}
         </div>

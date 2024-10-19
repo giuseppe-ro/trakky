@@ -20,7 +20,7 @@ export const PaymentColumnDefinition = (
       cell: ({ row }) => {
         const formatted = formatStringDate(row.getValue('date'));
 
-        return <div className="text-right font-sm">{formatted}</div>;
+        return <div className="text-right ">{formatted}</div>;
       },
     },
     {
@@ -60,7 +60,11 @@ export const PaymentColumnDefinition = (
       enableGlobalFilter: false,
       header: 'Description',
       cell: ({ row }) => {
-        return <div className="font-sm">{row.getValue('description')}</div>;
+        return (
+          <div className="font-sm max-w-[90px] sm:max-w-full overflow-x-scroll">
+            {row.getValue('description')}
+          </div>
+        );
       },
     },
     {

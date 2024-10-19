@@ -140,7 +140,7 @@ export function CustomTable<TData extends object>({
 
   return (
     <div>
-      <Table>
+      <Table className="max-w-[500px] sm:max-w-full">
         <TableHeader className="hover:bg-transparent">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>

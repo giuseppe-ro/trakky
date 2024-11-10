@@ -5,7 +5,7 @@ import { twMerge } from 'tailwind-merge';
 
 function BudgetToDeleteList({ entries }: BudgetToDeleteListProps) {
   const tdStyle =
-    'px-2 text-left border overflow-x-scroll scroll-smooth  w-[100px]';
+    'px-2 text-left border overflow-x-scroll scroll-smooth no-scrollbar w-[100px]';
 
   return (
     <div className="m-6">
@@ -22,10 +22,20 @@ function BudgetToDeleteList({ entries }: BudgetToDeleteListProps) {
                   year: 'numeric',
                 })}
               </td>
-              <td className={twMerge(tdStyle, 'text-right overflow-auto')}>
+              <td
+                className={twMerge(
+                  tdStyle,
+                  'text-right overflow-auto no-scrollbar'
+                )}
+              >
                 {formatCurrency(budget.budget)}
               </td>
-              <td className={twMerge(tdStyle, 'text-right overflow-auto')}>
+              <td
+                className={twMerge(
+                  tdStyle,
+                  'text-right overflow-auto no-scrollbar'
+                )}
+              >
                 {formatCurrency(budget.maxBudget)}
               </td>
             </TableRow>

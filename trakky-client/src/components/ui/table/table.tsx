@@ -199,7 +199,7 @@ export function CustomTable<TData extends object>({
                   key={row.id}
                   onClick={row.getToggleSelectedHandler()}
                   className={twMerge(
-                    'sm:hover:bg-muted-foreground/40 h-11 sm:h-10 border overflow-x-scroll',
+                    'sm:hover:bg-muted-foreground/40 h-11 sm:h-10 border overflow-x-scroll no-scrollbar',
                     row.getIsSelected() &&
                       'bg-muted-foreground/50 hover:bg-muted-foreground/40',
                     !row.getIsSelected() && 'hover:sm:animate-pulse'
@@ -288,7 +288,7 @@ export function CustomSmallTable({
               >
                 <td
                   className={twMerge(
-                    `text-left border-r-0 px-2 font-thin text-xs w-full border overflow-x-scroll scroll-smooth`
+                    `text-left border-r-0 px-2 font-thin text-xs w-full border overflow-x-scroll scroll-smooth no-scrollbar`
                   )}
                 >
                   <div className="flex gap-2">
@@ -304,7 +304,7 @@ export function CustomSmallTable({
                   </div>
                 </td>
                 <td
-                  className="m-6 text-left border px-0 py-0 overflow-x-scroll scroll-smooth"
+                  className="m-6 text-left border px-0 py-0 overflow-x-scroll scroll-smooth no-scrollbar"
                   aria-label="Delete Selected Rows"
                 >
                   <DeleteDialog

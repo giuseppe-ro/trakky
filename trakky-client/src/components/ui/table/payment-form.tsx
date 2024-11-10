@@ -286,7 +286,7 @@ export function PaymentForm({
                 <div className="text-center text-sm font-medium mb-1">
                   Added entries:
                 </div>
-                <div className="text-sm overflow-y-scroll">
+                <div className="text-sm overflow-y-scroll no-scrollbar">
                   <PaymentsRecap entries={addedPayments} limitedSpace />
                 </div>
               </div>

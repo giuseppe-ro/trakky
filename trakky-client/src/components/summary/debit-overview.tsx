@@ -25,7 +25,7 @@ export default function DebitOverview({
       )}
       {...props}
     >
-      <div className="min-w-[60px] overflow-x-scroll">
+      <div className="min-w-[60px] overflow-x-scroll no-scrollbar ">
         <div className="text-base text-yellow-600 h-5 text-muted-foreground text-nowrap no-scrollbar">
           {debitorName}:
         </div>
@@ -45,7 +45,12 @@ export default function DebitOverview({
           </div>
         </div>
         <div>to</div>
-        <div className={twMerge('w-16 overflow-x-scroll', children && 'w-fit')}>
+        <div
+          className={twMerge(
+            'w-16 overflow-x-scroll no-scrollbar ',
+            children && 'w-fit'
+          )}
+        >
           {owed.to}
         </div>
       </div>

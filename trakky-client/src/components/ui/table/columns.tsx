@@ -61,7 +61,7 @@ export const PaymentColumnDefinition = (
       header: 'Description',
       cell: ({ row }) => {
         return (
-          <div className="font-sm max-w-[90px] sm:max-w-full overflow-x-scroll">
+          <div className="font-sm max-w-[90px] sm:max-w-full overflow-x-scroll no-scrollbar">
             {row.getValue('description')}
           </div>
         );

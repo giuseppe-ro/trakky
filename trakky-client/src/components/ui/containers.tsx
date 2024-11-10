@@ -73,7 +73,7 @@ export function ContentResultContainer({
         role="alert"
       >
         <div className="flex flex-row justify-center align-middle gap-3">
-          <div className="max-w-21 overflow-auto">
+          <div className="max-w-21 overflow-auto no-scrollbar">
             <strong className="font-bold">Error: </strong> {error}{' '}
           </div>
           <div className="self-center h-full">
@@ -100,7 +100,7 @@ export function PageContainer({ children, ...props }: PageContainerProps) {
   return (
     <div className="flex justify-center">
       <div
-        className="px-1 w-full sm:max-w-[600px] md:max-w-[700px] mx-1"
+        className="px-1 w-full sm:max-w-[600px] md:max-w-[1000px] mx-1"
         {...props}
       >
         {children}

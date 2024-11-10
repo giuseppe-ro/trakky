@@ -102,7 +102,7 @@ function PayDebitDialog({
                 Clear
               </div>
             </AlertDialogTrigger>
-            <AlertDialogContent className="h-[400px] overflow-auto ">
+            <AlertDialogContent className="h-[400px] overflow-auto no-scrollbar">
               <AlertDialogHeader className="justify-center">
                 <div className="sticky top-0 z-40">
                   <AlertDialogTitle>

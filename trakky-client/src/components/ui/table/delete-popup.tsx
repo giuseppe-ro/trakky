@@ -43,7 +43,7 @@ function DeleteDialog({
                 Delete
               </div>
             </AlertDialogTrigger>
-            <AlertDialogContent className="max-h-[450px] overflow-auto ">
+            <AlertDialogContent className="max-h-[450px] overflow-auto no-scrollbar">
               <AlertDialogHeader>
                 <div className="sticky top-0 z-50">
                   <AlertDialogTitle>

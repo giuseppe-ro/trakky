@@ -14,8 +14,10 @@ function YearSelection({
   selectedYear: string | null;
   selectedMonth: string | null;
   onYearChange: (year: string) => void;
-  onMonthChange: (month: string) => void;
+  onMonthChange?: (month: string) => void;
 }) {
+  const showMonth = onMonthChange != null;
+
   const changeYear = (year: string) => {
     localStorage.setItem(StorageKey.SelectedYear, year);
     onYearChange(year);
@@ -32,7 +34,7 @@ function YearSelection({
 
   const changeMonth = (month: string) => {
     localStorage.setItem(StorageKey.SelectedMonth, month);
-    onMonthChange(month);
+    onMonthChange!(month);
   };
 
   const month = (): string | null => {
@@ -66,7 +68,7 @@ function YearSelection({
       }
     }
 
-    if (storedMonth && storedYear && availableYears) {
+    if (storedMonth && storedYear && availableYears && onMonthChange != null) {
       const availableMonths = availableYears?.get(storedYear);
 
       if (availableMonths && availableMonths.includes(storedMonth)) {
@@ -94,23 +96,31 @@ function YearSelection({
             onChange={changeYear}
             options={Array.from(availableYears.keys())}
             {...{
-              className:
-                'rounded-md w-[50%] text-base sm:text-sm p-4 sm:p-2 min-w-[164px] border overscroll-contain bg-select-primary hover:bg-select-foreground h-10',
+              className: `rounded-md ${showMonth ? 'w-[50%]' : 'w-full'} 
+              text-base sm:text-sm p-4 sm:p-2 min-w-[164px] border 
+              overscroll-contain bg-select-primary hover:bg-select-foreground 
+              h-10`,
             }}
           />
-          <Selection
-            value={month()}
-            onChange={changeMonth}
-            options={availableYears.get(selectedYear) ?? []}
-            {...{
-              className:
-                'rounded-md w-[50%] text-base sm:text-sm p-4 sm:p-2 min-w-[164px] border overscroll-contain bg-select-primary hover:bg-select-foreground h-10',
-            }}
-          />
+          {showMonth && (
+            <Selection
+              value={month()}
+              onChange={changeMonth}
+              options={availableYears.get(selectedYear) ?? []}
+              {...{
+                className:
+                  'rounded-md w-[50%] text-base sm:text-sm p-4 sm:p-2 min-w-[164px] border overscroll-contain bg-select-primary hover:bg-select-foreground h-10',
+              }}
+            />
+          )}
         </div>
       </FadeRight>
     )
   );
 }
+
+YearSelection.defaultProps = {
+  onMonthChange: null,
+};
 
 export default YearSelection;

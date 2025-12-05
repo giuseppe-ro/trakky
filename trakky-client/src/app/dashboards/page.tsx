@@ -16,16 +16,11 @@ import Dashboards from './components/dashboards';
 function DashboardPage() {
   const { data: payments, refreshData, isLoading, isError } = usePaymentData();
 
-  const {
-    availableYears,
-    selectedYear,
-    setSelectedYear,
-    selectedMonth,
-    setSelectedMonth,
-  } = useYearSelection({
-    payments,
-    isLoading,
-  });
+  const { availableYears, selectedYear, setSelectedYear, selectedMonth } =
+    useYearSelection({
+      payments,
+      isLoading,
+    });
 
   const { table } = usePaymentsTable({
     data: payments,
@@ -54,8 +49,7 @@ function DashboardPage() {
                   availableYears={availableYears}
                   selectedYear={selectedYear}
                   onYearChange={setSelectedYear}
-                  selectedMonth={selectedMonth}
-                  onMonthChange={setSelectedMonth}
+                  selectedMonth="All"
                 />
               </div>
             )}

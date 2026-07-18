@@ -39,7 +39,7 @@
     "axios": "^1.5.1",
     "class-variance-authority": "^0.7.0",
     "classnames": "^2.5.1",
-    "date-fns": "^2.30.0",
+    "date-fns": "^4.4.0",
     "dexie": "^4.0.8",
     "lucide-react": "^0.331.0",
     "nprogress": "^0.2.0",

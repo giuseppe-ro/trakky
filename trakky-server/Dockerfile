@@ -1,4 +1,4 @@
-FROM node:24-alpine as build
+FROM node:24 as build
 WORKDIR /usr/src/app
 COPY package.json .
 COPY package-lock.json .
@@ -8,10 +8,10 @@ COPY . .
 RUN npx prisma generate
 RUN npm run build
 
-FROM node:24-alpine
-RUN apk update
-RUN apk add --virtual libssl-dev 
-RUN apk add dumb-init
+FROM node:24
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends dumb-init \
+ && rm -rf /var/lib/apt/lists/*
 WORKDIR /usr/src/app
 COPY --chown=node:node --from=build /usr/src/app/dist ./dist
 COPY --chown=node:node --from=build /usr/src/app/package.json .

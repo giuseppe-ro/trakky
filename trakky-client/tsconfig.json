@@ -9,7 +9,7 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "types": ["node", "@testing-library/jest-dom"],
+    "types": ["node", "@testing-library/jest-dom/vitest"],
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -31,6 +31,5 @@
     "vite.config.ts",
     "vitest.config.ts",
     "src"
-  ],
-  "references": [{ "path": "./tsconfig.node.json" }],
+  ]
 }

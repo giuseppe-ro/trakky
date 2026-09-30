@@ -5,7 +5,7 @@ import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { FadeLeft } from '@/components/ui/animations/fade';
 import { formatCurrency, getPercentageChangeText } from '@/lib/text-formatter';
 import { Total } from '@/models/total';
-import AnimatedNumber from 'animated-number-react';
+import AnimatedNumber from '@/lib/animated-number';
 import {
   getTotalForDate,
   getPreviousYearTotal,

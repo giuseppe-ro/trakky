@@ -139,5 +139,6 @@ data.json
 
 .vite
 .vscode
+.vitest
 trakky-client/html
 **/html/*

@@ -1,4 +1,4 @@
-FROM node:19 as build
+FROM node:24-alpine as build
 WORKDIR /usr/src/app
 COPY package.json .
 COPY package-lock.json .
@@ -8,7 +8,7 @@ COPY . .
 RUN npx prisma generate
 RUN npm run build
 
-FROM node:18-alpine3.18
+FROM node:24-alpine
 RUN apk update
 RUN apk add --virtual libssl-dev 
 RUN apk add dumb-init

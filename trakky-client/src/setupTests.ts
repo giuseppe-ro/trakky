@@ -5,15 +5,6 @@ import 'fake-indexeddb/auto';
 
 expect.extend(matchers);
 
-// Node >= 22 exposes a native (broken without --localstorage-file) localStorage global, so
-// vitest's jsdom environment skips installing the real one. Restore jsdom's instance.
-const jsdomWindow = (
-  globalThis as { jsdom?: { window?: { localStorage?: Storage } } }
-).jsdom?.window;
-if (jsdomWindow?.localStorage) {
-  vi.stubGlobal('localStorage', jsdomWindow.localStorage);
-}
-
 // Mock the recharts ResponsiveContainer as it doesn't render correctly during tests.
 vi.mock('recharts', async (importOriginal) => {
   const originalModule = (await importOriginal()) as Record<string, unknown>;

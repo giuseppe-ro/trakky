@@ -1,5 +1,5 @@
-export const demoMode = true;
-// export const demoMode = import.meta.env.VITE_DEMO_MODE === 'true';
+// export const demoMode = true;
+export const demoMode = import.meta.env.VITE_DEMO_MODE === 'true';
 
 export enum Endpoint {
   Payments = 'payments',

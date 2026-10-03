@@ -6,5 +6,5 @@ import { get } from "../infrastructure/icons";
 export const iconsRouter = express.Router();
 
 iconsRouter.get("/", (req: Request, res: Response) => {
-  return baseHandler(res, get, req.body);
+  return baseHandler(res, get, req.body, req.user);
 });

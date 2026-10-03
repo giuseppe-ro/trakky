@@ -6,5 +6,5 @@ export interface User {
     preferred_username: string;
     nickname: string;
     groups: string[];
-    sub: string[]
+    sub: string
   }

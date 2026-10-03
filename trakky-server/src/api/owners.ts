@@ -6,13 +6,13 @@ import { post, del, get } from "../infrastructure/owners";
 export const ownersRouter = express.Router();
 
  ownersRouter.get("/", (req: Request, res: Response) => {
-  return baseHandler(res, get, req.body);
+  return baseHandler(res, get, req.body, req.user);
 });
 
 ownersRouter.post("/", (req: Request, res: Response) => {
-  return baseHandler(res, post, req.body);
+  return baseHandler(res, post, req.body, req.user);
 });
 
 ownersRouter.delete("/", (req: Request, res: Response) => {
-  return baseHandler(res, del, req.body);
+  return baseHandler(res, del, req.body, req.user);
 });

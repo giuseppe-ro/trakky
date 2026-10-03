@@ -47,9 +47,7 @@ apiRouter.use("/icons", openIdAuth, iconsRouter)
 
 
 app.get('/api/auth', cors(corsOptions), openIdAuth, async (_req, res, _next) => {
-  const user = _req.body["user"] as unknown as User;
-
-  return res.send(user)
+  return res.send(_req.user)
 });
 
 app.get('/api/health-check', cors(corsOptions), async (req, res, _next) => {

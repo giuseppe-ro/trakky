@@ -26,6 +26,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
+        silentRefresh: resolve(__dirname, 'silent-refresh.html'),
       },
     },
   },

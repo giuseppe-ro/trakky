@@ -142,3 +142,6 @@ data.json
 .vitest
 trakky-client/html
 **/html/*
+
+# local working plans / scratch notes (never committed)
+.plans/

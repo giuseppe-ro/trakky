@@ -38,8 +38,9 @@ docker run -p 8999:8999 --network trakky -e SKIP_AUTH=true -e DATABASE_URL="mysq
 > [!NOTE]  
 > If you have an authentication server (e.g. Authentik) which supports OAUTH and want to add authentication: 
 > ```bash
-> -e AUTH_USERINFO_URL=your_auth_userinfo_url 
+> -e AUTH_ISSUER=https://authentik.example.com/application/o/trakky/
 > ``` 
+> `AUTH_ISSUER` must be exactly the issuer Authentik reports. Set `AUTH_USERINFO_URL` instead to skip discovery, and `AUTH_CACHE_TTL_MS` to change how long a verified token is trusted (default 60s).
 
 ### Set and run the frontend:
 ```bash
@@ -51,5 +52,9 @@ docker run -p 8997:80 --network trakky --name trakky -d trakky-client
 > [!NOTE]  
 > if you have an authentication server (e.g. Authentik) which supports OAUTH and want to add authentication: 
 > ```bash 
-> --build-arg OPENID_AUTH_CLIENT_ID=oauth0_provider_client_id --build-arg OPENID_WELL_KNOWN_CONFIG_URL=openid_well_known_url 
+> --build-arg OPENID_AUTH_CLIENT_ID=oauth_provider_client_id --build-arg OPENID_AUTH_AUTHORITY=https://authentik.example.com/application/o/trakky/ --build-arg SKIP_AUTH=false
 > ```
+> `OPENID_AUTH_AUTHORITY` must be exactly the issuer Authentik reports. Register these redirect URIs in the Authentik application, character for character: `http://localhost:8997/`, `http://localhost:8997/silent-refresh.html` and `http://localhost:8997` (post-logout).
+
+> [!NOTE]  
+> for a demo instance (fake data, no authentication): add `--build-arg DEMO_MODE=true`. Demo mode implies `SKIP_AUTH=true`.

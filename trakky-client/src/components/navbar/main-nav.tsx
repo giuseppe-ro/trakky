@@ -21,7 +21,7 @@ import {
   BarChart2,
   HandCoins,
 } from 'lucide-react';
-import getUser from '@/infrastructure/user';
+import logout from '@/auth/logout';
 import { HTMLAttributes } from 'react';
 
 import { twMerge } from 'tailwind-merge';
@@ -35,15 +35,14 @@ interface Links {
 
 export function MainNav({ children }: HTMLAttributes<HTMLElement>) {
   const auth = useAuth();
-  const user = getUser();
 
   const userName = demoMode
     ? 'Uncle Scrooge'
-    : user?.profile.preferred_username ?? '';
+    : auth.user?.profile.preferred_username ?? '';
 
   const links: Links[] = [{ href: '/', label: 'Home' }];
 
-  if (user || skipAuth) {
+  if (auth.isAuthenticated || skipAuth) {
     links.push({ href: '/dashboards', label: 'Dashboards' });
     links.push({ href: '/split', label: 'Split' });
     links.push({ href: '/settings', label: 'Settings' });
@@ -64,10 +63,12 @@ export function MainNav({ children }: HTMLAttributes<HTMLElement>) {
     }
   };
 
-  const logout = async () => {
-    if (demoMode) return;
-    localStorage.clear();
-    await auth.signoutRedirect();
+  const handleLogout = async () => {
+    if (demoMode) {
+      return;
+    }
+
+    await logout(auth);
   };
 
   const resetLocalDatabase = async () => {
@@ -124,7 +125,7 @@ export function MainNav({ children }: HTMLAttributes<HTMLElement>) {
                     <DropdownMenuItem
                       className="cursor-pointer w-[100%] text-muted-foreground"
                       disabled={demoMode}
-                      onClick={logout}
+                      onClick={handleLogout}
                     >
                       <div className="flex w-[100%] justify-between">
                         <div>Logout</div>

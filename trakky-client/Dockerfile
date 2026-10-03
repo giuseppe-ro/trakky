@@ -9,18 +9,15 @@ ARG OPENID_AUTH_CLIENT_ID
 ARG OPENID_AUTH_AUTHORITY
 ARG SKIP_AUTH
 ARG SERVER_URL
+ARG DEMO_MODE
+
+ENV VITE_AUTH_CLIENT_ID=$OPENID_AUTH_CLIENT_ID
+ENV VITE_AUTH_AUTHORITY=$OPENID_AUTH_AUTHORITY
+ENV VITE_SKIP_AUTH=$SKIP_AUTH
+ENV VITE_SERVER_URL=$SERVER_URL
+ENV VITE_DEMO_MODE=$DEMO_MODE
 
 COPY . .
-
-RUN rm /app/src/authConfig.ts
-
-RUN if [[ $SKIP_AUTH == 'false' ]] ; then echo "import { demoMode } from './constants';" >> /app/src/authConfig.ts; fi
-RUN echo "" >> /app/src/authConfig.ts
-RUN if [[ $SKIP_AUTH == 'true' ]] ; then echo "export const skipAuth = true" >> /app/src/authConfig.ts; else echo "export const skipAuth = demoMode;" >> /app/src/authConfig.ts; fi
-RUN echo "export const serverUrl = '$SERVER_URL';" >> /app/src/authConfig.ts
-RUN echo "export const authAuthority = '$OPENID_AUTH_AUTHORITY';" >> /app/src/authConfig.ts
-RUN echo "export const clientId = '$OPENID_AUTH_CLIENT_ID';" >> /app/src/authConfig.ts
-
 
 RUN npm run build
 

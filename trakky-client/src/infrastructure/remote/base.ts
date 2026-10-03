@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { serverUrl } from '@/authConfig';
-import getUser from '@/infrastructure/user';
+import { getAccessToken } from '@/auth/userManager';
 import { ApiResponse } from '@/models/api-response';
 import { AppError } from '@/models/app-error';
 
@@ -20,62 +20,82 @@ export const makeBaseRequest = (
   method: string,
   signal?: AbortSignal
 ): AxiosRequestConfig => {
-  const user = getUser();
-
   return {
     url: `${serverUrl}/${endpoint}`,
     method,
     signal,
     headers: {
       'content-type': 'application/json',
-      Authorization: `Bearer ${user?.access_token}`,
     },
   };
+};
+
+export const authHeaders = (token?: string | null): Record<string, string> => {
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
+
+export const statusOf = (error: unknown): number | undefined => {
+  return axios.isAxiosError(error) ? error.response?.status : undefined;
+};
+
+export const isUnauthorized = (status?: number): boolean => status === 401;
+
+const send = async (request: AxiosRequestConfig): Promise<AxiosResponse> => {
+  const token = await getAccessToken();
+
+  return axios({
+    ...request,
+    headers: { ...request.headers, ...authHeaders(token) },
+  });
+};
+
+const toErrorResponse = <T>(error: unknown): ApiResponse<T> => {
+  if (axios.isAxiosError(error)) {
+    const { response } = error as AxiosError;
+
+    let message: string;
+
+    if (response && response.data && (response.data as AppError).error) {
+      message = (response.data as AppError).error;
+    } else if (error.message) {
+      message = error.message;
+    } else if (response && response.statusText) {
+      message = response.statusText;
+    } else {
+      message = ErrorMessage.NO_CONNECTION;
+    }
+
+    return { data: null, error: { error: message } };
+  }
+
+  return { data: null, error: { error: (error as Error).message } };
 };
 
 export const callApi = async <T>(options: {
   request: AxiosRequestConfig;
 }): Promise<ApiResponse<T>> => {
   try {
-    const response: AxiosResponse = await axios(options.request);
-    const { data } = response;
+    const response = await send(options.request);
 
     return {
-      data: data as T,
+      data: response.data as T,
       error: null,
     };
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      const axiosError = error as AxiosError;
+    if (isUnauthorized(statusOf(error))) {
+      try {
+        const retry = await send(options.request);
 
-      const { response } = axiosError;
-
-      let message: string;
-
-      if (response && response.data && (response.data as AppError).error) {
-        message = (response.data as AppError).error;
-      } else if (axiosError.message) {
-        message = axiosError.message;
-      } else if (response && response.statusText) {
-        message = response.statusText;
-      } else {
-        message = ErrorMessage.NO_CONNECTION;
+        return {
+          data: retry.data as T,
+          error: null,
+        };
+      } catch (retryError) {
+        return toErrorResponse<T>(retryError);
       }
-
-      return {
-        data: null,
-        error: {
-          error: message,
-        },
-      };
     }
 
-    return {
-      data: null,
-      error: {
-        error: (error as Error).message,
-      },
-    };
+    return toErrorResponse<T>(error);
   }
 };
 

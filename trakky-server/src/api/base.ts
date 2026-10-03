@@ -4,9 +4,8 @@ import { logger } from "../logger";
 import { User } from "../models/user";
 import { skipAuth } from "../constants";
 
-export function baseHandler(res: Response, func: Function, payload: any) {
-  if (!skipAuth) {
-    const user = JSON.parse(payload["user"]) as unknown as User;
+export function baseHandler(res: Response, func: Function, payload: any, user?: User) {
+  if (!skipAuth && user) {
     logger.info(`User: ${user.preferred_username} - Executing: ${func.name}`);
   } 
 
@@ -57,8 +56,4 @@ function isPrismaAuthError(e: any) {
 
 enum errorCodes {
   duplicateDataError = 'P2002'
-}
-
-const userInfo = (req: Request) => {
-  return JSON.parse(req.headers["user"]!.toString()) as unknown as User;
 }

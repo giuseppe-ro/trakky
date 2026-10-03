@@ -6,16 +6,16 @@ import { post, del, get } from "../infrastructure/categories";
 export const categoriesRouter = express.Router();
 
 categoriesRouter.get("/", (req: Request, res: Response) => {
-  return baseHandler(res, get, req.body);
+  return baseHandler(res, get, req.body, req.user);
 });
 
 categoriesRouter.post("/", (req: Request, res: Response) => {
   console.log('new values:', req.body);
-  return baseHandler(res, post, req.body);
+  return baseHandler(res, post, req.body, req.user);
 });
 
 categoriesRouter.delete("/", (req: Request, res: Response) => {
   const ids = req.body as number[];
 
-  return baseHandler(res, del, ids);
+  return baseHandler(res, del, ids, req.user);
 });

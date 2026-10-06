@@ -7,7 +7,6 @@ import { User } from "../models/user";
 const DEFAULT_CACHE_TTL_MS = 60_000;
 const MAX_CACHED_USERS = 500;
 
-// ponytail: in-process cache; needs a shared store to work across more than one instance
 const userCache = new Map<string, { user: User; expiresAt: number }>();
 let discoveredUserinfoUrl: string | null | undefined;
 

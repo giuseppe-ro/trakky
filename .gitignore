@@ -146,3 +146,4 @@ trakky-client/html
 # local working plans / scratch notes (never committed)
 .plan/
 .plans/
+.local/

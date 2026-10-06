@@ -6,7 +6,6 @@ import { Share } from '@/models/share';
 import getDebitorBalances from '@/lib/calculators';
 import { formatAmount } from '@/lib/text-formatter';
 import { twMerge } from 'tailwind-merge';
-import { DebitorBalance, OwedBalance } from '@/models/debitor-balance';
 import { AnimateNumber } from './summary';
 import { Dictionary } from '../ui/table/icons';
 import PayDebitDialog from '../ui/table/pay-debit-popup';
@@ -16,7 +15,7 @@ import { FadeRight } from '../ui/animations/fade';
 interface CalculatedShareAccordionProps {
   balances: Dictionary<number>;
   selectedCategory: string;
-  onDebitCleared: () => void;
+  onDebitCleared: () => Promise<void>;
   showPayDebitButton: boolean;
   date: Date | null;
   checkBoxStates: Dictionary<boolean>;
@@ -37,8 +36,6 @@ export default function CalculatedShareAccordion({
   const [owners, setOwners] = useState<Owner[]>([]);
 
   useEffect(() => {
-    setShare(getDebitorBalances(balances));
-
     const controller = new AbortController();
     const { signal } = controller;
 
@@ -87,38 +84,6 @@ export default function CalculatedShareAccordion({
 
     setShare(getDebitorBalances(newBalances));
   }, [balances, owners, checkBoxStates]);
-
-  async function onConfirm(id: number) {
-    if (!share) return;
-
-    const newBalances: DebitorBalance[] = [];
-
-    share.debitorBalances.forEach((debitor) => {
-      const newBalance: OwedBalance[] = [];
-      debitor.owed.forEach((owed) => {
-        if (owed.id !== id) {
-          newBalance.push(owed);
-        }
-      });
-
-      if (newBalance.length > 0) {
-        newBalances.push({
-          owed: newBalance,
-          name: debitor.name,
-        });
-      }
-    });
-
-    const newShare: Share = {
-      totalAmount: share.totalAmount,
-      shareAmount: share.shareAmount,
-      debitorBalances: newBalances,
-    };
-
-    setShare(newShare);
-
-    onDebitCleared();
-  }
 
   return (
     <div>
@@ -182,7 +147,7 @@ export default function CalculatedShareAccordion({
                     date={date}
                     owed={owed}
                     category={selectedCategory}
-                    onConfirm={() => onConfirm(owed.id)}
+                    onConfirm={onDebitCleared}
                     debitorName={debitor.name}
                     tooltipText="Clear Debit"
                     className={twMerge(

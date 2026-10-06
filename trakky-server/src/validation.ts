@@ -6,7 +6,13 @@ import * as z from "zod";
 // can never reach Prisma on an insert.
 
 const name = z.string().min(1).max(100);
-const isoDate = z.string().min(1); // issue 06 replaces this line only
+
+// Date | string in, Date out; numbers rejected (12345 is not a payment date).
+// The union is what rejects `12345` and `null` — z.coerce.date() alone would turn them into
+// 1970-01-01 and the epoch. Deliberately NO .refine() after the .pipe(): on zod 3.22.4 a refine
+// runs with the raw value when the union member failed, so safeParse("") throws
+// `d.getTime is not a function` instead of returning a failed result — a 500 via baseHandler.
+export const isoDate = z.union([z.string().min(1), z.date()]).pipe(z.coerce.date());
 const rowId = z.number().int().positive();
 const rowCap = 500;
 

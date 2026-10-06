@@ -2,7 +2,6 @@ FROM node:24 as build
 WORKDIR /usr/src/app
 COPY package.json .
 COPY package-lock.json .
-RUN npm install
 RUN npm ci
 COPY . .
 RUN npx prisma generate

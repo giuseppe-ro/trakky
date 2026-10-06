@@ -45,7 +45,7 @@ export default class RemoteClient extends BaseClient {
       request: config,
     });
 
-    return response ? null : error?.error ?? 'Unknown error';
+    return response ? null : (error?.error ?? 'Unknown error');
   }
 
   async Put<T>(endpoint: string, data: T, signal?: AbortSignal) {

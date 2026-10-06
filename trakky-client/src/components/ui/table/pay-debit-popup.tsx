@@ -69,22 +69,22 @@ function PayDebitDialog({
     setEntries(payments);
   }, [owed, debitorName, date, category]);
 
-  function onConfirmed() {
+  async function onConfirmed() {
     setIsError(false);
 
-    Client.Post(Endpoint.Payments, entries).then(({ data, error }) => {
-      if (error || !data) {
-        errorMessage(setIsError, error?.error);
-        return;
-      }
+    const { data, error } = await Client.Post(Endpoint.Payments, entries);
 
-      resultToast({
-        isError: isError ?? false,
-        message: 'Transaction saved',
-      });
+    if (error || !data) {
+      errorMessage(setIsError, error?.error);
+      return;
+    }
+
+    resultToast({
+      isError: isError ?? false,
+      message: 'Transaction saved',
     });
 
-    onConfirm().then(() => {});
+    await onConfirm();
   }
 
   return (

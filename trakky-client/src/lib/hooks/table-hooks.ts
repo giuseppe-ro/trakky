@@ -39,7 +39,7 @@ export function usePaymentsTable({
   data: Payment[] | null;
   selectedYear: string | null;
   selectedMonth: string | null;
-  refreshData(): void;
+  refreshData(): Promise<unknown>;
   isLoading: boolean;
 }) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -164,7 +164,7 @@ export function usePaymentsTable({
       table.resetRowSelection();
     }
 
-    refreshData();
+    await refreshData();
   }
 
   function onEdited() {

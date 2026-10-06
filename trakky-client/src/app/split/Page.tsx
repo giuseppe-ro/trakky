@@ -45,16 +45,11 @@ export default function SplitPage() {
     isLoading,
   });
 
-  const { balances } = useSummary(table, selectedYear);
+  const { balances } = useSummary(table);
 
-  function onDebitCleared() {
-    onRefresh().then(() => {
-      const filters: ColumnFilter[] = [];
-
-      filters.push({ id: 'type', value: currentCategory });
-
-      table.setColumnFilters(filters);
-    });
+  async function onDebitCleared() {
+    await onRefresh();
+    table.setColumnFilters([{ id: 'type', value: currentCategory }]);
   }
 
   useEffect(() => {

@@ -33,7 +33,7 @@ export default function App() {
       isLoading,
     });
 
-  const { totalAmount, partialTotal } = useSummary(table, selectedYear);
+  const { totalAmount, partialTotal } = useSummary(table);
 
   return (
     <Loading loading={isLoading}>

@@ -57,7 +57,6 @@ export const useYearSelection = ({
         setSelectedYear(Array.from(years.keys())[0]);
       }
     }
-    setSelectedMonth('All Months');
   }, [payments, isLoading]);
 
   return {

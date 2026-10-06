@@ -10,7 +10,6 @@ export async function post(types: Omit<Prisma.TypeCreateManyInput, "id">[]) {
     data: types,
   });
 
-  console.log(response);
 
   return response;
 }
@@ -22,7 +21,6 @@ export async function del(ids: number[]) {
     },
   });
 
-  console.log(response);
 
   return response;
 }

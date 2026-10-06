@@ -29,22 +29,17 @@ export async function post(payments: PaymentCreate[]) {
 export async function put(payment: PaymentUpdate) {
   const { id, ...data } = payment;
 
-  try {
+  // no try/catch here: baseHandler maps the failure (P2025 -> 404, DB down -> 500);
+  // swallowing it used to answer a 200 with an empty body.
+  logger.info("updating:", payment)
+  const response = await prisma.payment.update({
+    where: { id },
+    data,
+  });
 
-    logger.info("updating:", payment)
-    const response = await prisma.payment.update({
-      where: { id },
-      data,
-    });
+  logger.info(`Updated payment: ${JSON.stringify(payment)}`);
 
-    logger.info(`Updated payment: ${JSON.stringify(payment)}`);
-
-    return response;
-  } catch (e) {
-    logger.error(e);
-  }
-
-  return null;
+  return response;
 }
 
 export async function del(paymentIds: number[]) {

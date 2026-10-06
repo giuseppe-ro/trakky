@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import { post, del, get, put } from "../infrastructure/payments";
 import { baseHandler } from "./base";
 import { ids, paymentList, paymentUpdate } from "../validation";
+import { logger } from "../logger";
 import fs from 'fs';
 import multer from 'multer';
 import os from 'os';
@@ -31,25 +32,23 @@ paymentsRouter.post("/upload", upload.single('file'), (req: Request, res: Respon
   const file = req.file;
 
   if(file) {
-    console.log("Reading file:", file.filename);
+    logger.debug("Reading file:", file.filename);
     fs.readFile(file.path, 'utf-8', (err: any, data: string) => {
       if (err) {
-          console.log("unable to read file!")
+          logger.error("unable to read uploaded file", err)
           res.status(500).json({ error: "Error reading file" });
           return;
       }
 
       try {
-          console.log("Parsing file..")
           const payments = JSON.parse(data);
-          console.log("File parsed: ", payments)
 
           // one payment-row schema for every write path: baseHandler validates the rows,
           // so a bad date is a 400 with the zod message instead of a Prisma 500.
           return baseHandler(res, post, { data: payments }, req.user, paymentList);
 
       } catch (err) {
-          console.log("Err")
+          logger.warn("invalid JSON upload", err)
           res.status(400).json({ error: "Invalid JSON file" });
       }
   });

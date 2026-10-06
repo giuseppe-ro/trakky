@@ -38,7 +38,7 @@ export function MainNav({ children }: HTMLAttributes<HTMLElement>) {
 
   const userName = demoMode
     ? 'Uncle Scrooge'
-    : auth.user?.profile.preferred_username ?? '';
+    : (auth.user?.profile.preferred_username ?? '');
 
   const links: Links[] = [{ href: '/', label: 'Home' }];
 

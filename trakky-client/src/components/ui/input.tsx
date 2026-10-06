@@ -2,11 +2,9 @@
 import * as React from 'react';
 import { twMerge } from 'tailwind-merge';
 
-export interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {}
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
 
-export interface SubmittableInputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface SubmittableInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   onSubmit: () => void;
 }
 

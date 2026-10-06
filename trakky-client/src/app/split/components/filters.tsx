@@ -3,8 +3,7 @@ import { Dictionary } from '@/components/ui/table/icons';
 import React, { useEffect, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 
-interface SharedExpensesFiltersProps
-  extends React.HTMLAttributes<HTMLDivElement> {
+interface SharedExpensesFiltersProps extends React.HTMLAttributes<HTMLDivElement> {
   title: string;
   entries: string[];
   checkBoxStates: Dictionary<boolean>;

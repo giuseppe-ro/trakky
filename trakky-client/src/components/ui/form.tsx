@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 /* eslint-disable react/jsx-no-constructed-context-values */
 import * as React from 'react';
 import * as LabelPrimitive from '@radix-ui/react-label';

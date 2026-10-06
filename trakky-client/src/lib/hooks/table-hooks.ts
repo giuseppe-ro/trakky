@@ -26,6 +26,7 @@ import * as z from 'zod';
 import { Budget, Payment } from '@/models/dtos';
 import { Total } from '@/models/total';
 import { monthNameToNumber } from '@/lib/text-formatter';
+import { uploadPaymentsSchema } from '@/lib/validation';
 import { Client } from '@/infrastructure/client-injector';
 
 export function usePaymentsTable({
@@ -289,27 +290,11 @@ export async function onTransactionsUpload(
   }
   const reader = new FileReader();
 
-  const paymentsSchema = z.array(
-    z.object({
-      owner: z.string().min(1),
-      type: z.string().min(1),
-      date: z
-        .string()
-        .refine((val) => new Date(val) !== null, { message: 'invalid date' }),
-      amount: z.number().refine((val) => val !== 0, {
-        message: 'cannot be 0',
-      }),
-      description: z
-        .string()
-        .refine((val) => val.length <= 50 && val.length > 0),
-    })
-  );
-
   reader.onload = async (e) => {
     const result = e.target?.result;
     if (typeof result === 'string') {
       try {
-        paymentsSchema.parse(JSON.parse(result));
+        uploadPaymentsSchema.parse(JSON.parse(result));
       } catch (error) {
         if (error instanceof z.ZodError) {
           toast({

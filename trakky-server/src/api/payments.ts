@@ -2,23 +2,10 @@ import express, { Request, Response } from "express";
 import { post, del, get, put } from "../infrastructure/payments";
 import { baseHandler } from "./base";
 import { ids, paymentList, paymentUpdate } from "../validation";
-import * as z from "zod";
 import fs from 'fs';
 import multer from 'multer';
 import os from 'os';
 
-
-const paymentsSchema = z.array(
-  z.object({
-    owner: z.string().min(1),
-    type: z.string().min(1),
-    date: z.string().refine((val) => new Date(val) !== null, { message: "invalid date" }),
-    amount: z.number().refine((val) => val !== 0, {
-      message: "cannot be 0",
-    }),
-    description: z.string().refine((val) => val.length <= 50 && val.length > 0),
-  })
-);
 
 export const paymentsRouter = express.Router();
 const upload = multer({ dest: os.tmpdir() });
@@ -54,11 +41,12 @@ paymentsRouter.post("/upload", upload.single('file'), (req: Request, res: Respon
 
       try {
           console.log("Parsing file..")
-          const payments = paymentsSchema.parse(JSON.parse(data));
+          const payments = JSON.parse(data);
           console.log("File parsed: ", payments)
 
-          // the upload path keeps its own paymentsSchema; issue 07 owns this route
-          return baseHandler(res, post, { data: payments }, req.user);
+          // one payment-row schema for every write path: baseHandler validates the rows,
+          // so a bad date is a 400 with the zod message instead of a Prisma 500.
+          return baseHandler(res, post, { data: payments }, req.user, paymentList);
 
       } catch (err) {
           console.log("Err")

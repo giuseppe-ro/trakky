@@ -58,3 +58,15 @@ docker run -p 8997:80 --network trakky --name trakky -d trakky-client
 
 > [!NOTE]  
 > for a demo instance (fake data, no authentication): add `--build-arg DEMO_MODE=true`. Demo mode implies `SKIP_AUTH=true`.
+
+## Security
+> [!WARNING]  
+> `SKIP_AUTH=true` makes **every** `/api` route public: anyone who can reach port 8999 can read and
+> rewrite all your data (payments, budgets, deletes, backup restore). Run it only on a network you
+> trust, or behind a reverse proxy that authenticates requests first.
+
+- To turn authentication on, set `SKIP_AUTH=false` explicitly alongside `AUTH_ISSUER` (or
+  `AUTH_USERINFO_URL`). The server refuses to start when neither is configured, so an unconfigured
+  container fails at boot instead of serving the API anonymously.
+- Trakky is **single-tenant**: no table has a user column. Authentication gates access to the API,
+  it does not partition data — every authenticated user shares one dataset.

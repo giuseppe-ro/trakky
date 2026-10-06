@@ -11,6 +11,7 @@ import { logger } from "./logger";
 import { User } from "./models/user";
 import { iconsRouter } from "./api/icons";
 import { sharedExpensesRouter } from "./api/sharedExpenses";
+import { assertAuthConfig } from "./startup";
 
 const origins = process.env.ALLOWED_ORIGINS?.split(",") ?? "http://localhost:5173"
 
@@ -46,14 +47,21 @@ apiRouter.use("/categories", openIdAuth, categoriesRouter)
 apiRouter.use("/icons", openIdAuth, iconsRouter)
 
 
-app.get('/api/auth', cors(corsOptions), openIdAuth, async (_req, res, _next) => {
-  return res.send(_req.user)
+app.get('/api/auth', cors(corsOptions), openIdAuth, async (req, res, _next) => {
+  if (!req.user) {
+    return res.status(401).send({ error: "Not authenticated" });
+  }
+  return res.send(req.user)
 });
 
 app.get('/api/health-check', cors(corsOptions), async (req, res, _next) => {
   logger.info(`Health check from: ${req.get('origin')}`)
   res.status(200).send({'message':'OK'});
 });
+
+const decision = assertAuthConfig(process.env);
+if (!decision.ok) { logger.error(decision.error); process.exit(1); }
+if (decision.warning) { logger.warn(decision.warning); }
 
 app.listen(port, () => {
   console.log(`⚡️[server]: Server is running at http://${host}:${port}`);

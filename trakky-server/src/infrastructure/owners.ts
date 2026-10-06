@@ -1,13 +1,13 @@
-import { Owner } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import prisma from "./client";
 
 export async function get() {
   return await prisma.owner.findMany();
 }
 
-export async function post(owner: Owner[]) {
+export async function post(owners: Omit<Prisma.OwnerCreateManyInput, "id">[]) {
   const response = await prisma.owner.createMany({
-    data: owner,
+    data: owners,
   });
 
   console.log(response);

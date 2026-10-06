@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import { post, del, get, put } from "../infrastructure/payments";
 import { baseHandler } from "./base";
+import { ids, paymentList, paymentUpdate } from "../validation";
 import * as z from "zod";
 import fs from 'fs';
 import multer from 'multer';
@@ -9,7 +10,6 @@ import os from 'os';
 
 const paymentsSchema = z.array(
   z.object({
-    id: z.number().optional(),
     owner: z.string().min(1),
     type: z.string().min(1),
     date: z.string().refine((val) => new Date(val) !== null, { message: "invalid date" }),
@@ -29,15 +29,15 @@ paymentsRouter.get("/", (req: Request, res: Response) => {
 });
 
 paymentsRouter.post("/", (req: Request, res: Response) => {
-  return baseHandler(res, post, req.body, req.user);
+  return baseHandler(res, post, req.body, req.user, paymentList);
 });
 
 paymentsRouter.put("/", (req: Request, res: Response) => {
-  return baseHandler(res, put, req.body, req.user);
+  return baseHandler(res, put, req.body, req.user, paymentUpdate);
 });
 
 paymentsRouter.delete("/", (req: Request, res: Response) => {
-  return baseHandler(res, del, req.body, req.user);
+  return baseHandler(res, del, req.body, req.user, ids);
 });
 
 paymentsRouter.post("/upload", upload.single('file'), (req: Request, res: Response) => {
@@ -57,6 +57,7 @@ paymentsRouter.post("/upload", upload.single('file'), (req: Request, res: Respon
           const payments = paymentsSchema.parse(JSON.parse(data));
           console.log("File parsed: ", payments)
 
+          // the upload path keeps its own paymentsSchema; issue 07 owns this route
           return baseHandler(res, post, { data: payments }, req.user);
 
       } catch (err) {

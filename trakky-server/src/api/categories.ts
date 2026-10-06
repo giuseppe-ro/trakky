@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import { baseHandler } from "./base";
 import { post, del, get } from "../infrastructure/categories";
+import { categoryList, ids } from "../validation";
 
 
 export const categoriesRouter = express.Router();
@@ -10,12 +11,9 @@ categoriesRouter.get("/", (req: Request, res: Response) => {
 });
 
 categoriesRouter.post("/", (req: Request, res: Response) => {
-  console.log('new values:', req.body);
-  return baseHandler(res, post, req.body, req.user);
+  return baseHandler(res, post, req.body, req.user, categoryList);
 });
 
 categoriesRouter.delete("/", (req: Request, res: Response) => {
-  const ids = req.body as number[];
-
-  return baseHandler(res, del, ids, req.user);
+  return baseHandler(res, del, req.body, req.user, ids);
 });

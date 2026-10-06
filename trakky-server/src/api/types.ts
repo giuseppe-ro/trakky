@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 import { baseHandler } from "./base";
 import { post, del, get } from "../infrastructure/types";
-import { Type } from "@prisma/client";
+import { ids, namedList } from "../validation";
 
 
 export const typesRouter = express.Router();
@@ -11,13 +11,9 @@ typesRouter.get("/", (req: Request, res: Response) => {
 });
 
 typesRouter.post("/", (req: Request, res: Response) => {
-  const newValues = req.body as Type[];
-
-  return baseHandler(res, post, newValues, req.user);
+  return baseHandler(res, post, req.body, req.user, namedList);
 });
 
 typesRouter.delete("/", (req: Request, res: Response) => {
-  const ids = req.body as number[];
-
-  return baseHandler(res, del, ids, req.user);
+  return baseHandler(res, del, req.body, req.user, ids);
 });

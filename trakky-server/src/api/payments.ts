@@ -3,14 +3,17 @@ import { post, del, get, put } from "../infrastructure/payments";
 import { baseHandler } from "./base";
 import { ids, paymentList, paymentUpdate } from "../validation";
 import { logger } from "../logger";
-import fs from 'fs';
-import multer from 'multer';
-import os from 'os';
-
+import fs from "fs";
+import multer from "multer";
+import os from "os";
 
 export const paymentsRouter = express.Router();
-const upload = multer({ dest: os.tmpdir() });
 
+const maxUploadBytes = 2 * 1024 * 1024;
+const upload = multer({
+  dest: os.tmpdir(),
+  limits: { files: 1, fileSize: maxUploadBytes },
+});
 
 paymentsRouter.get("/", (req: Request, res: Response) => {
   return baseHandler(res, get, req.body, req.user);
@@ -28,28 +31,41 @@ paymentsRouter.delete("/", (req: Request, res: Response) => {
   return baseHandler(res, del, req.body, req.user, ids);
 });
 
-paymentsRouter.post("/upload", upload.single('file'), (req: Request, res: Response) => {
+export async function handleUpload(req: Request, res: Response) {
   const file = req.file;
+  if (!file) return res.status(400).json({ error: "No file uploaded" });
 
-  if(file) {
-    logger.debug("Reading file:", file.filename);
-    fs.readFile(file.path, 'utf-8', (err: any, data: string) => {
-      if (err) {
-          logger.error("unable to read uploaded file", err)
-          res.status(500).json({ error: "Error reading file" });
-          return;
-      }
+  try {
+    let data: string;
+    try {
+      data = await fs.promises.readFile(file.path, "utf-8");
+    } catch (e) {
+      logger.error("unable to read uploaded file", e);
+      return res.status(500).json({ error: "Error reading file" });
+    }
 
-      try {
-          const payments = JSON.parse(data);
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(data);
+    } catch {
+      return res.status(400).json({ error: "Invalid JSON file" });
+    }
 
-          return baseHandler(res, post, { data: payments }, req.user, paymentList);
-
-      } catch (err) {
-          logger.warn("invalid JSON upload", err)
-          res.status(400).json({ error: "Invalid JSON file" });
-      }
-  });
+    return await baseHandler(res, post, { data: parsed }, req.user, paymentList);
+  } finally {
+    await fs.promises.unlink(file.path).catch(() => {});
   }
-});
+}
 
+paymentsRouter.post("/upload", (req: Request, res: Response) => {
+  upload.single("file")(req, res, (err: unknown) => {
+    const code = err instanceof multer.MulterError ? err.code : "";
+    if (code === "LIMIT_FILE_SIZE") {
+      return res.status(400).json({ error: "File too large (max 2MB)" });
+    }
+    if (err && code !== "LIMIT_UNEXPECTED_FILE") {
+      return res.status(400).json({ error: "Upload failed" });
+    }
+    void handleUpload(req, res);
+  });
+});

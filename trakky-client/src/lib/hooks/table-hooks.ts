@@ -22,7 +22,6 @@ import {
 } from '@/components/ui/table/columns';
 import { toast } from '@/components/ui/use-toast';
 import { demoMode, Endpoint } from '@/constants';
-import * as z from 'zod';
 import { Budget, Payment } from '@/models/dtos';
 import { Total } from '@/models/total';
 import { monthNameToNumber } from '@/lib/text-formatter';
@@ -288,30 +287,15 @@ export async function onTransactionsUpload(
     });
     return;
   }
-  const reader = new FileReader();
-
-  reader.onload = async (e) => {
-    const result = e.target?.result;
-    if (typeof result === 'string') {
-      try {
-        uploadPaymentsSchema.parse(JSON.parse(result));
-      } catch (error) {
-        if (error instanceof z.ZodError) {
-          toast({
-            variant: 'destructive',
-            title: 'Invalid file format!',
-          });
-        } else {
-          toast({
-            variant: 'destructive',
-            title: 'Upload Failed!',
-          });
-        }
-      }
-    }
-  };
-
-  reader.readAsText(file);
+  try {
+    uploadPaymentsSchema.parse(JSON.parse(await file.text()));
+  } catch {
+    toast({
+      variant: 'destructive',
+      title: 'Invalid file format!',
+    });
+    return;
+  }
 
   try {
     const uploadResult = await Client.Upload(Endpoint.Payments, file, signal);

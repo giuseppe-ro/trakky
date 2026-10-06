@@ -9,8 +9,6 @@ import { z } from "zod";
 
 import { baseHandler, sendError } from "./base";
 
-// Minimal express-Response stub: no express, no DB. status() is only recorded, so
-// code === 0 means "sent without an explicit status" (express default 200).
 function stubRes() {
   const res = {
     code: 0,
@@ -37,7 +35,6 @@ const run = async (func: Function, payload: any = { data: [] }, schema?: z.ZodTy
   return res;
 };
 
-// baseHandler must catch this: func used to be called outside the promise chain.
 const throwsSync = (e: unknown) => () => {
   throw e;
 };

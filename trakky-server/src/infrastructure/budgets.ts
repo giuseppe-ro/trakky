@@ -1,7 +1,6 @@
 import { Prisma } from "@prisma/client";
 import prisma from "./client";
 
-// The id comes from the database, never from the request (see infrastructure/payments.ts).
 type BudgetCreate = Omit<Prisma.BudgetCreateManyInput, "id">;
 type BudgetUpdate = BudgetCreate & { id: number };
 

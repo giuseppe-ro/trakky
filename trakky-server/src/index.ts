@@ -59,12 +59,10 @@ app.get('/api/health-check', cors(corsOptions), async (req, res, _next) => {
   res.status(200).send({'message':'OK'});
 });
 
-// Catch-all 404 for /api/* — deliberately on `app` AFTER the two app.get routes above:
-// registered inside apiRouter it runs first for every /api/* path and swallows
-// /api/auth and /api/health-check (the client polls the latter).
+// Must stay on `app` after the two routes above: inside apiRouter it would answer every /api/*
+// request, including /api/auth and the health check the client polls.
 app.use('/api', (_req, res) => res.status(404).json({ error: "Not found." }));
 
-// Last: any error that reaches Express (body parsing, a router throw) answers JSON, not HTML.
 app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
   logger.error(err?.stack ?? String(err));
   res.status(500).json({ error: "Server Error." });

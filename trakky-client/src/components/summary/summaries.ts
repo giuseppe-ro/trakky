@@ -4,14 +4,12 @@ import { PaymentOverview } from '@/models/payment-overview';
 import { formatDateMonth } from '@/lib/text-formatter';
 
 function sortMap(map: Map<string, string[]>): Map<string, string[]> {
-  // Convert map entries to an array and sort it
   const sortedEntries = Array.from(map.entries())
     .sort(([a], [b]) => {
-      return a.localeCompare(b); // Sort by year (key)
+      return a.localeCompare(b);
     })
     .reverse();
 
-  // Create a new Map from the sorted entries
   return new Map(sortedEntries);
 }
 

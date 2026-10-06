@@ -7,7 +7,6 @@ import { User } from "../models/user";
 const DEFAULT_CACHE_TTL_MS = 60_000;
 const MAX_CACHED_USERS = 500;
 
-// in-process only: needs a shared store if the API ever runs multi-instance
 const userCache = new Map<string, { user: User; expiresAt: number }>();
 let discoveredUserinfoUrl: string | null | undefined;
 

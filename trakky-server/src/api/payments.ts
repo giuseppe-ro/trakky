@@ -43,8 +43,6 @@ paymentsRouter.post("/upload", upload.single('file'), (req: Request, res: Respon
       try {
           const payments = JSON.parse(data);
 
-          // one payment-row schema for every write path: baseHandler validates the rows,
-          // so a bad date is a 400 with the zod message instead of a Prisma 500.
           return baseHandler(res, post, { data: payments }, req.user, paymentList);
 
       } catch (err) {

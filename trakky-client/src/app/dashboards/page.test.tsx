@@ -13,7 +13,6 @@ describe('test BudgetToDeleteList rendering', () => {
   });
 
   beforeEach(() => {
-    // act
     render(
       <QueryClientProvider client={queryClient}>
         <DashboardPage />
@@ -22,7 +21,6 @@ describe('test BudgetToDeleteList rendering', () => {
   });
 
   it('should render filters without table body', async () => {
-    // assert
     await waitFor(() => {
       expect(screen.getByTitle('Filters')).toBeVisible();
 
@@ -32,9 +30,6 @@ describe('test BudgetToDeleteList rendering', () => {
   });
 
   it('should render expenses, users and breakdown charts', async () => {
-    // assert
-    // expenses chart
-
     await waitFor(() => {
       expect(screen.getByTitle('Expenses Dashboard')).toBeVisible();
 
@@ -45,9 +40,7 @@ describe('test BudgetToDeleteList rendering', () => {
           ?.getAttribute('id')
       ).toBe('budgets');
 
-      // // users chart
       expect(screen.getByTitle('Users Dashboard')).toBeVisible();
-      //
       expect(
         screen
           .getByTitle('Users Dashboard')
@@ -55,7 +48,6 @@ describe('test BudgetToDeleteList rendering', () => {
           ?.querySelector('span')?.textContent
       ).toBe('Goofy');
 
-      // // breakdown chart
       expect(
         screen.getByTitle('Breakdown Dashboard').querySelector('h3')
       ).toHaveTextContent('Breakdown');

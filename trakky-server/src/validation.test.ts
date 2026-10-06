@@ -14,7 +14,6 @@ import {
 } from "./validation";
 
 const payment = { owner: "a", type: "b", date: "2024-01-01", amount: 5, description: "d" };
-// the date rule parses a string in, so the output row carries a Date (what Prisma is given)
 const stored = (row = payment) => ({ ...row, date: new Date(row.date) });
 const rows = (n: number, row = payment) => Array.from({ length: n }, () => ({ ...row }));
 
@@ -31,7 +30,6 @@ test("a conforming payment list parses with the date as a Date", () => {
 });
 
 test("the date rule accepts ISO strings and Dates, and never throws out of safeParse", () => {
-  // the "" case is the one a `.refine(d => !isNaN(d.getTime()))` would turn into a TypeError
   for (const good of ["2024-01-31", "2024-01-31T10:00:00.000Z"]) {
     const result = isoDate.safeParse(good);
     assert.ok(result.success, `${good}: expected acceptance`);
@@ -40,14 +38,11 @@ test("the date rule accepts ISO strings and Dates, and never throws out of safeP
   const date = new Date("2024-01-31");
   assert.deepEqual(isoDate.parse(date), date);
 
-  // "" rejects via too_small, "31/01/2024"/"nope" via the coerce, numbers/null via the union.
-  // Codes are asserted loosely on purpose: every one must be a failed result, not a throw.
   for (const bad of ["", "31/01/2024", "nope", 12345, null, undefined]) {
     const result = isoDate.safeParse(bad);
     assert.ok(!result.success, `${String(bad)}: expected rejection`);
     assert.ok(result.error.issues.length > 0, `${String(bad)}: expected an issue`);
   }
-  // 12345 must not survive as 1970-01-01 through the row schema either
   expectRejected(paymentCreate, { ...payment, date: 12345 }, "numeric date");
   assert.deepEqual(paymentCreate.parse({ ...payment, date: "2024-01-31" }).date, new Date("2024-01-31"));
 });

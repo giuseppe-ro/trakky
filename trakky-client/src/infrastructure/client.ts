@@ -1,5 +1,9 @@
 import { AppError } from '@/models/app-error';
 
+export function isOk(result: { error: null | AppError }): boolean {
+  return result.error === null;
+}
+
 export default abstract class BaseClient {
   abstract Get(
     endpoint: string,

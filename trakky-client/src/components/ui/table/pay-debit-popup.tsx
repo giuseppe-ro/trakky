@@ -72,9 +72,9 @@ function PayDebitDialog({
   async function onConfirmed() {
     setIsError(false);
 
-    const { data, error } = await Client.Post(Endpoint.Payments, entries);
+    const { error } = await Client.Post(Endpoint.Payments, entries);
 
-    if (error || !data) {
+    if (error) {
       errorMessage(setIsError, error?.error);
       return;
     }

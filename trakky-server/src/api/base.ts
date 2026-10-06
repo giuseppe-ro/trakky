@@ -1,15 +1,21 @@
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import  { Request, Response } from "express";
+import { ZodTypeAny } from "zod";
 import { logger } from "../logger";
 import { User } from "../models/user";
 import { skipAuth } from "../constants";
 
-export function baseHandler(res: Response, func: Function, payload: any, user?: User) {
+export function baseHandler(res: Response, func: Function, payload: any, user?: User, schema?: ZodTypeAny) {
   if (!skipAuth && user) {
     logger.info(`User: ${user.preferred_username} - Executing: ${func.name}`);
   } 
 
-  func(payload["data"])
+  const parsed = schema ? schema.safeParse(payload?.data) : undefined;
+  if (parsed && !parsed.success) {
+    return res.status(400).json({ error: parsed.error.issues[0].message });
+  }
+
+  func(parsed ? parsed.data : payload?.data)
   .then((result: any) => {
     res.send(result);
   })

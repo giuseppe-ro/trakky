@@ -1,11 +1,11 @@
-import { Category } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import prisma from "./client";
 
 export async function get() {
   return await prisma.category.findMany();
 }
 
-export async function post(categories: Category[]) {
+export async function post(categories: Omit<Prisma.CategoryCreateManyInput, "id">[]) {
     const response = await prisma.category.createMany({
       data: categories
     });

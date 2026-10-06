@@ -4,20 +4,40 @@ on:
   workflow_call:
 
 jobs:
-  Build:
+  Client:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Use Node.js
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: "24.x"
+          cache: npm
+          cache-dependency-path: trakky-client/package-lock.json
 
       - name: Test Client
+        working-directory: trakky-client
         run: |
-          cd trakky-client
           npm ci
           npm run lint
           npm run build --if-present
-          npm run test
+          npx vitest run --coverage
+
+  Server:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24.x"
+          cache: npm
+          cache-dependency-path: trakky-server/package-lock.json
+
+      - name: Test Server
+        working-directory: trakky-server
+        run: |
+          npm ci
+          npx prisma generate
+          npx tsc --noEmit
+          npm test

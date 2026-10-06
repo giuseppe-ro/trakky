@@ -10,7 +10,6 @@ export async function post(owners: Omit<Prisma.OwnerCreateManyInput, "id">[]) {
     data: owners,
   });
 
-  console.log(response);
 
   return response;
 }
@@ -22,7 +21,6 @@ export async function del(ids: number[]) {
     },
   });
 
-  console.log(response);
 
   return response;
 }

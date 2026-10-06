@@ -20,7 +20,6 @@ export async function del(ids: number[]) {
     },
   });
 
-  console.log(response);
 
   return response;
 }

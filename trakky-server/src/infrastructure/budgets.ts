@@ -33,7 +33,6 @@ export async function put(budget: BudgetUpdate) {
     data,
   });
 
-  console.log(response);
 
   return response;
 }
@@ -45,7 +44,6 @@ export async function del(budgetIds: number[]) {
     },
   });
 
-  console.log(response);
 
   return response;
 }

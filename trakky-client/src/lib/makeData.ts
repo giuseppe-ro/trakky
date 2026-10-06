@@ -10,7 +10,7 @@ interface ImportedData {
 const sortByDate = (a: ImportedData, b: ImportedData) => {
   const dateA = new Date(a.date);
   const dateB = new Date(b.date);
-  return dateB.getTime() - dateA.getTime(); // Sorts in descending order
+  return dateB.getTime() - dateA.getTime();
 };
 
 export function mockPayments() {

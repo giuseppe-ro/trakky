@@ -11,8 +11,6 @@ const row = {
 };
 
 describe('uploadPaymentSchema date rule', () => {
-  // every value below was accepted by the old `new Date(val)` predicate (an Invalid Date is an
-  // object, never null) and then 500'd inside Prisma
   it.each(['', '31/01/2024', 'nope', 12345, null, undefined])(
     'rejects %p as a date without throwing',
     (date) => {

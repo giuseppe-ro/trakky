@@ -51,7 +51,6 @@ export const useYearSelection = ({
       setAvailableYears(years);
 
       const storedYear = localStorage.getItem(StorageKey.SelectedYear);
-      // const storedMonth = localStorage.getItem(StorageKey.SelectedMonth);
       if (storedYear && storedYear in years) {
         setSelectedYear(storedYear);
       } else {

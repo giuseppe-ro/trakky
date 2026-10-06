@@ -3,7 +3,6 @@ import { test } from "node:test";
 
 import { assertAuthConfig } from "./startup";
 
-// if/else instead of bare asserts so the StartDecision union stays narrowed.
 const expectStart = (env: NodeJS.ProcessEnv, label: string) => {
   const decision = assertAuthConfig(env);
   if (decision.ok) {

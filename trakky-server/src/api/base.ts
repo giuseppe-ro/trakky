@@ -23,17 +23,15 @@ export async function baseHandler(
     if (!parsed.success) {
       return res.status(400).json({ error: parsed.error.issues[0].message });
     }
-    // awaited inside the try: a synchronous throw from func becomes a JSON error
-    // response here instead of escaping into Express' HTML error page.
     res.send(await func(parsed.data));
   } catch (e) {
     sendError(res, e);
   }
 }
 
-// The server-wide error -> status map. Never the auth status: the client retries its
-// request once on an unauthorised response (remote/base.ts callApi), so a database
-// problem must not look like an expired login.
+// Never answer 401 from here: the client retries the request once on an unauthorised response
+// (trakky-client/src/infrastructure/remote/base.ts), so a database problem must not look like an
+// expired login.
 export function sendError(res: Response, e: unknown) {
   if (e instanceof ZodError) {
     return res.status(400).json({ error: e.issues[0].message });
@@ -51,9 +49,6 @@ export function sendError(res: Response, e: unknown) {
         return res.status(400).json({ error: "An error occurred with the database!" });
     }
   }
-  // The fall-through covers PrismaClientInitializationError (a DB auth failure is a server
-  // misconfiguration, so 500 + a log line, never blamed on the caller),
-  // PrismaClientValidationError and anything else including non-Error throws.
   logger.error(e);
   return res.status(500).json({ error: "Server Error." });
 }

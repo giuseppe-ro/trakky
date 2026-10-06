@@ -1,6 +1,5 @@
 export type StartDecision = { ok: true; warning?: string } | { ok: false; error: string };
 
-// Mirrors `skipAuth` in constants.ts: only the literal "true" disables authentication.
 export function assertAuthConfig(env: NodeJS.ProcessEnv): StartDecision {
   if (env.SKIP_AUTH === "true") {
     return {

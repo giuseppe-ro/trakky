@@ -2,8 +2,6 @@ import { Prisma } from "@prisma/client";
 import { logger } from "../logger";
 import prisma from "./client";
 
-// The id comes from the database, never from the request: creates exclude it and the
-// update destructures it out of the data so it cannot end up in `data`.
 type PaymentCreate = Omit<Prisma.PaymentCreateManyInput, "id">;
 type PaymentUpdate = PaymentCreate & { id: number };
 
@@ -29,8 +27,6 @@ export async function post(payments: PaymentCreate[]) {
 export async function put(payment: PaymentUpdate) {
   const { id, ...data } = payment;
 
-  // no try/catch here: baseHandler maps the failure (P2025 -> 404, DB down -> 500);
-  // swallowing it used to answer a 200 with an empty body.
   logger.info("updating:", payment)
   const response = await prisma.payment.update({
     where: { id },

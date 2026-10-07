@@ -139,9 +139,9 @@ export function usePaymentsTable({
       .getSelectedRowModel()
       .rows.map((row) => row.original.id) as number[];
 
-    const deleted = await Client.Delete(Endpoint.Payments, ids, signal);
+    const { error } = await Client.Delete(Endpoint.Payments, ids, signal);
 
-    if (deleted) {
+    if (!error) {
       table.resetRowSelection();
       toast({
         title: 'Transactions deleted!',
@@ -150,6 +150,7 @@ export function usePaymentsTable({
     } else {
       toast({
         title: "Couldn't delete transactions!",
+        description: error.error,
         className: 'bg-red-500',
       });
     }
@@ -239,9 +240,9 @@ export function useBudgetsTable({
       .getSelectedRowModel()
       .rows.map((row) => row.original.id) as number[];
 
-    const deleted = await Client.Delete(Endpoint.Budgets, ids, signal);
+    const { error } = await Client.Delete(Endpoint.Budgets, ids, signal);
 
-    if (deleted) {
+    if (!error) {
       refreshData(false);
       table.resetRowSelection();
       toast({
@@ -251,6 +252,7 @@ export function useBudgetsTable({
     } else {
       toast({
         title: "Couldn't delete!",
+        description: error.error,
         className: 'bg-red-500',
       });
     }

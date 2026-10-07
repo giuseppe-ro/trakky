@@ -26,6 +26,7 @@ import AddComponent from '@/components/ui/add-input';
 import { ChildrenSelection } from '@/components/ui/select';
 import { CategoryIcon, IconIdMap } from '@/components/ui/table/icons';
 import { Client, GetBackup, GetIcons } from '@/infrastructure/client-injector';
+import { isOk } from '@/infrastructure/client';
 import { ErrorMessage } from '@/infrastructure/remote/base';
 import { demoMode, Endpoint } from '@/constants';
 import BudgetActionMenu from './components/budget-action-menu';
@@ -167,27 +168,24 @@ function SettingsPage() {
       },
     ] as Category[];
 
-    const { data: success } = await Client.Post(
-      Endpoint.Categories,
-      categoryToAdd
-    );
+    const { error } = await Client.Post(Endpoint.Categories, categoryToAdd);
 
     successFailToast({
-      success,
+      success: isOk({ error }),
       successMessage: 'Type added',
-      errorMessage: "Couldn't save Type!",
+      errorMessage: error?.error ?? "Couldn't save Type!",
     });
 
     await fetchCategories();
   };
 
   async function OnCategoryDeleteConfirmed(id: number) {
-    const { data: success } = await Client.Delete(Endpoint.Categories, [id]);
+    const { error } = await Client.Delete(Endpoint.Categories, [id]);
     await fetchCategories();
     successFailToast({
-      success,
+      success: isOk({ error }),
       successMessage: 'Type Removed',
-      errorMessage: "Couldn't remove Type!",
+      errorMessage: error?.error ?? "Couldn't remove Type!",
     });
   }
 
@@ -200,24 +198,24 @@ function SettingsPage() {
       )
     )
       return;
-    const { data: success } = await Client.Post(Endpoint.Owners, [
+    const { error } = await Client.Post(Endpoint.Owners, [
       { name: newOwner } as Owner,
     ]);
     await fetchOwners();
     successFailToast({
-      success,
+      success: isOk({ error }),
       successMessage: 'Owner added',
-      errorMessage: "Couldn't save Owner!",
+      errorMessage: error?.error ?? "Couldn't save Owner!",
     });
   };
 
   const OnOwnerDeleteConfirmed = async (id: number) => {
-    const { data: success } = await Client.Delete(Endpoint.Owners, [id]);
+    const { error } = await Client.Delete(Endpoint.Owners, [id]);
     await fetchOwners();
     successFailToast({
-      success,
+      success: isOk({ error }),
       successMessage: 'Owner Removed',
-      errorMessage: "Couldn't remove Owner!",
+      errorMessage: error?.error ?? "Couldn't remove Owner!",
     });
   };
 

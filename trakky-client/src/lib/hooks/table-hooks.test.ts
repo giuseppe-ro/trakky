@@ -1,13 +1,24 @@
+import { act, renderHook } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { Endpoint } from '@/constants';
-import { onTransactionsUpload } from '@/lib/hooks/table-hooks';
+import {
+  onTransactionsUpload,
+  usePaymentsTable,
+} from '@/lib/hooks/table-hooks';
 
-const { upload } = vi.hoisted(() => ({ upload: vi.fn() }));
+const { upload, del } = vi.hoisted(() => ({ upload: vi.fn(), del: vi.fn() }));
+const { toast } = vi.hoisted(() => ({ toast: vi.fn() }));
 
 vi.mock('@/infrastructure/client-injector', () => ({
-  Client: { Upload: upload },
+  Client: { Upload: upload, Delete: del },
 }));
+
+vi.mock('@/components/ui/use-toast', async (importOriginal) => {
+  const original =
+    await importOriginal<typeof import('@/components/ui/use-toast')>();
+  return { ...original, toast };
+});
 
 vi.mock('@/constants', async (importOriginal) => {
   const original = await importOriginal<typeof import('@/constants')>();
@@ -51,6 +62,54 @@ describe('onTransactionsUpload', () => {
       Endpoint.Payments,
       expect.any(File),
       undefined
+    );
+  });
+});
+
+describe('usePaymentsTable onDeleteConfirmed', () => {
+  const props = {
+    data: [],
+    selectedYear: '2024',
+    selectedMonth: 'All Months',
+    refreshData: vi.fn(),
+    isLoading: false,
+  };
+
+  beforeEach(() => del.mockReset());
+
+  it('toasts the server message when the delete fails', async () => {
+    del.mockResolvedValue({ data: false, error: { error: 'Server Error.' } });
+    const { result } = renderHook(() => usePaymentsTable(props));
+
+    await act(async () => {
+      await result.current.onDeleteConfirmed();
+    });
+
+    expect(toast).toHaveBeenCalledWith(
+      expect.objectContaining({
+        title: "Couldn't delete transactions!",
+        description: 'Server Error.',
+        className: 'bg-red-500',
+      })
+    );
+  });
+
+  it('toasts success when the delete returns no error', async () => {
+    del.mockResolvedValue({ data: false, error: null });
+    const { result } = renderHook(() => usePaymentsTable(props));
+
+    await act(async () => {
+      await result.current.onDeleteConfirmed();
+    });
+
+    expect(toast).toHaveBeenCalledWith(
+      expect.objectContaining({
+        title: 'Transactions deleted!',
+        className: 'bg-green-600',
+      })
+    );
+    expect(toast).not.toHaveBeenCalledWith(
+      expect.objectContaining({ className: 'bg-red-500' })
     );
   });
 });

@@ -8,6 +8,22 @@ A personal, self-hosted, simple expenses tracker. Supports optional OpenId authe
 Demo [here](https://trakky.pages.dev).
 
 
+## Local development (no Docker)
+
+From the repository root:
+```bash
+npm run dev
+```
+This installs missing dependencies, creates `.db/trakky.db` (gitignored), generates a SQLite Prisma
+client, and starts the backend on port 8999 and the frontend on http://localhost:8997. On the first
+run the database is seeded with the client's mock data; later runs reuse the existing DB and keep
+your changes. Delete `.db/trakky.db` to start fresh and re-seed. Authentication is disabled locally
+and the frontend reaches the API through Vite's `/api` proxy, so no OpenID provider is needed.
+
+The SQLite client replaces the MySQL one in `trakky-server/node_modules`; before building or
+testing the production setup, restore it with `cd trakky-server && npm run prisma:generate`.
+
+
 ## How to run with docker
 
 > [!NOTE]  

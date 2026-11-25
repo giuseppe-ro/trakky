@@ -35,6 +35,12 @@ describe('uploadPaymentSchema date rule', () => {
     expect(uploadPaymentSchema.safeParse({ ...row, amount: 0 }).success).toBe(
       false
     );
+    expect(uploadPaymentSchema.safeParse({ ...row, amount: 5.5 }).success).toBe(
+      false
+    );
+    expect(
+      uploadPaymentSchema.safeParse({ ...row, amount: 1_000_000_001 }).success
+    ).toBe(false);
     expect(
       uploadPaymentSchema.safeParse({ ...row, description: 'x'.repeat(51) })
         .success

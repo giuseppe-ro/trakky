@@ -2,6 +2,7 @@ import { renderHook } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
 import { Payment } from '@/models/dtos';
+import { formatCurrency } from '@/lib/text-formatter';
 import { usePaymentsTable } from '@/lib/hooks/table-hooks';
 import useSummary from '@/lib/hooks/use-summary';
 
@@ -47,5 +48,22 @@ describe('useSummary', () => {
     expect(result.current.balances).toEqual({ A: 70, B: 70 });
     expect(result.current.partialTotal).toBe(140);
     expect(result.current.totalAmount).toBe(140);
+  });
+
+  it('adds pence exactly and formats the total as 0.30', () => {
+    const rows = [payment('A', 10), payment('B', 20)];
+    const { result } = renderHook(() => {
+      const { table } = usePaymentsTable({
+        data: rows,
+        selectedYear: '2025',
+        selectedMonth: 'March',
+        refreshData: () => Promise.resolve(),
+        isLoading: false,
+      });
+      return useSummary(table);
+    });
+
+    expect(result.current.partialTotal).toBe(30);
+    expect(formatCurrency(result.current.partialTotal)).toBe('£0.30');
   });
 });

@@ -4,6 +4,45 @@ on:
   workflow_call:
 
 jobs:
+  FreshDatabase:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: expenses
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+    env:
+      DATABASE_URL: mysql://root:root@127.0.0.1:3306/expenses?schema=public
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24.x"
+          cache: npm
+          cache-dependency-path: trakky-server/package-lock.json
+
+      - name: Deploy committed migrations to an empty database and smoke-test the API
+        working-directory: trakky-server
+        run: |
+          npm ci
+          npx prisma generate
+          npx prisma migrate deploy
+          SKIP_AUTH=true npm start &
+          for i in $(seq 1 30); do
+            curl --fail --silent http://localhost:8999/api/payments > payments.json && break
+            sleep 1
+          done
+          test "$(cat payments.json)" = "[]"
+
   Client:
     runs-on: ubuntu-latest
     steps:

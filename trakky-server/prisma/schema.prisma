@@ -11,8 +11,8 @@ datasource db {
 model Budget {
   id        Int      @id @default(autoincrement())
   date      DateTime
-  budget    Float
-  maxBudget Float
+  budget    Int
+  maxBudget Int
 }
 
 model Category {
@@ -38,7 +38,7 @@ model Owner {
 
 model Payment {
   id             Int              @id @default(autoincrement())
-  amount         Float
+  amount         Int
   description    String
   date           DateTime
   owner          String

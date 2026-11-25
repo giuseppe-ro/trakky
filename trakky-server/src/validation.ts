@@ -7,12 +7,15 @@ const name = z.string().min(1).max(100);
 export const isoDate = z.union([z.string().min(1), z.date()]).pipe(z.coerce.date());
 const rowId = z.number().int().positive();
 const rowCap = 500;
+// Integer pence, capped well below 32-bit INT so the Prisma columns cannot overflow.
+const maxMoney = 1_000_000_000;
+const money = z.number().int().refine((v) => Math.abs(v) <= maxMoney, 'amount out of range');
 
 export const paymentCreate = z.object({
   owner: name,
   type: name,
   date: isoDate,
-  amount: z.number().refine((v) => v !== 0 && Number.isFinite(v), "cannot be 0"),
+  amount: money.refine((v) => v !== 0, "cannot be 0"),
   description: z.string().min(1).max(50),
 });
 export const paymentList = z.array(paymentCreate).min(1).max(rowCap);
@@ -20,8 +23,8 @@ export const paymentUpdate = paymentCreate.extend({ id: rowId });
 
 export const budgetCreate = z.object({
   date: isoDate,
-  budget: z.number().refine((v) => Number.isFinite(v)),
-  maxBudget: z.number().refine((v) => Number.isFinite(v)),
+  budget: money.refine((v) => v >= 0, 'cannot be negative'),
+  maxBudget: money.refine((v) => v >= 0, 'cannot be negative'),
 });
 export const budgetList = z.array(budgetCreate).min(1).max(rowCap);
 export const budgetUpdate = budgetCreate.extend({ id: rowId });

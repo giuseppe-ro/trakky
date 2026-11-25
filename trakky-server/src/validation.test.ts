@@ -68,6 +68,22 @@ test("amount 0 is rejected with the message the client shows", () => {
   assert.equal(message, "cannot be 0");
 });
 
+test("money must be integer pence within range", () => {
+  expectRejected(paymentList, [{ ...payment, amount: 1.5 }], "fractional pence");
+  expectRejected(paymentList, [{ ...payment, amount: 1_000_000_001 }], "overflow pence");
+  expectRejected(
+    budgetUpdate,
+    { date: "2024-01-01", budget: -1, maxBudget: 2, id: 1 },
+    "negative budget"
+  );
+  expectRejected(
+    budgetUpdate,
+    { date: "2024-01-01", budget: 1.5, maxBudget: 2, id: 1 },
+    "fractional budget"
+  );
+  assert.equal(paymentCreate.parse({ ...payment, amount: 1_000_000_000 }).amount, 1_000_000_000);
+});
+
 test("description is capped at 50 characters", () => {
   expectRejected(paymentList, [{ ...payment, description: "x".repeat(51) }], "51 chars");
   assert.equal(paymentCreate.parse({ ...payment, description: "x".repeat(50) }).description.length, 50);

@@ -7,7 +7,12 @@ export const uploadPaymentSchema = z.object({
   owner: z.string().min(1),
   type: z.string().min(1),
   date: z.union([z.string().min(1), z.date()]).pipe(z.coerce.date()),
-  amount: z.number().refine((val) => val !== 0, { message: 'cannot be 0' }),
+  amount: z
+    .number()
+    .int()
+    .refine((val) => val !== 0 && Math.abs(val) <= 1_000_000_000, {
+      message: 'cannot be 0',
+    }),
   description: z.string().min(1).max(50),
 });
 

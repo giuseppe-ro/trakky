@@ -1,15 +1,18 @@
-export function formatCurrency(total: number) {
+// Money is stored and transported as integer pence; formatters take pence.
+export const toCents = (amount: number) => Math.round(amount * 100);
+
+export function formatCurrency(cents: number) {
   return new Intl.NumberFormat('en-GB', {
     style: 'currency',
     currency: 'GBP',
     minimumFractionDigits: 2,
-  }).format(total);
+  }).format(cents / 100);
 }
 
-export function formatAmount(total: number) {
+export function formatAmount(cents: number) {
   return new Intl.NumberFormat('en-GB', {
     minimumFractionDigits: 2,
-  }).format(total);
+  }).format(cents / 100);
 }
 
 export function formatDateMonth(date: string): string {

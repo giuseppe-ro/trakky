@@ -68,12 +68,12 @@ export function getYearlyPaymentsSummaries(data: Payment[], budgets: Budget[]) {
       (summaryItem) => summaryItem.index === index
     );
     if (existingYear) {
-      existingYear.total += Math.round(transaction.amount);
+      existingYear.total += transaction.amount;
     } else {
       summaries.push({
         index,
         name: year.toString(),
-        total: Math.round(transaction.amount),
+        total: transaction.amount,
         budget: currentBudgets.budget,
         maxBudget: currentBudgets.maxBudget,
       });
@@ -97,12 +97,12 @@ export function getMonthlyPaymentsSummariesForYear(
     );
 
     if (existingMonth) {
-      existingMonth.total += Math.round(transaction.amount);
+      existingMonth.total += transaction.amount;
     } else {
       summaries.push({
         index,
         name,
-        total: Math.round(transaction.amount),
+        total: transaction.amount,
         budget: budget.budget,
         maxBudget: budget.maxBudget,
       });
@@ -124,7 +124,7 @@ export function getMonthlyOwnersSummariesForYear(
       (summaryItem) => summaryItem.index === index
     );
 
-    const amount = Math.round(transaction.amount);
+    const { amount } = transaction;
 
     if (existingMonth) {
       if (existingMonth.owners[transaction.owner] !== undefined) {
@@ -151,7 +151,7 @@ export function getYearlyOwnersSummaries(data: Payment[]): OwnerOverview[] {
       (summaryItem) => summaryItem.index === year
     );
 
-    const amount = Math.round(transaction.amount);
+    const { amount } = transaction;
 
     if (existingYear) {
       if (existingYear.owners[transaction.owner] !== undefined) {
@@ -181,11 +181,9 @@ export function getExpensesBreakdown(data: Payment[] | null) {
   return types.map((type) => {
     return {
       name: type,
-      value: Math.round(
-        data
-          .filter((item) => item.type === type)
-          .reduce((sum, current) => sum + current.amount, 0)
-      ),
+      value: data
+        .filter((item) => item.type === type)
+        .reduce((sum, current) => sum + current.amount, 0),
     };
   });
 }

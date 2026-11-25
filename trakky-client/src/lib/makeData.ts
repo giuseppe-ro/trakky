@@ -1,4 +1,5 @@
 import { Payment, Budget } from '@/models/dtos';
+import { toCents } from '@/lib/text-formatter';
 
 import payments from './mockPayments.json';
 import budgets from './mockBudgets.json';
@@ -14,11 +15,18 @@ const sortByDate = (a: ImportedData, b: ImportedData) => {
 };
 
 export function mockPayments() {
-  return payments.sort(sortByDate) as unknown as Payment[];
+  return payments.sort(sortByDate).map((payment) => ({
+    ...payment,
+    amount: toCents(payment.amount),
+  })) as unknown as Payment[];
 }
 
 export function mockBudgets() {
-  return budgets.sort(sortByDate) as unknown as Budget[];
+  return budgets.sort(sortByDate).map((budget) => ({
+    ...budget,
+    budget: toCents(budget.budget),
+    maxBudget: toCents(budget.maxBudget),
+  })) as unknown as Budget[];
 }
 
 export function mockOwners() {

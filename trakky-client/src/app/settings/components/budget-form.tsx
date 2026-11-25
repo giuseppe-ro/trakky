@@ -16,6 +16,7 @@ import { resultToast } from '@/components/ui/use-toast';
 import {
   firstOfTheMonthDateString,
   nextMonthDateString,
+  toCents,
 } from '@/lib/text-formatter';
 import { errorMessage } from '@/components/ui/table/form-error-message';
 import { Budget } from '@/models/dtos';
@@ -51,10 +52,10 @@ export function BudgetForm({
   const [existing] = React.useState<Date[]>(existingDates);
   const formSchema = z.object({
     date: z.date(),
-    budget: z.number().refine((val) => val > 0, {
+    budget: z.number().refine((val) => toCents(val) > 0, {
       message: 'cannot be 0 or negative',
     }),
-    maxBudget: z.number().refine((val) => val > 0, {
+    maxBudget: z.number().refine((val) => toCents(val) > 0, {
       message: 'cannot be 0 or negative',
     }),
   });
@@ -68,9 +69,8 @@ export function BudgetForm({
         editValues?.date === undefined || editValues?.date === null
           ? new Date()
           : new Date(editValues?.date),
-      budget: editValues?.budget === undefined ? 0 : Number(editValues?.budget),
-      maxBudget:
-        editValues?.maxBudget === undefined ? 0 : Number(editValues?.maxBudget),
+      budget: editValues ? editValues.budget / 100 : 0,
+      maxBudget: editValues ? editValues.maxBudget / 100 : 0,
     },
   });
 
@@ -79,6 +79,8 @@ export function BudgetForm({
     form.clearErrors();
 
     const budget = values as unknown as Budget;
+    budget.budget = toCents(budget.budget);
+    budget.maxBudget = toCents(budget.maxBudget);
 
     const reset = (timeout: number) => {
       setTimeout(() => {

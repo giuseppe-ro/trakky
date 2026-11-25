@@ -23,6 +23,7 @@ import { ErrorMessage } from '@/infrastructure/remote/base';
 import { errorMessage } from '@/components/ui/table/form-error-message';
 import { Category, Owner, Payment } from '@/models/dtos';
 import PaymentsRecap from '@/components/payments/payments-recap';
+import { toCents } from '@/lib/text-formatter';
 import { Endpoint } from '@/constants';
 import Loading from '../loading';
 import {
@@ -48,7 +49,7 @@ const formSchema = z.object({
   owner: z.string(),
   type: z.string(),
   date: z.date(),
-  amount: z.number().refine((val) => val !== 0, {
+  amount: z.number().refine((val) => val !== 0 && toCents(val) !== 0, {
     message: 'cannot be 0',
   }),
   description: z.string().refine((val) => val.length <= 50 && val.length > 0),
@@ -82,7 +83,7 @@ export function PaymentForm({
         editValues?.date === undefined ? undefined : new Date(editValues?.date),
       owner: editValues?.owner,
       type: editValues?.type,
-      amount: editValues?.amount ?? 0,
+      amount: editValues ? editValues.amount / 100 : 0,
       description: editValues?.description ?? '',
     },
   });
@@ -154,30 +155,32 @@ export function PaymentForm({
   }, [fetchState.categories, fetchState.owners]);
 
   const splitPayments = (payment: Payment) => {
-    return fetchState.owners
-      .filter((owner: string) => owner !== 'Shared')
-      .map(
-        (owner: string) =>
-          ({
-            amount: payment.amount / (fetchState.owners.length - 1),
-            type: payment.type,
-            owner,
-            description: payment.description,
-            date: payment.date,
-          }) as Payment
-      );
+    const owners = fetchState.owners.filter(
+      (owner: string) => owner !== 'Shared'
+    );
+    const base = Math.trunc(payment.amount / owners.length);
+    const remainder = payment.amount - base * owners.length;
+
+    return owners.map(
+      (owner: string, index: number) =>
+        ({
+          amount:
+            base + (index < Math.abs(remainder) ? Math.sign(remainder) : 0),
+          type: payment.type,
+          owner,
+          description: payment.description,
+          date: payment.date,
+        }) as Payment
+    );
   };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsError(false);
 
     const payment = values as unknown as Payment;
+    const cents = toCents(form.getValues('amount'));
 
-    if (amountIsNegative) {
-      payment.amount = -Math.abs(form.getValues('amount'));
-    } else {
-      payment.amount = Math.abs(form.getValues('amount'));
-    }
+    payment.amount = amountIsNegative ? -Math.abs(cents) : Math.abs(cents);
 
     let payments: Payment[];
     const isNewPayment = editValues === null;

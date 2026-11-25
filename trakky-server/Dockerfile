@@ -15,6 +15,7 @@ WORKDIR /usr/src/app
 COPY --chown=node:node --from=build /usr/src/app/dist ./dist
 COPY --chown=node:node --from=build /usr/src/app/package.json .
 COPY --chown=node:node --from=build /usr/src/app/package-lock.json .
+COPY --chown=node:node --from=build /usr/src/app/prisma ./prisma
 RUN npm install --omit=dev
 COPY --chown=node:node --from=build /usr/src/app/node_modules/.prisma/client  ./node_modules/.prisma/client
 

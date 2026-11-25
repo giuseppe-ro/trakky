@@ -20,9 +20,18 @@ Create a db named "expenses", and a user with full permission to that database.
 cd trakky-server
 export DATABASE_URL="mysql://USERNAME:PASSWORD@URL:PORT/expenses?schema=public"
 npm install
-npx prisma migrate dev --name init
+npx prisma migrate deploy
 ```
-This will initialise the database and create the necessary tables.
+This applies the committed migrations and creates the necessary tables. It is safe to re-run.
+
+For a database created before migrations were committed (or with `prisma db push`), baseline it
+first so the initial migration does not try to recreate existing tables:
+```bash
+npx prisma migrate resolve --applied 20241124000000_init
+npx prisma migrate deploy
+```
+The `money_to_cents` migration preserves existing amounts by scaling them to integer pence; take a
+database backup before applying it, and verify a few amounts afterwards.
 
 ### Create a docker network:
 ```bash
@@ -32,6 +41,9 @@ docker network create trakky
 ### Set and run the backend:
 ```bash
 docker build -t trakky-server ./trakky-server
+
+# Apply the committed migrations to the (possibly empty) database. Repeatable.
+docker run --rm --network trakky -e DATABASE_URL="mysql://USERNAME:PASSWORD@URL:PORT/expenses?schema=public" trakky-server npx prisma migrate deploy
 
 docker run -p 8999:8999 --network trakky -e SKIP_AUTH=true -e DATABASE_URL="mysql://USERNAME:PASSWORD@URL:PORT/expenses?schema=public" -e ALLOWED_ORIGINS="http://localhost,http://other-origin.com" --name trakky-server -d trakky-server 
 ```

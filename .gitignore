@@ -147,3 +147,7 @@ trakky-client/html
 .plan/
 .plans/
 .local/
+
+# local dev instance (SQLite + generated schema)
+.db/
+trakky-server/prisma/schema.local.prisma
